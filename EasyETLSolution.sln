@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HtmlWriterSample", "HtmlWri
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonWriterSample", "JsonWriteExample\JsonWriterSample.csproj", "{D0409861-9D0F-4413-8345-AFD0332DD3AE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsvWriterExample", "CsvWriterExample\CsvWriterExample.csproj", "{B262C390-77F1-42E8-B7B1-0D7C7BD0E7CF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,14 @@ Global
 		{D0409861-9D0F-4413-8345-AFD0332DD3AE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0409861-9D0F-4413-8345-AFD0332DD3AE}.Release|x86.ActiveCfg = Release|x86
 		{D0409861-9D0F-4413-8345-AFD0332DD3AE}.Release|x86.Build.0 = Release|x86
+		{B262C390-77F1-42E8-B7B1-0D7C7BD0E7CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B262C390-77F1-42E8-B7B1-0D7C7BD0E7CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B262C390-77F1-42E8-B7B1-0D7C7BD0E7CF}.Debug|x86.ActiveCfg = Debug|x86
+		{B262C390-77F1-42E8-B7B1-0D7C7BD0E7CF}.Debug|x86.Build.0 = Debug|x86
+		{B262C390-77F1-42E8-B7B1-0D7C7BD0E7CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B262C390-77F1-42E8-B7B1-0D7C7BD0E7CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B262C390-77F1-42E8-B7B1-0D7C7BD0E7CF}.Release|x86.ActiveCfg = Release|x86
+		{B262C390-77F1-42E8-B7B1-0D7C7BD0E7CF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

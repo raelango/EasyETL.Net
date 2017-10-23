@@ -26,11 +26,6 @@ namespace EasyETL.Loaders
         {
         }
 
-        public override string BuildOutputString()
-        {
-            return base.BuildOutputString();
-        }
-
         public override string BuildHeaderString()
         {
             string returnStr = "<?xml version=\"1.0\" encoding=\"utf-8\"?>" + Environment.NewLine;
