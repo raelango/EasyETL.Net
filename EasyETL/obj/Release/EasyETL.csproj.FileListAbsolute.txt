@@ -1,0 +1,5 @@
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyETL\bin\Release\profiles.xml
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyETL\bin\Release\EasyETL.dll
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyETL\bin\Release\EasyETL.pdb
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyETL\obj\Release\EasyETL.dll
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyETL\obj\Release\EasyETL.pdb

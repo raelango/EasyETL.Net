@@ -77,10 +77,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extractors\ExcelDataSet.cs" />
-    <Compile Include="Extractors\HtmlDataSet.cs" />
-    <Compile Include="Extractors\JsonDataSet.cs" />
-    <Compile Include="Extractors\DatabaseDataSet.cs" />
+    <Compile Include="Extractors\ExcelDataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Extractors\HtmlDataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Extractors\JsonDataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Extractors\DatabaseDataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Extractors\Extractor.cs" />
     <Compile Include="Extractors\RegexColumnBuilder.cs" />
     <Compile Include="Extractors\RegexDataset.cs">
@@ -92,6 +100,11 @@
     <Compile Include="Listeners\JobListener.cs" />
     <Compile Include="Listeners\MsMqListener.cs" />
     <Compile Include="Listeners\TimerListener.cs" />
+    <Compile Include="Loaders\DatasetWriter.cs" />
+    <Compile Include="Loaders\EasyLoaderException.cs" />
+    <Compile Include="Loaders\ExcelDatasetWriter.cs" />
+    <Compile Include="Loaders\FileDatasetWriter.cs" />
+    <Compile Include="Loaders\HtmlDatasetWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extractors\RegexDataSetException.cs" />
     <Compile Include="Extractors\XmlDataSet.cs">
@@ -117,7 +130,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Loaders\" />
     <Folder Include="Transformers\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

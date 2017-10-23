@@ -168,7 +168,7 @@
     <ClientIP />
     <ClientUserAgent />
     <ClientReferer />
-    <responsestatus condition="^(?!200).*"/>
+    <responsestatus condition="^(?!(200|sc-status)).*"/>
     <ResponseSubStatus />
     <ResponseWin32Status />
     <ResponseTime />
