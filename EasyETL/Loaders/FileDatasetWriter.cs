@@ -28,7 +28,7 @@ namespace EasyETL.Loaders
             _fileName = fileName;
         }
 
-        public virtual void Write()
+        public override void Write()
         {
             if (!String.IsNullOrWhiteSpace(_fileName))
             {
