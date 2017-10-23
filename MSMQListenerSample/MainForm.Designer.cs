@@ -1,4 +1,4 @@
-namespace RegexParserSolution
+namespace MSMQListenerSample
 {
     partial class MainForm
     {

@@ -8,7 +8,7 @@ using EasyETL.Parsers;
 using System.Messaging;
 using System.Diagnostics;
 
-namespace RegexParserSolution
+namespace MSMQListenerSample
 {
     public partial class MainForm : Form
     {
