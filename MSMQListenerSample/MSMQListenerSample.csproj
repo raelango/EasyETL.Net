@@ -8,8 +8,8 @@
     <ProjectGuid>{6EBB70C6-EA40-4653-8730-47ADFDAF311E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>RegexParserSolution</RootNamespace>
-    <AssemblyName>RegexParserSolution</AssemblyName>
+    <RootNamespace>MSMQListenerSample</RootNamespace>
+    <AssemblyName>MSMQListenerSample</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -127,7 +127,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MagicETL\EasyETL.csproj">
+    <ProjectReference Include="..\EasyETL\EasyETL.csproj">
       <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>
       <Name>EasyETL</Name>
     </ProjectReference>
