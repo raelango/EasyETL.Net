@@ -43,8 +43,10 @@ namespace EasyETL.Loaders
                 foreach (DataRow dr in dt.Rows)
                 {
                     outputString += BuildRowString(dr);
+                    outputString += RowDelimeter(dt.Rows[dt.Rows.Count - 1].Equals(dr));
                 }
                 outputString += BuildTableFooterString(dt);
+                outputString += TableDelimeter(_dataSet.Tables[_dataSet.Tables.Count -1].Equals(dt));
             }
             outputString += BuildFooterString();
             return outputString;
@@ -65,6 +67,16 @@ namespace EasyETL.Loaders
             return String.Empty;
         }
 
+        public virtual string RowDelimeter(bool lastRow)
+        {
+            return String.Empty;
+        }
+
+        public virtual string TableDelimeter(bool lastTable)
+        {
+            return String.Empty;
+        }
+
         public virtual string BuildTableFooterString(DataTable dt)
         {
             return String.Empty;
@@ -74,7 +86,6 @@ namespace EasyETL.Loaders
         {
             return String.Empty;
         }
-
 
     }
 }

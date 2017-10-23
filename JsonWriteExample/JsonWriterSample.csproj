@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2647E6CE-2D5F-4524-9AB0-372CFB456841}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{D0409861-9D0F-4413-8345-AFD0332DD3AE}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EasyETL</RootNamespace>
-    <AssemblyName>EasyETL</AssemblyName>
+    <RootNamespace>ExcelWriterSample</RootNamespace>
+    <AssemblyName>ExcelWriterSample</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -52,6 +52,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -68,49 +69,50 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Messaging" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extractors\ExcelDataSet.cs">
-      <SubType>Component</SubType>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Extractors\HtmlDataSet.cs">
-      <SubType>Component</SubType>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extractors\JsonDataSet.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Extractors\DatabaseDataSet.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Extractors\Extractor.cs" />
-    <Compile Include="Extractors\RegexColumnBuilder.cs" />
-    <Compile Include="Extractors\RegexDataset.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Listeners\EventLogListener.cs" />
-    <Compile Include="Listeners\FileListener.cs" />
-    <Compile Include="Listeners\FolderListener.cs" />
-    <Compile Include="Listeners\JobListener.cs" />
-    <Compile Include="Listeners\MsMqListener.cs" />
-    <Compile Include="Listeners\TimerListener.cs" />
-    <Compile Include="Loaders\DatasetWriter.cs" />
-    <Compile Include="Loaders\EasyLoaderException.cs" />
-    <Compile Include="Loaders\JsonDatasetWriter.cs" />
-    <Compile Include="Loaders\ExcelDatasetWriter.cs" />
-    <Compile Include="Loaders\FileDatasetWriter.cs" />
-    <Compile Include="Loaders\HtmlDatasetWriter.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extractors\RegexDataSetException.cs" />
-    <Compile Include="Extractors\XmlDataSet.cs">
-      <SubType>Component</SubType>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -126,13 +128,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="profiles.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Transformers\" />
+    <ProjectReference Include="..\EasyETL\EasyETL.csproj">
+      <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>
+      <Name>EasyETL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -142,7 +141,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <Target Name="SpicNSpan" AfterTargets="Clean">
+  <!--<Target Name="SpicNSpan" AfterTargets="Clean">
     <RemoveDir Directories="$(OUTDIR)" />
-  </Target>
+  </Target>-->
 </Project>
