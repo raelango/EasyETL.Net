@@ -21,7 +21,6 @@ namespace EasyETL.DataSets
             using (XmlTextReader reader = new XmlTextReader(TextFile))
             {
                 this.ReadXml(reader);
-                reader.Close();
             }
         }
 

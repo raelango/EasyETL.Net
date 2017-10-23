@@ -56,12 +56,16 @@ namespace EasyETL.Listeners
             return false;
         }
 
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (_mQueue != null)
+            base.Dispose(disposing);
+            if (disposing)
             {
-                _mQueue.Close();
-                _mQueue = null;
+                if (_mQueue != null)
+                {
+                    _mQueue.Close();
+                    _mQueue = null;
+                }
             }
         }
         #endregion

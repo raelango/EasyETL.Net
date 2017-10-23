@@ -7,7 +7,7 @@ using System.IO;
 
 namespace EasyETL.Listeners
 {
-    public class FolderListener : JobListener, IDisposable
+    public class FolderListener : JobListener
     {
         public NotifyFilters NotificationFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size;
         public WatcherChangeTypes MonitorChangeTypes = WatcherChangeTypes.All;
@@ -76,13 +76,17 @@ namespace EasyETL.Listeners
             return false;
         }
 
-
-
-        public void Dispose()
+        protected override void Dispose(bool disposing)
         {
-            if (_folderWatcher != null)
+            base.Dispose(disposing);
+            if (disposing)
             {
-                _folderWatcher.EnableRaisingEvents = false;
+                if (_folderWatcher != null)
+                {
+                    _folderWatcher.Dispose();
+                    _folderWatcher.EnableRaisingEvents = false;
+                }
+                _folderWatcher = null;
             }
         }
     }

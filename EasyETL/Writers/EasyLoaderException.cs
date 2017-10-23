@@ -1,21 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace EasyETL.DataSets
+namespace EasyETL.Loaders
 {
-    /// <summary>
-    ///     Special exception for TextFileDataSet
-    /// </summary>
-    /// 
     [Serializable]
-    public class RegexDataSetException : ApplicationException
+    public class EasyLoaderException : ApplicationException
     {
         /// <summary>
         ///     Constructor
         /// </summary>
         /// <param name="message">Message for this exception</param>
-        public RegexDataSetException(string message)
+        public EasyLoaderException(string message)
             : base(message)
         {
         }
     }
 }
+
+

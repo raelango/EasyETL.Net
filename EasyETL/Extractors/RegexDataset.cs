@@ -26,6 +26,7 @@ namespace EasyETL.DataSets
     ///     Class for transforming a text-file into a dataset
     ///     based on one regular expression
     /// </summary>
+    /// 
     public class RegexDataSet : DataSet
     {
         private const string NewName = "NewName";

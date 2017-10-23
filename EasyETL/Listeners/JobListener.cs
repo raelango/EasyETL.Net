@@ -17,7 +17,7 @@ namespace EasyETL.Listeners
         public Dictionary<string,object> Data;
     }
 
-    public abstract class JobListener 
+    public abstract class JobListener : IDisposable 
     {
 
         public event EventHandler<ListenerTriggeredEventArgs> OnTriggered;
@@ -116,6 +116,22 @@ namespace EasyETL.Listeners
             return true;
         }
 
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _originator = null;
+                DataToPass = null;
+            }
+        }
     }
 
 }

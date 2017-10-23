@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace EasyETL.Listeners
 {
-    public class EventLogListener : JobListener, IDisposable
+    public class EventLogListener : JobListener
     {
         EventLog  _eventLog = null;
 
@@ -59,7 +59,6 @@ namespace EasyETL.Listeners
             DataToPass["TimeCreated"] = e.Entry.TimeGenerated;
             DataToPass["TimeWritten"] = e.Entry.TimeWritten;
 
-
             TriggerEvent();
         }
 
@@ -75,15 +74,22 @@ namespace EasyETL.Listeners
             return false;
         }
 
-        public void Dispose()
+
+        protected override void Dispose(bool disposing)
         {
-            if (_eventLog != null)
+            base.Dispose(disposing);
+            if (disposing)
             {
-                _eventLog.EnableRaisingEvents = false;
-                _eventLog.EntryWritten -= EventLogWritten;
-                _eventLog = null;
+                if (_eventLog != null)
+                {
+                    _eventLog.EnableRaisingEvents = false;
+                    _eventLog.EntryWritten -= EventLogWritten;
+                    _eventLog.Dispose();
+                    _eventLog = null;
+                }
             }
         }
+
         #endregion
     }
 }

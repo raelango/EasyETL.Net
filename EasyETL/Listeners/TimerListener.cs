@@ -9,7 +9,7 @@ using System.Timers;
 namespace EasyETL.Listeners
 {
 
-    public class TimerListener : JobListener, IDisposable
+    public class TimerListener : JobListener
     {
         #region properties 
         public List<DateTime> TimesToRun = new List<DateTime>();
@@ -49,12 +49,12 @@ namespace EasyETL.Listeners
         }
         #endregion
 
-        #region private methods
+        #region private Properties
         private DateTime _startTime;
         private DateTime _endTime;
 
         Timer _timer = null;
-        #endregion private methods
+        #endregion private Properties
 
         #region constructors
         public TimerListener(object caller, int intSeconds, DateTime? startTime = null, DateTime? endTime = null) : base(caller) {
@@ -127,11 +127,21 @@ namespace EasyETL.Listeners
         #endregion
 
         #region Public methods
-        public void Dispose()
+
+        protected override void Dispose(bool disposing)
         {
-            if (_timer != null)
+            base.Dispose(disposing);
+            if (disposing)
             {
-                _timer.Stop();
+                if (_timer != null)
+                {
+                    _timer.Stop();
+                    _timer.Dispose();
+                }
+                _timer = null;
+                TimesToRun = null;
+                DaysToRun = null;
+                MonthsToRun = null;
             }
         }
         #endregion
