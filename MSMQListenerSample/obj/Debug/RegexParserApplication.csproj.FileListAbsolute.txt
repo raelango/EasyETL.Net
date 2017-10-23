@@ -1,1 +1,0 @@
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\RegexParserSolution\RegexParserSolution\bin\Debug\RegexParserSolution.exe.config
