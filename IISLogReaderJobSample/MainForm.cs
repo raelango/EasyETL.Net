@@ -48,7 +48,7 @@ namespace IISLogReaderJobSample
 
             job.LineReadAndProcessed += job_LineReadAndProcessed;
             job.DataChanged += job_DataChanged;
-            job.Run();
+            job.Start();
 
             RegexDataSet rds = job.Data;
 

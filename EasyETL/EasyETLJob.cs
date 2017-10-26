@@ -25,7 +25,7 @@ namespace EasyETL
 
         public event EventHandler<JobDataChangedEventArgs> DataChanged;               
 
-        public void Run()
+        public void Start()
         {
             foreach (Extractor extractor in Extractors)
             {
@@ -37,6 +37,11 @@ namespace EasyETL
             {
                 listener.OnTriggered += listener_OnTriggered;
                 listener.Start();
+            }
+
+            foreach (DatasetWriter loader in Loaders)
+            {
+                loader.Write(Data);
             }
         }
 
@@ -86,6 +91,14 @@ namespace EasyETL
                 {
                     Data.Merge(extractor.Data);
                 }
+            }
+        }
+
+        public void Stop()
+        {
+            foreach (JobListener listener in Listeners)
+            {
+                listener.Stop();
             }
         }
 

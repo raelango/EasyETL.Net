@@ -31,7 +31,12 @@ namespace EasyETL.Writers
             {
                 throw new EasyLoaderException("Dataset is null");
             }
+        }
 
+        public void Write(DataSet dataSet)
+        {
+            _dataSet = dataSet;
+            Write();
         }
 
         public virtual string BuildOutputString()
