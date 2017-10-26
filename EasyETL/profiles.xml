@@ -168,13 +168,32 @@
     <ClientIP />
     <ClientUserAgent />
     <ClientReferer />
-    <responsestatus condition="^(?!(200|sc-status)).*"/>
+    <responsestatus />
     <ResponseSubStatus />
     <ResponseWin32Status />
     <ResponseTime />
     <if condition="^#" TableName="Ignored">      
     </if>
   </IISLogReader>
+  <IISErrorLogReader TableName="LogContents" separator=" ">
+    <Date />
+    <Time  />
+    <SourceIP />
+    <CallMethod />
+    <CallUri />
+    <Query />
+    <SourcePort />
+    <ClientUserName />
+    <ClientIP />
+    <ClientUserAgent />
+    <ClientReferer />
+    <responsestatus condition="^(?!(200|sc-status)).*"/>
+    <ResponseSubStatus />
+    <ResponseWin32Status />
+    <ResponseTime />
+    <if condition="^#" TableName="Ignored">
+    </if>
+  </IISErrorLogReader>
   <TestHtmlLoader>
     <Age condition="^(?!4.).*"/>
   </TestHtmlLoader>

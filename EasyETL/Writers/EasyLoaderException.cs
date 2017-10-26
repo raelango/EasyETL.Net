@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyETL.Loaders
+namespace EasyETL.Writers
 {
     [Serializable]
     public class EasyLoaderException : ApplicationException

@@ -5,11 +5,10 @@ using System.Xml;
 using EasyETL.DataSets;
 using EasyETL.Listeners;
 using EasyETL.Parsers;
-using EasyETL.Writers;
 using System.Messaging;
 using System.Diagnostics;
 
-namespace ExcelWriterSample
+namespace IISLogReaderJobSample
 {
     public partial class MainForm : Form
     {
@@ -39,14 +38,21 @@ namespace ExcelWriterSample
             lblProgressMessage.Text = "";
             dgParsedData.DataSource = null;
 
+            EasyETL.EasyETLJob job = new EasyETL.EasyETLJob();
+
+            job.Listeners.Add(new FileListener(this, txtFileName.Text));
+
             Extractor p = new Extractor(txtFileName.Text);
             p.LoadProfile(cmbProfile.Text);
-            p.LineReadAndProcessed += p_LineReadAndProcessed;
+            job.Extractors.Add(p);
 
-            RegexDataSet rds = p.Parse();
+            job.LineReadAndProcessed += job_LineReadAndProcessed;
+            job.DataChanged += job_DataChanged;
+            job.Run();
+
+            RegexDataSet rds = job.Data;
 
             cmbParsedDataSet.Items.Clear();
-
 
             foreach (DataTable dt in rds.Tables)
             {
@@ -62,14 +68,18 @@ namespace ExcelWriterSample
             dgParsedData.DataSource = rds;
 
             rtFailedRecords.Text = (rds.MisReads == null) ? "" : String.Join(Environment.NewLine, rds.MisReads);
-            btnExport.Enabled = rds.Tables.Count > 0;
             lblProgressMessage.Text = "";
         }
 
-        private void p_LineReadAndProcessed(object sender, LinesReadEventArgs e)
+        void job_DataChanged(object sender, EasyETL.JobDataChangedEventArgs e)
+        {
+            dgParsedData.Invoke(new MethodInvoker(() => { dgParsedData.Refresh(); }));
+        }
+
+        private void job_LineReadAndProcessed(object sender, LinesReadEventArgs e)
         {
             int result = 0;
-            Math.DivRem(e.LineNumber, 1000, out result);
+            //Math.DivRem(e.LineNumber, 1000, out result);
             if (result == 0)
             {
                 lblProgressMessage.Text = e.Message + "(" + e.LineNumber.ToString() + ")";
@@ -99,19 +109,5 @@ namespace ExcelWriterSample
             MessageBox.Show(String.Format("Parsed {0} Records successfully and Failed {1} records in {2}  Seconds", dgParsedData.RowCount, rtFailedRecords.Lines.Length, DateTime.Now.Subtract(StartTime).TotalSeconds.ToString()));
         }
 
-        
-        private void btnExport_Click(object sender, EventArgs e)
-        {
-            if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                RegexDataSet rds = (RegexDataSet)dgParsedData.DataSource;
-                ExcelDatasetWriter edsw = new ExcelDatasetWriter(rds,ofdBox.FileName);
-                edsw.DocProperties["Author"] = "Aadith Arasu";
-                edsw.DocProperties["SourceApplication"] = Application.ProductName;
-                edsw.Write();
-                MessageBox.Show("Saved excel file in " + ofdBox.FileName);
-            }
-
-        }
     }
 }

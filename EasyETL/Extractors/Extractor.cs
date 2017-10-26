@@ -16,6 +16,7 @@ namespace EasyETL.Parsers
         public XmlNode ProfileNode = null;
         public string ParserType = String.Empty;
 
+        public RegexDataSet Data = new RegexDataSet();
         public event EventHandler<LinesReadEventArgs> LineReadAndProcessed;
 
         public Extractor(string fileToParse, XmlNode profileNode = null)
@@ -37,7 +38,7 @@ namespace EasyETL.Parsers
 
         public RegexDataSet Parse()
         {
-            RegexDataSet resultDataSet = null;
+            Data = new RegexDataSet();
             string parserType = ParserType;
             string connString = String.Empty;
             string sqlString = String.Empty;
@@ -91,30 +92,35 @@ namespace EasyETL.Parsers
             switch (parserType.ToUpper())
             {
                 case "JSON":
-                    resultDataSet = new JsonDataSet();
+                    Data = new JsonDataSet();
                     break;
                 case "HTML":
-                    resultDataSet = new HtmlDataSet();
+                    Data = new HtmlDataSet();
                     break;
                 case "EXCEL":
-                    resultDataSet = new ExcelDataSet();
+                    Data = new ExcelDataSet();
                     break;
                 case "ODBC":
                 case "OLEDB":
                 case "SQL":
-                    resultDataSet = new DatabaseDataSet((DatabaseType) Enum.Parse(typeof(DatabaseType),parserType,true), connString, sqlString);
+                    Data = new DatabaseDataSet((DatabaseType) Enum.Parse(typeof(DatabaseType),parserType,true), connString, sqlString);
                     break;
                 case "XML":
-                    resultDataSet = new XmlDataSet();
+                    Data = new XmlDataSet();
                     break;
                 default:
-                    resultDataSet = new RegexDataSet();
+                    Data = new RegexDataSet();
                     break;
             }
-            resultDataSet.LoadProfileSettings(ProfileNode);
-            resultDataSet.LineReadAndProcessed += resultDataSet_LineReadAndProcessed;
-            resultDataSet.Fill(FileToParse);
-            return resultDataSet;
+            Data.LoadProfileSettings(ProfileNode);
+            Data.LineReadAndProcessed += resultDataSet_LineReadAndProcessed;
+            Data.Fill(FileToParse);
+            return Data;
+        }
+
+        public void ParseAndLoadLines(string lines)
+        {
+            Data.ParseAndLoadLines(lines);
         }
 
         void resultDataSet_LineReadAndProcessed(object sender, LinesReadEventArgs e)

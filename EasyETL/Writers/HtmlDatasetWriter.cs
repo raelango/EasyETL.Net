@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 
-namespace EasyETL.Loaders
+namespace EasyETL.Writers
 {
     public class HtmlDatasetWriter : FileDatasetWriter
     {
