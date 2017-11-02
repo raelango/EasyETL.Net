@@ -3,9 +3,9 @@ Set of .Net Libraries written in C# to create Listeners, Extractors, Writers and
 
 This is a lightweight library that contains three different components:
 
-* [Listeners] (#Listeners)
-* [Extractors] (#Extractors) and
-* [Writers] (#Writers)
+* [Listeners](#Listeners)
+* [Extractors](#Extractors) and
+* [Writers](#Writers)
 
 The `EasyETLJob` class allows you to create a job that can listener on zero or more listeners, load data from one or more sources and write the output to zero or more destinations.  Please browser through sample codes for usage.
 
