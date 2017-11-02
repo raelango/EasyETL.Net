@@ -40,6 +40,6 @@ Writes the dataset contents to a delimited file.
 ### Excel Writer (ExcelDatasetWriter)
 Writes the dataset to an excel file in .xml format.  __This does not require any additional libraries (interop) to create excel file__.  Each `DataTable` would be exported as a sheet.
 ### Html Writer (HtmlDatasetWriter)
-Writes the dataset to a HTML file.  Each `DataTable` would be exported as a <TABLE>.
+Writes the dataset to a HTML file.  Each `DataTable` would be exported as a `<TABLE>`.
 ### Json Writer (JsonDatasetWriter)
 Writes the dataset to a JSON file.
