@@ -52,7 +52,9 @@ The following are the support writers:
 ### Delimited (DelimitedDatasetWriter)
 Writes the dataset contents to a delimited file.
 ### Database (DatabaseDatasetWriter)
-Writes the dataset to a database.  Writes records to any `ODBC`, `OleDB` or `SQL` targets by specifying the `DatabaseType` and `ConnectionString`.  Use `InsertCommand` and `UpdateCommand` strings to Insert/Update record.  Insert would happen when Update did not find any match.  If you set the `UpdateCommand` to empty, all records would be inserted.  Please see the `DatabaseWriterSample` project and the `Readme.txt` file in the project for more details.  For each row `Insert`, `Update` or `Error` an associated event `RowInserted`, `RowUpdated` or `RowErrored` is raised.
+Writes the dataset to a database.  Writes records to any `ODBC`, `OleDB` or `SQL` targets by specifying the `DatabaseType` and `ConnectionString`.  Use `InsertCommand` and `UpdateCommand` strings to Insert/Update record.  Insert would happen when Update did not find any match.  If you set the `UpdateCommand` to empty, all records would be inserted.  Please see the `DatabaseWriterSample` project and the `Readme.txt` file in the project for more details.  
+
+For each row `Insert`, `Update` or `Error` an associated event `RowInserted`, `RowUpdated` or `RowErrored` is raised.
 ### Excel (ExcelDatasetWriter)
 Writes the dataset to an excel file in .xml format.  __This does not require any additional libraries (interop) to create excel file__.  Each `DataTable` would be exported as a sheet.
 ### Html (HtmlDatasetWriter)
