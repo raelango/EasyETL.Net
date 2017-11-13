@@ -126,7 +126,7 @@ namespace DatabaseWriterSample
         void dsw_RowErrored(object sender, RowWrittenEventArgs e)
         {
             intErrors ++;
-            MessageBox.Show("Error importing Row " + e.RowNumber.ToString() + ", Table Name = " + e.TableName + ", error = " + e.Row.RowError);
+            MessageBox.Show("Error importing Row " + (e.RowNumber + 1).ToString() + ", Table Name = " + e.TableName + ", error = " + e.Row.RowError);
         }
 
         void dsw_RowUpdated(object sender, RowWrittenEventArgs e)

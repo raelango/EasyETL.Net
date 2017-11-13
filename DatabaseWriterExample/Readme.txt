@@ -6,7 +6,7 @@ To test this, please do the following:
 2. Make sure the TestDatabase is permissioned for your logged in user account to INSERT, UPDATE
 3. Run the DatabaseWriterSample project
 4. Load the data file (sample\CSVFileWithHeader.txt) with "CSVWithHeader" profile.
-5. At this point, you should see 5 records in the data grid.
+5. At this point, you should see 6 records in the data grid.
 6. Click on "Sync to Database"
 7. The DatabasePropertiesForm opens up with 4 inputs.  
 
@@ -34,4 +34,4 @@ To test this, please do the following:
 			or
 		UPDATE [dbo].[CSVContents] SET [Occupation] = @Occupation,[Heading] = @Heading WHERE [Name] = @Name and [DateOfBirth] = @DateOfBirth <==== This works only in database Connection type SQL...
 
-
+8. The Sync should give an error for row 2 and succeed for the rest.
