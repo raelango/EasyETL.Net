@@ -25,7 +25,7 @@ Monitors a specific file and triggers an event when the file is modified.  Very 
 ## Extractors 
 This library uses Regex for parsing data into dataset and has 6 different extractors.  All these can be invoked from the class `Extractor`.  The extractor pulls data from the source into a dataset for further operations.
 ### Regex (RegexDataSet)
-AutoDetects and parses any delimited file.  Also, has ability to specify columns (using `AddColumn`) and allows to specify column level filters.
+AutoDetects and parses any delimited or fixed length file.  Also, has ability to specify columns (using `AddColumn`) with separator or fixed length.  AddColumn also allows to specify column level filters.
 ### Database (DatabaseDataSet)
 Extracts records from any `ODBC`, `OleDB` or `SQL` data source by specifying the `DatabaseType` and `ConnectionString`.
 ### Excel (ExcelDataSet)
@@ -41,11 +41,11 @@ Extracts data from a `XML` file to dataset.  Expects the XML file to contain dat
 This library allows user to write any dataset to 4 different targets.
 ### Delimited (DelimitedDatasetWriter)
 Writes the dataset contents to a delimited file.
+### Database (DatabaseDatasetWriter)
+Writes the dataset to a database.  Writes records to any `ODBC`, `OleDB` or `SQL` targets by specifying the `DatabaseType` and `ConnectionString`.  Use `InsertCommand` and `UpdateCommand` strings to Insert/Update record.  Insert would happen when Update did not find any match.  If you set the `UpdateCommand` to empty, all records would be inserted.  Please see the `DatabaseWriterSample` project and the `Readme.txt` file in the project for more details.
 ### Excel (ExcelDatasetWriter)
 Writes the dataset to an excel file in .xml format.  __This does not require any additional libraries (interop) to create excel file__.  Each `DataTable` would be exported as a sheet.
 ### Html (HtmlDatasetWriter)
 Writes the dataset to a HTML file.  Each `DataTable` would be exported as a `<TABLE>`.
 ### Json (JsonDatasetWriter)
 Writes the dataset to a JSON file. Each `DataTable` would be exported.
-### Database (DatabaseDatasetWriter)
-Writes the dataset to a database.  Writes records to any `ODBC`, `OleDB` or `SQL` targets by specifying the `DatabaseType` and `ConnectionString`.  Use `InsertCommand` and `UpdateCommand` strings to Insert/Update record.  Insert would happen when Update did not find any match.  If you set the `UpdateCommand` to empty, all records would be inserted.  Please see the `DatabaseWriterSample` project and the `Readme.txt` file in the project for more details.
