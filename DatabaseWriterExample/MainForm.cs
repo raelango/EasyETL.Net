@@ -13,6 +13,11 @@ namespace DatabaseWriterSample
 {
     public partial class MainForm : Form
     {
+        public int intUpdates = 0;
+        public int intInserts = 0;
+        public int intErrors = 0;
+        DatabasePropertiesForm dpForm = new DatabasePropertiesForm();
+
         public MainForm()
         {
             InitializeComponent();
@@ -102,13 +107,36 @@ namespace DatabaseWriterSample
         
         private void btnExport_Click(object sender, EventArgs e)
         {
-            DatabasePropertiesForm dpForm = new DatabasePropertiesForm();
             if (dpForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 RegexDataSet rds = (RegexDataSet)dgParsedData.DataSource;
                 DatabaseDatasetWriter dsw = new DatabaseDatasetWriter((DatabaseType) Enum.Parse(typeof(DatabaseType),dpForm.DatabaseType), rds, dpForm.ConnectionString, dpForm.InsertCommand, dpForm.UpdateCommand, cmbParsedDataSet.Text);
+                intUpdates = 0;
+                intInserts = 0;
+                intErrors = 0;
+
+                dsw.RowInserted += dsw_RowInserted;
+                dsw.RowUpdated += dsw_RowUpdated;
+                dsw.RowErrored += dsw_RowErrored;
                 dsw.Write();
+                MessageBox.Show(String.Format("{0} Inserts, {1} Updates and {2} Errors.", intInserts, intUpdates, intErrors));
             }
+        }
+
+        void dsw_RowErrored(object sender, RowWrittenEventArgs e)
+        {
+            intErrors ++;
+            MessageBox.Show("Error importing Row " + e.RowNumber.ToString() + ", Table Name = " + e.TableName + ", error = " + e.Row.RowError);
+        }
+
+        void dsw_RowUpdated(object sender, RowWrittenEventArgs e)
+        {
+            intUpdates ++;
+        }
+
+        void dsw_RowInserted(object sender, RowWrittenEventArgs e)
+        {
+            intInserts ++;
         }
     }
 }
