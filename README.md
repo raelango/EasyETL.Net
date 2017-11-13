@@ -48,4 +48,4 @@ Writes the dataset to a HTML file.  Each `DataTable` would be exported as a `<TA
 ### Json (JsonDatasetWriter)
 Writes the dataset to a JSON file. Each `DataTable` would be exported.
 ### Database (DatabaseDatasetWriter)
-Writes the dataset to a database.  Writes records to any `ODBC`, `OleDB` or `SQL` targets by specifying the `DatabaseType` and `ConnectionString`.  Use `InsertCommand` and `UpdateCommand` strings to Insert/Update record.  Insert would happen when Update did not find any match.  If you set the `UpdateCommand` to empty, all records would be inserted.
+Writes the dataset to a database.  Writes records to any `ODBC`, `OleDB` or `SQL` targets by specifying the `DatabaseType` and `ConnectionString`.  Use `InsertCommand` and `UpdateCommand` strings to Insert/Update record.  Insert would happen when Update did not find any match.  If you set the `UpdateCommand` to empty, all records would be inserted.  Please see the `DatabaseWriterSample` project and the `Readme.txt` file in the project for more details.
