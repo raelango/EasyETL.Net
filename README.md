@@ -46,4 +46,6 @@ Writes the dataset to an excel file in .xml format.  __This does not require any
 ### Html (HtmlDatasetWriter)
 Writes the dataset to a HTML file.  Each `DataTable` would be exported as a `<TABLE>`.
 ### Json (JsonDatasetWriter)
-Writes the dataset to a JSON file.
+Writes the dataset to a JSON file. Each `DataTable` would be exported.
+### Database (DatabaseDatasetWriter)
+Writes the dataset to a database.  Writes records to any `ODBC`, `OleDB` or `SQL` targets by specifying the `DatabaseType` and `ConnectionString`.  Use `InsertCommand` and `UpdateCommand` strings to Insert/Update record.  Insert would happen when Update did not find any match.  If you set the `UpdateCommand` to empty, all records would be inserted.
