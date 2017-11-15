@@ -46,11 +46,11 @@ namespace IISLogReaderJobSample
             p.LoadProfile(cmbProfile.Text);
             job.Extractors.Add(p);
 
-            job.LineReadAndProcessed += job_LineReadAndProcessed;
+            job.RowReadAndProcessed += job_LineReadAndProcessed;
             job.DataChanged += job_DataChanged;
             job.Start();
 
-            RegexDataSet rds = job.Data;
+            RegexDataSet rds = (RegexDataSet)job.Data;
 
             cmbParsedDataSet.Items.Clear();
 
@@ -76,13 +76,13 @@ namespace IISLogReaderJobSample
             dgParsedData.Invoke(new MethodInvoker(() => { dgParsedData.Refresh(); }));
         }
 
-        private void job_LineReadAndProcessed(object sender, LinesReadEventArgs e)
+        private void job_LineReadAndProcessed(object sender, RowReadEventArgs e)
         {
             int result = 0;
             //Math.DivRem(e.LineNumber, 1000, out result);
             if (result == 0)
             {
-                lblProgressMessage.Text = e.Message + "(" + e.LineNumber.ToString() + ")";
+                lblProgressMessage.Text = e.Message + "(" + e.RowNumber.ToString() + ")";
                 Application.DoEvents();
             }
         }

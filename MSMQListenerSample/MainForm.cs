@@ -42,7 +42,7 @@ namespace MSMQListenerSample
             p.LoadProfile(cmbProfile.Text);
             p.LineReadAndProcessed += p_LineReadAndProcessed;
 
-            RegexDataSet rds = p.Parse();
+            RegexDataSet rds = (RegexDataSet)p.Parse();
 
             cmbParsedDataSet.Items.Clear();
 
@@ -64,13 +64,13 @@ namespace MSMQListenerSample
             lblProgressMessage.Text = "";
         }
 
-        private void p_LineReadAndProcessed(object sender, LinesReadEventArgs e)
+        private void p_LineReadAndProcessed(object sender, RowReadEventArgs e)
         {
             int result = 0;
-            Math.DivRem(e.LineNumber, 1000, out result);
+            Math.DivRem(e.RowNumber, 1000, out result);
             if (result == 0)
             {
-                lblProgressMessage.Text = e.Message + "(" + e.LineNumber.ToString() + ")";
+                lblProgressMessage.Text = e.Message + "(" + e.RowNumber.ToString() + ")";
                 Application.DoEvents();
             }
         }
@@ -100,15 +100,33 @@ namespace MSMQListenerSample
 
         private void SetupTimer()
         {
-            EventLogListener ml = new EventLogListener(this, "Application");
-            ml.OnTriggered += ml_OnTriggered;
-            ml.Start();
+            EventDataSet eds = new EventDataSet("Application");
+            eds.RowReadAndProcessed += eds_RowReadAndProcessed;
+            eds.Fill();
+            cmbParsedDataSet.Items.Clear();
 
-            EventLog myLog = new EventLog("Application", ".");
-            myLog.Source = "VSS";
-            // Write an entry to the log.        
-            myLog.WriteEntry("Writing to event log on " + myLog.MachineName);
-            myLog.Close();
+
+            foreach (DataTable dt in eds.Tables)
+            {
+                cmbParsedDataSet.Items.Add(dt.TableName);
+            }
+
+            if (cmbParsedDataSet.Items.Count > 0)
+            {
+                cmbParsedDataSet.Text = cmbParsedDataSet.Items[0].ToString();
+                cmbParsedDataSet.SelectedIndex = 0;
+            }
+
+            dgParsedData.DataSource = eds;
+            //EventLogListener ml = new EventLogListener(this, "Application");
+            //ml.OnTriggered += ml_OnTriggered;
+            //ml.Start();
+
+            //EventLog myLog = new EventLog("Application", ".");
+            //myLog.Source = "VSS";
+            //// Write an entry to the log.        
+            //myLog.WriteEntry("Writing to event log on " + myLog.MachineName);
+            //myLog.Close();
             //System.Messaging.Message mm = new System.Messaging.Message();
             //mm.Label = "Testing Label";
             //mm.Body = "This is testing the body....";
@@ -123,6 +141,17 @@ namespace MSMQListenerSample
             //TimerListener list = new TimerListener(this, ListenerDaysOfWeek.Daily, 5,DateTime.Parse("10:55 AM"), DateTime.Parse("11:00 AM"));
             //list.OnTriggered += list_OnTriggered;
             //list.Start();
+        }
+
+        void eds_RowReadAndProcessed(object sender, RowReadEventArgs e)
+        {
+            int result = 0;
+            Math.DivRem(e.RowNumber, 1000, out result);
+            if (result == 0)
+            {
+                lblProgressMessage.Text = e.Message + "(" + e.RowNumber.ToString() + ")";
+                Application.DoEvents();
+            }
         }
 
         void ml_OnTriggered(object sender, ListenerTriggeredEventArgs e)

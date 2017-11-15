@@ -16,18 +16,12 @@ namespace EasyETL.DataSets
     }
 
 
-    public class LinesReadEventArgs : EventArgs
-    {
-        public int LineNumber { get; set; }
-        public string Message { get; set; }
-    }
-
     /// <summary>
     ///     Class for transforming a text-file into a dataset
     ///     based on one regular expression
     /// </summary>
     /// 
-    public class RegexDataSet : DataSet
+    public class RegexDataSet : EasyDataSet
     {
         private const string NewName = "NewName";
         private const string DefaultGroup = "0";
@@ -38,7 +32,11 @@ namespace EasyETL.DataSets
 
         public List<ConditionalRegexParser> Parsers = new List<ConditionalRegexParser>();
 
-        public event EventHandler<LinesReadEventArgs> LineReadAndProcessed;
+        /// <summary>
+        ///     The text file to be read
+        /// </summary>
+        public Stream TextFile { get; set; }
+
 
         // ^(?<SNo>[^,]+),(?<Name>[^,]+),(?<DateOfBirth>[^,\n]+)(?<Separator>.)(?<Occupation>(?(Separator)(.*)|()))$
 
@@ -112,20 +110,14 @@ namespace EasyETL.DataSets
         /// </summary>
         public string TableName = "Table1";
 
-        //public RegexDataSet(string fieldSeparator = ",", string tableName = "Table1", bool useFirstRowNamesAsColumnNames = true, bool skipFirstRow = false )
-        //{
-        //    TableName = tableName;
-        //    UseFirstRowNamesAsColumnNames = useFirstRowNamesAsColumnNames;
-        //    SkipFirstRow = skipFirstRow;
-        //    if (useFirstRowNamesAsColumnNames)
-        //    {
-        //        List<string> columnNames = new List<string>();
-        //        ColumnBuilder = new RegexColumnBuilder(fieldSeparator,columnNames.ToArray());
-        //        FirstRowExpression = new Regex(@"([^,\n]*)[,\w]");
-        //        SkipFirstRow = true;
-        //    }
-        //}
+        /// <summary>
+        ///     Lines in the text file that did not match
+        ///     the regular expression
+        /// </summary>
+        public List<string> MisReads { get; private set; }
 
+        
+        #region constructors
         public RegexDataSet(string fileName = "", string fieldSeparator = "", string tableName = "Table1", bool useFirstRowNamesAsColumns = true, bool skipFirstRow = false, params string[] columnNames)
         {
 
@@ -192,44 +184,7 @@ namespace EasyETL.DataSets
             LoadProfileSettings(profileNode);
             Fill(fileName);
         }
-
-        public void LoadProfileSettings(XmlNode xNode)
-        {
-            if (xNode == null) return;
-            bool hasHeaderRow = false;
-            bool skipFirstRow = false;
-            string separator = "";
-            foreach (XmlAttribute xAttr in xNode.Attributes)
-            {
-                switch (xAttr.Name.ToUpper())
-                {
-                    case "SEPARATOR":
-                        separator = xAttr.Value;
-                        break;
-                    case "TABLENAME":
-                        TableName = xAttr.Value;
-                        break;
-                    case "HASHEADER":
-                        hasHeaderRow = Boolean.Parse(xAttr.Value);
-                        break;
-                    case "SKIPFIRSTROW":
-                        skipFirstRow = Boolean.Parse(xAttr.Value);
-                        break;
-                }
-            }
-
-            UseFirstRowNamesAsColumnNames = hasHeaderRow;
-            SkipFirstRow = skipFirstRow;
-            RegexColumnBuilder rcb = new RegexColumnBuilder(separator);
-            if (xNode.HasChildNodes)
-            {
-                foreach (XmlNode childNode in xNode.ChildNodes)
-                {
-                    ParseColumnOrParser(rcb, childNode, separator);
-                }
-            }
-            ColumnBuilder = rcb;
-        }
+        #endregion
 
         private void ParseColumnOrParser(RegexColumnBuilder columnBuilder, XmlNode childNode, string separator = "")
         {
@@ -336,11 +291,6 @@ namespace EasyETL.DataSets
             }
         }
 
-        /// <summary>
-        ///     The text file to be read
-        /// </summary>
-        public Stream TextFile { get; set; }
-
         private DataTable DataTable
         {
             get
@@ -353,12 +303,6 @@ namespace EasyETL.DataSets
                 return Tables[TableName];
             }
         }
-
-        /// <summary>
-        ///     Lines in the text file that did not match
-        ///     the regular expression
-        /// </summary>
-        public List<string> MisReads { get; private set; }
 
         private void AddMisRead(string missRead)
         {
@@ -429,6 +373,45 @@ namespace EasyETL.DataSets
 
         }
 
+        #region public methods
+        public override void LoadProfileSettings(XmlNode xNode)
+        {
+            if (xNode == null) return;
+            bool hasHeaderRow = false;
+            bool skipFirstRow = false;
+            string separator = "";
+            foreach (XmlAttribute xAttr in xNode.Attributes)
+            {
+                switch (xAttr.Name.ToUpper())
+                {
+                    case "SEPARATOR":
+                        separator = xAttr.Value;
+                        break;
+                    case "TABLENAME":
+                        TableName = xAttr.Value;
+                        break;
+                    case "HASHEADER":
+                        hasHeaderRow = Boolean.Parse(xAttr.Value);
+                        break;
+                    case "SKIPFIRSTROW":
+                        skipFirstRow = Boolean.Parse(xAttr.Value);
+                        break;
+                }
+            }
+
+            UseFirstRowNamesAsColumnNames = hasHeaderRow;
+            SkipFirstRow = skipFirstRow;
+            RegexColumnBuilder rcb = new RegexColumnBuilder(separator);
+            if (xNode.HasChildNodes)
+            {
+                foreach (XmlNode childNode in xNode.ChildNodes)
+                {
+                    ParseColumnOrParser(rcb, childNode, separator);
+                }
+            }
+            ColumnBuilder = rcb;
+        }
+
         /// <summary>
         ///     Reads every line in the text file and tries to match
         ///     it with the given regular expression.
@@ -486,9 +469,8 @@ namespace EasyETL.DataSets
         ///     datatable
         /// </summary>
         /// <returns></returns>
-        public virtual void Fill()
+        public override void Fill()
         {
-
             if (TextFile == null)
                 throw new ApplicationException("No stream available to convert to a DataSet");
 
@@ -552,6 +534,22 @@ namespace EasyETL.DataSets
             foreach (DataColumn column in DataTable.Columns)
                 if (column.ExtendedProperties.ContainsKey(NewName))
                     column.ColumnName = column.ExtendedProperties[NewName].ToString();
+        }
+
+        public override void ProcessRowObject(object row)
+        {
+            if (row is string)
+            {
+                ParseAndLoadLines((string)row);
+            }
+            if (row is Dictionary<string, object>)
+            {
+                Dictionary<string, object> Data = (Dictionary<string, object>)row;
+                if (Data.ContainsKey("AdditionalContent"))
+                {
+                    ParseAndLoadLines((string)Data["AdditionalContent"]);
+                }
+            }
         }
 
         public virtual void ParseAndLoadLines(string lines)
@@ -625,22 +623,8 @@ namespace EasyETL.DataSets
             }
 
         }
+        #endregion
 
-        protected void SendMessageToCallingApplicationHandler(int lineNumber, string message)
-        {
-            LinesReadEventArgs lrEventArgs = new LinesReadEventArgs();
-            lrEventArgs.LineNumber = lineNumber;
-            lrEventArgs.Message = message;
-            OnLineReadAndProcessed(lrEventArgs);
-        }
 
-        protected virtual void OnLineReadAndProcessed(LinesReadEventArgs e)
-        {
-            EventHandler<LinesReadEventArgs> handler = LineReadAndProcessed;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
-        }
     }
 }

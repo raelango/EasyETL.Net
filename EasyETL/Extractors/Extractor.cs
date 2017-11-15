@@ -10,14 +10,14 @@ using System.Xml;
 
 namespace EasyETL.Parsers
 {
-    public class Extractor
+    public class Extractor : IDisposable
     {
         public string FileToParse = String.Empty;
         public XmlNode ProfileNode = null;
         public string ParserType = String.Empty;
 
-        public RegexDataSet Data = new RegexDataSet();
-        public event EventHandler<LinesReadEventArgs> LineReadAndProcessed;
+        public EasyDataSet Data = null;
+        public event EventHandler<RowReadEventArgs> LineReadAndProcessed;
 
         public Extractor(string fileToParse, XmlNode profileNode = null)
         {
@@ -36,7 +36,7 @@ namespace EasyETL.Parsers
             }
         }
 
-        public RegexDataSet Parse()
+        public EasyDataSet Parse()
         {
             Data = new RegexDataSet();
             string parserType = ParserType;
@@ -113,28 +113,43 @@ namespace EasyETL.Parsers
                     break;
             }
             Data.LoadProfileSettings(ProfileNode);
-            Data.LineReadAndProcessed += resultDataSet_LineReadAndProcessed;
-            Data.Fill(FileToParse);
+            Data.RowReadAndProcessed += resultDataSet_RowReadAndProcessed;
+            if ((!String.IsNullOrWhiteSpace(FileToParse)) && (File.Exists(FileToParse)) && (Data is RegexDataSet) ) {
+                ((RegexDataSet)Data).Fill(FileToParse);
+            }
             return Data;
         }
 
-        public void ParseAndLoadLines(string lines)
+        public void ProcessRowObject(object row)
         {
-            Data.ParseAndLoadLines(lines);
+            Data.ProcessRowObject(row);
         }
 
-        void resultDataSet_LineReadAndProcessed(object sender, LinesReadEventArgs e)
+        void resultDataSet_RowReadAndProcessed(object sender, RowReadEventArgs e)
         {
-            EventHandler<LinesReadEventArgs> handler = LineReadAndProcessed;
+            EventHandler<RowReadEventArgs> handler = LineReadAndProcessed;
             if (handler != null)
             {
                 handler(this, e);
             }
         }
 
-        protected virtual void OnLineReadAndProcessed(LinesReadEventArgs e)
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ProfileNode = null;
+                Data.Dispose();
+                Data = null;
+            }
+        }
+
 
     }
 

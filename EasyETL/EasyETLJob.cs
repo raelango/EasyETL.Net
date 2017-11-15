@@ -13,7 +13,7 @@ namespace EasyETL
 {
     public class EasyETLJob : IDisposable
     {
-        public RegexDataSet Data = new RegexDataSet();
+        public EasyDataSet Data = null;
 
         public List<JobListener> Listeners = new List<JobListener>();
 
@@ -21,7 +21,7 @@ namespace EasyETL
 
         public List<DatasetWriter> Loaders = new List<DatasetWriter>();
 
-        public event EventHandler<LinesReadEventArgs> LineReadAndProcessed;
+        public event EventHandler<RowReadEventArgs> RowReadAndProcessed;
 
         public event EventHandler<JobDataChangedEventArgs> DataChanged;               
 
@@ -45,9 +45,9 @@ namespace EasyETL
             }
         }
 
-        void extractor_LineReadAndProcessed(object sender, LinesReadEventArgs e)
+        void extractor_LineReadAndProcessed(object sender, RowReadEventArgs e)
         {
-            EventHandler<LinesReadEventArgs> handler = LineReadAndProcessed;
+            EventHandler<RowReadEventArgs> handler = RowReadAndProcessed;
             if (handler != null)
             {
                 handler(this, e);
@@ -61,7 +61,7 @@ namespace EasyETL
                 string addnlData = e.Data["AdditionalContent"].ToString();
                 foreach (Extractor extractor in Extractors)
                 {
-                    extractor.ParseAndLoadLines(addnlData);
+                    extractor.ProcessRowObject(addnlData);
                 }
                 BuildMasterDataSet();
                 RaiseDataChangedEvent();

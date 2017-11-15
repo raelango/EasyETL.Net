@@ -11,7 +11,7 @@ using System.Data.SqlClient;
 
 namespace EasyETL.Writers
 {
-    public class DatabaseDatasetWriter : DatasetWriter 
+    public class DatabaseDatasetWriter : DatasetWriter,IDisposable 
     {
         IDbConnection _connection = null;
         string _connString = String.Empty;
@@ -23,7 +23,6 @@ namespace EasyETL.Writers
         public event EventHandler<RowWrittenEventArgs> RowInserted;
         public event EventHandler<RowWrittenEventArgs> RowUpdated;
         public event EventHandler<RowWrittenEventArgs> RowErrored;
-
 
         #region constructors
         public DatabaseDatasetWriter()
@@ -286,5 +285,24 @@ namespace EasyETL.Writers
             return resultStr;
         }
         #endregion
+
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (_connection!= null)
+                {
+                    _connection.Close();
+                    _connection= null;
+                }
+            }
+        }
     }
 }

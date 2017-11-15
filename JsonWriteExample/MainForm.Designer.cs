@@ -1,4 +1,4 @@
-namespace ExcelWriterSample
+namespace JsonWriterSample
 {
     partial class MainForm
     {
