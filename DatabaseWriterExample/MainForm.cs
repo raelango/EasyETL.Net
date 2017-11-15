@@ -48,7 +48,7 @@ namespace DatabaseWriterSample
             p.LoadProfile(cmbProfile.Text);
             p.LineReadAndProcessed += p_LineReadAndProcessed;
 
-            RegexDataSet rds = p.Parse();
+            RegexDataSet rds = (RegexDataSet)p.Parse();
 
             cmbParsedDataSet.Items.Clear();
 
@@ -71,13 +71,13 @@ namespace DatabaseWriterSample
             lblProgressMessage.Text = "";
         }
 
-        private void p_LineReadAndProcessed(object sender, LinesReadEventArgs e)
+        private void p_LineReadAndProcessed(object sender, RowReadEventArgs e)
         {
             int result = 0;
-            Math.DivRem(e.LineNumber, 1000, out result);
+            Math.DivRem(e.RowNumber, 1000, out result);
             if (result == 0)
             {
-                lblProgressMessage.Text = e.Message + "(" + e.LineNumber.ToString() + ")";
+                lblProgressMessage.Text = e.Message + "(" + e.RowNumber.ToString() + ")";
                 Application.DoEvents();
             }
         }
