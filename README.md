@@ -30,7 +30,7 @@ Monitors a specific file and triggers an event when the file is modified.  Very 
 
 This library uses Regex for parsing data into dataset.  Extractors raise the event `LineReadAndProcessed` for each line that is processed.  
 
-This library has 6 different extractors.  All these extractors can be invoked from the class `Extractor`.  The extractor pulls data from the source into a dataset for further operations.
+This library has 8 different extractors.   All these extractors are derived from an abstract class `EasyDataSet`. All these extractors can be invoked from the class `Extractor`.  The extractor pulls data from the source into a dataset for further operations.
 ### Regex (RegexDataSet)
 AutoDetects and parses any delimited or fixed length file.  Also, has ability to specify columns (using `AddColumn`) with separator or fixed length.  AddColumn also allows to specify column level filters.
 ### Database (DatabaseDataSet)
@@ -41,6 +41,10 @@ Extracts records from excel 2007 (`.xls`) or later (`.xlsx` etc) format files.  
 Extracts all `<TABLE>` elements from a HTML file to dataset.  If the table specifies ID or NAME value, it would be used for TableName in the `DataSet`.
 ### Json (JsonDataSet)
 Extracts data from a `JSON` file to dataset.  Expects the JSON file to contain data which can be loaded as a `DataSet` with no complex sub elements.
+### MsMq (MsMqDataSet)
+Pulls data from `MsMq` to dataset.  
+### EventLog (EventDataSet)
+Pulls data from `MsMq` to dataset.  
 ### Xml (XmlDataSet)
 Extracts data from a `XML` file to dataset.  Expects the XML file to contain data which can be loaded as a `DataSet` with no complex sub elements.
 
