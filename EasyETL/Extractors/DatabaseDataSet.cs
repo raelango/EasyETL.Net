@@ -16,7 +16,7 @@ namespace EasyETL.DataSets
         Sql
     }
 
-    public class DatabaseDataSet : RegexDataSet
+    public class DatabaseDataSet : EasyDataSet
     {
 
         private string _connString = String.Empty;
@@ -38,16 +38,12 @@ namespace EasyETL.DataSets
         {
             _dbType = dbType;
             _connString = connectionString;
-            _sqlString = sqlString;
-            Fill();
+            Fill(sqlString);
         }
 
-        public override void Fill(string textFileName)
+        public virtual void Fill(string sqlString)
         {
-            if (!String.IsNullOrWhiteSpace(textFileName))
-            {
-                _sqlString = textFileName;
-            }
+            _sqlString = sqlString;
             Fill();
         }
 
@@ -55,6 +51,16 @@ namespace EasyETL.DataSets
         public override void Fill()
         {
             this.Tables.Clear();
+            if (String.IsNullOrWhiteSpace(_sqlString))
+            {
+                throw new ApplicationException("SQL command is missing");
+            }
+
+            if (String.IsNullOrWhiteSpace(_connString))
+            {
+                throw new ApplicationException("Connection string is missing");
+            }
+            
             switch (_dbType)
             {
                 case DatabaseType.Odbc:

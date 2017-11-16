@@ -1,4 +1,4 @@
-namespace JsonWriterSample
+namespace DatabaseWriterSample
 {
     partial class MainForm
     {
@@ -183,9 +183,9 @@ namespace JsonWriterSample
             this.btnExport.Enabled = false;
             this.btnExport.Location = new System.Drawing.Point(294, 4);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(91, 23);
+            this.btnExport.Size = new System.Drawing.Size(108, 23);
             this.btnExport.TabIndex = 1;
-            this.btnExport.Text = "Export To Json";
+            this.btnExport.Text = "Sync to Database";
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 

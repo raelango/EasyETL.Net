@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2647E6CE-2D5F-4524-9AB0-372CFB456841}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{AB704081-D0BE-4AC8-A3AF-4D90E8515C97}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EasyETL</RootNamespace>
-    <AssemblyName>EasyETL</AssemblyName>
+    <RootNamespace>DatabaseWriterSample</RootNamespace>
+    <AssemblyName>DatabaseWriterSample</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -53,10 +53,11 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\Build\Debug\</OutputPath>
+    <OutputPath>..\Build\Release\</OutputPath>
     <BaseIntermediateOutputPath>..\Build\obj\</BaseIntermediateOutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
@@ -71,62 +72,59 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Messaging" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EasyETLJob.cs" />
-    <Compile Include="Extractors\EasyDataSet.cs">
-      <SubType>Component</SubType>
+    <Compile Include="DatabasePropertiesForm.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Extractors\EventDataSet.cs">
-      <SubType>Component</SubType>
+    <Compile Include="DatabasePropertiesForm.Designer.cs">
+      <DependentUpon>DatabasePropertiesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extractors\ExcelDataSet.cs">
-      <SubType>Component</SubType>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Extractors\HtmlDataSet.cs">
-      <SubType>Component</SubType>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extractors\JsonDataSet.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Extractors\DatabaseDataSet.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Extractors\Extractor.cs" />
-    <Compile Include="Extractors\MsMqDataSet.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Extractors\RegexColumnBuilder.cs" />
-    <Compile Include="Extractors\RegexDataset.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Listeners\EventLogListener.cs" />
-    <Compile Include="Listeners\FileListener.cs" />
-    <Compile Include="Listeners\FolderListener.cs" />
-    <Compile Include="Listeners\JobListener.cs" />
-    <Compile Include="Listeners\MsMqListener.cs" />
-    <Compile Include="Listeners\TimerListener.cs" />
-    <Compile Include="Writers\DatabaseDatasetWriter.cs" />
-    <Compile Include="Writers\DatasetWriter.cs" />
-    <Compile Include="Writers\DelimitedDatasetWriter.cs" />
-    <Compile Include="Writers\EasyLoaderException.cs" />
-    <Compile Include="Writers\JsonDatasetWriter.cs" />
-    <Compile Include="Writers\ExcelDatasetWriter.cs" />
-    <Compile Include="Writers\FileDatasetWriter.cs" />
-    <Compile Include="Writers\HtmlDatasetWriter.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extractors\RegexDataSetException.cs" />
-    <Compile Include="Extractors\XmlDataSet.cs">
-      <SubType>Component</SubType>
+    <EmbeddedResource Include="DatabasePropertiesForm.resx">
+      <DependentUpon>DatabasePropertiesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -142,13 +140,15 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="profiles.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </Content>
+    <ProjectReference Include="..\EasyETL\EasyETL.csproj">
+      <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>
+      <Name>EasyETL</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Transformers\" />
+    <Content Include="Readme.txt" />
+    <Content Include="Sample\CSVFileWithHeader.txt" />
+    <Content Include="Sample\DatabaseScripts.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -158,4 +158,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <!--<Target Name="SpicNSpan" AfterTargets="Clean">
+    <RemoveDir Directories="$(OUTDIR)" />
+  </Target>-->
 </Project>
