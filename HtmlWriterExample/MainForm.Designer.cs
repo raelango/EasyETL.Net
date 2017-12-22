@@ -46,6 +46,7 @@ namespace HtmlWriterSample
             this.dgParsedData = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.rtFailedRecords = new System.Windows.Forms.RichTextBox();
+            this.cmbDestination = new System.Windows.Forms.ComboBox();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
@@ -170,6 +171,7 @@ namespace HtmlWriterSample
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.cmbDestination);
             this.panel2.Controls.Add(this.btnExport);
             this.panel2.Controls.Add(this.cmbParsedDataSet);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
@@ -181,11 +183,11 @@ namespace HtmlWriterSample
             // btnExport
             // 
             this.btnExport.Enabled = false;
-            this.btnExport.Location = new System.Drawing.Point(294, 4);
+            this.btnExport.Location = new System.Drawing.Point(297, 3);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(91, 23);
+            this.btnExport.Size = new System.Drawing.Size(115, 23);
             this.btnExport.TabIndex = 1;
-            this.btnExport.Text = "Export To HTML";
+            this.btnExport.Text = "Export To ....";
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
@@ -233,6 +235,22 @@ namespace HtmlWriterSample
             this.rtFailedRecords.TabIndex = 4;
             this.rtFailedRecords.Text = "";
             // 
+            // cmbDestination
+            // 
+            this.cmbDestination.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDestination.FormattingEnabled = true;
+            this.cmbDestination.Items.AddRange(new object[] {
+            "Word",
+            "Excel",
+            "Html",
+            "Json",
+            "CSV",
+            "TAB"});
+            this.cmbDestination.Location = new System.Drawing.Point(418, 3);
+            this.cmbDestination.Name = "cmbDestination";
+            this.cmbDestination.Size = new System.Drawing.Size(146, 21);
+            this.cmbDestination.TabIndex = 2;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -274,6 +292,7 @@ namespace HtmlWriterSample
         private System.Windows.Forms.ComboBox cmbProfile;
         private System.Windows.Forms.Label lblProgressMessage;
         private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.ComboBox cmbDestination;
     }
 }
 

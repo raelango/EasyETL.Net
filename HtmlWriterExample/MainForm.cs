@@ -106,11 +106,30 @@ namespace HtmlWriterSample
             if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 RegexDataSet rds = (RegexDataSet)dgParsedData.DataSource;
-                HtmlDatasetWriter hdsw = new HtmlDatasetWriter(rds,ofdBox.FileName);
-                hdsw.Write();
-                MessageBox.Show("Saved HTML file in " + ofdBox.FileName);
+                DatasetWriter dsw = null;
+                switch (cmbDestination.Text.ToUpper())
+                {
+                    case "CSV":
+                        dsw = new DelimitedDatasetWriter(rds, ofdBox.FileName) { Delimiter = ',', IncludeHeaders = true, IncludeQuotes = true };
+                        break;
+                    case "TAB":
+                        dsw = new DelimitedDatasetWriter(rds, ofdBox.FileName) { Delimiter = '\t', IncludeHeaders = true, IncludeQuotes = true };
+                        break;
+                    case "HTML":
+                        dsw = new HtmlDatasetWriter(rds, ofdBox.FileName);
+                        break;
+                    case "WORD":
+                        dsw = new OfficeDatasetWriter(rds, ofdBox.FileName);
+                        break;
+                    case "EXCEL":
+                        dsw = new OfficeDatasetWriter(rds, ofdBox.FileName) { DestinationType = OfficeFileType.ExcelWorkbook };
+                        break;
+                }
+                dsw.Write();
+                MessageBox.Show("Saved file in " + ofdBox.FileName);
             }
 
         }
+
     }
 }
