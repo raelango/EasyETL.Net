@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseWriterSample", "Dat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.OfficeDatasetWriters", "EasyETL.OfficeDataSetWriters\EasyETL.OfficeDatasetWriters.csproj", "{EA54969B-76BA-4423-972E-9A1C037324A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySQLClr", "EasySQLClr\EasySQLClr.csproj", "{89DAC4E0-B6EB-4D11-809F-EF432929FC63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,12 @@ Global
 		{EA54969B-76BA-4423-972E-9A1C037324A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA54969B-76BA-4423-972E-9A1C037324A5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA54969B-76BA-4423-972E-9A1C037324A5}.Release|x86.ActiveCfg = Release|Any CPU
+		{89DAC4E0-B6EB-4D11-809F-EF432929FC63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89DAC4E0-B6EB-4D11-809F-EF432929FC63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89DAC4E0-B6EB-4D11-809F-EF432929FC63}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{89DAC4E0-B6EB-4D11-809F-EF432929FC63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89DAC4E0-B6EB-4D11-809F-EF432929FC63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89DAC4E0-B6EB-4D11-809F-EF432929FC63}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

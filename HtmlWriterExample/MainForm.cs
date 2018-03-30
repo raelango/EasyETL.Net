@@ -40,11 +40,13 @@ namespace HtmlWriterSample
             lblProgressMessage.Text = "";
             dgParsedData.DataSource = null;
 
+            EasyDataSet rds = null;
+
             Extractor p = new Extractor(txtFileName.Text);
             p.LoadProfile(cmbProfile.Text);
             p.LineReadAndProcessed += p_LineReadAndProcessed;
+            rds = (RegexDataSet)p.Parse();
 
-            RegexDataSet rds = (RegexDataSet)p.Parse();
 
             cmbParsedDataSet.Items.Clear();
 
@@ -80,6 +82,7 @@ namespace HtmlWriterSample
 
         private void ofdButton_Click_1(object sender, EventArgs e)
         {
+            ofdBox.FileName = txtFileName.Text;
             if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 txtFileName.Text = ofdBox.FileName;
@@ -100,7 +103,7 @@ namespace HtmlWriterSample
             MessageBox.Show(String.Format("Parsed {0} Records successfully and Failed {1} records in {2}  Seconds", dgParsedData.RowCount, rtFailedRecords.Lines.Length, DateTime.Now.Subtract(StartTime).TotalSeconds.ToString()));
         }
 
-        
+
         private void btnExport_Click(object sender, EventArgs e)
         {
             if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
@@ -124,11 +127,28 @@ namespace HtmlWriterSample
                     case "EXCEL":
                         dsw = new OfficeDatasetWriter(rds, ofdBox.FileName) { DestinationType = OfficeFileType.ExcelWorkbook };
                         break;
+                    case "XML":
+                        dsw = new XmlDatasetWriter(rds, txtXsltFileName.Text, ofdBox.FileName);
+                        break;
                 }
                 dsw.Write();
                 MessageBox.Show("Saved file in " + ofdBox.FileName);
             }
 
+        }
+
+        private void cmbDestination_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            XsltPanel.Visible = cmbDestination.Text.ToUpper() == "XML";
+        }
+
+        private void xsltButton_Click(object sender, EventArgs e)
+        {
+            ofdBox.FileName = txtXsltFileName.Text;
+            if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtXsltFileName.Text = ofdBox.FileName;
+            }
         }
 
     }
