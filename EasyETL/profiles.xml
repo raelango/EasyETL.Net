@@ -145,10 +145,11 @@
       <ObsMethod />
     </if>
   </hl7>
-  <TabWithHeader separator="\t" hasheader="true" />
-  <TabWithoutHeader separator="\t"  />
-  <CSVWithHeader separator="," hasheader="true"/>
-  <CSVWithoutHeader separator="," />
+  <TabWithHeader separator="\t" hasheader="true"  tablename="data"/>
+  <TabWithoutHeader separator="\t"   tablename="data"/>
+  <CSVWithHeader separator="," hasheader="true" tablename="data"/>
+  <CSVWithoutHeader separator=","  tablename="data"/>
+  <json type="json" tablename="data" />
   <fixed TableName="Person">
     <SNo length="3" />
     <FirstName Length="10" />

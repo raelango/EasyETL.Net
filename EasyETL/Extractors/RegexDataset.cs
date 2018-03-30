@@ -95,7 +95,7 @@ namespace EasyETL.DataSets
         ///     used as column names instead of the ones supplied in
         ///     te regular expression
         /// </summary>
-        public bool UseFirstRowNamesAsColumnNames = false;
+        public bool UseFirstRowNamesAsColumnNames = true;
 
         /// <summary>
         ///     When set to true the values in the first row are
@@ -172,7 +172,7 @@ namespace EasyETL.DataSets
         {
             ColumnBuilder = null;
             SkipFirstRow = false;
-            UseFirstRowNamesAsColumnNames = false;
+            UseFirstRowNamesAsColumnNames = (parsers.Length == 0);
             foreach (ConditionalRegexParser crp in parsers)
             {
                 Parsers.Add(crp);
@@ -286,7 +286,6 @@ namespace EasyETL.DataSets
                     //There is a condition to be matched with the value... let us set it to the last column added...
                     columnBuilder.Columns[columnBuilder.Columns.Count - 1].ValueMatchingCondition = strCondition;
                 }
-
 
             }
         }
@@ -450,7 +449,7 @@ namespace EasyETL.DataSets
         /// <param name="textFile"></param>
         public void Fill(Stream textFile)
         {
-            TextFile = textFile;
+            TextFile = textFile;                        
             Fill();
         }
 
@@ -484,7 +483,7 @@ namespace EasyETL.DataSets
 
             SendMessageToCallingApplicationHandler(0, "Loading First Line");
 
-            if (UseFirstRowNamesAsColumnNames && (FirstRowExpression == null) && (_regexColumns.Count == 0))
+            if (UseFirstRowNamesAsColumnNames && (FirstRowExpression == null) && ((_regexColumns == null) || (_regexColumns.Count == 0)))
             {
                 string firstRow = readLine;
                 Regex regexSeparator = new Regex("^([a-zA-Z0-9_\"]*)(?<Separator>.)");
@@ -572,14 +571,16 @@ namespace EasyETL.DataSets
                                 bImportRow = false;
                                 break;
                             }
+                            string fieldValue = m.Groups[sGroup].Value;
+                            fieldValue = fieldValue.Trim('\"');
                             if (newRow.Table.Columns[sGroup].DataType == typeof(int))
-                                newRow[sGroup] = Convert.ToInt32(m.Groups[sGroup].Value);
+                                newRow[sGroup] = Convert.ToInt32(fieldValue);
                             else if (newRow.Table.Columns[sGroup].DataType == typeof(double))
-                                newRow[sGroup] = Convert.ToDouble(m.Groups[sGroup].Value);
+                                newRow[sGroup] = Convert.ToDouble(fieldValue);
                             else if (newRow.Table.Columns[sGroup].DataType == typeof(DateTime))
-                                newRow[sGroup] = Convert.ToDateTime(m.Groups[sGroup].Value);
+                                newRow[sGroup] = Convert.ToDateTime(fieldValue);
                             else
-                                newRow[sGroup] = m.Groups[sGroup].Value;
+                                newRow[sGroup] = fieldValue;
                         }
                     }
                     if (bImportRow)
@@ -602,14 +603,15 @@ namespace EasyETL.DataSets
                             foreach (var sGroup in crp.parseRegex.GetGroupNames())
                                 if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
                                 {
+                                    string fieldValue = m.Groups[sGroup].Value;
                                     if (newRow.Table.Columns[sGroup].DataType == typeof(int))
-                                        newRow[sGroup] = Convert.ToInt32(m.Groups[sGroup].Value);
+                                        newRow[sGroup] = Convert.ToInt32(fieldValue);
                                     else if (newRow.Table.Columns[sGroup].DataType == typeof(double))
-                                        newRow[sGroup] = Convert.ToDouble(m.Groups[sGroup].Value);
+                                        newRow[sGroup] = Convert.ToDouble(fieldValue);
                                     else if (newRow.Table.Columns[sGroup].DataType == typeof(DateTime))
-                                        newRow[sGroup] = Convert.ToDateTime(m.Groups[sGroup].Value);
+                                        newRow[sGroup] = Convert.ToDateTime(fieldValue);
                                     else
-                                        newRow[sGroup] = m.Groups[sGroup].Value;
+                                        newRow[sGroup] = fieldValue;
                                 }
                             crpDataTable.Rows.Add(newRow);
                             bLineParsed = true;

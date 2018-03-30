@@ -89,6 +89,7 @@ namespace EasyETL.Parsers
                     }
                 }
             }
+
             switch (parserType.ToUpper())
             {
                 case "JSON":

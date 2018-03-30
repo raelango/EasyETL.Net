@@ -65,7 +65,7 @@ namespace EasyETL.DataSets
 
         public void AddColumn(string columnName)
         {
-            if ((!String.IsNullOrWhiteSpace(Separator)) && (!columnName.Contains(":")))
+            if ((!String.IsNullOrEmpty(Separator)) && (!columnName.Contains(":")))
             {
                 AddColumn(columnName, Separator[0]);
             }
