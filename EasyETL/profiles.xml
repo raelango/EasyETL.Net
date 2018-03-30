@@ -199,4 +199,5 @@
     <Age condition="^(?!4.).*"/>
   </TestHtmlLoader>
   <MRSIOleDatabase Type="OleDB" ConnString="Provider=sqloledb;Data Source=MRSI-DATA2\MRSIDATA2;Initial Catalog=MRSI;Integrated Security=SSPI;" />
+  <excel type="ODBC" ConnString="Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};Dbq=[FileName];Header=True;ReadOnly=0;" SQL="select * from [Sheet1$]" />
 </profiles>

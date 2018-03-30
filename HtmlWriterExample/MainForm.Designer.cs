@@ -41,24 +41,24 @@ namespace HtmlWriterSample
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.XsltPanel = new System.Windows.Forms.Panel();
+            this.xsltButton = new System.Windows.Forms.Button();
+            this.txtXsltFileName = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.cmbDestination = new System.Windows.Forms.ComboBox();
             this.btnExport = new System.Windows.Forms.Button();
             this.cmbParsedDataSet = new System.Windows.Forms.ComboBox();
             this.dgParsedData = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.rtFailedRecords = new System.Windows.Forms.RichTextBox();
-            this.XsltPanel = new System.Windows.Forms.Panel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtXsltFileName = new System.Windows.Forms.TextBox();
-            this.xsltButton = new System.Windows.Forms.Button();
             this.flowLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.XsltPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgParsedData)).BeginInit();
             this.tabPage2.SuspendLayout();
-            this.XsltPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // ofdBox
@@ -186,6 +186,43 @@ namespace HtmlWriterSample
             this.panel2.Size = new System.Drawing.Size(1105, 33);
             this.panel2.TabIndex = 1;
             // 
+            // XsltPanel
+            // 
+            this.XsltPanel.Controls.Add(this.xsltButton);
+            this.XsltPanel.Controls.Add(this.txtXsltFileName);
+            this.XsltPanel.Controls.Add(this.label3);
+            this.XsltPanel.Location = new System.Drawing.Point(571, 4);
+            this.XsltPanel.Name = "XsltPanel";
+            this.XsltPanel.Size = new System.Drawing.Size(528, 29);
+            this.XsltPanel.TabIndex = 3;
+            this.XsltPanel.Visible = false;
+            // 
+            // xsltButton
+            // 
+            this.xsltButton.Location = new System.Drawing.Point(438, 2);
+            this.xsltButton.Name = "xsltButton";
+            this.xsltButton.Size = new System.Drawing.Size(75, 23);
+            this.xsltButton.TabIndex = 2;
+            this.xsltButton.Text = "Brow&se";
+            this.xsltButton.UseVisualStyleBackColor = true;
+            this.xsltButton.Click += new System.EventHandler(this.xsltButton_Click);
+            // 
+            // txtXsltFileName
+            // 
+            this.txtXsltFileName.Location = new System.Drawing.Point(88, 4);
+            this.txtXsltFileName.Name = "txtXsltFileName";
+            this.txtXsltFileName.Size = new System.Drawing.Size(344, 20);
+            this.txtXsltFileName.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 4);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(77, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Xslt File Name:";
+            // 
             // cmbDestination
             // 
             this.cmbDestination.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -195,6 +232,7 @@ namespace HtmlWriterSample
             "Excel",
             "Html",
             "Json",
+            "PDF",
             "CSV",
             "TAB",
             "Xml"});
@@ -259,43 +297,6 @@ namespace HtmlWriterSample
             this.rtFailedRecords.TabIndex = 4;
             this.rtFailedRecords.Text = "";
             // 
-            // XsltPanel
-            // 
-            this.XsltPanel.Controls.Add(this.xsltButton);
-            this.XsltPanel.Controls.Add(this.txtXsltFileName);
-            this.XsltPanel.Controls.Add(this.label3);
-            this.XsltPanel.Location = new System.Drawing.Point(571, 4);
-            this.XsltPanel.Name = "XsltPanel";
-            this.XsltPanel.Size = new System.Drawing.Size(528, 29);
-            this.XsltPanel.TabIndex = 3;
-            this.XsltPanel.Visible = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(4, 4);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(77, 13);
-            this.label3.TabIndex = 0;
-            this.label3.Text = "Xslt File Name:";
-            // 
-            // txtXsltFileName
-            // 
-            this.txtXsltFileName.Location = new System.Drawing.Point(88, 4);
-            this.txtXsltFileName.Name = "txtXsltFileName";
-            this.txtXsltFileName.Size = new System.Drawing.Size(344, 20);
-            this.txtXsltFileName.TabIndex = 1;
-            // 
-            // xsltButton
-            // 
-            this.xsltButton.Location = new System.Drawing.Point(438, 2);
-            this.xsltButton.Name = "xsltButton";
-            this.xsltButton.Size = new System.Drawing.Size(75, 23);
-            this.xsltButton.TabIndex = 2;
-            this.xsltButton.Text = "Brow&se";
-            this.xsltButton.UseVisualStyleBackColor = true;
-            this.xsltButton.Click += new System.EventHandler(this.xsltButton_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -311,10 +312,10 @@ namespace HtmlWriterSample
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgParsedData)).EndInit();
-            this.tabPage2.ResumeLayout(false);
             this.XsltPanel.ResumeLayout(false);
             this.XsltPanel.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgParsedData)).EndInit();
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

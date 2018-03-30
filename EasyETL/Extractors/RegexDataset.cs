@@ -103,18 +103,6 @@ namespace EasyETL.DataSets
         /// </summary>
         public bool SkipFirstRow { get; set; }
 
-        /// <summary>
-        ///     The name the datatable in the dataset should get
-        ///     or the name of the datatable to use when a dataset is
-        ///     provided
-        /// </summary>
-        public string TableName = "Table1";
-
-        /// <summary>
-        ///     Lines in the text file that did not match
-        ///     the regular expression
-        /// </summary>
-        public List<string> MisReads { get; private set; }
 
         
         #region constructors

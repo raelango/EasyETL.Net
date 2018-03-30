@@ -14,6 +14,7 @@ namespace HtmlWriterSample
 {
     public partial class MainForm : Form
     {
+
         public MainForm()
         {
             InitializeComponent();
@@ -33,8 +34,6 @@ namespace HtmlWriterSample
             }
         }
 
-
-
         private void LoadData()
         {
             lblProgressMessage.Text = "";
@@ -45,7 +44,7 @@ namespace HtmlWriterSample
             Extractor p = new Extractor(txtFileName.Text);
             p.LoadProfile(cmbProfile.Text);
             p.LineReadAndProcessed += p_LineReadAndProcessed;
-            rds = (RegexDataSet)p.Parse();
+            rds = p.Parse();
 
 
             cmbParsedDataSet.Items.Clear();
@@ -108,7 +107,7 @@ namespace HtmlWriterSample
         {
             if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                RegexDataSet rds = (RegexDataSet)dgParsedData.DataSource;
+                EasyDataSet rds = (EasyDataSet)dgParsedData.DataSource;
                 DatasetWriter dsw = null;
                 switch (cmbDestination.Text.ToUpper())
                 {
@@ -129,6 +128,9 @@ namespace HtmlWriterSample
                         break;
                     case "XML":
                         dsw = new XmlDatasetWriter(rds, txtXsltFileName.Text, ofdBox.FileName);
+                        break;
+                    case "PDF":
+                        dsw = new PDFDatasetWriter(rds, ofdBox.FileName);
                         break;
                 }
                 dsw.Write();

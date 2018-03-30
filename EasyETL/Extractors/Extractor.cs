@@ -36,6 +36,10 @@ namespace EasyETL.Parsers
             }
         }
 
+        public static EasyDataSet Parse(string parseFileName) {
+            return new RegexDataSet(parseFileName);
+        }
+
         public EasyDataSet Parse()
         {
             Data = new RegexDataSet();
@@ -80,7 +84,8 @@ namespace EasyETL.Parsers
                             break;
                         case "CONNECTIONSTRING":
                         case "CONNSTRING":
-                            connString = xAttr.Value;
+                            connString =  xAttr.Value;
+                            connString = connString.Replace("[FileName]", FileToParse);
                             break;
                         case "SQLSTRING":
                         case "SQL":
@@ -115,7 +120,7 @@ namespace EasyETL.Parsers
             }
             Data.LoadProfileSettings(ProfileNode);
             Data.RowReadAndProcessed += resultDataSet_RowReadAndProcessed;
-            if ((!String.IsNullOrWhiteSpace(FileToParse)) && (File.Exists(FileToParse)) && (Data is RegexDataSet) ) {
+            if ((!String.IsNullOrWhiteSpace(FileToParse)) && (File.Exists(FileToParse)) && (Data is RegexDataSet)  ) {
                 ((RegexDataSet)Data).Fill(FileToParse);
             }
             return Data;
