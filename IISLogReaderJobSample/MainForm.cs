@@ -40,7 +40,7 @@ namespace IISLogReaderJobSample
 
             EasyETL.EasyETLJob job = new EasyETL.EasyETLJob();
 
-            job.Listeners.Add(new FileListener(this, txtFileName.Text));
+            job.Listeners.Add(new MultiFileListener(this, txtFileName.Text));
 
             Extractor p = new Extractor(txtFileName.Text);
             p.LoadProfile(cmbProfile.Text);

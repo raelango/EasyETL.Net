@@ -397,6 +397,12 @@ namespace EasyETL.DataSets
                 }
             }
             ColumnBuilder = rcb;
+            Tables.Clear();
+            DataTable dTable = Tables.Add(TableName);
+            foreach (RegexColumn rColumn in rcb.Columns)
+            {
+                dTable.Columns.Add(rColumn.ColumnName, rColumn.ColumnTypeAsType);
+            }
         }
 
         /// <summary>
@@ -561,16 +567,20 @@ namespace EasyETL.DataSets
                             }
                             string fieldValue = m.Groups[sGroup].Value;
                             fieldValue = fieldValue.Trim('\"');
-                            if (newRow.Table.Columns[sGroup].DataType == typeof(int))
-                                newRow[sGroup] = Convert.ToInt32(fieldValue);
-                            else if (newRow.Table.Columns[sGroup].DataType == typeof(double))
-                                newRow[sGroup] = Convert.ToDouble(fieldValue);
-                            else if (newRow.Table.Columns[sGroup].DataType == typeof(DateTime))
-                                newRow[sGroup] = Convert.ToDateTime(fieldValue);
-                            else
-                                newRow[sGroup] = fieldValue;
+                            if (newRow.Table.Columns[sGroup] != null ) {
+
+                                if (newRow.Table.Columns[sGroup].DataType == typeof(int))
+                                    newRow[sGroup] = Convert.ToInt32(fieldValue);
+                                else if (newRow.Table.Columns[sGroup].DataType == typeof(double))
+                                    newRow[sGroup] = Convert.ToDouble(fieldValue);
+                                else if (newRow.Table.Columns[sGroup].DataType == typeof(DateTime))
+                                    newRow[sGroup] = Convert.ToDateTime(fieldValue);
+                                else
+                                    newRow[sGroup] = fieldValue;
+                            }
                         }
                     }
+
                     if (bImportRow)
                     {
                         DataTable.Rows.Add(newRow);

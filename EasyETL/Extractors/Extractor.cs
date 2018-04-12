@@ -46,6 +46,7 @@ namespace EasyETL.Parsers
             string parserType = ParserType;
             string connString = String.Empty;
             string sqlString = String.Empty;
+            string msmqName = String.Empty;
             if (ProfileNode == null)
             {
                 if (String.IsNullOrEmpty(parserType))
@@ -91,6 +92,13 @@ namespace EasyETL.Parsers
                         case "SQL":
                             sqlString = xAttr.Value;
                             break;
+                        case "MSMQNAME":
+                        case "NAME":
+                        case "QUEUENAME":
+                        case "QUEUE":
+                        case "MSMQ":
+                            msmqName = xAttr.Value;
+                            break;
                     }
                 }
             }
@@ -110,6 +118,9 @@ namespace EasyETL.Parsers
                 case "OLEDB":
                 case "SQL":
                     Data = new DatabaseDataSet((DatabaseType) Enum.Parse(typeof(DatabaseType),parserType,true), connString, sqlString);
+                    break;
+                case "MSMQ":
+                    Data = new MsMqDataSet(msmqName);
                     break;
                 case "XML":
                     Data = new XmlDataSet();
@@ -155,7 +166,6 @@ namespace EasyETL.Parsers
                 Data = null;
             }
         }
-
 
     }
 
