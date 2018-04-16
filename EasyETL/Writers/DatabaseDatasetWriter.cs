@@ -111,7 +111,11 @@ namespace EasyETL.Writers
             {
                 try
                 {
-                    WriteRowToDatabase(dataRow, rowNumber);
+                    if ((dataRow.RowState == DataRowState.Added) || (dataRow.RowState == DataRowState.Modified))
+                    {
+                        WriteRowToDatabase(dataRow, rowNumber);
+                        dataRow.AcceptChanges();
+                    }
                 }
                 catch (Exception e)
                 {

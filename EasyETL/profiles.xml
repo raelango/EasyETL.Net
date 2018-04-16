@@ -158,7 +158,7 @@
     <Occupation />
   </fixed>
   <IISLogReader TableName="LogContents" separator=" ">
-    <Date />
+    <Date condition="^(?!#).*" />
     <Time  />
     <SourceIP />
     <CallMethod />
@@ -173,7 +173,8 @@
     <ResponseSubStatus />
     <ResponseWin32Status />
     <ResponseTime />
-    <if condition="^#" TableName="Ignored">      
+    <if condition="^#" TableName="Ignored" separator="\n">
+      <Contents />
     </if>
   </IISLogReader>
   <IISErrorLogReader TableName="LogContents" separator=" ">

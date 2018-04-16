@@ -32,6 +32,10 @@ namespace EasyETL.DataSets
 
         public List<ConditionalRegexParser> Parsers = new List<ConditionalRegexParser>();
 
+        private bool _parsingInProgress = false;
+
+        public Queue<string> QueueToParse = new Queue<string>();
+
         /// <summary>
         ///     The text file to be read
         /// </summary>
@@ -104,7 +108,7 @@ namespace EasyETL.DataSets
         public bool SkipFirstRow { get; set; }
 
 
-        
+
         #region constructors
         public RegexDataSet(string fileName = "", string fieldSeparator = "", string tableName = "Table1", bool useFirstRowNamesAsColumns = true, bool skipFirstRow = false, params string[] columnNames)
         {
@@ -398,10 +402,30 @@ namespace EasyETL.DataSets
             }
             ColumnBuilder = rcb;
             Tables.Clear();
-            DataTable dTable = Tables.Add(TableName);
-            foreach (RegexColumn rColumn in rcb.Columns)
+            DataTable dTable;
+            if (!String.IsNullOrEmpty(TableName) && (rcb.Columns.Count > 0))
             {
-                dTable.Columns.Add(rColumn.ColumnName, rColumn.ColumnTypeAsType);
+                dTable = Tables.Add(TableName);
+                foreach (RegexColumn rColumn in rcb.Columns)
+                {
+                    dTable.Columns.Add(rColumn.ColumnName, rColumn.ColumnTypeAsType);
+                }
+            }
+
+            foreach (ConditionalRegexParser parser in Parsers)
+            {
+                if (!Tables.Contains(parser.TableName))
+                {
+                    dTable = Tables.Add(parser.TableName);
+                    foreach (string colName in parser.parseRegex.GetGroupNames())
+                    {
+                        Int16 colNumber;
+                        if ((colName != DefaultGroup) && (!Int16.TryParse(colName, out colNumber)))
+                        {
+                            dTable.Columns.Add(colName);
+                        }
+                    }
+                }
             }
         }
 
@@ -443,13 +467,13 @@ namespace EasyETL.DataSets
         /// <param name="textFile"></param>
         public void Fill(Stream textFile)
         {
-            TextFile = textFile;                        
+            TextFile = textFile;
             Fill();
         }
 
         public virtual void Fill(string textFileName)
         {
-            using (FileStream fs = new FileStream(textFileName, FileMode.Open,FileAccess.Read,FileShare.ReadWrite))
+            using (FileStream fs = new FileStream(textFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
                 Fill(fs);
             }
@@ -515,7 +539,7 @@ namespace EasyETL.DataSets
                 }
                 else if (!(isFirstLine && SkipFirstRow))
                 {
-                    ParseAndLoadLines(readLine);
+                    ProcessRowObject(readLine);
                 }
                 SendMessageToCallingApplicationHandler(lineNumber, "Processed line");
 
@@ -533,26 +557,57 @@ namespace EasyETL.DataSets
         {
             if (row is string)
             {
-                ParseAndLoadLines((string)row);
+                lock (QueueToParse)
+                {
+                    QueueToParse.Enqueue((string)row);
+                }
             }
             if (row is Dictionary<string, object>)
             {
                 Dictionary<string, object> Data = (Dictionary<string, object>)row;
                 if (Data.ContainsKey("AdditionalContent"))
                 {
-                    ParseAndLoadLines((string)Data["AdditionalContent"]);
+                    lock (QueueToParse)
+                    {
+                        QueueToParse.Enqueue((string)Data["AdditionalContent"]);
+                    }
                 }
+            }
+            if (!_parsingInProgress)
+            {
+               _parsingInProgress = true;
+                ParseAndLoadLinesFromQueue();
+                _parsingInProgress = false;
             }
         }
 
-        public virtual void ParseAndLoadLines(string lines)
+        private void ParseAndLoadLinesFromQueue()
         {
-            foreach (string readLine in lines.Split(new string[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries))
+            string lineToParse = String.Empty;
+            lock (QueueToParse)
             {
+                if (QueueToParse.Count > 0)
+                {
+                    lineToParse = QueueToParse.Dequeue();
+                }
+            }
+            if (!String.IsNullOrEmpty(lineToParse))
+            {
+                ParseAndLoadLines(lineToParse);
+                ParseAndLoadLinesFromQueue();
+            }
+        }
+
+        protected virtual void ParseAndLoadLines(string lines)
+        {
+
+            foreach (string readLine in lines.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                bool bImportRow = false;
                 if ((ContentExpression != null) && ContentExpression.IsMatch(readLine))
                 {
                     var m = ContentExpression.Match(readLine);
-                    bool bImportRow = true;
+                    bImportRow = true;
                     var newRow = DataTable.NewRow();
                     short groupNum;
                     foreach (var sGroup in ContentExpression.GetGroupNames())
@@ -567,7 +622,8 @@ namespace EasyETL.DataSets
                             }
                             string fieldValue = m.Groups[sGroup].Value;
                             fieldValue = fieldValue.Trim('\"');
-                            if (newRow.Table.Columns[sGroup] != null ) {
+                            if (newRow.Table.Columns[sGroup] != null)
+                            {
 
                                 if (newRow.Table.Columns[sGroup].DataType == typeof(int))
                                     newRow[sGroup] = Convert.ToInt32(fieldValue);
@@ -587,7 +643,8 @@ namespace EasyETL.DataSets
 
                     }
                 }
-                else
+
+                if (!bImportRow)
                 {
                     bool bLineParsed = false;
                     foreach (ConditionalRegexParser crp in Parsers)
@@ -602,17 +659,22 @@ namespace EasyETL.DataSets
                                 if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
                                 {
                                     string fieldValue = m.Groups[sGroup].Value;
-                                    if (newRow.Table.Columns[sGroup].DataType == typeof(int))
-                                        newRow[sGroup] = Convert.ToInt32(fieldValue);
-                                    else if (newRow.Table.Columns[sGroup].DataType == typeof(double))
-                                        newRow[sGroup] = Convert.ToDouble(fieldValue);
-                                    else if (newRow.Table.Columns[sGroup].DataType == typeof(DateTime))
-                                        newRow[sGroup] = Convert.ToDateTime(fieldValue);
-                                    else
-                                        newRow[sGroup] = fieldValue;
+                                    fieldValue = fieldValue.Trim('\"');
+                                    if (newRow.Table.Columns[sGroup] != null)
+                                    {
+                                        if (newRow.Table.Columns[sGroup].DataType == typeof(int))
+                                            newRow[sGroup] = Convert.ToInt32(fieldValue);
+                                        else if (newRow.Table.Columns[sGroup].DataType == typeof(double))
+                                            newRow[sGroup] = Convert.ToDouble(fieldValue);
+                                        else if (newRow.Table.Columns[sGroup].DataType == typeof(DateTime))
+                                            newRow[sGroup] = Convert.ToDateTime(fieldValue);
+                                        else
+                                            newRow[sGroup] = fieldValue;
+                                    }
                                 }
                             crpDataTable.Rows.Add(newRow);
                             bLineParsed = true;
+                            bImportRow = true;
                         }
                     }
                     if (!bLineParsed)
