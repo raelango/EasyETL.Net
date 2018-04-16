@@ -41,6 +41,11 @@ namespace HtmlWriterSample
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.XsltPanel = new System.Windows.Forms.Panel();
+            this.xsltButton = new System.Windows.Forms.Button();
+            this.txtXsltFileName = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.cmbDestination = new System.Windows.Forms.ComboBox();
             this.btnExport = new System.Windows.Forms.Button();
             this.cmbParsedDataSet = new System.Windows.Forms.ComboBox();
             this.dgParsedData = new System.Windows.Forms.DataGridView();
@@ -51,6 +56,7 @@ namespace HtmlWriterSample
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.XsltPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgParsedData)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.SuspendLayout();
@@ -170,22 +176,80 @@ namespace HtmlWriterSample
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.XsltPanel);
+            this.panel2.Controls.Add(this.cmbDestination);
             this.panel2.Controls.Add(this.btnExport);
             this.panel2.Controls.Add(this.cmbParsedDataSet);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(3, 3);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1105, 28);
+            this.panel2.Size = new System.Drawing.Size(1105, 33);
             this.panel2.TabIndex = 1;
+            // 
+            // XsltPanel
+            // 
+            this.XsltPanel.Controls.Add(this.xsltButton);
+            this.XsltPanel.Controls.Add(this.txtXsltFileName);
+            this.XsltPanel.Controls.Add(this.label3);
+            this.XsltPanel.Location = new System.Drawing.Point(571, 4);
+            this.XsltPanel.Name = "XsltPanel";
+            this.XsltPanel.Size = new System.Drawing.Size(528, 29);
+            this.XsltPanel.TabIndex = 3;
+            this.XsltPanel.Visible = false;
+            // 
+            // xsltButton
+            // 
+            this.xsltButton.Location = new System.Drawing.Point(438, 2);
+            this.xsltButton.Name = "xsltButton";
+            this.xsltButton.Size = new System.Drawing.Size(75, 23);
+            this.xsltButton.TabIndex = 2;
+            this.xsltButton.Text = "Brow&se";
+            this.xsltButton.UseVisualStyleBackColor = true;
+            this.xsltButton.Click += new System.EventHandler(this.xsltButton_Click);
+            // 
+            // txtXsltFileName
+            // 
+            this.txtXsltFileName.Location = new System.Drawing.Point(88, 4);
+            this.txtXsltFileName.Name = "txtXsltFileName";
+            this.txtXsltFileName.Size = new System.Drawing.Size(344, 20);
+            this.txtXsltFileName.TabIndex = 1;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(4, 4);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(77, 13);
+            this.label3.TabIndex = 0;
+            this.label3.Text = "Xslt File Name:";
+            // 
+            // cmbDestination
+            // 
+            this.cmbDestination.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDestination.FormattingEnabled = true;
+            this.cmbDestination.Items.AddRange(new object[] {
+            "Word",
+            "Excel",
+            "Html",
+            "Json",
+            "PDF",
+            "CSV",
+            "TAB",
+            "Xml"});
+            this.cmbDestination.Location = new System.Drawing.Point(418, 3);
+            this.cmbDestination.Name = "cmbDestination";
+            this.cmbDestination.Size = new System.Drawing.Size(146, 21);
+            this.cmbDestination.TabIndex = 2;
+            this.cmbDestination.SelectedIndexChanged += new System.EventHandler(this.cmbDestination_SelectedIndexChanged);
             // 
             // btnExport
             // 
             this.btnExport.Enabled = false;
-            this.btnExport.Location = new System.Drawing.Point(294, 4);
+            this.btnExport.Location = new System.Drawing.Point(297, 3);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(91, 23);
+            this.btnExport.Size = new System.Drawing.Size(115, 23);
             this.btnExport.TabIndex = 1;
-            this.btnExport.Text = "Export To HTML";
+            this.btnExport.Text = "Export To ....";
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
@@ -206,11 +270,11 @@ namespace HtmlWriterSample
             this.dgParsedData.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgParsedData.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.dgParsedData.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgParsedData.Location = new System.Drawing.Point(3, 34);
+            this.dgParsedData.Location = new System.Drawing.Point(3, 42);
             this.dgParsedData.Name = "dgParsedData";
             this.dgParsedData.ReadOnly = true;
             this.dgParsedData.RowHeadersVisible = false;
-            this.dgParsedData.Size = new System.Drawing.Size(1105, 590);
+            this.dgParsedData.Size = new System.Drawing.Size(1105, 582);
             this.dgParsedData.TabIndex = 0;
             // 
             // tabPage2
@@ -248,6 +312,8 @@ namespace HtmlWriterSample
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
+            this.XsltPanel.ResumeLayout(false);
+            this.XsltPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgParsedData)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -274,6 +340,11 @@ namespace HtmlWriterSample
         private System.Windows.Forms.ComboBox cmbProfile;
         private System.Windows.Forms.Label lblProgressMessage;
         private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.ComboBox cmbDestination;
+        private System.Windows.Forms.Panel XsltPanel;
+        private System.Windows.Forms.Button xsltButton;
+        private System.Windows.Forms.TextBox txtXsltFileName;
+        private System.Windows.Forms.Label label3;
     }
 }
 

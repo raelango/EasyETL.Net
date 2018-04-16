@@ -10,7 +10,7 @@ namespace EasyETL.Writers
 {
     public abstract class FileDatasetWriter : DatasetWriter
     {
-        string _fileName = String.Empty;
+        protected string _fileName = String.Empty;
 
         public FileDatasetWriter()
             : base()
@@ -34,7 +34,6 @@ namespace EasyETL.Writers
             {
                 SaveContentToFile(BuildOutputString());
             }
-
         }
 
         public virtual void Write(string fileName)

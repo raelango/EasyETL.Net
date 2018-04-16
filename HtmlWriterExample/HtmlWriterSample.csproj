@@ -54,8 +54,7 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <UseVSHostingProcess>false</UseVSHostingProcess>
-  
-</PropertyGroup>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\Build\Debug\</OutputPath>
@@ -132,6 +131,14 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EasyETL.PDFDatasetWriter\EasyETL.PDFDatasetWriter.csproj">
+      <Project>{54c36131-b44a-4435-802f-7a0e6a3c34ec}</Project>
+      <Name>EasyETL.PDFDatasetWriter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL.OfficeDataSetWriters\EasyETL.OfficeDatasetWriters.csproj">
+      <Project>{ea54969b-76ba-4423-972e-9a1c037324a5}</Project>
+      <Name>EasyETL.OfficeDatasetWriters</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyETL\EasyETL.csproj">
       <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>
       <Name>EasyETL</Name>

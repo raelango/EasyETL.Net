@@ -166,7 +166,7 @@ namespace MSMQListenerSample
             string addnlData = e.Data["AdditionalContent"].ToString();
             if (!String.IsNullOrEmpty(addnlData))
             {
-                rds.ParseAndLoadLines(e.Data["AdditionalContent"].ToString());
+                rds.ProcessRowObject(addnlData);
             }
             dgParsedData.Invoke(new MethodInvoker(() => { dgParsedData.Refresh(); }));
             //Console.WriteLine("Here");

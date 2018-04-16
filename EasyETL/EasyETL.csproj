@@ -77,6 +77,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Messaging" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -114,7 +115,13 @@
     <Compile Include="Listeners\FolderListener.cs" />
     <Compile Include="Listeners\JobListener.cs" />
     <Compile Include="Listeners\MsMqListener.cs" />
+    <Compile Include="Listeners\MultiFileListener.cs" />
     <Compile Include="Listeners\TimerListener.cs" />
+    <Compile Include="Schemas\HL7_Ver_2.4.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HL7_Ver_2.4.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Writers\DatabaseDatasetWriter.cs" />
     <Compile Include="Writers\DatasetWriter.cs" />
     <Compile Include="Writers\DelimitedDatasetWriter.cs" />
@@ -128,6 +135,7 @@
     <Compile Include="Extractors\XmlDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Writers\XmlDatasetWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -149,6 +157,19 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Transformers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Schemas\HL7_Ver_2.4.xsc">
+      <DependentUpon>HL7_Ver_2.4.xsd</DependentUpon>
+    </None>
+    <None Include="Schemas\HL7_Ver_2.4.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>HL7_Ver_2.4.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Schemas\HL7_Ver_2.4.xss">
+      <DependentUpon>HL7_Ver_2.4.xsd</DependentUpon>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -14,6 +14,7 @@ namespace HtmlWriterSample
 {
     public partial class MainForm : Form
     {
+
         public MainForm()
         {
             InitializeComponent();
@@ -33,18 +34,18 @@ namespace HtmlWriterSample
             }
         }
 
-
-
         private void LoadData()
         {
             lblProgressMessage.Text = "";
             dgParsedData.DataSource = null;
 
+            EasyDataSet rds = null;
+
             Extractor p = new Extractor(txtFileName.Text);
             p.LoadProfile(cmbProfile.Text);
             p.LineReadAndProcessed += p_LineReadAndProcessed;
+            rds = p.Parse();
 
-            RegexDataSet rds = (RegexDataSet)p.Parse();
 
             cmbParsedDataSet.Items.Clear();
 
@@ -80,6 +81,7 @@ namespace HtmlWriterSample
 
         private void ofdButton_Click_1(object sender, EventArgs e)
         {
+            ofdBox.FileName = txtFileName.Text;
             if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 txtFileName.Text = ofdBox.FileName;
@@ -100,17 +102,56 @@ namespace HtmlWriterSample
             MessageBox.Show(String.Format("Parsed {0} Records successfully and Failed {1} records in {2}  Seconds", dgParsedData.RowCount, rtFailedRecords.Lines.Length, DateTime.Now.Subtract(StartTime).TotalSeconds.ToString()));
         }
 
-        
+
         private void btnExport_Click(object sender, EventArgs e)
         {
             if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                RegexDataSet rds = (RegexDataSet)dgParsedData.DataSource;
-                HtmlDatasetWriter hdsw = new HtmlDatasetWriter(rds,ofdBox.FileName);
-                hdsw.Write();
-                MessageBox.Show("Saved HTML file in " + ofdBox.FileName);
+                EasyDataSet rds = (EasyDataSet)dgParsedData.DataSource;
+                DatasetWriter dsw = null;
+                switch (cmbDestination.Text.ToUpper())
+                {
+                    case "CSV":
+                        dsw = new DelimitedDatasetWriter(rds, ofdBox.FileName) { Delimiter = ',', IncludeHeaders = true, IncludeQuotes = true };
+                        break;
+                    case "TAB":
+                        dsw = new DelimitedDatasetWriter(rds, ofdBox.FileName) { Delimiter = '\t', IncludeHeaders = true, IncludeQuotes = true };
+                        break;
+                    case "HTML":
+                        dsw = new HtmlDatasetWriter(rds, ofdBox.FileName);
+                        break;
+                    case "WORD":
+                        dsw = new OfficeDatasetWriter(rds, ofdBox.FileName);
+                        break;
+                    case "EXCEL":
+                        dsw = new OfficeDatasetWriter(rds, ofdBox.FileName) { DestinationType = OfficeFileType.ExcelWorkbook };
+                        break;
+                    case "XML":
+                        dsw = new XmlDatasetWriter(rds, txtXsltFileName.Text, ofdBox.FileName);
+                        break;
+                    case "PDF":
+                        dsw = new PDFDatasetWriter(rds, ofdBox.FileName);
+                        break;
+                }
+                dsw.Write();
+                MessageBox.Show("Saved file in " + ofdBox.FileName);
             }
 
         }
+
+        private void cmbDestination_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            XsltPanel.Visible = cmbDestination.Text.ToUpper() == "XML";
+        }
+
+        private void xsltButton_Click(object sender, EventArgs e)
+        {
+            ofdBox.FileName = txtXsltFileName.Text;
+            if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                txtXsltFileName.Text = ofdBox.FileName;
+            }
+        }
+
     }
 }

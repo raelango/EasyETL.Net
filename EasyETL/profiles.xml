@@ -145,10 +145,11 @@
       <ObsMethod />
     </if>
   </hl7>
-  <TabWithHeader separator="\t" hasheader="true" />
-  <TabWithoutHeader separator="\t"  />
-  <CSVWithHeader separator="," hasheader="true"/>
-  <CSVWithoutHeader separator="," />
+  <TabWithHeader separator="\t" hasheader="true"  tablename="data"/>
+  <TabWithoutHeader separator="\t"   tablename="data"/>
+  <CSVWithHeader separator="," hasheader="true" tablename="data"/>
+  <CSVWithoutHeader separator=","  tablename="data"/>
+  <json type="json" tablename="data" />
   <fixed TableName="Person">
     <SNo length="3" />
     <FirstName Length="10" />
@@ -157,7 +158,7 @@
     <Occupation />
   </fixed>
   <IISLogReader TableName="LogContents" separator=" ">
-    <Date />
+    <Date condition="^(?!#).*" />
     <Time  />
     <SourceIP />
     <CallMethod />
@@ -172,7 +173,8 @@
     <ResponseSubStatus />
     <ResponseWin32Status />
     <ResponseTime />
-    <if condition="^#" TableName="Ignored">      
+    <if condition="^#" TableName="Ignored" separator="\n">
+      <Contents />
     </if>
   </IISLogReader>
   <IISErrorLogReader TableName="LogContents" separator=" ">
@@ -198,4 +200,5 @@
     <Age condition="^(?!4.).*"/>
   </TestHtmlLoader>
   <MRSIOleDatabase Type="OleDB" ConnString="Provider=sqloledb;Data Source=MRSI-DATA2\MRSIDATA2;Initial Catalog=MRSI;Integrated Security=SSPI;" />
+  <excel type="ODBC" ConnString="Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};Dbq=[FileName];Header=True;ReadOnly=0;" SQL="select * from [Sheet1$]" />
 </profiles>

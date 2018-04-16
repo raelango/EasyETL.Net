@@ -10,7 +10,6 @@ namespace EasyETL.Listeners
     public class FileListener : FolderListener
     {
         FileStream _textReader;
-
         public FileListener(object caller, string fileName)
             : base(caller, Path.GetDirectoryName(fileName), Path.GetFileName(fileName))
         {
