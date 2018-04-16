@@ -1,0 +1,9 @@
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EastETL.PDFDatasetWriter\obj\Release\EastETL.PDFDatasetWriter.csprojResolveAssemblyReference.cache
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EastETL.PDFDatasetWriter\bin\Release\profiles.xml
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EastETL.PDFDatasetWriter\bin\Release\EastETL.PDFDatasetWriter.dll
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EastETL.PDFDatasetWriter\bin\Release\EastETL.PDFDatasetWriter.pdb
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EastETL.PDFDatasetWriter\bin\Release\EasyETL.dll
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EastETL.PDFDatasetWriter\bin\Release\itextsharp.dll
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EastETL.PDFDatasetWriter\bin\Release\itextsharp.xml
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EastETL.PDFDatasetWriter\obj\Release\EastETL.PDFDatasetWriter.dll
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EastETL.PDFDatasetWriter\obj\Release\EastETL.PDFDatasetWriter.pdb
