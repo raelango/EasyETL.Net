@@ -19,11 +19,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IISLogReaderJobSample", "II
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseWriterSample", "DatabaseWriterExample\DatabaseWriterSample.csproj", "{AB704081-D0BE-4AC8-A3AF-4D90E8515C97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.OfficeDatasetWriters", "EasyETL.OfficeDataSetWriters\EasyETL.OfficeDatasetWriters.csproj", "{EA54969B-76BA-4423-972E-9A1C037324A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Office", "EasyETL.Office\EasyETL.Office.csproj", "{EA54969B-76BA-4423-972E-9A1C037324A5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasySQLClr", "EasySQLClr\EasySQLClr.csproj", "{89DAC4E0-B6EB-4D11-809F-EF432929FC63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.PDFDatasetWriter", "EasyETL.PDFDatasetWriter\EasyETL.PDFDatasetWriter.csproj", "{54C36131-B44A-4435-802F-7A0E6A3C34EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.PDF", "EasyETL.PDF\EasyETL.PDF.csproj", "{54C36131-B44A-4435-802F-7A0E6A3C34EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
