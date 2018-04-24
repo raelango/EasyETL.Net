@@ -36,6 +36,8 @@ namespace EasyETL.DataSets
 
         public Queue<string> QueueToParse = new Queue<string>();
 
+        protected Dictionary<string, string> rowDict = new Dictionary<string, string>();
+
         /// <summary>
         ///     The text file to be read
         /// </summary>
@@ -575,7 +577,7 @@ namespace EasyETL.DataSets
             }
             if (!_parsingInProgress)
             {
-               _parsingInProgress = true;
+                _parsingInProgress = true;
                 ParseAndLoadLinesFromQueue();
                 _parsingInProgress = false;
             }
@@ -608,7 +610,8 @@ namespace EasyETL.DataSets
                 {
                     var m = ContentExpression.Match(readLine);
                     bImportRow = true;
-                    var newRow = DataTable.NewRow();
+                    DataRow newRow = DataTable.NewRow();
+                    PopulateDictionaryToRow(newRow);
                     short groupNum;
                     foreach (var sGroup in ContentExpression.GetGroupNames())
                     {
@@ -640,20 +643,21 @@ namespace EasyETL.DataSets
                     if (bImportRow)
                     {
                         DataTable.Rows.Add(newRow);
-
+                        PopulateRowToDictionary(DataTable.Rows[DataTable.Rows.Count-1]);
                     }
                 }
 
+                bool bLineParsed = false;
                 if (!bImportRow)
                 {
-                    bool bLineParsed = false;
                     foreach (ConditionalRegexParser crp in Parsers)
                     {
                         if (crp.ConditionRegex.IsMatch(readLine))
                         {
                             DataTable crpDataTable = Tables[crp.TableName];
                             var m = crp.parseRegex.Match(readLine);
-                            var newRow = crpDataTable.NewRow();
+                            DataRow newRow = crpDataTable.NewRow();
+                            PopulateDictionaryToRow(newRow);
                             short groupNum;
                             foreach (var sGroup in crp.parseRegex.GetGroupNames())
                                 if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
@@ -673,17 +677,39 @@ namespace EasyETL.DataSets
                                     }
                                 }
                             crpDataTable.Rows.Add(newRow);
+                            PopulateRowToDictionary(crpDataTable.Rows[crpDataTable.Rows.Count -1]);
                             bLineParsed = true;
                             bImportRow = true;
+                            break;
                         }
                     }
-                    if (!bLineParsed)
-                    {
-                        AddMisRead(readLine);
-                    }
                 }
+                if (!bLineParsed)
+                {
+                    AddMisRead(readLine);
+                }
+
             }
 
+        }
+
+        private void PopulateRowToDictionary(DataRow dataRow)
+        {
+            foreach (DataColumn dColumn in dataRow.Table.Columns)
+            {
+                rowDict[dColumn.ColumnName] = dataRow[dColumn].ToString();
+            }
+        }
+
+        private void PopulateDictionaryToRow(DataRow dataRow)
+        {
+            foreach (DataColumn dColumn in dataRow.Table.Columns)
+            {
+                if (rowDict.ContainsKey(dColumn.ColumnName))
+                {
+                    dataRow[dColumn] = rowDict[dColumn.ColumnName];
+                }
+            }
         }
         #endregion
 
