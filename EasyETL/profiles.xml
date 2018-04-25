@@ -12,7 +12,7 @@
       <DateTimeOfMessage/>
       <Security/>
       <MessageType/>
-      <MessageControlID/>
+      <MessageControlID Unique="true"/>
       <ProcessingID/>
       <VersionID/>
       <SequenceID/>
@@ -24,7 +24,7 @@
       <PrincipalLanguageOfMessage />
     </if>
     <if condition="^PID" TableName="PatientDetails">
-      <MessageID ForeignKey="true" />
+      <MessageControlID ForeignKey="true" />
       <SegmentName/>
       <PatientID/>
       <ExternalID/>
@@ -58,7 +58,7 @@
       <DeathIndicator />
     </if>
     <if condition="^PD1" TableName="PIDDetails">
-      <MessageID ForeignKey="true" />
+      <MessageControlID ForeignKey="true" />
       <SegmentName/>
       <LivingDependency/>
       <LivingArrangement/>
@@ -84,9 +84,9 @@
     </if>
     <if condition="^OBR" TableName="ObsRecord">
       <ObrID AutoIncrement ="true" />
-      <MessageID ForeignKey="true" />
+      <MessageControlID ForeignKey="true" />
       <SegmentName/>
-      <SetID/>
+      <SetID Caption="Record Index"/>
       <PlacerOrderNumber/>
       <FillerOrderNumber/>
       <UnversalServiceID/>
@@ -133,7 +133,6 @@
     <if condition="^OBX" TableName="Observation">
       <ObxID AutoIncrement ="true" />
       <ObrID ForeignKey="true" />
-      <MessageID ForeignKey="true" />
       <SegmentName/>
       <SetID/>
       <ValueType/>

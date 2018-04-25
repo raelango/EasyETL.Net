@@ -221,7 +221,9 @@ namespace EasyETL.DataSets
                 Int32 intStartValue = 1;
                 Int32 intIncrement = 1;
                 bool bForeignKey = false;
+                bool bPrimaryKey = false;
                 string strExpression = String.Empty;
+                string strDisplayName = childNode.Name;
 
                 int columnLength = 0;
                 RegexColumnType rct = RegexColumnType.STRING;
@@ -265,6 +267,15 @@ namespace EasyETL.DataSets
                             break;
                         case "FOREIGNKEY":
                             bForeignKey = Boolean.Parse(xAttr.Value);
+                            break;
+                        case "UNIQUE":
+                        case "PRIMARYKEY":
+                        case "PRIMARY":
+                            bPrimaryKey = Boolean.Parse(xAttr.Value);
+                            break;
+                        case "DISPLAYNAME":
+                        case "CAPTION":
+                            strDisplayName = xAttr.Value;
                             break;
                     }
                 }
@@ -317,10 +328,23 @@ namespace EasyETL.DataSets
                             columnBuilder.AddColumn(childNode.Name, ".*", rct);
                         }
                     }
+
+                    RegexColumn addedColumn = columnBuilder.Columns[columnBuilder.Columns.Count - 1];
+
                     if (!String.IsNullOrWhiteSpace(strCondition))
                     {
                         //There is a condition to be matched with the value... let us set it to the last column added...
-                        columnBuilder.Columns[columnBuilder.Columns.Count - 1].ValueMatchingCondition = strCondition;
+                        addedColumn.ValueMatchingCondition = strCondition;
+                    }
+
+                    if (bPrimaryKey)
+                    {
+                        addedColumn.IsUnique = bPrimaryKey;
+                    }
+
+                    if (strDisplayName != childNode.Name)
+                    {
+                        addedColumn.DisplayName = strDisplayName;
                     }
                 }
 
@@ -409,7 +433,13 @@ namespace EasyETL.DataSets
                 {
                     dColumn.Expression = rColumn.Expression;
                 }
+                dColumn.Unique = rColumn.IsUnique;
+                if (!String.IsNullOrEmpty(rColumn.DisplayName))
+                {
+                    dColumn.Caption = rColumn.DisplayName;
+                }
                 dataTable.Columns.Add(dColumn);
+
                 if (rColumn.IsForeignKey)
                 {
                     foreach (DataTable dTable in dataTable.DataSet.Tables)
@@ -417,7 +447,7 @@ namespace EasyETL.DataSets
                         if ((dTable.TableName != dataTable.TableName) && (dTable.Columns.Contains(rColumn.ColumnName)))
                         {
                             DataColumn parentDataColumn = dTable.Columns[rColumn.ColumnName];
-                            if (parentDataColumn.AutoIncrement)
+                            if (parentDataColumn.AutoIncrement || parentDataColumn.Unique)
                             {
                                 dColumn.DataType = dTable.Columns[rColumn.ColumnName].DataType;
                                 this.Relations.Add(dTable.Columns[rColumn.ColumnName], dColumn);

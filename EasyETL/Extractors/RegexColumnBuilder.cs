@@ -316,6 +316,7 @@ namespace EasyETL.DataSets
             StartValue = startValue;
             Increment = increment;
             IsForeignKey = false;
+            IsUnique = true;
         }
 
         public RegexColumn(string columnName, string expression, RegexColumnType columnType = RegexColumnType.STRING)
@@ -325,6 +326,7 @@ namespace EasyETL.DataSets
             ColumnType = columnType;
             AutoIncrement = false;
             IsForeignKey = false;
+            IsUnique = false;
         }
 
         public RegexColumn(string columnName, bool isForeignKey)
@@ -336,6 +338,7 @@ namespace EasyETL.DataSets
             AutoIncrement = false;
             StartValue = 1;
             Increment = 1;
+            IsUnique = false;
         }
 
         /// <summary>
@@ -393,6 +396,16 @@ namespace EasyETL.DataSets
         /// 
         /// </summary>
         public bool IsForeignKey { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsUnique { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string DisplayName { get; set; }
 
         /// <summary>
         ///     Get the System.Type of this RegexColumn
