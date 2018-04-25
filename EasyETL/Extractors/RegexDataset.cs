@@ -350,17 +350,33 @@ namespace EasyETL.DataSets
 
         private void RemoveDataTables()
         {
+            Relations.Clear();
+            foreach (DataTable dt in Tables)
+            {
+                ClearConstraintsOnTable(dt);
+            }
+            EnforceConstraints = false;
             while (Tables.Count > 0)
             {
                 Tables.RemoveAt(0);
             }
+            EnforceConstraints = true;
+        }
+
+        private void ClearConstraintsOnTable(DataTable dt)
+        {
+            foreach (DataRelation dr in dt.ChildRelations)
+            {
+                ClearConstraintsOnTable(dr.ChildTable);
+            }
+            dt.Constraints.Clear();
         }
 
         private void BuildRegexSchemaIntoDataSet()
         {
             if ((ContentExpression == null) && !ContentExpressionHasChanged) return;
             RemoveDataTables();
-            LoadColumnsToTable(DataTable, _regexColumns);            
+            LoadColumnsToTable(DataTable, _regexColumns);
 
             foreach (ConditionalRegexParser crp in Parsers)
             {
@@ -374,7 +390,6 @@ namespace EasyETL.DataSets
                     crpDT = Tables[crp.TableName];
                 }
                 LoadColumnsToTable(crpDT, crp.RegexColumns);
-
             }
 
         }
@@ -395,6 +410,21 @@ namespace EasyETL.DataSets
                     dColumn.Expression = rColumn.Expression;
                 }
                 dataTable.Columns.Add(dColumn);
+                if (rColumn.IsForeignKey)
+                {
+                    foreach (DataTable dTable in dataTable.DataSet.Tables)
+                    {
+                        if ((dTable.TableName != dataTable.TableName) && (dTable.Columns.Contains(rColumn.ColumnName)))
+                        {
+                            DataColumn parentDataColumn = dTable.Columns[rColumn.ColumnName];
+                            if (parentDataColumn.AutoIncrement)
+                            {
+                                dColumn.DataType = dTable.Columns[rColumn.ColumnName].DataType;
+                                this.Relations.Add(dTable.Columns[rColumn.ColumnName], dColumn);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -437,7 +467,7 @@ namespace EasyETL.DataSets
                 }
             }
             ColumnBuilder = rcb;
-            BuildRegexSchemaIntoDataSet();            
+            BuildRegexSchemaIntoDataSet();
         }
 
         /// <summary>
@@ -620,7 +650,7 @@ namespace EasyETL.DataSets
                     var m = ContentExpression.Match(readLine);
                     bImportRow = true;
                     short groupNum;
-                    Dictionary<string, object> rowDict = new Dictionary<string, object>(); 
+                    Dictionary<string, object> rowDict = new Dictionary<string, object>();
                     foreach (var sGroup in ContentExpression.GetGroupNames())
                     {
                         if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
@@ -652,7 +682,8 @@ namespace EasyETL.DataSets
                     {
                         DataRow newRow = DataTable.NewRow();
                         PopulateDictionaryToRow(newRow);
-                        foreach (KeyValuePair<string,object> kvPair in rowDict) {
+                        foreach (KeyValuePair<string, object> kvPair in rowDict)
+                        {
                             newRow[kvPair.Key] = kvPair.Value;
                         }
                         DataTable.Rows.Add(newRow);

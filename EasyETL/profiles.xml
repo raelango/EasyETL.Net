@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <profiles>
-  <hl7 separator="|">
+  <hl7 separator="|" TableName="MessageHeader">
     <if condition="^MSH" TableName="MessageHeader">
+      <MessageID AutoIncrement="true" />
       <SegmentName />
       <EndcodingCharacters />
       <SendingApp/>
@@ -23,6 +24,7 @@
       <PrincipalLanguageOfMessage />
     </if>
     <if condition="^PID" TableName="PatientDetails">
+      <MessageID ForeignKey="true" />
       <SegmentName/>
       <PatientID/>
       <ExternalID/>
@@ -56,6 +58,7 @@
       <DeathIndicator />
     </if>
     <if condition="^PD1" TableName="PIDDetails">
+      <MessageID ForeignKey="true" />
       <SegmentName/>
       <LivingDependency/>
       <LivingArrangement/>
@@ -80,6 +83,8 @@
       <MilitaryStatus />      
     </if>
     <if condition="^OBR" TableName="ObsRecord">
+      <ObrID AutoIncrement ="true" />
+      <MessageID ForeignKey="true" />
       <SegmentName/>
       <SetID/>
       <PlacerOrderNumber/>
@@ -126,6 +131,9 @@
       <PlannedTransportComment />
     </if>
     <if condition="^OBX" TableName="Observation">
+      <ObxID AutoIncrement ="true" />
+      <ObrID ForeignKey="true" />
+      <MessageID ForeignKey="true" />
       <SegmentName/>
       <SetID/>
       <ValueType/>
