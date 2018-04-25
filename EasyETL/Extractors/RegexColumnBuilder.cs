@@ -63,6 +63,33 @@ namespace EasyETL.DataSets
         }
 
 
+        public void AddColumn(string columnName, bool bAutoIncrement, Int32 startValue, Int32 increment) {
+            if (bAutoIncrement) {
+                Columns.Add(new RegexColumn(columnName,startValue,increment));
+            }
+            else {
+                AddColumn(columnName);
+            } 
+        }
+
+        public void AddColumn(string columnName, bool bIsForeignKey)
+        {
+            if (bIsForeignKey)
+            {
+                Columns.Add(new RegexColumn(columnName, bIsForeignKey));
+            }
+            else
+            {
+                AddColumn(columnName);
+            }
+        }
+
+        public void AddColumn(string columnName, RegexColumnType columnType, string expression)
+        {
+            Columns.Add(new RegexColumn(columnName, expression, columnType));
+        }
+
+
         public void AddColumn(string columnName)
         {
             if ((!String.IsNullOrEmpty(Separator)) && (!columnName.Contains(":")))
@@ -169,30 +196,42 @@ namespace EasyETL.DataSets
         {
             var result = new StringBuilder();
             if (StartAtBeginOfString) result.Append("^");
+            bool bFirstParsingColumn = true;
             for (var i = 0; i < Columns.Count; i++)
             {
-                // let us check for separator and if present, make this field optional....
-                if ((!String.IsNullOrEmpty(Separator)) && (i > 0))
+                bool doImport = true;
+                if ((Columns[i].AutoIncrement) || (!String.IsNullOrEmpty(Columns[i].Expression)) || (Columns[i].IsForeignKey))
                 {
-                    result.Append("(?(" + RegexFormattedOutput(Separator[0]) + ")(" + RegexFormattedOutput(Separator[0]) + "(");
+                    //This column is either an autoincrement column or a column with formula.. do not import;
+                    doImport = false;
                 }
-                result.Append(Columns[i].PrecedingRegEx);
-                if (String.IsNullOrWhiteSpace(Columns[i].ColumnName))
+                if (doImport)
                 {
-                    result.Append("(?:");
-                }
-                else
-                {
-                    result.Append("(?<");
-                    result.Append(Columns[i].ColumnName);
-                    result.Append(">");
-                }
-                result.Append(Columns[i].RegEx);
-                result.Append(")");
-                result.Append(Columns[i].TrailingRegEx);
-                if ((!String.IsNullOrEmpty(Separator) && (i > 0)))
-                {
-                    result.Append(")|()))");
+                    // let us check for separator and if present, make this field optional....
+                    if ((!String.IsNullOrEmpty(Separator)) && (!bFirstParsingColumn))
+                    {
+                        result.Append("(?(" + RegexFormattedOutput(Separator[0]) + ")(" + RegexFormattedOutput(Separator[0]) + "(");
+                    }
+                    result.Append(Columns[i].PrecedingRegEx);
+
+                    if (String.IsNullOrWhiteSpace(Columns[i].ColumnName)) //The column name is empty.. we need to skip this field....
+                    {
+                        result.Append("(?:");
+                    }
+                    else
+                    {
+                        result.Append("(?<");
+                        result.Append(Columns[i].ColumnName);
+                        result.Append(">");
+                    }
+                    result.Append(Columns[i].RegEx);
+                    result.Append(")");
+                    result.Append(Columns[i].TrailingRegEx);
+                    if ((!String.IsNullOrEmpty(Separator) && (!bFirstParsingColumn)))
+                    {
+                        result.Append(")|()))");
+                    }
+                    bFirstParsingColumn = false;
                 }
             }
             if (EndAtEndOfString) result.Append("$");
@@ -254,6 +293,7 @@ namespace EasyETL.DataSets
     {
 
 
+
         /// <summary>
         ///     Constructor
         /// </summary>
@@ -265,6 +305,37 @@ namespace EasyETL.DataSets
         public RegexColumn(string columnName, string regEx, string trailingRegex, string precedingRegex = "", RegexColumnType columnType = RegexColumnType.STRING)
         {
             Init(columnName, regEx, trailingRegex, precedingRegex, columnType);
+        }
+
+        public RegexColumn(string columnName, Int32 startValue = 1, Int32 increment = 1)
+        {
+            ColumnName = columnName;
+            Expression = String.Empty;
+            AutoIncrement = true;
+            ColumnType = RegexColumnType.INTEGER;
+            StartValue = startValue;
+            Increment = increment;
+            IsForeignKey = false;
+        }
+
+        public RegexColumn(string columnName, string expression, RegexColumnType columnType = RegexColumnType.STRING)
+        {
+            ColumnName = columnName;
+            Expression = expression;
+            ColumnType = columnType;
+            AutoIncrement = false;
+            IsForeignKey = false;
+        }
+
+        public RegexColumn(string columnName, bool isForeignKey)
+        {
+            ColumnName = columnName;
+            IsForeignKey = isForeignKey;
+            Expression = String.Empty;
+            ColumnType = RegexColumnType.STRING;
+            AutoIncrement = false;
+            StartValue = 1;
+            Increment = 1;
         }
 
         /// <summary>
@@ -299,6 +370,31 @@ namespace EasyETL.DataSets
         public string ValueMatchingCondition { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool AutoIncrement { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Int32 StartValue { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Int32 Increment { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Expression { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool IsForeignKey { get; set; }
+
+        /// <summary>
         ///     Get the System.Type of this RegexColumn
         /// </summary>
         public Type ColumnTypeAsType
@@ -321,10 +417,15 @@ namespace EasyETL.DataSets
         private void Init(string columnName, string regEx, string trailingRegex, string precedingRegex, RegexColumnType columnType)
         {
             ColumnName = columnName;
+            AutoIncrement = false;
+            Expression = String.Empty;
             RegEx = regEx;
             TrailingRegEx = trailingRegex;
             PrecedingRegEx = precedingRegex;
             ColumnType = columnType;
+            IsForeignKey = false;
+            StartValue = 1;
+            Increment = 1;
         }
     }
 }

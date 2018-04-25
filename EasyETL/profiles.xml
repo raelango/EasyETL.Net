@@ -158,6 +158,7 @@
     <Occupation />
   </fixed>
   <IISLogReader TableName="LogContents" separator=" ">
+    <LogID AutoIncrement="true" StartValue="1" Increment="1" />
     <Date condition="^(?!#).*" />
     <Time  />
     <SourceIP />
@@ -174,6 +175,9 @@
     <ResponseWin32Status />
     <ResponseTime />
     <if condition="^#" TableName="Ignored" separator="\n">
+      <ContentsID AutoIncrement="true" />
+      <LogID ForeignKey="true" />
+      <TwiceContentsID Expression="ContentsID * 2" />
       <Contents />
     </if>
   </IISLogReader>
