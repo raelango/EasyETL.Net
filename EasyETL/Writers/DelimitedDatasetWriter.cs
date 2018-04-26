@@ -40,7 +40,7 @@ namespace EasyETL.Writers
             {
                 foreach (DataColumn dc in dt.Columns)
                 {
-                    returnStr += (IncludeQuotes ? "\"":"") + dc.ColumnName + (IncludeQuotes ? "\"":"");
+                    returnStr += (IncludeQuotes ? "\"":"") + GetColumnName(dc) + (IncludeQuotes ? "\"":"");
                     if (dc.Ordinal < (dt.Columns.Count - 1))
                     {
                         returnStr += Delimiter;

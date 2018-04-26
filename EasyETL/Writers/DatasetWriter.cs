@@ -115,5 +115,10 @@ namespace EasyETL.Writers
             }
         }
 
+        protected string GetColumnName(DataColumn dColumn)
+        {
+            return String.IsNullOrWhiteSpace(dColumn.Caption) ? dColumn.ColumnName : dColumn.Caption;
+        }
+
     }
 }

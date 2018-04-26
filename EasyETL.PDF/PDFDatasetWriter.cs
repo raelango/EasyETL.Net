@@ -37,7 +37,7 @@ namespace EasyETL.Writers
                 //Set columns names in the pdf file
                 for (int k = 0; k < dataTable.Columns.Count; k++)
                 {
-                    PdfPCell cell = new PdfPCell(new Phrase(dataTable.Columns[k].ColumnName));
+                    PdfPCell cell = new PdfPCell(new Phrase(GetColumnName(dataTable.Columns[k])));
 
                     cell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
                     cell.VerticalAlignment = PdfPCell.ALIGN_CENTER;

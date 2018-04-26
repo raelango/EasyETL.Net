@@ -82,6 +82,7 @@ namespace HtmlWriterSample
         private void ofdButton_Click_1(object sender, EventArgs e)
         {
             ofdBox.FileName = txtFileName.Text;
+            ofdBox.CheckFileExists = true;
             if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 txtFileName.Text = ofdBox.FileName;
@@ -102,9 +103,9 @@ namespace HtmlWriterSample
             MessageBox.Show(String.Format("Parsed {0} Records successfully and Failed {1} records in {2}  Seconds", dgParsedData.RowCount, rtFailedRecords.Lines.Length, DateTime.Now.Subtract(StartTime).TotalSeconds.ToString()));
         }
 
-
         private void btnExport_Click(object sender, EventArgs e)
         {
+            ofdBox.CheckFileExists = false;
             if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 EasyDataSet rds = (EasyDataSet)dgParsedData.DataSource;
@@ -132,6 +133,9 @@ namespace HtmlWriterSample
                     case "PDF":
                         dsw = new PDFDatasetWriter(rds, ofdBox.FileName);
                         break;
+                    case "JSON":
+                        dsw = new JsonDatasetWriter(rds, ofdBox.FileName);
+                        break;
                 }
                 dsw.Write();
                 MessageBox.Show("Saved file in " + ofdBox.FileName);
@@ -147,6 +151,7 @@ namespace HtmlWriterSample
         private void xsltButton_Click(object sender, EventArgs e)
         {
             ofdBox.FileName = txtXsltFileName.Text;
+            ofdBox.CheckFileExists = true;
             if (ofdBox.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 txtXsltFileName.Text = ofdBox.FileName;
