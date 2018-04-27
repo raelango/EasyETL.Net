@@ -3,6 +3,8 @@ using System.Data;
 using System.Data.Odbc;
 using System.Data.OleDb;
 using System.Data.SqlClient;
+using System.Text;
+using System.Xml;
 
 
 
@@ -46,7 +48,6 @@ namespace EasyETL.DataSets
             _sqlString = sqlString;
             Fill();
         }
-
 
         public override void Fill()
         {
@@ -95,6 +96,31 @@ namespace EasyETL.DataSets
                     break;
             }
 
+        }
+
+        public override void LoadProfileSettings(XmlNode xNode)
+        {
+            foreach (XmlAttribute xAttr in xNode.Attributes)
+            {
+                switch (xAttr.Name.ToUpper()) {
+                    case "TYPE":
+                        _dbType = (DatabaseType)Enum.Parse(typeof(DatabaseType), xAttr.Value,true);
+                        break;
+                    case "SQL":
+                    case "SQLSTRING":
+                        _sqlString = xAttr.Value;
+                        break;
+                    case "CONNECTIONSTRING":
+                    case "CONNSTRING":
+                        _connString = xAttr.Value;
+                        break;
+                }
+            }
+        }
+
+        public override string GetPropertiesAsXml(string nodeName)
+        {
+            return "<" + nodeName + " Type='" + _dbType.ToString() + "' ConnectionString='" + _connString + "' SQL='" + _sqlString + "' />";
         }
 
     }

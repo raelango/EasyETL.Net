@@ -39,7 +39,6 @@ namespace EasyETL.DataSets
 
         }
 
-
         public virtual string GetPropertiesAsXml(string nodeName)
         {
             return String.Empty;
