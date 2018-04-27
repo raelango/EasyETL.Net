@@ -46,6 +46,7 @@ namespace HtmlWriterSample
             p.LineReadAndProcessed += p_LineReadAndProcessed;
             rds = p.Parse();
 
+            string strXml = rds.GetPropertiesAsXml(cmbProfile.Text) ;
 
             cmbParsedDataSet.Items.Clear();
 

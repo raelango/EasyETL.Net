@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 
@@ -364,7 +365,6 @@ namespace EasyETL.DataSets
             }
         }
 
-
         private DataTable DataTable
         {
             get
@@ -475,7 +475,6 @@ namespace EasyETL.DataSets
             }
         }
 
-
         #region public methods
         public override void LoadProfileSettings(XmlNode xNode)
         {
@@ -517,6 +516,34 @@ namespace EasyETL.DataSets
             BuildRegexSchemaIntoDataSet();
         }
 
+        public override string GetPropertiesAsXml(string nodeName)
+        {
+            StringBuilder sbResult = new StringBuilder();
+            sbResult.Append("<" + nodeName + " TableName='" + TableName + "'");
+            sbResult.Append(" HasHeader='" + UseFirstRowNamesAsColumnNames.ToString() + "'");
+            sbResult.Append(" SkipFirstRow='" + SkipFirstRow.ToString() + "'");
+            sbResult.AppendLine(">");
+            if ((_regexColumns != null) && (_regexColumns.Count > 0))
+            {
+                foreach (RegexColumn regexColumn in _regexColumns)
+                {
+                    sbResult.AppendLine("\t" + regexColumn.GetPropertiesAsXml());
+                }
+            }
+            foreach (ConditionalRegexParser crp in Parsers)
+            {
+                sbResult.AppendLine("\t<if condition='" + crp.ConditionRegex + "' TableName='" + crp.TableName + "'>");
+                foreach (RegexColumn regexColumn in crp.RegexColumns)
+                {
+                    sbResult.AppendLine("\t\t" + regexColumn.GetPropertiesAsXml());
+                }
+                sbResult.AppendLine("</if>");
+            }
+            sbResult.AppendLine("</" + nodeName + ">");
+            return sbResult.ToString();
+        }
+
+        #region Fill Methods
         /// <summary>
         ///     Reads every line in the text file and tries to match
         ///     it with the given regular expression.
@@ -640,6 +667,7 @@ namespace EasyETL.DataSets
                 if (column.ExtendedProperties.ContainsKey(NewName))
                     column.ColumnName = column.ExtendedProperties[NewName].ToString();
         }
+        #endregion 
 
         public override void ProcessRowObject(object row)
         {

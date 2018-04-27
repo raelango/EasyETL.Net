@@ -39,6 +39,12 @@ namespace EasyETL.DataSets
 
         }
 
+
+        public virtual string GetPropertiesAsXml(string nodeName)
+        {
+            return String.Empty;
+        }
+
         public virtual void Fill()
         {
             CreateTableStructure();
@@ -55,6 +61,7 @@ namespace EasyETL.DataSets
         }
 
         #endregion
+
 
 
         #region protected methods

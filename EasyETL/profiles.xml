@@ -4,7 +4,7 @@
     <if condition="^MSH" TableName="MessageHeader">
       <MessageID AutoIncrement="true" />
       <SegmentName />
-      <EndcodingCharacters />
+      <EndcodingCharacters length="4"/>
       <SendingApp/>
       <SendingFacility/>
       <ReceivingApp/>

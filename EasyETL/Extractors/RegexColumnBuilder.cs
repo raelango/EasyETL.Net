@@ -258,6 +258,16 @@ namespace EasyETL.DataSets
         {
             return new Regex(CreateRegularExpressionString(), aOptions);
         }
+
+        public string GetPropertiesAsXml()
+        {
+            StringBuilder sbResult = new StringBuilder();
+            foreach (RegexColumn regexColumn in Columns)
+            {
+                sbResult.Append(regexColumn.GetPropertiesAsXml());
+            }
+            return sbResult.ToString();
+        }
     }
 
     /// <summary>
@@ -445,6 +455,64 @@ namespace EasyETL.DataSets
             IsForeignKey = false;
             StartValue = 1;
             Increment = 1;
+        }
+
+        public string GetPropertiesAsXml()
+        {
+            StringBuilder sbResult = new StringBuilder();
+            sbResult.Append("<" + (String.IsNullOrEmpty(ColumnName) ? "_" : ColumnName) + GetRegexProperties() );
+            if (!String.IsNullOrEmpty(PrecedingRegEx))  sbResult.Append(" Prefix = '" + PrecedingRegEx + "'");
+            if (!String.IsNullOrEmpty(TrailingRegEx)) sbResult.Append(" Suffix = '" + TrailingRegEx + "'");
+            if (ColumnType != RegexColumnType.STRING) sbResult.Append(" Type = '" + ColumnType.ToString() + "'");
+            if (!String.IsNullOrEmpty(ValueMatchingCondition)) sbResult.Append(" Condition = '" + ValueMatchingCondition + "'");
+            if (AutoIncrement) sbResult.Append(" AutoIncrement = '" + AutoIncrement.ToString() + "'");
+            if (AutoIncrement) sbResult.Append(" StartValue = '" + StartValue.ToString() + "'");
+            if (AutoIncrement) sbResult.Append(" Increment = '" + Increment.ToString() + "'");
+            if (!String.IsNullOrEmpty(Expression)) sbResult.Append(" Expression = '" + Expression + "'");
+            if (IsForeignKey) sbResult.Append(" ForeignKey = '" + IsForeignKey.ToString() + "'");
+            if (IsUnique) sbResult.Append(" PrimaryKey = '" + IsUnique.ToString() + "'");
+
+            if (!String.IsNullOrEmpty(DisplayName)) sbResult.Append(" DisplayName = '" + DisplayName + "'");
+            if (!String.IsNullOrEmpty(Description)) sbResult.Append(" Description = '" + Description.ToString() + "'");
+            sbResult.Append(" />");
+            return sbResult.ToString();
+        }
+
+        private string GetRegexProperties()
+        {
+            string strResult = " ";
+            string strRegex = this.RegEx;
+            if (!String.IsNullOrEmpty(strRegex))
+            {
+                strRegex = strRegex.TrimEnd('*');
+                strRegex = strRegex.TrimEnd(']');
+                if (strRegex.EndsWith("\\n")) strRegex = strRegex.Substring(0,strRegex.Length -2);
+                if (strRegex.StartsWith("[^"))
+                {
+                    strRegex = strRegex.Substring(2);
+                    if (strRegex.StartsWith("\""))
+                    {
+                        strResult += " QUOTES='true'";
+                        strRegex = strRegex.TrimStart('\"');
+                    }
+                    if (strRegex.Length > 0)
+                    {
+                        strResult += " Separator='" + Regex.Unescape(strRegex) + "'";
+                    }
+                }
+                else if (strRegex.StartsWith(".{"))
+                {
+                    //This is fixed length
+                    strRegex = strRegex.Substring(2);
+                    strRegex = strRegex.TrimEnd('}');
+                    int intRegex;
+                    if ((!String.IsNullOrEmpty(strRegex)) && (Int32.TryParse(strRegex,out intRegex))) {
+                        strResult += " length='" + strRegex + "'";
+                    }
+                }
+
+            }
+            return strResult;
         }
     }
 }
