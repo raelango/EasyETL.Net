@@ -224,7 +224,7 @@ namespace EasyETL.DataSets
                 bool bPrimaryKey = false;
                 string strExpression = String.Empty;
                 string strDisplayName = childNode.Name;
-
+                string strDescription = String.Empty;
                 int columnLength = 0;
                 RegexColumnType rct = RegexColumnType.STRING;
                 //Column level attributes...
@@ -257,6 +257,8 @@ namespace EasyETL.DataSets
                             bAutoIncrement = Boolean.Parse(xAttr.Value);
                             break;
                         case "STARTVALUE":
+                        case "START":
+                        case "SEED":
                             intStartValue = Int32.Parse(xAttr.Value);
                             break;
                         case "INCREMENT":
@@ -277,23 +279,31 @@ namespace EasyETL.DataSets
                         case "CAPTION":
                             strDisplayName = xAttr.Value;
                             break;
+                        case "DESCRIPTION":
+                            strDescription = xAttr.Value;
+                            break;
                     }
                 }
                 bool bColumnAdded = false;
+                string strColumnName = childNode.Name;
+                if (strColumnName.Trim('_') == String.Empty)
+                {
+                    strColumnName = String.Empty;
+                }
                 if (bAutoIncrement)
                 {
-                    columnBuilder.AddColumn(childNode.Name, bAutoIncrement, intStartValue, intIncrement);
+                    columnBuilder.AddColumn(strColumnName, bAutoIncrement, intStartValue, intIncrement);
                     bColumnAdded = true;
                 }
                 if (!bColumnAdded && !String.IsNullOrEmpty(strExpression))
                 {
-                    columnBuilder.AddColumn(childNode.Name, rct, strExpression);
+                    columnBuilder.AddColumn(strColumnName, rct, strExpression);
                     bColumnAdded = true;
                 }
 
                 if ((!bColumnAdded) && (bForeignKey))
                 {
-                    columnBuilder.AddColumn(childNode.Name, bForeignKey);
+                    columnBuilder.AddColumn(strColumnName, bForeignKey);
                     bColumnAdded = true;
                 }
 
@@ -303,17 +313,17 @@ namespace EasyETL.DataSets
                     {
                         if (hasDoubleQuotes)
                         {
-                            columnBuilder.AddColumn('\"' + childNode.Name + '\"', separator[0], rct);
+                            columnBuilder.AddColumn('\"' + strColumnName + '\"', separator[0], rct);
                         }
                         else
                         {
                             if (childNode.NextSibling == null)
                             {
-                                columnBuilder.AddColumn(childNode.Name, ".*", rct);
+                                columnBuilder.AddColumn(strColumnName, ".*", rct);
                             }
                             else
                             {
-                                columnBuilder.AddColumn(childNode.Name, "[^" + columnBuilder.RegexFormattedOutput(separator[0]) + "\\n]*", prefix, suffix, rct);
+                                columnBuilder.AddColumn(strColumnName, "[^" + columnBuilder.RegexFormattedOutput(separator[0]) + "\\n]*", prefix, suffix, rct);
                             }
                         }
                     }
@@ -321,11 +331,11 @@ namespace EasyETL.DataSets
                     {
                         if (columnLength > 0)
                         {
-                            columnBuilder.AddColumn(childNode.Name, columnLength, rct);
+                            columnBuilder.AddColumn(strColumnName, columnLength, rct);
                         }
                         else
                         {
-                            columnBuilder.AddColumn(childNode.Name, ".*", rct);
+                            columnBuilder.AddColumn(strColumnName, ".*", rct);
                         }
                     }
 
@@ -342,15 +352,18 @@ namespace EasyETL.DataSets
                         addedColumn.IsUnique = bPrimaryKey;
                     }
 
-                    if (strDisplayName != childNode.Name)
+                    if (strDisplayName != strColumnName)
                     {
                         addedColumn.DisplayName = strDisplayName;
                     }
+                    if (!String.IsNullOrEmpty(strDescription)) {
+                        addedColumn.Description = strDescription;
+                    }
                 }
-
 
             }
         }
+
 
         private DataTable DataTable
         {
@@ -422,35 +435,39 @@ namespace EasyETL.DataSets
         {
             foreach (RegexColumn rColumn in regexColumns)
             {
-                DataColumn dColumn = new DataColumn(rColumn.ColumnName, rColumn.ColumnTypeAsType);
-                if (rColumn.AutoIncrement)
+                if (!String.IsNullOrEmpty(rColumn.ColumnName))
                 {
-                    dColumn.AutoIncrement = rColumn.AutoIncrement;
-                    dColumn.AutoIncrementSeed = rColumn.StartValue;
-                    dColumn.AutoIncrementStep = rColumn.Increment;
-                }
-                if (!String.IsNullOrEmpty(rColumn.Expression))
-                {
-                    dColumn.Expression = rColumn.Expression;
-                }
-                dColumn.Unique = rColumn.IsUnique;
-                if (!String.IsNullOrEmpty(rColumn.DisplayName))
-                {
-                    dColumn.Caption = rColumn.DisplayName;
-                }
-                dataTable.Columns.Add(dColumn);
 
-                if (rColumn.IsForeignKey)
-                {
-                    foreach (DataTable dTable in dataTable.DataSet.Tables)
+                    DataColumn dColumn = new DataColumn(rColumn.ColumnName, rColumn.ColumnTypeAsType);
+                    if (rColumn.AutoIncrement)
                     {
-                        if ((dTable.TableName != dataTable.TableName) && (dTable.Columns.Contains(rColumn.ColumnName)))
+                        dColumn.AutoIncrement = rColumn.AutoIncrement;
+                        dColumn.AutoIncrementSeed = rColumn.StartValue;
+                        dColumn.AutoIncrementStep = rColumn.Increment;
+                    }
+                    if (!String.IsNullOrEmpty(rColumn.Expression))
+                    {
+                        dColumn.Expression = rColumn.Expression;
+                    }
+                    dColumn.Unique = rColumn.IsUnique;
+                    if (!String.IsNullOrEmpty(rColumn.DisplayName))
+                    {
+                        dColumn.Caption = rColumn.DisplayName;
+                    }
+                    dataTable.Columns.Add(dColumn);
+
+                    if (rColumn.IsForeignKey)
+                    {
+                        foreach (DataTable dTable in dataTable.DataSet.Tables)
                         {
-                            DataColumn parentDataColumn = dTable.Columns[rColumn.ColumnName];
-                            if (parentDataColumn.AutoIncrement || parentDataColumn.Unique)
+                            if ((dTable.TableName != dataTable.TableName) && (dTable.Columns.Contains(rColumn.ColumnName)))
                             {
-                                dColumn.DataType = dTable.Columns[rColumn.ColumnName].DataType;
-                                this.Relations.Add(dTable.Columns[rColumn.ColumnName], dColumn);
+                                DataColumn parentDataColumn = dTable.Columns[rColumn.ColumnName];
+                                if (parentDataColumn.AutoIncrement || parentDataColumn.Unique)
+                                {
+                                    dColumn.DataType = dTable.Columns[rColumn.ColumnName].DataType;
+                                    this.Relations.Add(dTable.Columns[rColumn.ColumnName], dColumn);
+                                }
                             }
                         }
                     }

@@ -294,6 +294,7 @@ namespace EasyETL.DataSets
 
 
 
+        #region constructors
         /// <summary>
         ///     Constructor
         /// </summary>
@@ -340,6 +341,7 @@ namespace EasyETL.DataSets
             Increment = 1;
             IsUnique = false;
         }
+        #endregion
 
         /// <summary>
         ///     Get or set the name of the column
@@ -354,7 +356,6 @@ namespace EasyETL.DataSets
         /// <summary>
         /// Get or set the preceding regular expression for any data not to be captured for this column
         /// </summary>
-
         public string PrecedingRegEx { get; set; }
 
         /// <summary>
@@ -406,6 +407,11 @@ namespace EasyETL.DataSets
         /// 
         /// </summary>
         public string DisplayName { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Description { get; set; }
 
         /// <summary>
         ///     Get the System.Type of this RegexColumn
