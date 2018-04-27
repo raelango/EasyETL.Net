@@ -461,8 +461,8 @@ namespace EasyETL.DataSets
         {
             StringBuilder sbResult = new StringBuilder();
             sbResult.Append("<" + (String.IsNullOrEmpty(ColumnName) ? "_" : ColumnName) + GetRegexProperties() );
-            if (!String.IsNullOrEmpty(PrecedingRegEx))  sbResult.Append(" Prefix = '" + PrecedingRegEx + "'");
-            if (!String.IsNullOrEmpty(TrailingRegEx)) sbResult.Append(" Suffix = '" + TrailingRegEx + "'");
+            if (!String.IsNullOrEmpty(PrecedingRegEx.TrimEnd('"')))  sbResult.Append(" Prefix = '" + PrecedingRegEx + "'");
+            if (!String.IsNullOrEmpty(TrailingRegEx.TrimEnd('"'))) sbResult.Append(" Suffix = '" + TrailingRegEx + "'");
             if (ColumnType != RegexColumnType.STRING) sbResult.Append(" Type = '" + ColumnType.ToString() + "'");
             if (!String.IsNullOrEmpty(ValueMatchingCondition)) sbResult.Append(" Condition = '" + ValueMatchingCondition + "'");
             if (AutoIncrement) sbResult.Append(" AutoIncrement = '" + AutoIncrement.ToString() + "'");
