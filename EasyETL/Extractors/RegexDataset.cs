@@ -226,6 +226,7 @@ namespace EasyETL.DataSets
                 string strExpression = String.Empty;
                 string strDisplayName = childNode.Name;
                 string strDescription = String.Empty;
+                string strDefault = String.Empty;
                 int columnLength = 0;
                 RegexColumnType rct = RegexColumnType.STRING;
                 //Column level attributes...
@@ -282,6 +283,9 @@ namespace EasyETL.DataSets
                             break;
                         case "DESCRIPTION":
                             strDescription = xAttr.Value;
+                            break;
+                        case "DEFAULT":
+                            strDefault = xAttr.Value;
                             break;
                     }
                 }
@@ -359,6 +363,10 @@ namespace EasyETL.DataSets
                     }
                     if (!String.IsNullOrEmpty(strDescription)) {
                         addedColumn.Description = strDescription;
+                    }
+                    if (!String.IsNullOrEmpty(strDefault))
+                    {
+                        addedColumn.Default = strDefault;
                     }
                 }
 
@@ -453,6 +461,10 @@ namespace EasyETL.DataSets
                     if (!String.IsNullOrEmpty(rColumn.DisplayName))
                     {
                         dColumn.Caption = rColumn.DisplayName;
+                    }
+                    if (!String.IsNullOrEmpty(rColumn.Default))
+                    {
+                        dColumn.ExtendedProperties.Add("DefaultValue", rColumn.Default);
                     }
                     dataTable.Columns.Add(dColumn);
 
@@ -832,6 +844,10 @@ namespace EasyETL.DataSets
         {
             foreach (DataColumn dColumn in dataRow.Table.Columns)
             {
+                if (dColumn.ExtendedProperties.ContainsKey("DefaultValue"))
+                {
+                    dataRow[dColumn] = dColumn.ExtendedProperties["DefaultValue"].ToString();
+                }
                 if (rowDict.ContainsKey(dColumn.ColumnName))
                 {
                     if (dColumn.AutoIncrement || !String.IsNullOrEmpty(dColumn.Expression))
@@ -843,6 +859,7 @@ namespace EasyETL.DataSets
                         dataRow[dColumn] = rowDict[dColumn.ColumnName];
                     }
                 }
+
             }
         }
         #endregion

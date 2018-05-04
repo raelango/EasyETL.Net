@@ -424,6 +424,10 @@ namespace EasyETL.DataSets
         public string Description { get; set; }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public string Default { get; set; }
+        /// <summary>
         ///     Get the System.Type of this RegexColumn
         /// </summary>
         public Type ColumnTypeAsType
@@ -473,7 +477,8 @@ namespace EasyETL.DataSets
             if (IsUnique) sbResult.Append(" PrimaryKey = '" + IsUnique.ToString() + "'");
 
             if (!String.IsNullOrEmpty(DisplayName)) sbResult.Append(" DisplayName = '" + DisplayName + "'");
-            if (!String.IsNullOrEmpty(Description)) sbResult.Append(" Description = '" + Description.ToString() + "'");
+            if (!String.IsNullOrEmpty(Description)) sbResult.Append(" Description = '" + Description + "'");
+            if (!String.IsNullOrEmpty(Default)) sbResult.Append(" Default = '" + Default + "'");
             sbResult.Append(" />");
             return sbResult.ToString();
         }
