@@ -57,6 +57,8 @@ namespace EasyETL.Listeners
         {
             DataToPass["ImpactedFullFileOrFolderName"] = e.FullPath;
             DataToPass["NatureOfChange"] = e.ChangeType.ToString();
+            if (File.GetLastAccessTime(e.FullPath) > File.GetLastWriteTime(e.FullPath))
+                DataToPass["NatureOfChange"] = "Read";
             DataToPass["ImpactedFileOrFolderName"] = e.Name;
             DataToPass["TimeOfEvent"] = DateTime.Now;
             TriggerEvent();
