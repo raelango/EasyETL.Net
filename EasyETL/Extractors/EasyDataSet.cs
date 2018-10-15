@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 using System.Xml;
+using System.IO;
 
 namespace EasyETL.DataSets
 {
@@ -44,6 +45,29 @@ namespace EasyETL.DataSets
             return String.Empty;
         }
 
+
+        /// <summary>
+        ///     Reads every line in the text file and tries to match
+        ///     it with the given regular expression.
+        ///     Every match will be placed as a new row in the
+        ///     datatable
+        /// </summary>
+        /// <param name="textFile"></param>
+        public virtual void Fill(Stream textFile)
+        {
+            Fill();
+        }
+
+        public virtual void Fill(string textFileName)
+        {
+            using (FileStream fs = new FileStream(textFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            {
+                Fill(fs);
+            }
+        }
+
+
+
         public virtual void Fill()
         {
             CreateTableStructure();
@@ -60,7 +84,6 @@ namespace EasyETL.DataSets
         }
 
         #endregion
-
 
 
         #region protected methods

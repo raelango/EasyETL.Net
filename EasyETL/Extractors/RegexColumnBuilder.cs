@@ -35,19 +35,20 @@ namespace EasyETL.DataSets
         /// </summary>
         public bool EndAtEndOfString = true;
 
-        public RegexColumnBuilder(string separator, params string[] columnNames)
+        public RegexColumnBuilder(string separator = "", params string[] columnNames)
         {
             Separator = separator;
             for (int i = 0; i < columnNames.Length; i++)
             {
-                if (i < columnNames.Length - 1) {
+                if (i < columnNames.Length - 1)
+                {
                     AddColumn(columnNames[i]);
                 }
                 else
                 {
                     if (columnNames[i].Contains(":"))
                     {
-                        AddColumn(columnNames[i].Split(':')[0], ".*" );
+                        AddColumn(columnNames[i].Split(':')[0], ".*");
                     }
                     else
                     {
@@ -63,13 +64,16 @@ namespace EasyETL.DataSets
         }
 
 
-        public void AddColumn(string columnName, bool bAutoIncrement, Int32 startValue, Int32 increment) {
-            if (bAutoIncrement) {
-                Columns.Add(new RegexColumn(columnName,startValue,increment));
+        public void AddColumn(string columnName, bool bAutoIncrement, Int32 startValue, Int32 increment)
+        {
+            if (bAutoIncrement)
+            {
+                Columns.Add(new RegexColumn(columnName, startValue, increment));
             }
-            else {
+            else
+            {
                 AddColumn(columnName);
-            } 
+            }
         }
 
         public void AddColumn(string columnName, bool bIsForeignKey)
@@ -101,6 +105,10 @@ namespace EasyETL.DataSets
                 if (columnName.Contains(":"))
                 {
                     AddColumn(columnName.Split(':')[0], Int16.Parse(columnName.Split(':')[1]));
+                }
+                else
+                {
+                    AddColumn(columnName, ".*");
                 }
             }
         }
@@ -155,9 +163,9 @@ namespace EasyETL.DataSets
         public void AddColumn(string columnName, string columnRegEx, RegexColumnType columnType = RegexColumnType.STRING)
         {
             string precedingRegEx = columnName.StartsWith("\"") ? "\"" : String.Empty;
-            string trailingRegEx = columnName.EndsWith("\"") ? "\"" :String.Empty;
+            string trailingRegEx = columnName.EndsWith("\"") ? "\"" : String.Empty;
             columnName = columnName.Trim('\"');
-            AddColumn(columnName, columnRegEx, trailingRegEx,precedingRegEx, columnType);
+            AddColumn(columnName, columnRegEx, trailingRegEx, precedingRegEx, columnType);
         }
 
         /// <summary>
@@ -184,7 +192,7 @@ namespace EasyETL.DataSets
         public void AddColumn(string columnName, string columnRegEx, string trailingRegEx, string precedingRegEx,
                               RegexColumnType columnType = RegexColumnType.STRING)
         {
-            Columns.Add(new RegexColumn(columnName, columnRegEx, trailingRegEx, precedingRegEx,columnType));
+            Columns.Add(new RegexColumn(columnName, columnRegEx, trailingRegEx, precedingRegEx, columnType));
         }
 
         /// <summary>
@@ -464,8 +472,8 @@ namespace EasyETL.DataSets
         public string GetPropertiesAsXml()
         {
             StringBuilder sbResult = new StringBuilder();
-            sbResult.Append("<" + (String.IsNullOrEmpty(ColumnName) ? "_" : ColumnName) + GetRegexProperties() );
-            if (!String.IsNullOrEmpty(PrecedingRegEx.TrimEnd('"')))  sbResult.Append(" Prefix = '" + PrecedingRegEx + "'");
+            sbResult.Append("<" + (String.IsNullOrEmpty(ColumnName) ? "_" : ColumnName) + GetRegexProperties());
+            if (!String.IsNullOrEmpty(PrecedingRegEx.TrimEnd('"'))) sbResult.Append(" Prefix = '" + PrecedingRegEx + "'");
             if (!String.IsNullOrEmpty(TrailingRegEx.TrimEnd('"'))) sbResult.Append(" Suffix = '" + TrailingRegEx + "'");
             if (ColumnType != RegexColumnType.STRING) sbResult.Append(" Type = '" + ColumnType.ToString() + "'");
             if (!String.IsNullOrEmpty(ValueMatchingCondition)) sbResult.Append(" Condition = '" + ValueMatchingCondition + "'");
@@ -491,7 +499,7 @@ namespace EasyETL.DataSets
             {
                 strRegex = strRegex.TrimEnd('*');
                 strRegex = strRegex.TrimEnd(']');
-                if (strRegex.EndsWith("\\n")) strRegex = strRegex.Substring(0,strRegex.Length -2);
+                if (strRegex.EndsWith("\\n")) strRegex = strRegex.Substring(0, strRegex.Length - 2);
                 if (strRegex.StartsWith("[^"))
                 {
                     strRegex = strRegex.Substring(2);
@@ -511,7 +519,8 @@ namespace EasyETL.DataSets
                     strRegex = strRegex.Substring(2);
                     strRegex = strRegex.TrimEnd('}');
                     int intRegex;
-                    if ((!String.IsNullOrEmpty(strRegex)) && (Int32.TryParse(strRegex,out intRegex))) {
+                    if ((!String.IsNullOrEmpty(strRegex)) && (Int32.TryParse(strRegex, out intRegex)))
+                    {
                         strResult += " length='" + strRegex + "'";
                     }
                 }

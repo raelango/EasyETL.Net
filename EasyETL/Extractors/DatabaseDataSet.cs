@@ -43,7 +43,7 @@ namespace EasyETL.DataSets
             Fill(sqlString);
         }
 
-        public virtual void Fill(string sqlString)
+        public override void Fill(string sqlString)
         {
             _sqlString = sqlString;
             Fill();

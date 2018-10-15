@@ -83,6 +83,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EasyETLJob.cs" />
+    <Compile Include="Extractors\DelimitedDataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Extractors\EasyDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -90,6 +93,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Extractors\ExcelDataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Extractors\HL7DataSet.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Extractors\HtmlDataSet.cs">
@@ -110,6 +116,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Listeners\ConfigurationClasses.cs" />
     <Compile Include="Listeners\EventLogListener.cs" />
     <Compile Include="Listeners\FileListener.cs" />
     <Compile Include="Listeners\FolderListener.cs" />

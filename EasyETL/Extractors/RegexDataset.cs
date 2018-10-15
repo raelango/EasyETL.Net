@@ -592,13 +592,13 @@ namespace EasyETL.DataSets
         ///     datatable
         /// </summary>
         /// <param name="textFile"></param>
-        public void Fill(Stream textFile)
+        public override void Fill(Stream textFile)
         {
             TextFile = textFile;
             Fill();
         }
 
-        public virtual void Fill(string textFileName)
+        public override void Fill(string textFileName)
         {
             using (FileStream fs = new FileStream(textFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
