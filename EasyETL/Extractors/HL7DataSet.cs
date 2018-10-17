@@ -10,10 +10,11 @@ namespace EasyETL.DataSets
 {
     public class  HL7DataSet : DelimitedDataSet 
     {
-        public HL7DataSet()
+        public HL7DataSet(string fileName = "", string delimiter="|") : base(fileName, delimiter, false,"MSH") 
         {
             
         }
+
         public override void Fill(Stream textFile)
         {
             UseFirstRowNamesAsColumnNames = false;

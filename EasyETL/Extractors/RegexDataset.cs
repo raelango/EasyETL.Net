@@ -1,3 +1,4 @@
+using EasyETL.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -37,7 +38,7 @@ namespace EasyETL.DataSets
 
         public Queue<string> QueueToParse = new Queue<string>();
 
-        protected Dictionary<string, string> rowDict = new Dictionary<string, string>();
+        protected Dictionary<string, object> rowDict = new Dictionary<string, object>();
 
         /// <summary>
         ///     The text file to be read
@@ -187,6 +188,7 @@ namespace EasyETL.DataSets
             {
                 string strCondition = String.Empty;
                 string strTableName = TableName;
+                string strTableStructureType = String.Empty;
                 //Conditional Table level attributes...
                 foreach (XmlAttribute xAttr in childNode.Attributes)
                 {
@@ -201,11 +203,21 @@ namespace EasyETL.DataSets
                         case "TABLENAME":
                             strTableName = xAttr.Value;
                             break;
+                        case "TABLESTRUCTURETYPE":
+                            strTableStructureType = xAttr.Value;
+                            break;
                     }
 
                 }
                 RegexColumnBuilder conditionalRCB = new RegexColumnBuilder(separator);
-                foreach (XmlNode subNode in childNode.ChildNodes)
+
+                XmlNode tableNode = childNode;
+                if (!String.IsNullOrWhiteSpace(strTableStructureType))
+                {
+                    tableNode = Configuration.GetDataTableNode(strTableStructureType);
+                }
+
+                foreach (XmlNode subNode in tableNode.ChildNodes)
                 {
                     ParseColumnOrParser(conditionalRCB, subNode, separator);
                 }
@@ -494,6 +506,7 @@ namespace EasyETL.DataSets
             bool hasHeaderRow = false;
             bool skipFirstRow = false;
             string separator = "";
+            string TableStructureType = String.Empty;
             //Table level attributes...
             foreach (XmlAttribute xAttr in xNode.Attributes)
             {
@@ -504,6 +517,9 @@ namespace EasyETL.DataSets
                         break;
                     case "TABLENAME":
                         TableName = xAttr.Value;
+                        break;
+                    case "TABLESTRUCTURETYPE":
+                        TableStructureType = xAttr.Value;
                         break;
                     case "HASHEADER":
                         hasHeaderRow = Boolean.Parse(xAttr.Value);
@@ -517,9 +533,16 @@ namespace EasyETL.DataSets
             UseFirstRowNamesAsColumnNames = hasHeaderRow;
             SkipFirstRow = skipFirstRow;
             RegexColumnBuilder rcb = new RegexColumnBuilder(separator);
-            if (xNode.HasChildNodes)
+
+            XmlNode tableNode = xNode;
+            if (!String.IsNullOrWhiteSpace(TableStructureType))
             {
-                foreach (XmlNode childNode in xNode.ChildNodes)
+                tableNode = Configuration.GetDataTableNode(TableStructureType);
+            }
+
+            if (tableNode.HasChildNodes)
+            {
+                foreach (XmlNode childNode in tableNode.ChildNodes)
                 {
                     ParseColumnOrParser(rcb, childNode, separator);
                 }
@@ -728,7 +751,6 @@ namespace EasyETL.DataSets
 
         protected virtual void ParseAndLoadLines(string lines)
         {
-
             foreach (string readLine in lines.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 bool bImportRow = false;
@@ -737,7 +759,7 @@ namespace EasyETL.DataSets
                     var m = ContentExpression.Match(readLine);
                     bImportRow = true;
                     short groupNum;
-                    Dictionary<string, object> rowDict = new Dictionary<string, object>();
+                    rowDict = new Dictionary<string, object>();
                     foreach (var sGroup in ContentExpression.GetGroupNames())
                     {
                         if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
@@ -769,10 +791,10 @@ namespace EasyETL.DataSets
                     {
                         DataRow newRow = DataTable.NewRow();
                         PopulateDictionaryToRow(newRow);
-                        foreach (KeyValuePair<string, object> kvPair in rowDict)
-                        {
-                            newRow[kvPair.Key] = kvPair.Value;
-                        }
+                        //foreach (KeyValuePair<string, object> kvPair in rowDict)
+                        //{
+                        //    newRow[kvPair.Key] = kvPair.Value;
+                        //}
                         DataTable.Rows.Add(newRow);
                         PopulateRowToDictionary(DataTable.Rows[DataTable.Rows.Count - 1]);
                     }
@@ -788,7 +810,6 @@ namespace EasyETL.DataSets
                             DataTable crpDataTable = Tables[crp.TableName];
                             var m = crp.parseRegex.Match(readLine);
                             short groupNum;
-                            Dictionary<string, object> rowDict = new Dictionary<string, object>();
                             foreach (var sGroup in crp.parseRegex.GetGroupNames())
                             {
                                 if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
@@ -811,10 +832,6 @@ namespace EasyETL.DataSets
 
                             DataRow newRow = crpDataTable.NewRow();
                             PopulateDictionaryToRow(newRow);
-                            foreach (KeyValuePair<string, object> kvPair in rowDict)
-                            {
-                                newRow[kvPair.Key] = kvPair.Value;
-                            }
                             crpDataTable.Rows.Add(newRow);
                             PopulateRowToDictionary(crpDataTable.Rows[crpDataTable.Rows.Count - 1]);
                             bLineParsed = true;
@@ -832,7 +849,7 @@ namespace EasyETL.DataSets
 
         }
 
-        private void PopulateRowToDictionary(DataRow dataRow)
+        protected void PopulateRowToDictionary(DataRow dataRow)
         {
             foreach (DataColumn dColumn in dataRow.Table.Columns)
             {
@@ -840,7 +857,7 @@ namespace EasyETL.DataSets
             }
         }
 
-        private void PopulateDictionaryToRow(DataRow dataRow)
+        protected void PopulateDictionaryToRow(DataRow dataRow)
         {
             foreach (DataColumn dColumn in dataRow.Table.Columns)
             {

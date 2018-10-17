@@ -1,4 +1,5 @@
 ﻿using EasyETL.DataSets;
+using EasyETL.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,13 +28,13 @@ namespace EasyETL.Parsers
 
         public void LoadProfile(string profileName)
         {
-            ProfileNode = null;
-            if (!String.IsNullOrWhiteSpace(profileName))
-            {
-                XmlDocument xDoc = new XmlDocument();
-                xDoc.Load("profiles.xml");
-                ProfileNode = xDoc.SelectSingleNode("profiles/" + profileName);
-            }
+            ProfileNode = Configuration.GetProfileNode(profileName) ;
+            //if (!String.IsNullOrWhiteSpace(profileName))
+            //{
+            //    XmlDocument xDoc = new XmlDocument();
+            //    xDoc.Load("profiles.xml");
+            //    ProfileNode = xDoc.SelectSingleNode("profiles/" + profileName);
+            //}
         }
 
         public static EasyDataSet Parse(string parseFileName) {

@@ -1,156 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <profiles>
   <hl7 separator="|" TableName="MessageHeader">
-    <if condition="^MSH" TableName="MessageHeader">
-      <MessageID AutoIncrement="true" />
-      <SegmentName />
-      <EndcodingCharacters length="4"/>
-      <SendingApp/>
-      <SendingFacility/>
-      <ReceivingApp/>
-      <ReceivingFacility/>
-      <DateTimeOfMessage/>
-      <Security/>
-      <MessageType/>
-      <MessageControlID Unique="true"/>
-      <ProcessingID/>
-      <VersionID/>
-      <SequenceID/>
-      <ContinuationPointer/>
-      <AcceptAckType/>
-      <AppAckType/>
-      <CountryCode/>
-      <CharacterSet/>
-      <PrincipalLanguageOfMessage />
-    </if>
-    <if condition="^PID" TableName="PatientDetails">
-      <MessageControlID ForeignKey="true" />
-      <SegmentName/>
-      <PatientID/>
-      <ExternalID/>
-      <InternalID/>
-      <AlternateID/>
-      <PatientName/>
-      <MotherMaidenName/>
-      <DateTimeOfBirth/>
-      <Sex/>
-      <PatientAlias/>
-      <Race/>
-      <PatientAddress/>
-      <CountryCode/>
-      <HomePhone/>
-      <BusinessPhone/>
-      <PrimaryLanguage/>
-      <MaritalStatus/>
-      <Religion/>
-      <AccountNumber/>
-      <SSN/>
-      <DL/>
-      <MotherIdentifier/>
-      <EthinicGroup/>
-      <BirthPlace/>
-      <MultipleBirthIndicator/>
-      <BirthOrder/>
-      <Citizenship/>
-      <VeteranStatus/>
-      <Nationality/>
-      <DateTimeOfDeath/>
-      <DeathIndicator />
-    </if>
-    <if condition="^PD1" TableName="PIDDetails">
-      <MessageControlID ForeignKey="true" />
-      <SegmentName/>
-      <LivingDependency/>
-      <LivingArrangement/>
-      <PrimaryFacility/>
-      <PCPNameAndID/>
-      <StudentIndicator/>
-      <Handicap/>
-      <LivingWillCode/>
-      <OrganDonorCode/>
-      <SeparateBill/>
-      <DuplicatePatient/>
-      <PublicityCode/>
-      <ProtectionIndicator/>
-      <ProtIndEffectiveDate/>
-      <PlaceOfWorship/>
-      <AdvanceDirectiveCode/>
-      <ImmRegStatus/>
-      <ImmRegStatEffDate/>
-      <PubCodeEffDate/>
-      <MilitaryBranch/>
-      <MilitaryRank/>
-      <MilitaryStatus />      
-    </if>
-    <if condition="^OBR" TableName="ObsRecord">
-      <ObrID AutoIncrement ="true" />
-      <MessageControlID ForeignKey="true" />
-      <SegmentName/>
-      <SetID Caption="Record Index"/>
-      <PlacerOrderNumber/>
-      <_ FieldName="FillerOrderNumber"/>
-      <UnversalServiceID/>
-      <Priority/>
-      <RequestDateTime/>
-      <ObservationDateTime/>
-      <ObsEndDateTime/>
-      <CollectionVolume/>
-      <CollectorIdentifier/>
-      <SpecimenActionCode/>
-      <DangerCode/>
-      <RelevantClinicalInfo/>
-      <SpecimenReceivedDateTime/>
-      <SpecimenSource/>
-      <OrderingProvider/>
-      <OrderCallbackPhone/>
-      <PlacerField1/>
-      <PlacerField2/>
-      <FillerField1/>
-      <FillerField2/>
-      <ResultsReportDateTime/>
-      <ChargeToPractice/>
-      <DiagnosticServiceSectID/>
-      <ResultStatus/>
-      <ParentResult/>
-      <QuantityTiming/>
-      <ResultCopiesTo/>
-      <Parent/>
-      <TransportationMode/>
-      <ReasonForStudy/>
-      <PrincipalResultInterpreter/>
-      <AssistantResultInterpreter/>
-      <Technician/>
-      <Transcriptionist/>
-      <ScheduledDateTime/>
-      <NumberOfSampleContainers/>
-      <TransportLogisticsForCollSample/>
-      <CollectorComment/>
-      <TransportArrangementResponsibility/>
-      <TransportArranged/>
-      <EscortRequired/>
-      <PlannedTransportComment />
-    </if>
-    <if condition="^OBX" TableName="Observation">
-      <ObxID AutoIncrement ="true" />
-      <ObrID ForeignKey="true" />
-      <SegmentName/>
-      <SetID/>
-      <ValueType/>
-      <ObsIdentifier/>
-      <ObsValue/>
-      <Units/>
-      <ReferenceRange/>
-      <AbnormalFlags/>
-      <Probability/>
-      <NatureOfAbnormalTest/>
-      <ObsResultStatus/>
-      <DateDastObsNormalValues/>
-      <UserDefinedAccessChecks/>
-      <DateTimeOfObs/>
-      <ProducerID/>
-      <ResponsibileObserver/>
-      <ObsMethod />
-    </if>
+    <if condition="^MSH" TableName="MessageHeader" TableStructureType="HL7_MessageHeader" />    
+    <if condition="^PID" TableName="PatientDetails" TableStructureType="HL7_PatientDetails" />
+    <if condition="^PD1" TableName="PatientAdditionalDetails" TableStructureType="HL7_PatientAdditionalDetails" />
+    <if condition="^OBR" TableName="ObservationRequest" TableStructureType="HL7_ObservationRequest" />
+    <if condition="^OBX" TableName="ObservationResult" TableStructureType="HL7_ObservationResult" />
+    <if condition="^NK1" TableName="NextOfKinDetails" TableStructureType="HL7_NextOfKinDetails" />
+    <if condition="^ORC" TableName="CommonOrder" TableStructureType="HL7_CommonOrder" />
   </hl7>
   <TabWithHeader separator="\t" hasheader="true"  tablename="data"/>
   <TabWithoutHeader separator="\t"   tablename="data"/>
@@ -210,7 +67,7 @@
   <TestHtmlLoader>
     <Age condition="^(?!4.).*"/>
   </TestHtmlLoader>
-  <CSV type="delimited" TableName="CSVTable"/>
+  <delimited type="delimited" />
   <hl7file type="hl7" />
   <MRSIOleDatabase Type="OleDB" ConnString="Provider=sqloledb;Data Source=MRSI-DATA2\MRSIDATA2;Initial Catalog=MRSI;Integrated Security=SSPI;" />
   <excel type="ODBC" ConnString="Driver={Microsoft Excel Driver (*.xls, *.xlsx, *.xlsm, *.xlsb)};Dbq=[FileName];Header=True;ReadOnly=0;" SQL="select * from [Sheet1$]" />

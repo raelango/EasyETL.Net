@@ -15,11 +15,14 @@ namespace EasyETL.DataSets
 
         
 
-        public DelimitedDataSet(string delimiter = "", bool hasHeaderRow = true)
+        public DelimitedDataSet(string fileName = "", string delimiter = "", bool hasHeaderRow = true, string tableName = "data") : base(fileName,delimiter,tableName,hasHeaderRow)
         {
             _delimiter = delimiter;
             _hasHeaderRow = hasHeaderRow;
+            if (!String.IsNullOrEmpty(fileName) && (File.Exists(fileName))) Fill(fileName);
         }
+
+
         public override void Fill(Stream textFile)
         {
             UseFirstRowNamesAsColumnNames = _hasHeaderRow;
