@@ -467,7 +467,25 @@ namespace EasyETL.DataSets
                     }
                     if (!String.IsNullOrEmpty(rColumn.Expression))
                     {
-                        dColumn.Expression = rColumn.Expression;
+                        if (rColumn.Expression.StartsWith("{") && rColumn.Expression.EndsWith("}"))
+                        {
+                            rColumn.Expression = "'" + DynamicCode.EvaluateString(rColumn.Expression.Substring(1, rColumn.Expression.Length - 2)) + "'";
+                        }
+                        try
+                        {
+                            dColumn.Expression = rColumn.Expression;
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                dColumn.Expression = "'" + DynamicCode.EvaluateString(rColumn.Expression) + "'" ;
+                            }
+                            catch
+                            {
+                                dColumn.Expression = String.Empty;
+                            }
+                        }
                     }
                     dColumn.Unique = rColumn.IsUnique;
                     if (!String.IsNullOrEmpty(rColumn.DisplayName))
@@ -754,6 +772,7 @@ namespace EasyETL.DataSets
             foreach (string readLine in lines.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 bool bImportRow = false;
+                bool bLineParsed = false;
                 if ((ContentExpression != null) && ContentExpression.IsMatch(readLine))
                 {
                     var m = ContentExpression.Match(readLine);
@@ -797,16 +816,17 @@ namespace EasyETL.DataSets
                         //}
                         DataTable.Rows.Add(newRow);
                         PopulateRowToDictionary(DataTable.Rows[DataTable.Rows.Count - 1]);
+                        bLineParsed = true;
                     }
                 }
 
-                bool bLineParsed = false;
-                if (!bImportRow)
+                if (!bLineParsed)
                 {
                     foreach (ConditionalRegexParser crp in Parsers)
                     {
-                        if (crp.ConditionRegex.IsMatch(readLine))
+                        if (!bLineParsed && crp.ConditionRegex.IsMatch(readLine))
                         {
+                            bImportRow = true;
                             DataTable crpDataTable = Tables[crp.TableName];
                             var m = crp.parseRegex.Match(readLine);
                             short groupNum;
@@ -814,6 +834,12 @@ namespace EasyETL.DataSets
                             {
                                 if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
                                 {
+                                    RegexColumn curRegexColumn = crp.RegexColumns.Find(r => r.ColumnName == sGroup);
+                                    if (!String.IsNullOrWhiteSpace(curRegexColumn.ValueMatchingCondition) && (!Regex.IsMatch(m.Groups[sGroup].Value, curRegexColumn.ValueMatchingCondition)))
+                                    {
+                                        bImportRow = false;
+                                        break;
+                                    }
                                     string fieldValue = m.Groups[sGroup].Value;
                                     fieldValue = fieldValue.Trim('\"');
                                     if (crpDataTable.Columns[sGroup] != null)
@@ -829,14 +855,14 @@ namespace EasyETL.DataSets
                                     }
                                 }
                             }
-
-                            DataRow newRow = crpDataTable.NewRow();
-                            PopulateDictionaryToRow(newRow);
-                            crpDataTable.Rows.Add(newRow);
-                            PopulateRowToDictionary(crpDataTable.Rows[crpDataTable.Rows.Count - 1]);
-                            bLineParsed = true;
-                            bImportRow = true;
-                            break;
+                            if (bImportRow)
+                            {
+                                DataRow newRow = crpDataTable.NewRow();
+                                PopulateDictionaryToRow(newRow);
+                                crpDataTable.Rows.Add(newRow);
+                                PopulateRowToDictionary(crpDataTable.Rows[crpDataTable.Rows.Count - 1]);
+                                bLineParsed = true;
+                            }
                         }
                     }
                 }

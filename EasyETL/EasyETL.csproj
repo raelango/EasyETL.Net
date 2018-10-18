@@ -130,6 +130,7 @@
       <DependentUpon>HL7_Ver_2.4.xsd</DependentUpon>
     </Compile>
     <Compile Include="Utils\Configuration.cs" />
+    <Compile Include="Utils\DynamicCode.cs" />
     <Compile Include="Writers\DatabaseDatasetWriter.cs" />
     <Compile Include="Writers\DatasetWriter.cs" />
     <Compile Include="Writers\DelimitedDatasetWriter.cs" />
