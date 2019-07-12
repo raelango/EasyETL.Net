@@ -1,0 +1,14 @@
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\bin\Debug\EasyXmlSample.exe.config
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\bin\Debug\EasyXmlSample.exe
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\bin\Debug\EasyXmlSample.pdb
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\obj\Debug\EasyXmlSample.csprojResolveAssemblyReference.cache
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\obj\Debug\EasyXmlSample.Properties.Resources.resources
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\obj\Debug\EasyXmlSample.csproj.GenerateResource.Cache
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\obj\Debug\EasyXmlSample.exe
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\obj\Debug\EasyXmlSample.pdb
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\obj\Debug\EasyXmlSample.MainForm.resources
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\bin\Debug\EasyXml.dll
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\bin\Debug\EasyXml.pdb
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\bin\Debug\Newtonsoft.Json.dll
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\bin\Debug\Newtonsoft.Json.xml
+C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\bin\Debug\SgmlReaderDll.dll
