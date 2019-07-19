@@ -19,6 +19,7 @@ namespace EasyXmlSample
 {
     public partial class MainForm : Form
     {
+        EasyXmlDocument ezDoc = null;
         public MainForm()
         {
             InitializeComponent();
@@ -50,6 +51,10 @@ namespace EasyXmlSample
             try
             {
                 EasyXmlDocument xDoc = new EasyXmlDocument();
+                //if (!String.IsNullOrWhiteSpace(cbTransformProfiles.Text))
+                //{
+                //    xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
+                //}
                 //xDoc.NodeInserted += xDoc_NodeInserted;
                 if (tabDataSource.SelectedTab == tabDatasourceDatabase)
                 {
@@ -128,50 +133,9 @@ namespace EasyXmlSample
                             break;
                     }
                 }
+                ezDoc = xDoc;
+                TransformDataFromEzDoc();
 
-                if (!String.IsNullOrWhiteSpace(cbTransformProfiles.Text))
-                {
-                    xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine},StringSplitOptions.None));
-                    //string transformFileName = Path.Combine(Application.StartupPath, cbTransformProfiles.Text + ".transforms");
-                    //if (File.Exists(transformFileName))
-                    //{
-                    //    string[] transformSettings = File.ReadAllLines(transformFileName);
-                    //    xDoc.Transform(transformSettings);
-                    //}
-                }
-
-                if (!String.IsNullOrWhiteSpace(txtXPathQuery.Text))
-                {
-                    xDoc = xDoc.ApplyFilter(txtXPathQuery.Text);
-                }
-                txtXmlContents.Text = xDoc.Beautify();
-                txtXPathContents.Text = xDoc.LastTransformerTemplate;
-
-                DataSet ds = null;
-                if (grpHtmlOptions.Visible)
-                {
-                    ds = xDoc.ToDataSet(txtXPathQuery.Text);
-                }
-                else
-                {
-                   ds = xDoc.ToDataSet();
-                }
-
-                if (ds != null)
-                {
-                    foreach (DataTable table in ds.Tables)
-                    {
-                        cmbTableName.Items.Add(table.TableName);
-                    }
-                }
-                dataGridView1.DataSource = ds;
-                if (cmbTableName.Items.Count > 0)
-                {
-                    cmbTableName.SelectedIndex = 0;
-                    dataGridView1.DataMember = cmbTableName.Text;
-                    lblRecordCount.Text = "(No Records)";
-                    if (dataGridView1.RowCount >0) lblRecordCount.Text = dataGridView1.RowCount + " Record(s)";
-                }
             }
             catch
             {
@@ -179,6 +143,50 @@ namespace EasyXmlSample
             }
             ProgressBar.Visible = false;
             this.UseWaitCursor = false;
+        }
+
+        private void TransformDataFromEzDoc()
+        {
+            lblRecordCount.Text = "";
+            cmbTableName.Items.Clear();
+            EasyXmlDocument xDoc = (EasyXmlDocument)ezDoc.Clone();
+            if (!String.IsNullOrWhiteSpace(cbTransformProfiles.Text))
+            {
+                xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
+            }
+
+            if (!String.IsNullOrWhiteSpace(txtXPathQuery.Text))
+            {
+                xDoc = xDoc.ApplyFilter(txtXPathQuery.Text);
+            }
+            txtXmlContents.Text = xDoc.Beautify();
+            txtXPathContents.Text = xDoc.LastTransformerTemplate;
+
+            DataSet ds = null;
+            if (grpHtmlOptions.Visible)
+            {
+                ds = xDoc.ToDataSet(txtXPathQuery.Text);
+            }
+            else
+            {
+                ds = xDoc.ToDataSet();
+            }
+
+            if (ds != null)
+            {
+                foreach (DataTable table in ds.Tables)
+                {
+                    cmbTableName.Items.Add(table.TableName);
+                }
+            }
+            dataGridView1.DataSource = ds;
+            if (cmbTableName.Items.Count > 0)
+            {
+                cmbTableName.SelectedIndex = 0;
+                dataGridView1.DataMember = cmbTableName.Text;
+                lblRecordCount.Text = "(No Records)";
+                if (dataGridView1.RowCount > 0) lblRecordCount.Text = dataGridView1.RowCount + " Record(s)";
+            }
         }
 
         void xDoc_NodeInserted(object sender, XmlNodeChangedEventArgs e)
@@ -294,7 +302,7 @@ namespace EasyXmlSample
         {
             txtTransformFileName.Text = cbTransformProfiles.Text;
             txtTransformText.Text = File.ReadAllText(Path.Combine(Application.StartupPath, cbTransformProfiles.Text + ".transforms"));
-            LoadDataToGridView();
+            TransformDataFromEzDoc();
         }
 
         private void btnTransformProfilesLoad_Click(object sender, EventArgs e)
@@ -372,8 +380,9 @@ namespace EasyXmlSample
 
         private void txtTransformText_Leave(object sender, EventArgs e)
         {
-            LoadDataToGridView();
+            TransformDataFromEzDoc();
         }
+
 
     }
 }

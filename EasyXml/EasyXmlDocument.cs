@@ -17,6 +17,14 @@ namespace EasyXml
         public XslCompiledTransform LastTransformer = null;
         public string LastTransformerTemplate = String.Empty;
 
+        public override XmlNode Clone()
+        {
+            EasyXmlDocument ezDoc = new EasyXmlDocument();
+            ezDoc.LoadXml(this.OuterXml);
+            return ezDoc;
+        }
+
+
         public void Load(Stream inStream, IEasyParser parser)
         {
             Parser = parser;
@@ -33,6 +41,7 @@ namespace EasyXml
             {
                 Parser.Load(inStream, this);
             }
+            Transform();
         }
 
         public void Load(string filename, IEasyParser parser)
@@ -51,6 +60,7 @@ namespace EasyXml
             {
                 Parser.Load(filename, this);
             }
+            Transform();
         }
 
 
@@ -70,12 +80,14 @@ namespace EasyXml
             {
                 Parser.Load(txtReader, this);
             }
+            Transform();
         }
 
         public void LoadStr(string contents, IEasyParser parser)
         {
             Parser = parser;
             Parser.LoadStr(contents, this);
+            Transform();
         }
 
         public DataSet ToDataSet(string xPathFilter = "")
@@ -176,8 +188,14 @@ namespace EasyXml
             LastTransformerTemplate = String.Empty;
             if (this.DocumentElement.Name == null) return this;
             if (settingsCommands.Length == 0) return this;
-            string rootElementName = this.FirstChild.Name;
-            string rowElementName = this.FirstChild.FirstChild.Name;
+            string rootElementName = string.Empty;
+            string rowElementName = string.Empty;
+            if (this.FirstChild != null) rootElementName = this.FirstChild.Name;
+            if (this.FirstChild.FirstChild != null) rowElementName = this.FirstChild.FirstChild.Name;
+
+            if (String.IsNullOrWhiteSpace(rootElementName)) return this;
+            if (String.IsNullOrWhiteSpace(rowElementName)) return this;
+
             bool bTransformRequired = false;
             Dictionary<string, string> dctAdditions = new Dictionary<string, string>();
             List<string> lstRemoveCommands = new List<string>();
@@ -227,8 +245,12 @@ namespace EasyXml
                             strSortOrder = String.Empty;
                             TransformXml(rootElementName, lstRowElements, xslSB, dctSortOrders);
                             xslSB = new StringBuilder();
-                            rootElementName = this.FirstChild.Name;
-                            rowElementName = this.FirstChild.FirstChild.Name;
+                            rootElementName = String.Empty;
+                            if (this.FirstChild != null) rootElementName = this.FirstChild.Name;
+                            rowElementName = String.Empty;
+                            if (this.FirstChild.FirstChild !=null) rowElementName = this.FirstChild.FirstChild.Name;
+                            if (String.IsNullOrWhiteSpace(rootElementName)) return this;
+                            if (String.IsNullOrWhiteSpace(rowElementName)) return this;
                             bTransformRequired = false;
                         }
                         break;

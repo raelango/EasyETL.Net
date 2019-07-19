@@ -87,12 +87,12 @@
             this.label3 = new System.Windows.Forms.Label();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtXmlContents = new System.Windows.Forms.TextBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.txtXPathContents = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.StatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.txtXPathContents = new System.Windows.Forms.TextBox();
             this.grpLoadOptions.SuspendLayout();
             this.grpHtmlOptions.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -109,8 +109,8 @@
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage2.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpLoadOptions
@@ -739,6 +739,25 @@
             this.txtXmlContents.Size = new System.Drawing.Size(761, 599);
             this.txtXmlContents.TabIndex = 0;
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.txtXPathContents);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(767, 605);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "XPath";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // txtXPathContents
+            // 
+            this.txtXPathContents.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtXPathContents.Location = new System.Drawing.Point(0, 0);
+            this.txtXPathContents.Multiline = true;
+            this.txtXPathContents.Name = "txtXPathContents";
+            this.txtXPathContents.Size = new System.Drawing.Size(767, 605);
+            this.txtXPathContents.TabIndex = 0;
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -765,25 +784,6 @@
             this.ProgressTimer.Enabled = true;
             this.ProgressTimer.Interval = 1000;
             this.ProgressTimer.Tick += new System.EventHandler(this.ProgressTimer_Tick);
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.txtXPathContents);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(767, 605);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "XPath";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // txtXPathContents
-            // 
-            this.txtXPathContents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtXPathContents.Location = new System.Drawing.Point(0, 0);
-            this.txtXPathContents.Multiline = true;
-            this.txtXPathContents.Name = "txtXPathContents";
-            this.txtXPathContents.Size = new System.Drawing.Size(767, 605);
-            this.txtXPathContents.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -824,10 +824,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
