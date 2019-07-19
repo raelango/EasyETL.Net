@@ -81,6 +81,18 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EasyETL.Office\EasyETL.Office.csproj">
+      <Project>{ea54969b-76ba-4423-972e-9a1c037324a5}</Project>
+      <Name>EasyETL.Office</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL.PDF\EasyETL.PDF.csproj">
+      <Project>{54c36131-b44a-4435-802f-7a0e6a3c34ec}</Project>
+      <Name>EasyETL.PDF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL\EasyETL.csproj">
+      <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>
+      <Name>EasyETL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyXml\EasyXml.csproj">
       <Project>{5cf95a36-7bc7-4617-827d-4f9056161f14}</Project>
       <Name>EasyXml</Name>

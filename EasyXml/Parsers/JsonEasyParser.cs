@@ -8,12 +8,13 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System.Xml.Linq;
 using System.Xml;
+using System.Xml.Xsl;
 
 namespace EasyXml.Parsers
 {
     public class JsonEasyParser : AbstractEasyParser
     {
-        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
+        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
         {
             string s = txtReader.ReadToEnd();
             xDoc.LoadXml(((XmlDocument)JsonConvert.DeserializeXmlNode(s,RootNodeName)).OuterXml);

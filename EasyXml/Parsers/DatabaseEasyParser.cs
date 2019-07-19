@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Xsl;
 
 namespace EasyXml.Parsers
 {
@@ -29,12 +30,12 @@ namespace EasyXml.Parsers
             ConnectionString = connString;
         }
 
-        public override XmlDocument Load(string filename, XmlDocument xDoc = null)
+        public override XmlDocument Load(string filename, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
         {
-            return LoadFromQuery(filename, xDoc);
+            return LoadFromQuery(filename, xDoc, xslt);
         }
 
-        public XmlDocument LoadFromQuery(string sqlToExecute, XmlDocument xDoc = null)
+        public XmlDocument LoadFromQuery(string sqlToExecute, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
         {
             DataSet ds = new DataSet();
             DataAdapter adapter = null;

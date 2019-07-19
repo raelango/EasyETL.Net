@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Xsl;
 
 namespace EasyXml.Parsers
 {
@@ -19,7 +20,7 @@ namespace EasyXml.Parsers
             Delimiters.AddRange(delimiters);
         }
 
-        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
+        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
         {
             XmlNode xmlNode = null;
             if (Delimiters.Count == 0)

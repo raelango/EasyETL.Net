@@ -1,9 +1,12 @@
-﻿using EasyXml;
+﻿using EasyETL.DataSets;
+using EasyETL.Writers;
+using EasyXml;
 using EasyXml.Parsers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -23,7 +26,9 @@ namespace EasyXmlSample
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
+            ofd.CheckFileExists = true;
             ofd.FileName = txtFileName.Text;
+
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 txtFileName.Text = ofd.FileName;
@@ -40,6 +45,7 @@ namespace EasyXmlSample
             this.UseWaitCursor = true;
             Application.DoEvents();
             ProgressBar.Visible = true;
+            lblRecordCount.Text = "";
             cmbTableName.Items.Clear();
             try
             {
@@ -125,12 +131,13 @@ namespace EasyXmlSample
 
                 if (!String.IsNullOrWhiteSpace(cbTransformProfiles.Text))
                 {
-                    string transformFileName = Path.Combine(Application.StartupPath, cbTransformProfiles.Text + ".transforms");
-                    if (File.Exists(transformFileName))
-                    {
-                        string[] transformSettings = File.ReadAllLines(transformFileName);
-                        xDoc.Transform(transformSettings);
-                    }
+                    xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine},StringSplitOptions.None));
+                    //string transformFileName = Path.Combine(Application.StartupPath, cbTransformProfiles.Text + ".transforms");
+                    //if (File.Exists(transformFileName))
+                    //{
+                    //    string[] transformSettings = File.ReadAllLines(transformFileName);
+                    //    xDoc.Transform(transformSettings);
+                    //}
                 }
 
                 if (!String.IsNullOrWhiteSpace(txtXPathQuery.Text))
@@ -161,6 +168,8 @@ namespace EasyXmlSample
                 {
                     cmbTableName.SelectedIndex = 0;
                     dataGridView1.DataMember = cmbTableName.Text;
+                    lblRecordCount.Text = "(No Records)";
+                    if (dataGridView1.RowCount >0) lblRecordCount.Text = dataGridView1.RowCount + " Record(s)";
                 }
             }
             catch
@@ -215,6 +224,11 @@ namespace EasyXmlSample
         private void cmbTableName_SelectedIndexChanged(object sender, EventArgs e)
         {
             dataGridView1.DataMember = cmbTableName.Text;
+            lblRecordCount.Text = "(No Records)";
+            if (dataGridView1.RowCount > 0)
+            {
+                lblRecordCount.Text = dataGridView1.RowCount + " Record(s)";
+            }
         }
 
         private void lstFixedColumnWidths_SelectedIndexChanged(object sender, EventArgs e)
@@ -277,6 +291,8 @@ namespace EasyXmlSample
 
         private void cbTransformProfiles_SelectedIndexChanged(object sender, EventArgs e)
         {
+            txtTransformFileName.Text = cbTransformProfiles.Text;
+            txtTransformText.Text = File.ReadAllText(Path.Combine(Application.StartupPath, cbTransformProfiles.Text + ".transforms"));
             LoadDataToGridView();
         }
 
@@ -296,6 +312,66 @@ namespace EasyXmlSample
                 if (ProgressBar.Value == 100) ProgressBar.Value = 0;
                 ProgressBar.Value += 1;
             }
+        }
+
+        private void cbOnLoadTransformationProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadDataToGridView();
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            ofd.CheckFileExists = false;
+            if (ofd.ShowDialog() == DialogResult.OK)
+            {
+                DataSet rds = (DataSet)dataGridView1.DataSource;
+                DatasetWriter dsw = null;
+                switch (cmbDestination.Text.ToUpper())
+                {
+                    case "CSV":
+                        dsw = new DelimitedDatasetWriter(rds, ofd.FileName) { Delimiter = ',', IncludeHeaders = true, IncludeQuotes = true };
+                        break;
+                    case "TAB":
+                        dsw = new DelimitedDatasetWriter(rds, ofd.FileName) { Delimiter = '\t', IncludeHeaders = true, IncludeQuotes = true };
+                        break;
+                    case "HTML":
+                        dsw = new HtmlDatasetWriter(rds, ofd.FileName);
+                        break;
+                    case "WORD":
+                        dsw = new OfficeDatasetWriter(rds, ofd.FileName);
+                        break;
+                    case "EXCEL":
+                        dsw = new OfficeDatasetWriter(rds, ofd.FileName) { DestinationType = OfficeFileType.ExcelWorkbook };
+                        break;
+                    case "XML":
+                        dsw = new XmlDatasetWriter(rds,"" , ofd.FileName);
+                        break;
+                    case "PDF":
+                        dsw = new PDFDatasetWriter(rds, ofd.FileName);
+                        break;
+                    case "JSON":
+                        dsw = new JsonDatasetWriter(rds, ofd.FileName);
+                        break;
+                }
+                dsw.Write();
+                MessageBox.Show("Saved file in " + ofd.FileName);
+                Process.Start(ofd.FileName);
+            }
+        }
+
+        private void btnTransformSave_Click(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrWhiteSpace(txtTransformFileName.Text))
+            {
+                File.WriteAllText(Path.Combine(Application.StartupPath, txtTransformFileName.Text + ".transforms"), txtTransformText.Text);
+                if (!cbTransformProfiles.Items.Contains(txtTransformFileName.Text)) cbTransformProfiles.Items.Add(txtTransformFileName.Text);
+                cbTransformProfiles.SelectedText = txtTransformFileName.Text;
+            }
+        }
+
+        private void txtTransformText_Leave(object sender, EventArgs e)
+        {
+            LoadDataToGridView();
         }
 
     }

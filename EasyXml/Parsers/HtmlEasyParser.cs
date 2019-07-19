@@ -9,12 +9,13 @@ using Newtonsoft.Json.Converters;
 using System.Xml.Linq;
 using System.Xml;
 using Sgml;
+using System.Xml.Xsl;
 
 namespace EasyXml.Parsers
 {
     public class HtmlEasyParser : AbstractEasyParser
     {
-        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
+        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
         {
             SgmlReader sgmlReader = new SgmlReader();
             sgmlReader.DocType = "HTML";

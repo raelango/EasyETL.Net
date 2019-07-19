@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Security;
+using System.Xml.Xsl;
 
 namespace EasyXml.Parsers
 {
@@ -15,6 +16,7 @@ namespace EasyXml.Parsers
         public string RootNodeName = "data";
         public string RowNodeName = "row";
         public string FieldPrefix = "Field_";
+        public XslCompiledTransform OnLoadTransformer = null;
 
         public virtual string ConvertFieldsToXml12(string[] fieldValues) {
             StringBuilder sb = new StringBuilder();
@@ -42,6 +44,20 @@ namespace EasyXml.Parsers
                 rowNode.AppendChild(colNode);
                 colIndex++;
             }
+
+            if (OnLoadTransformer != null)
+            {
+                StringBuilder xmlSB = new StringBuilder();
+                XmlWriterSettings xwSettings = new XmlWriterSettings();
+                xwSettings.OmitXmlDeclaration = true;
+                xwSettings.ConformanceLevel = ConformanceLevel.Auto;
+                XmlWriter xWriter = XmlWriter.Create(xmlSB, xwSettings);
+                OnLoadTransformer.Transform(rowNode,null,xWriter);
+                XmlDocument newXDoc = new XmlDocument();
+                newXDoc.LoadXml(xmlSB.ToString());
+                rowNode = newXDoc.DocumentElement;
+            }
+
             return rowNode;
         }
 
@@ -50,28 +66,40 @@ namespace EasyXml.Parsers
             FieldNames = fieldNames;
         }
 
-        public virtual XmlDocument LoadStr(string strToLoad, XmlDocument xDoc = null)
+        public virtual XmlDocument LoadStr(string strToLoad, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
         {
+            if (xslt != null)
+            {
+                OnLoadTransformer = xslt;
+            }
             return Load(new StringReader(strToLoad), xDoc);
         }
 
-        public virtual XmlDocument Load(string filename, XmlDocument xDoc = null)
+        public virtual XmlDocument Load(string filename, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
         {
+            if (xslt != null)
+            {
+                OnLoadTransformer = xslt;
+            }
             using (FileStream fs = new FileStream(filename, FileMode.Open))
             {
                 return Load(fs, xDoc);
             }
         }
 
-        public virtual XmlDocument Load(Stream inStream, XmlDocument xDoc = null)
+        public virtual XmlDocument Load(Stream inStream, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
         {
+            if (xslt != null)
+            {
+                OnLoadTransformer = xslt;
+            }
             using (StreamReader sr = new StreamReader(inStream))
             {
                 return Load(sr, xDoc);
             }
         }
 
-        public virtual XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
+        public virtual XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
         {
             throw new NotImplementedException();
         }

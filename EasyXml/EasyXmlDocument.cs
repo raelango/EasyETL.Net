@@ -14,6 +14,8 @@ namespace EasyXml
     public class EasyXmlDocument : XmlDocument
     {
         IEasyParser Parser = null;
+        public XslCompiledTransform OnLoadTransformer = null;
+        
 
         public void Load(Stream inStream, IEasyParser parser)
         {
@@ -154,7 +156,7 @@ namespace EasyXml
         }
 
 
-        public XmlDocument Transform(string[] settingsCommands)
+        public XmlNode Transform(string[] settingsCommands)
         {
             if (this.DocumentElement.Name == null) return this;
             if (settingsCommands.Length == 0) return this;
@@ -238,14 +240,35 @@ namespace EasyXml
             return this;
         }
 
-        private XmlDocument TransformXml(string rootElementName, List<string> lstRowElements, StringBuilder xslSB, Dictionary<string,string> dctSortOrders)
+
+        private XmlDocument TransformXml(string rootElementName, List<string> lstRowElements, StringBuilder xslSB, Dictionary<string, string> dctSortOrders)
+        {
+            try
+            {
+                XslCompiledTransform xsl = GetCompiledTransform(xslSB, dctSortOrders);
+                StringBuilder xmlSB = new StringBuilder();
+                XmlWriterSettings xwSettings = new XmlWriterSettings();
+                xwSettings.OmitXmlDeclaration = true;
+                xwSettings.ConformanceLevel = ConformanceLevel.Auto;
+                XmlWriter xWriter = XmlWriter.Create(xmlSB, xwSettings);
+                xsl.Transform(this, null, xWriter);
+                LoadXml(xmlSB.ToString());
+            }
+            catch
+            {
+                return this;
+            }
+
+            return this;
+        }
+
+        public static XslCompiledTransform GetCompiledTransform(StringBuilder xslSB, Dictionary<string, string> dctSortOrders)
         {
             StringBuilder rootSB = new StringBuilder();
 
             rootSB.AppendLine("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
             rootSB.AppendLine("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">");
             rootSB.AppendLine("<xsl:output method=\"xml\" indent=\"yes\" omit-xml-declaration=\"yes\"/>");
-
             rootSB.AppendLine("<xsl:template match=\"@*|node()\">");
             rootSB.AppendLine("<xsl:copy>");
             rootSB.AppendLine("<xsl:apply-templates select=\"@*|node()\">");
@@ -254,9 +277,10 @@ namespace EasyXml
                 string templateName = kvSortOrder.Key;
                 string sortOrder = kvSortOrder.Value;
                 string sortDetails = String.Empty;
-                if (sortOrder.Contains(' ')) {
+                if (sortOrder.Contains(' '))
+                {
                     sortDetails = sortOrder.Substring(sortOrder.IndexOf(' ')).Trim();
-                    sortOrder = sortOrder.Substring(0, sortOrder.IndexOf(' ')).Trim() ;
+                    sortOrder = sortOrder.Substring(0, sortOrder.IndexOf(' ')).Trim();
                 }
                 if (templateName.Contains("=>"))
                 {
@@ -273,23 +297,8 @@ namespace EasyXml
             rootSB.AppendLine("</xsl:stylesheet>");
 
             XslCompiledTransform xsl = new XslCompiledTransform();
-            try
-            {
-                xsl.Load(XmlReader.Create(new StringReader(rootSB.ToString())));
-                StringBuilder xmlSB = new StringBuilder();
-                XmlWriterSettings xwSettings = new XmlWriterSettings();
-                xwSettings.OmitXmlDeclaration = true;
-                xwSettings.ConformanceLevel = ConformanceLevel.Auto;
-                XmlWriter xWriter = XmlWriter.Create(xmlSB, xwSettings);
-                xsl.Transform(this, null, xWriter);
-                LoadXml(xmlSB.ToString());
-            }
-            catch
-            {
-                return this;
-            }
-
-            return this;
+            xsl.Load(XmlReader.Create(new StringReader(rootSB.ToString())));
+            return xsl;
         }
 
         private void BuildXsltString(string rootElementName, string rowElementName, Dictionary<string, string> dctAdditions, List<string> lstRemoveCommands, List<string> lstFilters, Dictionary<string, string> dctRenames, List<string> lstRowElements, StringBuilder xslSB)
@@ -351,6 +360,7 @@ namespace EasyXml
                     xslSB.AppendLine("</xsl:element>");
                     xslSB.AppendLine("</xsl:template>");
                 }
+                xslSB.AppendLine("<xsl:template match=\"" + rowElementName + "\"/>");
             }
             dctAdditions.Clear();
             lstFilters.Clear();
