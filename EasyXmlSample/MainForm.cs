@@ -145,6 +145,7 @@ namespace EasyXmlSample
                     xDoc = xDoc.ApplyFilter(txtXPathQuery.Text);
                 }
                 txtXmlContents.Text = xDoc.Beautify();
+                txtXPathContents.Text = xDoc.LastTransformerTemplate;
 
                 DataSet ds = null;
                 if (grpHtmlOptions.Visible)

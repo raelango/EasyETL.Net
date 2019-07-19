@@ -78,6 +78,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.lblRecordCount = new System.Windows.Forms.Label();
             this.cmbDestination = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.btnExport = new System.Windows.Forms.Button();
@@ -90,7 +91,8 @@
             this.StatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
-            this.lblRecordCount = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.txtXPathContents = new System.Windows.Forms.TextBox();
             this.grpLoadOptions.SuspendLayout();
             this.grpHtmlOptions.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -108,6 +110,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpLoadOptions
@@ -614,6 +617,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(5, 178);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -636,6 +640,14 @@
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Dataset";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // lblRecordCount
+            // 
+            this.lblRecordCount.Location = new System.Drawing.Point(503, 22);
+            this.lblRecordCount.Name = "lblRecordCount";
+            this.lblRecordCount.Size = new System.Drawing.Size(169, 23);
+            this.lblRecordCount.TabIndex = 14;
+            this.lblRecordCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // cmbDestination
             // 
@@ -754,13 +766,24 @@
             this.ProgressTimer.Interval = 1000;
             this.ProgressTimer.Tick += new System.EventHandler(this.ProgressTimer_Tick);
             // 
-            // lblRecordCount
+            // tabPage3
             // 
-            this.lblRecordCount.Location = new System.Drawing.Point(503, 22);
-            this.lblRecordCount.Name = "lblRecordCount";
-            this.lblRecordCount.Size = new System.Drawing.Size(169, 23);
-            this.lblRecordCount.TabIndex = 14;
-            this.lblRecordCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.tabPage3.Controls.Add(this.txtXPathContents);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(767, 605);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "XPath";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // txtXPathContents
+            // 
+            this.txtXPathContents.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtXPathContents.Location = new System.Drawing.Point(0, 0);
+            this.txtXPathContents.Multiline = true;
+            this.txtXPathContents.Name = "txtXPathContents";
+            this.txtXPathContents.Size = new System.Drawing.Size(767, 605);
+            this.txtXPathContents.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -803,6 +826,8 @@
             this.tabPage2.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -871,6 +896,8 @@
         private System.Windows.Forms.TextBox txtTransformFileName;
         private System.Windows.Forms.Button btnTransformSave;
         private System.Windows.Forms.Label lblRecordCount;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TextBox txtXPathContents;
     }
 }
 

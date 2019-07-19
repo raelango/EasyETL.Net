@@ -14,8 +14,8 @@ namespace EasyXml
     public class EasyXmlDocument : XmlDocument
     {
         IEasyParser Parser = null;
-        public XslCompiledTransform OnLoadTransformer = null;
-        
+        public XslCompiledTransform LastTransformer = null;
+        public string LastTransformerTemplate = String.Empty;
 
         public void Load(Stream inStream, IEasyParser parser)
         {
@@ -144,20 +144,36 @@ namespace EasyXml
             return sb.ToString();
         }
 
+
+        public XmlDocument Transform()
+        {
+            if (LastTransformer != null)
+            {
+                StringBuilder xmlSB = new StringBuilder();
+                XmlWriter xWriter = XmlWriter.Create(xmlSB);
+                LastTransformer.Transform(this, null, xWriter);
+                LoadXml(xmlSB.ToString());
+            }
+            return this;
+        }
+
         public XmlDocument Transform(string xslFileName)
         {
             XslCompiledTransform xsl = new XslCompiledTransform();
             xsl.Load(xslFileName);
-            StringBuilder xmlSB = new StringBuilder();
-            XmlWriter xWriter = XmlWriter.Create(xmlSB);
-            xsl.Transform(this, null, xWriter);
-            LoadXml(xmlSB.ToString());
-            return this;
+            LastTransformer = xsl;
+            return Transform();
+            //StringBuilder xmlSB = new StringBuilder();
+            //XmlWriter xWriter = XmlWriter.Create(xmlSB);
+            //xsl.Transform(this, null, xWriter);
+            //LoadXml(xmlSB.ToString());
+            //return this;
         }
 
 
         public XmlNode Transform(string[] settingsCommands)
         {
+            LastTransformerTemplate = String.Empty;
             if (this.DocumentElement.Name == null) return this;
             if (settingsCommands.Length == 0) return this;
             string rootElementName = this.FirstChild.Name;
@@ -262,7 +278,7 @@ namespace EasyXml
             return this;
         }
 
-        public static XslCompiledTransform GetCompiledTransform(StringBuilder xslSB, Dictionary<string, string> dctSortOrders)
+        public XslCompiledTransform GetCompiledTransform(StringBuilder xslSB, Dictionary<string, string> dctSortOrders)
         {
             StringBuilder rootSB = new StringBuilder();
 
@@ -293,9 +309,11 @@ namespace EasyXml
             rootSB.AppendLine("</xsl:copy>");
             rootSB.AppendLine("</xsl:template>");
 
-            rootSB.AppendLine(xslSB.ToString());
+            rootSB.Append(xslSB.ToString());
             rootSB.AppendLine("</xsl:stylesheet>");
 
+            if (!String.IsNullOrWhiteSpace(LastTransformerTemplate)) LastTransformerTemplate += Environment.NewLine + Environment.NewLine + Environment.NewLine;
+            LastTransformerTemplate += rootSB.ToString();
             XslCompiledTransform xsl = new XslCompiledTransform();
             xsl.Load(XmlReader.Create(new StringReader(rootSB.ToString())));
             return xsl;
@@ -356,7 +374,7 @@ namespace EasyXml
                 {
                     xslSB.AppendLine("<xsl:template match=\"" + rowElementName + "[" + strFilter + "]\">");
                     xslSB.AppendLine("<xsl:element name=\"" + newRowElementName + "\">");
-                    xslSB.AppendLine(xslString);
+                    xslSB.Append(xslString);
                     xslSB.AppendLine("</xsl:element>");
                     xslSB.AppendLine("</xsl:template>");
                 }
