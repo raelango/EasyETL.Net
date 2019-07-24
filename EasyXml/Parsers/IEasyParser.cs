@@ -11,9 +11,9 @@ namespace EasyXml.Parsers
 {
     public interface IEasyParser
     {
-        XmlDocument Load(Stream inStream, XmlDocument xDoc = null, XslCompiledTransform xslt = null);
-        XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null, XslCompiledTransform xslt = null);
-        XmlDocument Load(string filename, XmlDocument xDoc = null, XslCompiledTransform xslt = null);
-        XmlDocument LoadStr(string strToLoad, XmlDocument xDoc = null, XslCompiledTransform xslt = null);
+        XmlDocument Load(Stream inStream, XmlDocument xDoc = null);
+        XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null);
+        XmlDocument Load(string filename, XmlDocument xDoc = null);
+        XmlDocument LoadStr(string strToLoad, XmlDocument xDoc = null);
     }
 }

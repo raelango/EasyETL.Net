@@ -20,7 +20,7 @@ namespace EasyXml.Parsers
             Delimiters.AddRange(delimiters);
         }
 
-        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
+        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
         {
             XmlNode xmlNode = null;
             if (Delimiters.Count == 0)

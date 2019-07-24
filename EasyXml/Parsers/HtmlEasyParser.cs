@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using System.Xml.Linq;
+﻿using System.IO;
 using System.Xml;
 using Sgml;
 using System.Xml.Xsl;
@@ -15,7 +7,7 @@ namespace EasyXml.Parsers
 {
     public class HtmlEasyParser : AbstractEasyParser
     {
-        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
+        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
         {
             SgmlReader sgmlReader = new SgmlReader();
             sgmlReader.DocType = "HTML";

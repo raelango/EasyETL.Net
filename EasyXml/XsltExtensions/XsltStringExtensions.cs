@@ -1,0 +1,53 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace EasyXml.XsltExtensions
+{
+    public class XsltStringExtensions
+    {
+        public const string Namespace = "http://EasyXsltExtensions/1.0";
+        public string Upper(string inputStr)
+        {
+            return inputStr.ToUpper();
+        }
+
+        public string Lower(string inputStr)
+        {
+            return inputStr.ToLower();
+        }
+
+        public int Length(string inputStr)
+        {
+            return inputStr.Length;
+        }
+
+        public string Left(string inputStr, int numChars)
+        {
+            return inputStr.Substring(0, numChars);
+        }
+
+        public string Right(string inputStr, int numChars)
+        {
+            return inputStr.Substring(inputStr.Length - numChars);
+        }
+
+        public bool Contains(string inputStr, string searchStr)
+        {
+            return (inputStr.IndexOf(searchStr, StringComparison.CurrentCultureIgnoreCase) >=0);
+        }
+
+        public bool IsEmpty(string inputStr)
+        {
+            return String.IsNullOrWhiteSpace(inputStr);
+        }
+
+        public string Trim(string inputStr)
+        {
+            return inputStr.Trim();
+        }
+
+    }
+}

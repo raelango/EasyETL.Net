@@ -30,12 +30,12 @@ namespace EasyXml.Parsers
             ConnectionString = connString;
         }
 
-        public override XmlDocument Load(string filename, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
+        public override XmlDocument Load(string filename, XmlDocument xDoc = null)
         {
-            return LoadFromQuery(filename, xDoc, xslt);
+            return LoadFromQuery(filename, xDoc);
         }
 
-        public XmlDocument LoadFromQuery(string sqlToExecute, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
+        public XmlDocument LoadFromQuery(string sqlToExecute, XmlDocument xDoc = null)
         {
             DataSet ds = new DataSet();
             DataAdapter adapter = null;

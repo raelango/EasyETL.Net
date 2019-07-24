@@ -23,9 +23,8 @@ namespace EasyXml.Parsers
                 ColumnWidths.AddRange(columnWidths);
         }
 
-        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
+        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
         {
-            OnLoadTransformer = xslt;
             txtFieldParser = new TextFieldParser(txtReader) { TextFieldType = FieldType.FixedWidth };
             txtFieldParser.SetFieldWidths(ColumnWidths.ToArray());
             return GetXmlDocument();

@@ -57,13 +57,22 @@
     <Compile Include="Parsers\FixedWidthEasyParser.cs" />
     <Compile Include="Parsers\HL7EasyParser.cs" />
     <Compile Include="Parsers\HtmlEasyParser.cs" />
+    <Compile Include="Parsers\HtmlTableEasyParser.cs" />
     <Compile Include="Parsers\IEasyParser.cs" />
     <Compile Include="Parsers\JsonEasyParser.cs" />
     <Compile Include="Parsers\SingleLineEasyParser.cs" />
+    <Compile Include="Parsers\TemplateEasyParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XsltExtensions\XsltStringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EasyETL\EasyETL.csproj">
+      <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>
+      <Name>EasyETL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

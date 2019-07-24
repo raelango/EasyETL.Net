@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EasyETLJob.cs" />
+    <Compile Include="Extractors\AbstractContentExtractor.cs" />
     <Compile Include="Extractors\DelimitedDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -101,13 +102,14 @@
     <Compile Include="Extractors\HtmlDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Extractors\IContentExtractor.cs" />
     <Compile Include="Extractors\JsonDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Extractors\DatabaseDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Extractors\Extractor.cs" />
+    <Compile Include="Extractors\DatasetParser.cs" />
     <Compile Include="Extractors\MsMqDataSet.cs">
       <SubType>Component</SubType>
     </Compile>

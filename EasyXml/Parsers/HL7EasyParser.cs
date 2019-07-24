@@ -18,7 +18,7 @@ namespace EasyXml.Parsers
             Delimiters.Add("|");
         }
 
-        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null, XslCompiledTransform xslt = null)
+        public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
         {
             txtFieldParser = new TextFieldParser(txtReader) { TextFieldType = FieldType.Delimited };
             txtFieldParser.SetDelimiters(Delimiters.ToArray());

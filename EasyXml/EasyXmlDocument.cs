@@ -1,4 +1,6 @@
-﻿using EasyXml.Parsers;
+﻿using EasyETL.Extractors;
+using EasyXml.Parsers;
+using EasyXml.XsltExtensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -25,9 +27,10 @@ namespace EasyXml
         }
 
 
-        public void Load(Stream inStream, IEasyParser parser)
+        public void Load(Stream inStream, IEasyParser parser, IContentExtractor extractor = null)
         {
             Parser = parser;
+            if (extractor != null) inStream = extractor.GetStream(inStream);
             Load(inStream);
         }
 
@@ -44,10 +47,18 @@ namespace EasyXml
             Transform();
         }
 
-        public void Load(string filename, IEasyParser parser)
+        public void Load(string filename, IEasyParser parser, IContentExtractor extractor = null)
         {
             Parser = parser;
-            Load(filename);
+            if (extractor != null)
+            {
+                Stream inStream = extractor.GetStream(filename);
+                Load(inStream);
+            }
+            else
+            {
+                Load(filename);
+            }
         }
 
         public override void Load(string filename)
@@ -64,9 +75,10 @@ namespace EasyXml
         }
 
 
-        public void Load(TextReader txtReader, IEasyParser parser)
+        public void Load(TextReader txtReader, IEasyParser parser, IContentExtractor extractor = null)
         {
             Parser = parser;
+            if (extractor != null) txtReader = extractor.GetTextReader(txtReader);
             Load(txtReader);
         }
 
@@ -83,10 +95,25 @@ namespace EasyXml
             Transform();
         }
 
-        public void LoadStr(string contents, IEasyParser parser)
+        public void LoadStr(string contents, IEasyParser parser, IContentExtractor extractor = null)
         {
             Parser = parser;
-            Parser.LoadStr(contents, this);
+            if (extractor != null)
+            {
+                using (TextReader tr = new StringReader(contents))
+                {
+                    TextReader extractedContents = extractor.GetTextReader(tr);
+                    contents = extractedContents.ReadToEnd();
+                }
+            }
+            if (Parser != null)
+            {
+                Parser.LoadStr(contents, this);
+            }
+            else
+            {
+                LoadXml(contents);
+            }
             Transform();
         }
 
@@ -255,6 +282,9 @@ namespace EasyXml
                         }
                         break;
                 }
+                if (!String.IsNullOrWhiteSpace(settingCommand.Trim()))
+                {
+
 
                 if (settingCommand.Trim()[0] == '[')
                 {
@@ -265,6 +295,7 @@ namespace EasyXml
                     }
                     rowElementName = settingCommand.Trim().Substring(1, settingCommand.Trim().Length - 2);
                     bTransformRequired = false;
+                }
                 }
 
             }
@@ -283,14 +314,17 @@ namespace EasyXml
         {
             try
             {
+                XsltArgumentList xal = new XsltArgumentList();
+                xal.AddExtensionObject(XsltExtensions.XsltStringExtensions.Namespace, new XsltExtensions.XsltStringExtensions()); //This is to make the "easy" extension functions available...
                 XslCompiledTransform xsl = GetCompiledTransform(xslSB, dctSortOrders);
                 StringBuilder xmlSB = new StringBuilder();
                 XmlWriterSettings xwSettings = new XmlWriterSettings();
                 xwSettings.OmitXmlDeclaration = true;
                 xwSettings.ConformanceLevel = ConformanceLevel.Auto;
                 XmlWriter xWriter = XmlWriter.Create(xmlSB, xwSettings);
-                xsl.Transform(this, null, xWriter);
+                xsl.Transform(this, xal, xWriter);
                 LoadXml(xmlSB.ToString());
+                dctSortOrders.Clear();
             }
             catch
             {
@@ -305,7 +339,7 @@ namespace EasyXml
             StringBuilder rootSB = new StringBuilder();
 
             rootSB.AppendLine("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
-            rootSB.AppendLine("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\">");
+            rootSB.AppendLine("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:easy=\"http://EasyXsltExtensions/1.0\">");
             rootSB.AppendLine("<xsl:output method=\"xml\" indent=\"yes\" omit-xml-declaration=\"yes\"/>");
             rootSB.AppendLine("<xsl:template match=\"@*|node()\">");
             rootSB.AppendLine("<xsl:copy>");
@@ -336,6 +370,8 @@ namespace EasyXml
 
             if (!String.IsNullOrWhiteSpace(LastTransformerTemplate)) LastTransformerTemplate += Environment.NewLine + Environment.NewLine + Environment.NewLine;
             LastTransformerTemplate += rootSB.ToString();
+
+
             XslCompiledTransform xsl = new XslCompiledTransform();
             xsl.Load(XmlReader.Create(new StringReader(rootSB.ToString())));
             return xsl;

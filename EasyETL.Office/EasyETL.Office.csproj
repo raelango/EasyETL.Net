@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="OfficeDatasetWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WordContentExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

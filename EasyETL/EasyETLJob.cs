@@ -17,7 +17,7 @@ namespace EasyETL
 
         public List<JobListener> Listeners = new List<JobListener>();
 
-        public List<Extractor> Extractors = new List<Extractor>();
+        public List<DatasetParser> DatasetParsers = new List<DatasetParser>();
 
         public List<DatasetWriter> Loaders = new List<DatasetWriter>();
 
@@ -27,7 +27,7 @@ namespace EasyETL
 
         public void Start()
         {
-            foreach (Extractor extractor in Extractors)
+            foreach (DatasetParser extractor in DatasetParsers)
             {
                 extractor.LineReadAndProcessed += extractor_LineReadAndProcessed;
                 extractor.Parse();
@@ -59,7 +59,7 @@ namespace EasyETL
             if (e.Data.ContainsKey("AdditionalContent"))
             {
                 string addnlData = e.Data["AdditionalContent"].ToString();
-                foreach (Extractor extractor in Extractors)
+                foreach (DatasetParser extractor in DatasetParsers)
                 {
                     extractor.ProcessRowObject(addnlData);
                 }
@@ -80,14 +80,14 @@ namespace EasyETL
 
         private void BuildMasterDataSet()
         {
-            if (Extractors.Count == 1)
+            if (DatasetParsers.Count == 1)
             {
-                Data = Extractors.First().Data;
+                Data = DatasetParsers.First().Data;
             }
             else
             {
                 Data = new RegexDataSet();
-                foreach (Extractor extractor in Extractors)
+                foreach (DatasetParser extractor in DatasetParsers)
                 {
                     Data.Merge(extractor.Data);
                 }
@@ -113,7 +113,7 @@ namespace EasyETL
             {
                 Data.Dispose();
                 Listeners.Clear();
-                Extractors.Clear();
+                DatasetParsers.Clear();
                 Loaders.Clear();
             }
         }

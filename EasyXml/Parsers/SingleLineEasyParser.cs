@@ -12,7 +12,6 @@ namespace EasyXml.Parsers
     public abstract class SingleLineEasyParser : AbstractEasyParser
     {
         public bool FirstRowHasFieldNames = true;
-        public List<MalformedLineException> Exceptions = new List<MalformedLineException>();
         public TextFieldParser txtFieldParser;
         public FieldType ParserFieldType = FieldType.Delimited;
 

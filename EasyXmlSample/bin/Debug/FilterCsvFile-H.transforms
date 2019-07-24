@@ -6,9 +6,9 @@ Add Gender substring-after(AgeGen,'/')
 --filter1 starts-with(PrimaryNurse,'MURRAY') and starts-with(Disposition,'02')
 --filter starts-with(Disposition,'02') and starts-with(PrimaryNurse,'HUDSON')
 filter starts-with(MRN,'7')
-sort MRN
 GO
-filter Age>50 and Gender='Male'
+filter Age>50 and easy:Upper(Gender)='MALE' and starts-with(DispCode,'0')
+sort Age
 GO
-sort age
 add SNo autonumber
+

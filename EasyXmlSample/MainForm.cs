@@ -1,4 +1,5 @@
 ﻿using EasyETL.DataSets;
+using EasyETL.Extractors;
 using EasyETL.Writers;
 using EasyXml;
 using EasyXml.Parsers;
@@ -47,15 +48,24 @@ namespace EasyXmlSample
             Application.DoEvents();
             ProgressBar.Visible = true;
             lblRecordCount.Text = "";
+            txtRegexContents.Text = "";
             cmbTableName.Items.Clear();
+            IContentExtractor extractor = null;
+            if (chkUseTextExtractor.Checked)
+            {
+                switch (cbTextExtractor.Text)
+                {
+                    case "PDF":
+                        extractor = new PDFContentExtractor();
+                        break;
+                    case "Word":
+                        extractor = new WordContentExtractor();
+                        break;
+                }
+            }
             try
             {
                 EasyXmlDocument xDoc = new EasyXmlDocument();
-                //if (!String.IsNullOrWhiteSpace(cbTransformProfiles.Text))
-                //{
-                //    xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
-                //}
-                //xDoc.NodeInserted += xDoc_NodeInserted;
                 if (tabDataSource.SelectedTab == tabDatasourceDatabase)
                 {
                     DatabaseEasyParser dbep = null;
@@ -75,20 +85,11 @@ namespace EasyXmlSample
                 }
                 else
                 {
-
+                    AbstractEasyParser ep = null;
                     switch (cmbFileType.Text.TrimEnd())
                     {
-                        case "Xml":
-                            if ((tabDataSource.SelectedTab == tabDatasourceFile))
-                                xDoc.Load(txtFileName.Text);
-                            else
-                                xDoc.LoadXml(txtTextContents.Text);
-                            break;
                         case "Html":
-                            if ((tabDataSource.SelectedTab == tabDatasourceFile))
-                                xDoc.Load(txtFileName.Text, new HtmlEasyParser());
-                            else
-                                xDoc.LoadStr(txtTextContents.Text, new HtmlEasyParser());
+                            ep = new HtmlEasyParser();
                             break;
                         case "Delimited":
                             string delimiter = "";
@@ -97,40 +98,37 @@ namespace EasyXmlSample
                             if (rbDelimiterSpace.Checked) delimiter = " ";
                             if (rbDelimiterTab.Checked) delimiter = "\t";
                             if (rbDelimiterCustom.Checked) delimiter = txtCustomDelimiter.Text;
-                            DelimitedEasyParser dep = new DelimitedEasyParser(cbHeaderRow.Checked);
-                            dep.RowNodeName = "record";
+                            ep = new DelimitedEasyParser(cbHeaderRow.Checked) { RowNodeName = "record" };
                             if (!String.IsNullOrEmpty(delimiter))
                             {
-                                dep.Delimiters.Add(delimiter);
-                            }
-                            if ((tabDataSource.SelectedTab == tabDatasourceFile))
-                                xDoc.Load(txtFileName.Text, dep);
-                            else
-                                xDoc.LoadStr(txtTextContents.Text, dep);
-                            if (dep.Exceptions.Count > 0)
-                            {
-                                MessageBox.Show("There were " + dep.Exceptions.Count + " Exceptions while loading the document");
+                                ((DelimitedEasyParser)ep).Delimiters.Add(delimiter);
                             }
                             break;
                         case "HL7":
-                            if ((tabDataSource.SelectedTab == tabDatasourceFile))
-                                xDoc.Load(txtFileName.Text, new HL7EasyParser());
-                            else
-                                xDoc.LoadStr(txtTextContents.Text, new HL7EasyParser());
+                            ep = new HL7EasyParser();
                             break;
                         case "Fixed Width":
-                            FixedWidthEasyParser fwp = new FixedWidthEasyParser(false, lstFixedColumnWidths.Items.Cast<int>().ToArray());
-                            if ((tabDataSource.SelectedTab == tabDatasourceFile))
-                                xDoc.Load(txtFileName.Text, fwp);
-                            else
-                                xDoc.LoadStr(txtTextContents.Text, fwp);
+                            ep = new FixedWidthEasyParser(false, lstFixedColumnWidths.Items.Cast<int>().ToArray());
                             break;
                         case "Json":
-                            if ((tabDataSource.SelectedTab == tabDatasourceFile))
-                                xDoc.Load(txtFileName.Text, new JsonEasyParser());
-                            else
-                                xDoc.LoadStr(txtTextContents.Text, new JsonEasyParser());
+                            ep = new JsonEasyParser();
                             break;
+                        case "Template":
+                            if (String.IsNullOrWhiteSpace(txtTemplateString.Text)) txtTemplateString.Text = "[Contents]";
+                            ep = new TemplateEasyParser() { TemplateString = txtTemplateString.Text };
+                            txtRegexContents.Text = ((TemplateEasyParser)ep).RegexString;
+                            break;
+                        case "HtmlTable":
+                            ep = new HtmlTableEasyParser();
+                            break;
+                    }
+                    if ((tabDataSource.SelectedTab == tabDatasourceFile))
+                        xDoc.Load(txtFileName.Text, ep, extractor);
+                    else
+                        xDoc.LoadStr(txtTextContents.Text, ep, extractor);
+                    if ((ep !=null) && (ep.Exceptions.Count > 0))
+                    {
+                        MessageBox.Show("There were " + ep.Exceptions.Count + " Exceptions while loading the document");
                     }
                 }
                 ezDoc = xDoc;
@@ -208,6 +206,7 @@ namespace EasyXmlSample
             cmbDelimited.Visible = false;
             grpFixedFileOptions.Visible = false;
             grpHtmlOptions.Visible = false;
+            grpTemplate.Visible = false;
             switch (cmbFileType.Text.TrimEnd())
             {
                 case "Delimited":
@@ -218,6 +217,9 @@ namespace EasyXmlSample
                     break;
                 case "Html":
                     grpHtmlOptions.Visible = true;
+                    break;
+                case "Template":
+                    grpTemplate.Visible = true;
                     break;
 
             }
@@ -383,6 +385,21 @@ namespace EasyXmlSample
             TransformDataFromEzDoc();
         }
 
+        private void txtTemplateString_Leave(object sender, EventArgs e)
+        {
+            LoadDataToGridView();
+        }
+
+        private void chkUseTextExtractor_CheckedChanged(object sender, EventArgs e)
+        {
+            cbTextExtractor.Visible = chkUseTextExtractor.Checked;
+            LoadDataToGridView();
+        }
+
+        private void cbTextExtractor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadDataToGridView();
+        }
 
     }
 }
