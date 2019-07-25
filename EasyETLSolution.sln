@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyXml", "EasyXml\EasyXml.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyXmlSample", "EasyXmlSample\EasyXmlSample.csproj", "{155433A3-85EC-4065-9B13-FB18374A1E34}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyEndpoint", "EasyEndpoint\EasyEndpoint.csproj", "{51925788-A8E5-4D41-A192-D206CDEFEE35}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,12 @@ Global
 		{155433A3-85EC-4065-9B13-FB18374A1E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{155433A3-85EC-4065-9B13-FB18374A1E34}.Release|Any CPU.Build.0 = Release|Any CPU
 		{155433A3-85EC-4065-9B13-FB18374A1E34}.Release|x86.ActiveCfg = Release|Any CPU
+		{51925788-A8E5-4D41-A192-D206CDEFEE35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51925788-A8E5-4D41-A192-D206CDEFEE35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51925788-A8E5-4D41-A192-D206CDEFEE35}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{51925788-A8E5-4D41-A192-D206CDEFEE35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51925788-A8E5-4D41-A192-D206CDEFEE35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51925788-A8E5-4D41-A192-D206CDEFEE35}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
