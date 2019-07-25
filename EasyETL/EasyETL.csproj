@@ -123,6 +123,7 @@
     <Compile Include="Listeners\FileListener.cs" />
     <Compile Include="Listeners\FolderListener.cs" />
     <Compile Include="Listeners\JobListener.cs" />
+    <Compile Include="Listeners\MailListener.cs" />
     <Compile Include="Listeners\MsMqListener.cs" />
     <Compile Include="Listeners\MultiFileListener.cs" />
     <Compile Include="Listeners\TimerListener.cs" />
