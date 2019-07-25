@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace EasyXml.XsltExtensions
@@ -44,9 +45,21 @@ namespace EasyXml.XsltExtensions
             return String.IsNullOrWhiteSpace(inputStr);
         }
 
+        public bool IsNumber(string inputStr)
+        {
+            inputStr = Trim(inputStr);
+            bool result = !Regex.IsMatch(inputStr, "([^\\d,.]+)");
+            return result;
+        }
+
         public string Trim(string inputStr)
         {
             return inputStr.Trim();
+        }
+
+        public string Replace(string inputStr, string searchStr, string replaceStr)
+        {
+            return inputStr.Replace(searchStr, replaceStr);
         }
 
     }

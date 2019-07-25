@@ -240,8 +240,11 @@ namespace EasyXml
                 switch (settings[0].ToUpper())
                 {
                     case "ADD":
-                        dctAdditions.Add(settings[1], settingCommand.Substring(4 + settings[1].Length + 1));
-                        bTransformRequired = true;
+                        if (settingCommand.Length > (settings[1].Length + 4))
+                        {
+                            dctAdditions.Add(settings[1], settingCommand.Substring(4 + settings[1].Length + 1));
+                            bTransformRequired = true;
+                        }
                         break;
                     case "HIDE":
                     case "REMOVE":

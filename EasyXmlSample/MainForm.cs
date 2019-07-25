@@ -3,6 +3,7 @@ using EasyETL.Extractors;
 using EasyETL.Writers;
 using EasyXml;
 using EasyXml.Parsers;
+using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -116,6 +117,7 @@ namespace EasyXmlSample
                         case "Template":
                             if (String.IsNullOrWhiteSpace(txtTemplateString.Text)) txtTemplateString.Text = "[Contents]";
                             ep = new TemplateEasyParser() { TemplateString = txtTemplateString.Text };
+                            ((TemplateEasyParser)ep).LoadStr("");
                             txtRegexContents.Text = ((TemplateEasyParser)ep).RegexString;
                             break;
                         case "HtmlTable":
@@ -126,9 +128,14 @@ namespace EasyXmlSample
                         xDoc.Load(txtFileName.Text, ep, extractor);
                     else
                         xDoc.LoadStr(txtTextContents.Text, ep, extractor);
-                    if ((ep !=null) && (ep.Exceptions.Count > 0))
+                    txtExceptions.Text = "";
+                    if ((ep != null) && (ep.Exceptions.Count > 0))
                     {
                         MessageBox.Show("There were " + ep.Exceptions.Count + " Exceptions while loading the document");
+                        foreach (MalformedLineException mep in ep.Exceptions)
+                        {
+                            txtExceptions.Text += String.Format("(Line {0} - {1}", mep.LineNumber, mep.Message) + Environment.NewLine;
+                        }
                     }
                 }
                 ezDoc = xDoc;

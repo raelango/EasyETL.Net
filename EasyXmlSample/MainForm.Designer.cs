@@ -68,6 +68,8 @@
             this.grpDataSource = new System.Windows.Forms.GroupBox();
             this.tabDataSource = new System.Windows.Forms.TabControl();
             this.tabDatasourceFile = new System.Windows.Forms.TabPage();
+            this.cbTextExtractor = new System.Windows.Forms.ComboBox();
+            this.chkUseTextExtractor = new System.Windows.Forms.CheckBox();
             this.btnLoad = new System.Windows.Forms.Button();
             this.txtFileName = new System.Windows.Forms.TextBox();
             this.tabDatasourceText = new System.Windows.Forms.TabPage();
@@ -98,8 +100,8 @@
             this.StatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
-            this.chkUseTextExtractor = new System.Windows.Forms.CheckBox();
-            this.cbTextExtractor = new System.Windows.Forms.ComboBox();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.txtExceptions = new System.Windows.Forms.TextBox();
             this.grpLoadOptions.SuspendLayout();
             this.grpTemplate.SuspendLayout();
             this.grpHtmlOptions.SuspendLayout();
@@ -120,6 +122,7 @@
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.tabPage5.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpLoadOptions
@@ -303,7 +306,7 @@
             this.grpFieldNames.Size = new System.Drawing.Size(491, 500);
             this.grpFieldNames.TabIndex = 3;
             this.grpFieldNames.TabStop = false;
-            this.grpFieldNames.Text = "Field Names";
+            this.grpFieldNames.Text = "Transformations";
             // 
             // txtTransformFileName
             // 
@@ -542,6 +545,32 @@
             this.tabDatasourceFile.Text = "File";
             this.tabDatasourceFile.UseVisualStyleBackColor = true;
             // 
+            // cbTextExtractor
+            // 
+            this.cbTextExtractor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbTextExtractor.FormattingEnabled = true;
+            this.cbTextExtractor.Items.AddRange(new object[] {
+            "PDF",
+            "Word"});
+            this.cbTextExtractor.Location = new System.Drawing.Point(145, 70);
+            this.cbTextExtractor.Name = "cbTextExtractor";
+            this.cbTextExtractor.Size = new System.Drawing.Size(242, 21);
+            this.cbTextExtractor.TabIndex = 9;
+            this.cbTextExtractor.Visible = false;
+            this.cbTextExtractor.SelectedIndexChanged += new System.EventHandler(this.cbTextExtractor_SelectedIndexChanged);
+            // 
+            // chkUseTextExtractor
+            // 
+            this.chkUseTextExtractor.AutoSize = true;
+            this.chkUseTextExtractor.Location = new System.Drawing.Point(7, 70);
+            this.chkUseTextExtractor.Name = "chkUseTextExtractor";
+            this.chkUseTextExtractor.Size = new System.Drawing.Size(114, 17);
+            this.chkUseTextExtractor.TabIndex = 8;
+            this.chkUseTextExtractor.Text = "Use Text Extractor";
+            this.chkUseTextExtractor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.chkUseTextExtractor.UseVisualStyleBackColor = true;
+            this.chkUseTextExtractor.CheckedChanged += new System.EventHandler(this.chkUseTextExtractor_CheckedChanged);
+            // 
             // btnLoad
             // 
             this.btnLoad.Location = new System.Drawing.Point(675, 30);
@@ -662,6 +691,7 @@
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Location = new System.Drawing.Point(5, 178);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -848,31 +878,24 @@
             this.ProgressTimer.Interval = 1000;
             this.ProgressTimer.Tick += new System.EventHandler(this.ProgressTimer_Tick);
             // 
-            // chkUseTextExtractor
+            // tabPage5
             // 
-            this.chkUseTextExtractor.AutoSize = true;
-            this.chkUseTextExtractor.Location = new System.Drawing.Point(7, 70);
-            this.chkUseTextExtractor.Name = "chkUseTextExtractor";
-            this.chkUseTextExtractor.Size = new System.Drawing.Size(114, 17);
-            this.chkUseTextExtractor.TabIndex = 8;
-            this.chkUseTextExtractor.Text = "Use Text Extractor";
-            this.chkUseTextExtractor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.chkUseTextExtractor.UseVisualStyleBackColor = true;
-            this.chkUseTextExtractor.CheckedChanged += new System.EventHandler(this.chkUseTextExtractor_CheckedChanged);
+            this.tabPage5.Controls.Add(this.txtExceptions);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(767, 605);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Exceptions";
+            this.tabPage5.UseVisualStyleBackColor = true;
             // 
-            // cbTextExtractor
+            // txtExceptions
             // 
-            this.cbTextExtractor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbTextExtractor.FormattingEnabled = true;
-            this.cbTextExtractor.Items.AddRange(new object[] {
-            "PDF",
-            "Word"});
-            this.cbTextExtractor.Location = new System.Drawing.Point(145, 70);
-            this.cbTextExtractor.Name = "cbTextExtractor";
-            this.cbTextExtractor.Size = new System.Drawing.Size(242, 21);
-            this.cbTextExtractor.TabIndex = 9;
-            this.cbTextExtractor.Visible = false;
-            this.cbTextExtractor.SelectedIndexChanged += new System.EventHandler(this.cbTextExtractor_SelectedIndexChanged);
+            this.txtExceptions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtExceptions.Location = new System.Drawing.Point(0, 0);
+            this.txtExceptions.Multiline = true;
+            this.txtExceptions.Name = "txtExceptions";
+            this.txtExceptions.Size = new System.Drawing.Size(767, 605);
+            this.txtExceptions.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -921,6 +944,8 @@
             this.tabPage4.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.tabPage5.ResumeLayout(false);
+            this.tabPage5.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -998,6 +1023,8 @@
         private System.Windows.Forms.TextBox txtRegexContents;
         private System.Windows.Forms.ComboBox cbTextExtractor;
         private System.Windows.Forms.CheckBox chkUseTextExtractor;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.TextBox txtExceptions;
     }
 }
 
