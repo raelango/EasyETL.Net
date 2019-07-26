@@ -66,6 +66,7 @@ namespace EasyEndpoint
         public virtual void CopyTo(IEasyEndpoint destEasyEndPoint, params string[] fileNames)
         {
             if (!destEasyEndPoint.CanWrite) return;
+            if (!HasFiles) return;
             foreach (string strFileName in fileNames)
             {
                 byte[] fileBytes = Read(strFileName);
@@ -110,11 +111,11 @@ namespace EasyEndpoint
                     strDomain = userName.Split('\\')[0];
                     userName = userName.Split('\\')[1];
                 }
-                if (userName.Contains('@'))
-                {
-                    strDomain = userName.Split('@')[1];
-                    userName = userName.Split('@')[0];
-                }
+                //if (userName.Contains('@'))
+                //{
+                //    strDomain = userName.Split('@')[1];
+                //    userName = userName.Split('@')[0];
+                //}
                 return new NetworkCredential(userName, sPassword, strDomain);
             }
             return null;
