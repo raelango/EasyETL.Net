@@ -7,17 +7,26 @@ using System.Threading.Tasks;
 
 namespace EasyEndpoint
 {
-    interface IEasyEndpoint
+    public interface IEasyEndpoint
     {
+        #region Properties
         bool HasFiles { get; } //Ports, Databases are not files
         bool CanStream { get; } //Ports -- NetworkStream, files -- FileStream, Database -- No
         bool CanRead { get; }
-        bool CanWrite { get;  }
-        bool CanList { get;  }
+        bool CanWrite { get; }
+        bool CanList { get; }
+        bool Overwrite { get; set; }        
+        #endregion
 
+        #region Methods
         Stream GetStream(string fileName);
         string[] GetList(string filter);
-        byte[] Copy(string fileName);
-        bool Save(string fileName, byte[] data);
+        byte[] Read(string fileName);
+        void CopyTo(IEasyEndpoint destEasyEndPoint, params string[] fileNames);
+        bool Write(string fileName, byte[] data);
+        bool FileExists(string fileName);
+        bool Delete(string fileName); 
+        #endregion
+
     }
 }

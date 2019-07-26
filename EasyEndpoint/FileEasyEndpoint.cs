@@ -7,64 +7,39 @@ using System.Threading.Tasks;
 
 namespace EasyEndpoint
 {
-    public class FileEasyEndpoint : IEasyEndpoint
+    public class FileEasyEndpoint : AbstractFileEasyEndpoint
     {
         string FolderName = String.Empty;
-        public FileEasyEndpoint(string folderName)
+
+        public FileEasyEndpoint(string folderName, bool overwriteFiles = true)
         {
             FolderName = Path.GetFullPath(folderName);
+            Overwrite = overwriteFiles;
         }
 
-        public bool HasFiles
+        #region public overriden methods
+        public override  string[] GetList(string filter = "*.*")
         {
-            get { return true; }
+            return Directory.GetFiles(FolderName, filter).Select(file=>Path.GetFileName(file)).ToArray();
         }
 
-        public bool CanStream
+        public override Stream GetStream(string fileName)
         {
-            get { return true; }
-        }
-
-        public bool CanRead
-        {
-            get { return true; }
-        }
-
-        public bool CanWrite
-        {
-            get { return true; }
-        }
-
-        public bool CanList
-        {
-            get { return true; }
-        }
-
-        public string[] GetList(string filter = "*.*")
-        {
-            return Directory.GetFiles(FolderName, filter);
-        }
-
-        public Stream GetStream(string fileName)
-        {
-            string fullFileName = Path.Combine(FolderName, fileName);
-            if (File.Exists(fullFileName)) return File.OpenRead(fullFileName);
+            if (File.Exists(FullFileName(fileName))) return File.OpenRead(FullFileName(fileName));
             return null;
         }
 
-        public byte[] Copy(string fileName)
+        public override byte[] Read(string fileName)
         {
-            string fullFileName = Path.Combine(FolderName, fileName);
-            if (File.Exists(fullFileName)) return File.ReadAllBytes(fullFileName);
+            if (File.Exists(FullFileName(fileName))) return File.ReadAllBytes(FullFileName(fileName));
             return null;            
         }
 
-        public bool Save(string fileName, byte[] data)
+        public override bool Write(string fileName, byte[] data)
         {
             try
             {
-                string fullFileName = Path.Combine(FolderName, fileName);
-                File.WriteAllBytes(fullFileName, data);
+                if (!File.Exists(FullFileName(fileName)) || Overwrite) File.WriteAllBytes(FullFileName(fileName), data);
             }
             catch
             {
@@ -72,5 +47,31 @@ namespace EasyEndpoint
             }
             return true;
         }
+
+        public override bool FileExists(string fileName)
+        {
+            return File.Exists(FullFileName(fileName));
+        }
+
+        public override bool Delete(string fileName)
+        {
+            try
+            {
+                File.Delete(FullFileName(fileName));
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        public string FullFileName(string fileName)
+        {
+            return Path.Combine(FolderName, fileName);
+        }
+
     }
 }
