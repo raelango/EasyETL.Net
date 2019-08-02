@@ -8,7 +8,4 @@ Add Gender substring-after(AgeGen,'/')
 filter starts-with(MRN,'7')
 GO
 filter Age>50 and easy:Upper(Gender)='MALE' and starts-with(DispCode,'0')
-sort Age
-GO
-add SNo autonumber
-
+sort Sno

@@ -17,6 +17,7 @@ namespace EasyXml.Parsers
         public string RootNodeName = "data";
         public string RowNodeName = "row";
         public string FieldPrefix = "Field_";
+        public event EventHandler<XmlNodeChangedEventArgs> OnRowAdd;
         public List<MalformedLineException> Exceptions = new List<MalformedLineException>();
 
         public virtual XmlNode ConvertFieldsToXmlNode(XmlDocument xDoc, string[] fieldValues)
@@ -30,6 +31,10 @@ namespace EasyXml.Parsers
                 colNode.InnerText = field;
                 rowNode.AppendChild(colNode);
                 colIndex++;
+            }
+
+            if (OnRowAdd !=null) {
+                OnRowAdd.Invoke(this,new XmlNodeChangedEventArgs(rowNode,xDoc.DocumentElement,xDoc.DocumentElement,"","",XmlNodeChangedAction.Insert));
             }
 
             return rowNode;

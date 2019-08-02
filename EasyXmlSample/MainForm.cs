@@ -22,6 +22,8 @@ namespace EasyXmlSample
     public partial class MainForm : Form
     {
         EasyXmlDocument ezDoc = null;
+        Stopwatch stopWatch = new Stopwatch();
+        public int intAutoNumber = 0;
         public MainForm()
         {
             InitializeComponent();
@@ -41,10 +43,13 @@ namespace EasyXmlSample
 
         private void LoadDataToGridView()
         {
+            if (stopWatch.IsRunning) stopWatch.Stop();
             if ((tabDataSource.SelectedTab == tabDatasourceText) && (txtTextContents.TextLength == 0)) return;
             if ((tabDataSource.SelectedTab == tabDatasourceFile) && (txtFileName.TextLength == 0)) return;
             if ((tabDataSource.SelectedTab == tabDatasourceFile) && !File.Exists(txtFileName.Text)) return;
             if ((tabDataSource.SelectedTab == tabDatasourceDatabase) && (String.IsNullOrWhiteSpace(txtDatabaseConnectionString.Text) || String.IsNullOrWhiteSpace(txtDatabaseQuery.Text))) return;
+            stopWatch.Restart();
+            intAutoNumber = 0;
             this.UseWaitCursor = true;
             Application.DoEvents();
             ProgressBar.Visible = true;
@@ -67,6 +72,7 @@ namespace EasyXmlSample
             try
             {
                 EasyXmlDocument xDoc = new EasyXmlDocument();
+                xDoc.OnRowAdd += xDoc_OnRowAdd;
                 if (tabDataSource.SelectedTab == tabDatasourceDatabase)
                 {
                     DatabaseEasyParser dbep = null;
@@ -150,12 +156,22 @@ namespace EasyXmlSample
             this.UseWaitCursor = false;
         }
 
+        void xDoc_OnRowAdd(object sender, XmlNodeChangedEventArgs e)
+        {
+            XmlNode rowNode = e.Node;
+            XmlNode autoNode = rowNode.OwnerDocument.CreateElement("SNo");
+            intAutoNumber ++;
+            autoNode.InnerText = intAutoNumber.ToString();
+            rowNode.InsertBefore(autoNode, rowNode.FirstChild);
+        }
+
         private void TransformDataFromEzDoc()
         {
+            if (!stopWatch.IsRunning) stopWatch.Restart();
             lblRecordCount.Text = "";
             cmbTableName.Items.Clear();
             EasyXmlDocument xDoc = (EasyXmlDocument)ezDoc.Clone();
-            if (!String.IsNullOrWhiteSpace(cbTransformProfiles.Text))
+            if (!String.IsNullOrWhiteSpace(txtTransformText.Text))
             {
                 xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
             }
@@ -192,12 +208,9 @@ namespace EasyXmlSample
                 lblRecordCount.Text = "(No Records)";
                 if (dataGridView1.RowCount > 0) lblRecordCount.Text = dataGridView1.RowCount + " Record(s)";
             }
-        }
-
-        void xDoc_NodeInserted(object sender, XmlNodeChangedEventArgs e)
-        {
-            StatusBarLabel.Text = "Inserted " + e.Node.Name;
-            Application.DoEvents();
+            stopWatch.Stop();
+            lblRecordCount.Text += Environment.NewLine + String.Format("[{0}:{1}:{2}.{3}]", stopWatch.Elapsed.Hours,stopWatch.Elapsed.Minutes,stopWatch.Elapsed.Seconds,stopWatch.Elapsed.Milliseconds);
+            stopWatch.Reset();
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -282,30 +295,11 @@ namespace EasyXmlSample
             LoadDataToGridView();
         }
 
-        private void txtDatabaseQuery_Leave(object sender, EventArgs e)
-        {
-            LoadDataToGridView();
-        }
-
-        private void txtDatabaseConnectionString_Leave(object sender, EventArgs e)
-        {
-            LoadDataToGridView();
-        }
-
-        private void cmbDatabaseConnectionType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadDataToGridView();
-        }
-
         private void tabDataSource_SelectedIndexChanged(object sender, EventArgs e)
         {
             grpLoadOptions.Visible = (tabDataSource.SelectedTab != tabDatasourceDatabase);
         }
 
-        private void cbHeaderRow_CheckedChanged(object sender, EventArgs e)
-        {
-            LoadDataToGridView();
-        }
 
         private void cbTransformProfiles_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -332,14 +326,10 @@ namespace EasyXmlSample
             }
         }
 
-        private void cbOnLoadTransformationProfiles_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadDataToGridView();
-        }
-
         private void btnExport_Click(object sender, EventArgs e)
         {
             ofd.CheckFileExists = false;
+            ofd.FileName = Path.ChangeExtension(ofd.FileName, cmbDestination.Text);
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 DataSet rds = (DataSet)dataGridView1.DataSource;
@@ -392,21 +382,12 @@ namespace EasyXmlSample
             TransformDataFromEzDoc();
         }
 
-        private void txtTemplateString_Leave(object sender, EventArgs e)
-        {
-            LoadDataToGridView();
-        }
-
-        private void chkUseTextExtractor_CheckedChanged(object sender, EventArgs e)
+       private void chkUseTextExtractor_CheckedChanged(object sender, EventArgs e)
         {
             cbTextExtractor.Visible = chkUseTextExtractor.Checked;
             LoadDataToGridView();
         }
 
-        private void cbTextExtractor_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            LoadDataToGridView();
-        }
 
     }
 }

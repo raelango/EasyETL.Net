@@ -15,9 +15,10 @@ namespace EasyXml
 {
     public class EasyXmlDocument : XmlDocument
     {
-        IEasyParser Parser = null;
+        AbstractEasyParser Parser = null;
         public XslCompiledTransform LastTransformer = null;
         public string LastTransformerTemplate = String.Empty;
+        public event EventHandler<XmlNodeChangedEventArgs> OnRowAdd;
 
         public override XmlNode Clone()
         {
@@ -27,7 +28,7 @@ namespace EasyXml
         }
 
 
-        public void Load(Stream inStream, IEasyParser parser, IContentExtractor extractor = null)
+        public void Load(Stream inStream, AbstractEasyParser parser, IContentExtractor extractor = null)
         {
             Parser = parser;
             if (extractor != null) inStream = extractor.GetStream(inStream);
@@ -42,12 +43,14 @@ namespace EasyXml
             }
             else
             {
+                Parser.OnRowAdd += OnRowAdd;
                 Parser.Load(inStream, this);
+                Parser.OnRowAdd -= OnRowAdd;
             }
             Transform();
         }
 
-        public void Load(string filename, IEasyParser parser, IContentExtractor extractor = null)
+        public void Load(string filename, AbstractEasyParser parser, IContentExtractor extractor = null)
         {
             Parser = parser;
             if (extractor != null)
@@ -69,13 +72,15 @@ namespace EasyXml
             }
             else
             {
+                Parser.OnRowAdd += OnRowAdd;
                 Parser.Load(filename, this);
+                Parser.OnRowAdd -= OnRowAdd;
             }
             Transform();
         }
 
 
-        public void Load(TextReader txtReader, IEasyParser parser, IContentExtractor extractor = null)
+        public void Load(TextReader txtReader, AbstractEasyParser parser, IContentExtractor extractor = null)
         {
             Parser = parser;
             if (extractor != null) txtReader = extractor.GetTextReader(txtReader);
@@ -90,12 +95,14 @@ namespace EasyXml
             }
             else
             {
+                Parser.OnRowAdd += OnRowAdd;
                 Parser.Load(txtReader, this);
+                Parser.OnRowAdd -= OnRowAdd;
             }
             Transform();
         }
 
-        public void LoadStr(string contents, IEasyParser parser, IContentExtractor extractor = null)
+        public void LoadStr(string contents, AbstractEasyParser parser, IContentExtractor extractor = null)
         {
             Parser = parser;
             if (extractor != null)
@@ -108,7 +115,9 @@ namespace EasyXml
             }
             if (Parser != null)
             {
+                Parser.OnRowAdd += OnRowAdd;                
                 Parser.LoadStr(contents, this);
+                Parser.OnRowAdd -= OnRowAdd;
             }
             else
             {

@@ -96,12 +96,12 @@
             this.txtXPathContents = new System.Windows.Forms.TextBox();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.txtRegexContents = new System.Windows.Forms.TextBox();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.txtExceptions = new System.Windows.Forms.TextBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.StatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
-            this.tabPage5 = new System.Windows.Forms.TabPage();
-            this.txtExceptions = new System.Windows.Forms.TextBox();
             this.grpLoadOptions.SuspendLayout();
             this.grpTemplate.SuspendLayout();
             this.grpHtmlOptions.SuspendLayout();
@@ -121,8 +121,8 @@
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
             this.tabPage5.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // grpLoadOptions
@@ -159,7 +159,7 @@
             this.txtTemplateString.Name = "txtTemplateString";
             this.txtTemplateString.Size = new System.Drawing.Size(362, 62);
             this.txtTemplateString.TabIndex = 7;
-            this.txtTemplateString.Leave += new System.EventHandler(this.txtTemplateString_Leave);
+            this.txtTemplateString.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // label10
             // 
@@ -385,7 +385,7 @@
             this.cbHeaderRow.TabIndex = 2;
             this.cbHeaderRow.Text = "First Row Has Field Names";
             this.cbHeaderRow.UseVisualStyleBackColor = true;
-            this.cbHeaderRow.CheckedChanged += new System.EventHandler(this.cbHeaderRow_CheckedChanged);
+            this.cbHeaderRow.CheckedChanged += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // grpDelimiters
             // 
@@ -557,7 +557,7 @@
             this.cbTextExtractor.Size = new System.Drawing.Size(242, 21);
             this.cbTextExtractor.TabIndex = 9;
             this.cbTextExtractor.Visible = false;
-            this.cbTextExtractor.SelectedIndexChanged += new System.EventHandler(this.cbTextExtractor_SelectedIndexChanged);
+            this.cbTextExtractor.SelectedIndexChanged += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // chkUseTextExtractor
             // 
@@ -632,7 +632,7 @@
             this.txtDatabaseQuery.Name = "txtDatabaseQuery";
             this.txtDatabaseQuery.Size = new System.Drawing.Size(362, 62);
             this.txtDatabaseQuery.TabIndex = 19;
-            this.txtDatabaseQuery.Leave += new System.EventHandler(this.txtDatabaseQuery_Leave);
+            this.txtDatabaseQuery.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // label6
             // 
@@ -650,7 +650,7 @@
             this.txtDatabaseConnectionString.Name = "txtDatabaseConnectionString";
             this.txtDatabaseConnectionString.Size = new System.Drawing.Size(362, 43);
             this.txtDatabaseConnectionString.TabIndex = 17;
-            this.txtDatabaseConnectionString.Leave += new System.EventHandler(this.txtDatabaseConnectionString_Leave);
+            this.txtDatabaseConnectionString.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // label5
             // 
@@ -674,7 +674,7 @@
             this.cmbDatabaseConnectionType.Size = new System.Drawing.Size(158, 21);
             this.cmbDatabaseConnectionType.Sorted = true;
             this.cmbDatabaseConnectionType.TabIndex = 15;
-            this.cmbDatabaseConnectionType.SelectedIndexChanged += new System.EventHandler(this.cmbDatabaseConnectionType_SelectedIndexChanged);
+            this.cmbDatabaseConnectionType.SelectedIndexChanged += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // label1
             // 
@@ -717,9 +717,9 @@
             // 
             // lblRecordCount
             // 
-            this.lblRecordCount.Location = new System.Drawing.Point(503, 22);
+            this.lblRecordCount.Location = new System.Drawing.Point(503, 15);
             this.lblRecordCount.Name = "lblRecordCount";
-            this.lblRecordCount.Size = new System.Drawing.Size(169, 23);
+            this.lblRecordCount.Size = new System.Drawing.Size(169, 25);
             this.lblRecordCount.TabIndex = 14;
             this.lblRecordCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -851,6 +851,25 @@
             this.txtRegexContents.Size = new System.Drawing.Size(767, 605);
             this.txtRegexContents.TabIndex = 1;
             // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.txtExceptions);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(767, 605);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Exceptions";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // txtExceptions
+            // 
+            this.txtExceptions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtExceptions.Location = new System.Drawing.Point(0, 0);
+            this.txtExceptions.Multiline = true;
+            this.txtExceptions.Name = "txtExceptions";
+            this.txtExceptions.Size = new System.Drawing.Size(767, 605);
+            this.txtExceptions.TabIndex = 0;
+            // 
             // statusStrip1
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -877,25 +896,6 @@
             this.ProgressTimer.Enabled = true;
             this.ProgressTimer.Interval = 1000;
             this.ProgressTimer.Tick += new System.EventHandler(this.ProgressTimer_Tick);
-            // 
-            // tabPage5
-            // 
-            this.tabPage5.Controls.Add(this.txtExceptions);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(767, 605);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Exceptions";
-            this.tabPage5.UseVisualStyleBackColor = true;
-            // 
-            // txtExceptions
-            // 
-            this.txtExceptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtExceptions.Location = new System.Drawing.Point(0, 0);
-            this.txtExceptions.Multiline = true;
-            this.txtExceptions.Name = "txtExceptions";
-            this.txtExceptions.Size = new System.Drawing.Size(767, 605);
-            this.txtExceptions.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -942,10 +942,10 @@
             this.tabPage3.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

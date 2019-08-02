@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -18,6 +19,12 @@ namespace EasyXml.XsltExtensions
         public string Lower(string inputStr)
         {
             return inputStr.ToLower();
+        }
+
+        public string Proper(string inputStr)
+        {
+            string result = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(inputStr.ToLower());
+            return result;
         }
 
         public int Length(string inputStr)
@@ -50,6 +57,12 @@ namespace EasyXml.XsltExtensions
             inputStr = Trim(inputStr);
             bool result = !Regex.IsMatch(inputStr, "([^\\d,.]+)");
             return result;
+        }
+
+        public bool IsDate(string inputStr)
+        {
+            DateTime dateTime;
+            return DateTime.TryParse(inputStr, out dateTime);
         }
 
         public string Trim(string inputStr)

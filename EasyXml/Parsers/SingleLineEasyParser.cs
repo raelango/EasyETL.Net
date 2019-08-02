@@ -50,7 +50,8 @@ namespace EasyXml.Parsers
                     {
                         string[] fieldValues = txtFieldParser.ReadFields();
                         NewRow(fieldValues);
-                        rootNode.AppendChild(ConvertFieldsToXmlNode(xDoc, fieldValues));
+                        XmlNode childNode = ConvertFieldsToXmlNode(xDoc, fieldValues);
+                        if ((childNode != null) && (childNode.HasChildNodes)) rootNode.AppendChild(childNode);
                     }
                     catch (MalformedLineException mex)
                     {
