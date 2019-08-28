@@ -14,6 +14,7 @@ namespace EasyXml.Parsers
         public bool FirstRowHasFieldNames = true;
         public TextFieldParser txtFieldParser;
         public FieldType ParserFieldType = FieldType.Delimited;
+        public string[] CommentTokens;
 
         protected XmlDocument GetXmlDocument(XmlNode xmlNode = null, XmlDocument xDoc = null)
         {
@@ -34,6 +35,8 @@ namespace EasyXml.Parsers
             {
                 rootNode.AppendChild(xmlNode);
             }
+            int errorCount = 0;
+            int rowCount = 0;
             while (!txtFieldParser.EndOfData)
             {
                 bool skipRow = false;
@@ -51,19 +54,36 @@ namespace EasyXml.Parsers
                         string[] fieldValues = txtFieldParser.ReadFields();
                         NewRow(fieldValues);
                         XmlNode childNode = ConvertFieldsToXmlNode(xDoc, fieldValues);
-                        if ((childNode != null) && (childNode.HasChildNodes)) rootNode.AppendChild(childNode);
+                        if ((childNode != null) && (childNode.HasChildNodes))
+                        {
+                            rootNode.AppendChild(childNode);
+                            rowCount++;
+                            if (rowCount >= MaxRecords) break;
+                        }
                     }
                     catch (MalformedLineException mex)
                     {
                         Exceptions.Add(mex);
+                        errorCount++;
+                        if (errorCount > MaximumErrorsToAbort) break;
                     }
                     catch (Exception)
                     {
-
+                        errorCount++;
+                        if (errorCount > MaximumErrorsToAbort) break;
                     }
                 }
             }
             return xDoc;
+        }
+
+        public void SetCommentTokens(params string[] commentTokens)
+        {
+            CommentTokens = commentTokens;
+            if (txtFieldParser != null)
+            {
+                txtFieldParser.CommentTokens = commentTokens;
+            }
         }
 
         public virtual void NewRow(string[] fieldValues)

@@ -17,8 +17,10 @@ namespace EasyXml.Parsers
         public string RootNodeName = "data";
         public string RowNodeName = "row";
         public string FieldPrefix = "Field_";
+        public long MaxRecords = long.MaxValue;
         public event EventHandler<XmlNodeChangedEventArgs> OnRowAdd;
         public List<MalformedLineException> Exceptions = new List<MalformedLineException>();
+        public int MaximumErrorsToAbort = 20;
 
         public virtual XmlNode ConvertFieldsToXmlNode(XmlDocument xDoc, string[] fieldValues)
         {
@@ -33,11 +35,14 @@ namespace EasyXml.Parsers
                 colIndex++;
             }
 
-            if (OnRowAdd !=null) {
-                OnRowAdd.Invoke(this,new XmlNodeChangedEventArgs(rowNode,xDoc.DocumentElement,xDoc.DocumentElement,"","",XmlNodeChangedAction.Insert));
-            }
+            return AddRow(xDoc,rowNode);
+        }
 
-            return rowNode;
+        public virtual XmlNode AddRow(XmlDocument xDoc, XmlNode childNode) {
+            if (OnRowAdd !=null) {
+                OnRowAdd.Invoke(this,new XmlNodeChangedEventArgs(childNode,xDoc.DocumentElement,xDoc.DocumentElement,"","",XmlNodeChangedAction.Insert));
+            }
+            return childNode;
         }
 
         public virtual void SetFieldNames(params string[] fieldNames)

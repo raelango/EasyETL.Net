@@ -28,7 +28,7 @@ namespace EasyXml.Parsers
                 string lineContents = txtReader.ReadLine();
                 DetectDelimiter(lineContents);
 
-                txtFieldParser = new TextFieldParser(new StringReader(lineContents)) { TextFieldType = FieldType.Delimited };
+                txtFieldParser = new TextFieldParser(new StringReader(lineContents)) { TextFieldType = FieldType.Delimited, CommentTokens = this.CommentTokens };
                 txtFieldParser.SetDelimiters(Delimiters.ToArray());
                 if (FirstRowHasFieldNames)
                 {
@@ -43,7 +43,8 @@ namespace EasyXml.Parsers
                 txtFieldParser = null;
                 FirstRowHasFieldNames = false;
             }
-            txtFieldParser = new TextFieldParser(txtReader) { TextFieldType = FieldType.Delimited };
+            txtFieldParser = new TextFieldParser(txtReader) { TextFieldType = FieldType.Delimited, CommentTokens = this.CommentTokens };
+
             txtFieldParser.SetDelimiters(Delimiters.ToArray());
             return GetXmlDocument(xmlNode, xDoc);
         }

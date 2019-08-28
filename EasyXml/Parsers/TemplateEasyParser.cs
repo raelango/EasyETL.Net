@@ -16,10 +16,11 @@ namespace EasyXml.Parsers
     public class TemplateEasyParser : AbstractEasyParser
     {
         public string RowSeparator = String.Empty;
-        private string _templateString = "";
-        public string RegexString = String.Empty;
+        public Dictionary<string,string> lstRegex = new Dictionary<string,string>();
 
-        public string TemplateString { get { return _templateString; } set { _templateString = value; RegexString = String.Empty; } }
+        public List<string> lstTemplates = new List<string>();
+
+        public string[] Templates { get { return lstTemplates.ToArray() ; } set { lstTemplates.Clear(); lstTemplates.AddRange(value.AsEnumerable()); lstRegex.Clear(); } }
 
         public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
         {
@@ -38,107 +39,158 @@ namespace EasyXml.Parsers
             rootNode = xDoc.DocumentElement;
             #endregion
 
-            if (String.IsNullOrWhiteSpace(TemplateString)) return xDoc;
+            if (Templates.Length == 0) return xDoc;
             if (String.IsNullOrWhiteSpace(RowSeparator)) RowSeparator = Environment.NewLine;
-            string regexPattern = GetRegexPattern();
+            string[] regexPattern = GetRegexPattern();
+            Dictionary<Regex,string> dctRegex = new Dictionary<Regex, string>();
+            foreach (string strRegexPattern in regexPattern)
+            {
+                Regex regex = new Regex(strRegexPattern, RegexOptions.Compiled);
+                dctRegex.Add(regex, lstRegex[strRegexPattern]);
+            }
 
-            Regex regex = new Regex(regexPattern, RegexOptions.Compiled);
-            FieldNames = regex.GetGroupNames().Where(w => w.Trim('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') != "").ToArray();
 
             int lineNumber = 0;
             string subStr = txtReader.ReadLine();
+            int exceptionCount =0;
+            int rowCount = 0;
             while (subStr != null)
             {
                 lineNumber++;
-                if (regex.IsMatch(subStr))
+                bool matched = false;
+                foreach ( KeyValuePair<Regex,string> kvRegex in dctRegex)
                 {
-                    Match match = regex.Match(subStr);
-                    XmlElement rowNode = xDoc.CreateElement(RowNodeName);
-                    foreach (string fieldName in FieldNames)
+                    if (kvRegex.Key.IsMatch(subStr))
                     {
-                        XmlElement colNode = xDoc.CreateElement(fieldName);
-                        colNode.InnerText = match.Groups[fieldName].Value;
-                        rowNode.AppendChild(colNode);
+                        matched = true;
+                        FieldNames = kvRegex.Key.GetGroupNames().Where(w => w.Trim('0', '1', '2', '3', '4', '5', '6', '7', '8', '9') != "").ToArray();
+                        if (FieldNames.Length > 0)
+                        {
+                            Match match = kvRegex.Key.Match(subStr);
+                            string rowName = kvRegex.Value;
+                            XmlElement rowNode = xDoc.CreateElement(rowName);
+                            foreach (string fieldName in FieldNames)
+                            {
+                                XmlElement colNode = xDoc.CreateElement(fieldName);
+                                colNode.InnerText = match.Groups[fieldName].Value;
+                                rowNode.AppendChild(colNode);
+                            }
+                            AddRow(xDoc, rowNode);
+                            if ((rowNode != null) && (rowNode.HasChildNodes))
+                            {
+                                rootNode.AppendChild(rowNode);
+                                rowCount++;
+                            }
+                        }
+                        break;
                     }
-                    rootNode.AppendChild(rowNode);
                 }
-                else
+                if (!matched)
                 {
                     Exceptions.Add(new MalformedLineException(subStr, lineNumber));
+                    exceptionCount++;
+                    if (exceptionCount > MaximumErrorsToAbort) break;
                 }
+                if (rowCount >= MaxRecords) break;
                 subStr = txtReader.ReadLine();
             }
 
             return xDoc;
         }
 
-        private string GetRegexPattern()
+        private string[] GetRegexPattern()
         {            
-            if (String.IsNullOrWhiteSpace(RegexString + TemplateString)) return String.Empty;
+            if ((lstRegex.Count + lstTemplates.Count) == 0) return new List<string>().ToArray();
 
-            if (String.IsNullOrWhiteSpace(RegexString))
+            if (lstTemplates.Count > lstRegex.Count)
             {
-                #region break down the template string into parts
-                List<string> templateParts = new List<string>();
-                string strTemp = String.Empty;
-                foreach (string subPart in TemplateString.Split(']'))
+                lstRegex.Clear();
+                foreach (string strTemplate in lstTemplates)
                 {
-                    string columnName = String.Empty;
-                    if (subPart.Contains('['))
+                    #region break down the template string into parts
+                    List<string> templateParts = new List<string>();
+                    string strTemplateWithoutRowName = strTemplate;
+                    string rowName = RowNodeName;
+                    if ((strTemplate.StartsWith("[[")) && (strTemplate.Contains("]]")))
                     {
-                        strTemp += subPart.Substring(0, subPart.IndexOf('['));
-                        if (!String.IsNullOrEmpty(strTemp))
-                        {
-                            templateParts.Add(strTemp);
-                        }
-                        templateParts.Add(subPart.Substring(subPart.IndexOf('[')) + ']');
-                        strTemp = String.Empty;
+                        rowName = strTemplate.Substring(0, strTemplate.IndexOf("]]"));
+                        rowName = rowName.Trim('[');
+                        strTemplateWithoutRowName = strTemplate.Substring(strTemplate.IndexOf("]]") + 2);
                     }
-                }
-                if (!String.IsNullOrEmpty(strTemp)) templateParts.Add(strTemp + ']');
-                #endregion 
 
-                #region build the regex string from the parts using regex column builder
-                RegexColumnBuilder rcb = new RegexColumnBuilder();
-                string prefix = string.Empty;
-                for (int index = 0; index < templateParts.Count; index++)
-                {
-                    if ((templateParts[index].StartsWith("[")) && (templateParts[index].EndsWith("]")))
+
+                    string strTemp = String.Empty;
+                    foreach (string subPart in strTemplateWithoutRowName.Split(']'))
                     {
-                        //This is a column...
-                        string colName = templateParts[index].Trim('[', ']');
-                        string colRegex = ".*";
-                        if (colName.Contains(':')) {
-                            string colFormat = colName.Substring(colName.IndexOf(':') + 1);
-                            if ((colFormat.StartsWith("(")) && (colFormat.EndsWith(")")))
+                        string columnName = String.Empty;
+                        if (subPart.Contains('['))
+                        {
+                            strTemp += subPart.Substring(0, subPart.IndexOf('['));
+                            if (!String.IsNullOrEmpty(strTemp))
                             {
-                                //this is the regex format to be used...
-                                colRegex = colFormat.Replace('(', '[').Replace(')', ']') + "+";
+                                templateParts.Add(strTemp);
                             }
-                            else
-                            {
-                                int colWidth =0;
-                                if (Int32.TryParse(colFormat,out colWidth)) {
-                                    //This is fixed width
-                                    colRegex = ".{" + colWidth.ToString() + "}";
+                            templateParts.Add(subPart.Substring(subPart.IndexOf('[')) + ']');
+                            strTemp = String.Empty;
+                        }
+                        else
+                        {
+                            strTemp = subPart;
+                        }
+                    }
+                    if (!String.IsNullOrEmpty(strTemp))
+                    {
+                        if (strTemp.StartsWith("[")) strTemp += ']';
+                        templateParts.Add(strTemp);
+                    }
+                    #endregion 
+
+                    #region build the regex string from the parts using regex column builder
+                    RegexColumnBuilder rcb = new RegexColumnBuilder();
+                    string prefix = string.Empty;
+                    for (int index = 0; index < templateParts.Count; index++)
+                    {
+                        if ((templateParts[index].StartsWith("[")) && (templateParts[index].EndsWith("]")))
+                        {
+                            //This is a column...
+                            string colName = templateParts[index].Trim('[', ']');
+                            string colRegex = ".*";
+                            if (colName.Contains(':')) {
+                                string colFormat = colName.Substring(colName.IndexOf(':') + 1);
+                                if ((colFormat.StartsWith("(")) && (colFormat.EndsWith(")")))
+                                {
+                                    //this is the regex format to be used...
+                                    colRegex = colFormat.Replace('(', '[').Replace(')', ']') + "+";
                                 }
-                            }
-                            colName = colName.Substring(0, colName.IndexOf(':'));
-                        } 
-                        rcb.AddColumn(colName, colRegex, "", prefix);
-                        prefix = String.Empty;
+                                else
+                                {
+                                    int colWidth =0;
+                                    if (Int32.TryParse(colFormat,out colWidth)) {
+                                        //This is fixed width
+                                        colRegex = ".{" + colWidth.ToString() + "}";
+                                    }
+                                }
+                                colName = colName.Substring(0, colName.IndexOf(':'));
+                            } 
+                            rcb.AddColumn(colName, colRegex, "", prefix);
+                            prefix = String.Empty;
+                        }
+                        else
+                        {
+                            //this is a constant....
+                            prefix += templateParts[index];
+                        }
                     }
-                    else
-                    {
-                        //this is a constant....
-                        prefix += templateParts[index];
-                    }
+
+                    string strRegex = prefix;
+                    if (rcb.Columns.Count >0) strRegex = rcb.CreateRegularExpressionString();
+                    lstRegex.Add(strRegex, rowName);
+                    #endregion 
+
                 }
-                RegexString = rcb.CreateRegularExpressionString();
-                #endregion 
             }
 
-            return RegexString;
+            return lstRegex.Keys.ToArray();
         }
   
     }

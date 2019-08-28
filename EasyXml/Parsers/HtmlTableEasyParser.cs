@@ -29,13 +29,12 @@ namespace EasyXml.Parsers
             #endregion
 
             string HTML = txtReader.ReadToEnd();
-            ConvertHTMLTablesToDataSet(HTML, rootNode);
-
+            ConvertHTMLTablesXml(HTML, xDoc, rootNode);
 
             return xDoc;
         }
 
-        private void ConvertHTMLTablesToDataSet(string HTML, XmlNode rootNode)
+        private void ConvertHTMLTablesXml(string HTML, XmlDocument xDoc, XmlNode rootNode)
         {
             string TableExpression = "<TABLE[^>]*>(.*?)</TABLE>";
             string HeaderExpression = "(<TH>|<TH[\\s]>)(.*?)</TH>";
@@ -45,70 +44,72 @@ namespace EasyXml.Parsers
             int iCurrentColumn = 0;
             int iCurrentRow = 0;
             // Get a match for all the tables in the HTML  
-            try
+            MatchCollection Tables = Regex.Matches(HTML, TableExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            // Loop through each table element  
+            int tableIndex = 1;
+            foreach (Match Table in Tables)
             {
-                MatchCollection Tables = Regex.Matches(HTML, TableExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                // Loop through each table element  
-                int tableIndex = 1;
-                foreach (Match Table in Tables)
+                List<string> lstFields = new List<string>();
+                tableIndex++;
+                string tableName = RowNodeName + tableIndex.ToString();
+                // Reset the current row counter and the header flag  
+                iCurrentRow = 0;
+                HeadersExist = false;
+                Match TableNameMatch = null;
+                if (Regex.IsMatch(Table.Value, "id=(?<TableName>.\\w+)")) TableNameMatch = Regex.Match(Table.Value, "id=(?<TableName>.\\w+)");
+                if (Regex.IsMatch(Table.Value, "name=(?<TableName>.\\w+)")) TableNameMatch = Regex.Match(Table.Value, "name=(?<TableName>.\\w+)");
+
+                if (TableNameMatch != null)
+                    tableName = TableNameMatch.Groups["TableName"].ToString().Trim('"');
+
+                //// Add a new table to the DataSet  
+                //XmlNode tableNode = rootNode.OwnerDocument.CreateElement(tableName);
+                //rootNode.AppendChild(tableNode);
+                //Create the relevant amount of columns for this table (use the headers if they exist, otherwise use default names)  
+
+                if (Table.Value.IndexOf("<TH", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    List<string> lstFields = new List<string>();
-                    tableIndex++;
-                    string tableName = RowNodeName + tableIndex.ToString();
-                    // Reset the current row counter and the header flag  
-                    iCurrentRow = 0;
-                    HeadersExist = false;
-                    Match TableNameMatch = null;
-                    if (Regex.IsMatch(Table.Value, "id=(?<TableName>.\\w+)")) TableNameMatch = Regex.Match(Table.Value, "id=(?<TableName>.\\w+)");
-                    if (Regex.IsMatch(Table.Value, "name=(?<TableName>.\\w+)")) TableNameMatch = Regex.Match(Table.Value, "name=(?<TableName>.\\w+)");
-
-                    if (TableNameMatch != null)
-                        tableName = TableNameMatch.Groups["TableName"].ToString().Trim('"');
-
-                    //// Add a new table to the DataSet  
-                    //XmlNode tableNode = rootNode.OwnerDocument.CreateElement(tableName);
-                    //rootNode.AppendChild(tableNode);
-                    //Create the relevant amount of columns for this table (use the headers if they exist, otherwise use default names)  
-
-                    if (Table.Value.IndexOf("<TH", StringComparison.OrdinalIgnoreCase) >= 0)
+                    // Set the HeadersExist flag  
+                    HeadersExist = true;
+                    // Get a match for all the rows in the table  
+                    MatchCollection Headers = Regex.Matches(Table.Value, HeaderExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    // Loop through each header element  
+                    foreach (Match Header in Headers)
                     {
-                        // Set the HeadersExist flag  
-                        HeadersExist = true;
-                        // Get a match for all the rows in the table  
-                        MatchCollection Headers = Regex.Matches(Table.Value, HeaderExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                        // Loop through each header element  
-                        foreach (Match Header in Headers)
-                        {
 
-                            if (!lstFields.Contains(Header.Groups[2].ToString()))
-                            {
-                                lstFields.Add(Header.Groups[2].ToString());
-                            }
+                        if (!lstFields.Contains(Header.Groups[2].ToString()))
+                        {
+                            lstFields.Add(Header.Groups[2].ToString());
                         }
                     }
-                    else
+                }
+                else
+                {
+                    MatchCollection tableCollection = Regex.Matches(Table.Value, TableExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                    MatchCollection rowCollection = (tableCollection.Count > 0) ? Regex.Matches(tableCollection[0].ToString(), RowExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase) : null;
+                    MatchCollection colCollection = (rowCollection.Count > 0) ? Regex.Matches(rowCollection[0].ToString(), ColumnExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase) : null;
+                    if (colCollection.Count > 0)
                     {
-                        MatchCollection tableCollection = Regex.Matches(Table.Value, TableExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                        MatchCollection rowCollection = (tableCollection.Count > 0) ? Regex.Matches(tableCollection[0].ToString(), RowExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase) : null;
-                        MatchCollection colCollection = (rowCollection.Count > 0) ? Regex.Matches(rowCollection[0].ToString(), ColumnExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase) : null;
-                        if (colCollection.Count > 0)
+                        for (int iColumns = 1; iColumns <= colCollection.Count; iColumns++)
                         {
-                            for (int iColumns = 1; iColumns <= colCollection.Count; iColumns++)
-                            {
-                                lstFields.Add("Column" + iColumns);
-                            }
+                            lstFields.Add("Column" + iColumns);
                         }
                     }
+                }
 
-                    SetFieldNames(lstFields.ToArray());
+                SetFieldNames(lstFields.ToArray());
 
-                    //Get a match for all the rows in the table  
-                    MatchCollection Rows = Regex.Matches(Table.Value, RowExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
-                    // Loop through each row element  
-                    foreach (Match Row in Rows)
+                //Get a match for all the rows in the table  
+                MatchCollection Rows = Regex.Matches(Table.Value, RowExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                // Loop through each row element 
+                int errorCount = 0;
+                int rowCount = 0;
+                foreach (Match Row in Rows)
+                {
+                    // Only loop through the row if it isn't a header row  
+                    if (!(iCurrentRow == 0 && HeadersExist))
                     {
-                        // Only loop through the row if it isn't a header row  
-                        if (!(iCurrentRow == 0 && HeadersExist))
+                        try
                         {
                             // Create a new row and reset the current column counter  
                             XmlNode rowNode = rootNode.OwnerDocument.CreateElement(tableName);
@@ -137,20 +138,24 @@ namespace EasyXml.Parsers
                                 iCurrentColumn++;
                             }
 
-                            if (rowNode.HasChildNodes)
+                            AddRow(xDoc, rowNode);
+
+                            if ((rowNode != null) && (rowNode.HasChildNodes))
                             {
                                 rootNode.AppendChild(rowNode);
+                                rowCount++;
+                                if (rowCount >= MaxRecords) return;
                             }
                         }
-                        // Increase the current row counter  
-                        iCurrentRow++;
+                        catch 
+                        {
+                            errorCount++;
+                            if (errorCount > MaximumErrorsToAbort) return;
+                        }
                     }
+                    // Increase the current row counter  
+                    iCurrentRow++;
                 }
-            }
-            catch 
-            {
-
-                throw;
             }
         }
 
