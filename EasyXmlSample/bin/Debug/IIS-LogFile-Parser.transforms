@@ -1,0 +1,9 @@
+[row=>logrecord]
+rename Field_0 Date
+rename Field_1 Time
+rename Field_2 SourceIP
+rename Field_3 CallMethod
+rename Field_4 CallURL
+rename Field_5 CallParams
+rename Field_6 CallPort
+GO
