@@ -4,6 +4,7 @@ using EasyXml.XsltExtensions;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,8 @@ namespace EasyXml
         public override XmlNode Clone()
         {
             EasyXmlDocument ezDoc = new EasyXmlDocument();
-            ezDoc.LoadXml(this.OuterXml);
+            XmlNode xNode = ezDoc.ImportNode(this.DocumentElement, true);
+            ezDoc.AppendChild(xNode);
             return ezDoc;
         }
 
@@ -115,7 +117,7 @@ namespace EasyXml
             }
             if (Parser != null)
             {
-                Parser.OnRowAdd += OnRowAdd;                
+                Parser.OnRowAdd += OnRowAdd;
                 Parser.LoadStr(contents, this);
                 Parser.OnRowAdd -= OnRowAdd;
             }
@@ -129,9 +131,9 @@ namespace EasyXml
         public DataSet ToDataSet(string xPathFilter = "")
         {
             DataSet ds = new DataSet();
-            string xmlContents;
-            if (String.IsNullOrWhiteSpace(xPathFilter))
-                xmlContents = this.OuterXml;
+            if (String.IsNullOrWhiteSpace(xPathFilter)) {
+                ds.ReadXml(new XmlNodeReader(this));
+            }
             else
             {
                 XmlDocument outXmlDoc = new XmlDocument();
@@ -139,11 +141,7 @@ namespace EasyXml
                 {
                     outXmlDoc.ImportNode(xNode.Clone(), true);
                 }
-                xmlContents = outXmlDoc.OuterXml;
-            }
-            if (!String.IsNullOrWhiteSpace(xmlContents))
-            {
-                ds.ReadXml(new StringReader(xmlContents));
+                ds.ReadXml(new XmlNodeReader(outXmlDoc));
             }
             return ds;
         }
@@ -175,21 +173,37 @@ namespace EasyXml
             return outXmlDoc;
         }
 
+
         public string Beautify()
         {
-            StringBuilder sb = new StringBuilder();
-            XmlWriterSettings settings = new XmlWriterSettings
+            using (var ms = new MemoryStream())
             {
-                Indent = true,
-                IndentChars = "  ",
-                NewLineChars = "\r\n",
-                NewLineHandling = NewLineHandling.Replace
-            };
-            using (XmlWriter writer = XmlWriter.Create(sb, settings))
-            {
-                this.Save(writer);
+                using (var x = new XmlTextWriter(ms, new UTF8Encoding(false)) { Formatting = Formatting.Indented, IndentChar = ' ' })
+                {
+                    this.Save(x);
+                    StreamReader sr = new StreamReader(ms);
+                    ms.Position = 0;
+                    string resultText = sr.ReadToEnd();
+                    return resultText;
+                }
             }
-            return sb.ToString();
+        }
+
+        public StreamReader BeautifyReaderStream(XmlDocument xDoc = null)
+        {
+            MemoryStream ms = new MemoryStream();
+            using (var x = new XmlTextWriter(ms, Encoding.UTF8) { Formatting = Formatting.Indented, IndentChar = ' ' })
+            {
+                if (xDoc != null)
+                {
+                    xDoc.Save(x);
+                }
+                else
+                {
+                    this.Save(x);
+                }
+                return new StreamReader(ms);
+            }
         }
 
 
@@ -211,11 +225,6 @@ namespace EasyXml
             xsl.Load(xslFileName);
             LastTransformer = xsl;
             return Transform();
-            //StringBuilder xmlSB = new StringBuilder();
-            //XmlWriter xWriter = XmlWriter.Create(xmlSB);
-            //xsl.Transform(this, null, xWriter);
-            //LoadXml(xmlSB.ToString());
-            //return this;
         }
 
 
@@ -287,7 +296,7 @@ namespace EasyXml
                             rootElementName = String.Empty;
                             if (this.FirstChild != null) rootElementName = this.FirstChild.Name;
                             rowElementName = String.Empty;
-                            if (this.FirstChild.FirstChild !=null) rowElementName = this.FirstChild.FirstChild.Name;
+                            if (this.FirstChild.FirstChild != null) rowElementName = this.FirstChild.FirstChild.Name;
                             if (String.IsNullOrWhiteSpace(rootElementName)) return this;
                             if (String.IsNullOrWhiteSpace(rowElementName)) return this;
                             bTransformRequired = false;
@@ -298,16 +307,16 @@ namespace EasyXml
                 {
 
 
-                if (settingCommand.Trim()[0] == '[')
-                {
-                    if (bTransformRequired || rowElementName.Contains("=>"))
+                    if (settingCommand.Trim()[0] == '[')
                     {
-                        BuildXsltString(rootElementName, rowElementName, dctAdditions, lstRemoveCommands, lstFilters, dctRenames, lstRowElements, xslSB);
-                        strSortOrder = String.Empty;
+                        if (bTransformRequired || rowElementName.Contains("=>"))
+                        {
+                            BuildXsltString(rootElementName, rowElementName, dctAdditions, lstRemoveCommands, lstFilters, dctRenames, lstRowElements, xslSB);
+                            strSortOrder = String.Empty;
+                        }
+                        rowElementName = settingCommand.Trim().Substring(1, settingCommand.Trim().Length - 2);
+                        bTransformRequired = false;
                     }
-                    rowElementName = settingCommand.Trim().Substring(1, settingCommand.Trim().Length - 2);
-                    bTransformRequired = false;
-                }
                 }
 
             }

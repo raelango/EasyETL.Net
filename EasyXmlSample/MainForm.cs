@@ -110,26 +110,41 @@ namespace EasyXmlSample
                             {
                                 ((DelimitedEasyParser)ep).Delimiters.Add(delimiter);
                             }
+                            if (txtDelimitedComments.Text.Trim().Length > 0)
+                            {
+                                ((DelimitedEasyParser)ep).SetCommentTokens(txtDelimitedComments.Text.Split(new string[] { Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries ));
+                            }
                             break;
                         case "HL7":
                             ep = new HL7EasyParser();
                             break;
                         case "Fixed Width":
                             ep = new FixedWidthEasyParser(false, lstFixedColumnWidths.Items.Cast<int>().ToArray());
+                            if (txtFixedWidthComments.Text.Trim().Length > 0)
+                            {
+                                ((FixedWidthEasyParser)ep).SetCommentTokens(txtFixedWidthComments.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+                            }
                             break;
                         case "Json":
                             ep = new JsonEasyParser();
                             break;
                         case "Template":
                             if (String.IsNullOrWhiteSpace(txtTemplateString.Text)) txtTemplateString.Text = "[Contents]";
-                            ep = new TemplateEasyParser() { TemplateString = txtTemplateString.Text };
+                            ep = new TemplateEasyParser();
+                            ((TemplateEasyParser)ep).Templates = txtTemplateString.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                             ((TemplateEasyParser)ep).LoadStr("");
-                            txtRegexContents.Text = ((TemplateEasyParser)ep).RegexString;
+                            StringBuilder sb = new StringBuilder();
+                            foreach (string strRegex in ((TemplateEasyParser)ep).lstRegex.Keys)
+                            {
+                                sb.AppendLine(strRegex);
+                            }
+                            txtRegexContents.Text = sb.ToString();
                             break;
                         case "HtmlTable":
                             ep = new HtmlTableEasyParser();
                             break;
                     }
+                    if (chkHasMaxRows.Checked) ep.MaxRecords = Convert.ToInt64(nudMaxRows.Value);
                     if ((tabDataSource.SelectedTab == tabDatasourceFile))
                         xDoc.Load(txtFileName.Text, ep, extractor);
                     else
@@ -145,7 +160,14 @@ namespace EasyXmlSample
                     }
                 }
                 ezDoc = xDoc;
-                TransformDataFromEzDoc();
+                try
+                {
+                    TransformDataFromEzDoc();
+                }
+                catch
+                {
+                    MessageBox.Show("Error Transforming document...");
+                }
 
             }
             catch
@@ -170,44 +192,59 @@ namespace EasyXmlSample
             if (!stopWatch.IsRunning) stopWatch.Restart();
             lblRecordCount.Text = "";
             cmbTableName.Items.Clear();
-            EasyXmlDocument xDoc = (EasyXmlDocument)ezDoc.Clone();
-            if (!String.IsNullOrWhiteSpace(txtTransformText.Text))
+            EasyXmlDocument xDoc = (EasyXmlDocument)ezDoc;
+            try
             {
-                xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
+                xDoc = (EasyXmlDocument)ezDoc.Clone();
+                if (!String.IsNullOrWhiteSpace(txtTransformText.Text))
+                {
+                    xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
+                }
+                if (!String.IsNullOrWhiteSpace(txtXPathQuery.Text))
+                {
+                    xDoc = xDoc.ApplyFilter(txtXPathQuery.Text);
+                }
+                txtXPathContents.Text = xDoc.LastTransformerTemplate;
+            }
+            catch
+            {
+                xDoc = (EasyXmlDocument)ezDoc;
+                MessageBox.Show("Unable to transform....");
             }
 
-            if (!String.IsNullOrWhiteSpace(txtXPathQuery.Text))
+            try
             {
-                xDoc = xDoc.ApplyFilter(txtXPathQuery.Text);
+                txtXmlContents.Text = xDoc.Beautify();
             }
-            txtXmlContents.Text = xDoc.Beautify();
-            txtXPathContents.Text = xDoc.LastTransformerTemplate;
+            catch 
+            {
+            }
 
             DataSet ds = null;
-            if (grpHtmlOptions.Visible)
-            {
-                ds = xDoc.ToDataSet(txtXPathQuery.Text);
-            }
-            else
+            try
             {
                 ds = xDoc.ToDataSet();
-            }
-
-            if (ds != null)
-            {
-                foreach (DataTable table in ds.Tables)
+                if (ds != null)
                 {
-                    cmbTableName.Items.Add(table.TableName);
+                    foreach (DataTable table in ds.Tables)
+                    {
+                        cmbTableName.Items.Add(table.TableName);
+                    }
+                }
+                dataGridView1.DataSource = ds;
+                if (cmbTableName.Items.Count > 0)
+                {
+                    cmbTableName.SelectedIndex = 0;
+                    dataGridView1.DataMember = cmbTableName.Text;
+                    lblRecordCount.Text = "(No Records)";
+                    if (dataGridView1.RowCount > 0) lblRecordCount.Text = dataGridView1.RowCount + " Record(s)";
                 }
             }
-            dataGridView1.DataSource = ds;
-            if (cmbTableName.Items.Count > 0)
+            catch
             {
-                cmbTableName.SelectedIndex = 0;
-                dataGridView1.DataMember = cmbTableName.Text;
-                lblRecordCount.Text = "(No Records)";
-                if (dataGridView1.RowCount > 0) lblRecordCount.Text = dataGridView1.RowCount + " Record(s)";
+
             }
+
             stopWatch.Stop();
             lblRecordCount.Text += Environment.NewLine + String.Format("[{0}:{1}:{2}.{3}]", stopWatch.Elapsed.Hours,stopWatch.Elapsed.Minutes,stopWatch.Elapsed.Seconds,stopWatch.Elapsed.Milliseconds);
             stopWatch.Reset();
@@ -231,9 +268,11 @@ namespace EasyXmlSample
             {
                 case "Delimited":
                     cmbDelimited.Visible = true;
+                    cmbDelimited.BringToFront();
                     break;
                 case "Fixed Width":
                     grpFixedFileOptions.Visible = true;
+                    grpFixedFileOptions.BringToFront();
                     break;
                 case "Html":
                     grpHtmlOptions.Visible = true;
@@ -387,6 +426,17 @@ namespace EasyXmlSample
             cbTextExtractor.Visible = chkUseTextExtractor.Checked;
             LoadDataToGridView();
         }
+
+       private void txtFixedWidthComments_Leave(object sender, EventArgs e)
+       {
+           LoadDataToGridView();
+       }
+
+       private void txtDelimitedComments_Leave(object sender, EventArgs e)
+       {
+           LoadDataToGridView();
+       }
+
 
 
     }

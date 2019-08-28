@@ -32,28 +32,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.grpLoadOptions = new System.Windows.Forms.GroupBox();
-            this.grpTemplate = new System.Windows.Forms.GroupBox();
-            this.txtTemplateString = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.grpHtmlOptions = new System.Windows.Forms.GroupBox();
-            this.txtXPathQuery = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.grpFixedFileOptions = new System.Windows.Forms.GroupBox();
-            this.btnRemove = new System.Windows.Forms.Button();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.btnUpdate = new System.Windows.Forms.Button();
-            this.nupColumnWidth = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
-            this.lstFixedColumnWidths = new System.Windows.Forms.ListBox();
-            this.chkFixedFirstRowHasFieldNames = new System.Windows.Forms.CheckBox();
-            this.grpFieldNames = new System.Windows.Forms.GroupBox();
-            this.txtTransformFileName = new System.Windows.Forms.TextBox();
-            this.btnTransformSave = new System.Windows.Forms.Button();
-            this.txtTransformText = new System.Windows.Forms.TextBox();
-            this.btnTransformProfilesLoad = new System.Windows.Forms.Button();
-            this.cbTransformProfiles = new System.Windows.Forms.ComboBox();
-            this.label8 = new System.Windows.Forms.Label();
             this.cmbDelimited = new System.Windows.Forms.GroupBox();
+            this.txtDelimitedComments = new System.Windows.Forms.TextBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.cbHeaderRow = new System.Windows.Forms.CheckBox();
             this.grpDelimiters = new System.Windows.Forms.GroupBox();
             this.rbDelimiterSpace = new System.Windows.Forms.RadioButton();
@@ -63,6 +44,29 @@
             this.rbDelimiterTab = new System.Windows.Forms.RadioButton();
             this.rbDelimiterComma = new System.Windows.Forms.RadioButton();
             this.rbDelimiterAutoDetect = new System.Windows.Forms.RadioButton();
+            this.grpFixedFileOptions = new System.Windows.Forms.GroupBox();
+            this.lstFixedColumnWidths = new System.Windows.Forms.ListBox();
+            this.chkFixedFirstRowHasFieldNames = new System.Windows.Forms.CheckBox();
+            this.txtFixedWidthComments = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.btnRemove = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.btnUpdate = new System.Windows.Forms.Button();
+            this.nupColumnWidth = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.grpTemplate = new System.Windows.Forms.GroupBox();
+            this.txtTemplateString = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.grpHtmlOptions = new System.Windows.Forms.GroupBox();
+            this.txtXPathQuery = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.grpFieldNames = new System.Windows.Forms.GroupBox();
+            this.txtTransformFileName = new System.Windows.Forms.TextBox();
+            this.btnTransformSave = new System.Windows.Forms.Button();
+            this.txtTransformText = new System.Windows.Forms.TextBox();
+            this.btnTransformProfilesLoad = new System.Windows.Forms.Button();
+            this.cbTransformProfiles = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.cmbFileType = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.grpDataSource = new System.Windows.Forms.GroupBox();
@@ -102,14 +106,17 @@
             this.StatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
+            this.chkHasMaxRows = new System.Windows.Forms.CheckBox();
+            this.nudMaxRows = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
             this.grpLoadOptions.SuspendLayout();
-            this.grpTemplate.SuspendLayout();
-            this.grpHtmlOptions.SuspendLayout();
-            this.grpFixedFileOptions.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nupColumnWidth)).BeginInit();
-            this.grpFieldNames.SuspendLayout();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
+            this.grpFixedFileOptions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nupColumnWidth)).BeginInit();
+            this.grpTemplate.SuspendLayout();
+            this.grpHtmlOptions.SuspendLayout();
+            this.grpFieldNames.SuspendLayout();
             this.grpDataSource.SuspendLayout();
             this.tabDataSource.SuspendLayout();
             this.tabDatasourceFile.SuspendLayout();
@@ -123,15 +130,16 @@
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxRows)).BeginInit();
             this.SuspendLayout();
             // 
             // grpLoadOptions
             // 
+            this.grpLoadOptions.Controls.Add(this.cmbDelimited);
+            this.grpLoadOptions.Controls.Add(this.grpFixedFileOptions);
             this.grpLoadOptions.Controls.Add(this.grpTemplate);
             this.grpLoadOptions.Controls.Add(this.grpHtmlOptions);
-            this.grpLoadOptions.Controls.Add(this.grpFixedFileOptions);
             this.grpLoadOptions.Controls.Add(this.grpFieldNames);
-            this.grpLoadOptions.Controls.Add(this.cmbDelimited);
             this.grpLoadOptions.Controls.Add(this.cmbFileType);
             this.grpLoadOptions.Controls.Add(this.label2);
             this.grpLoadOptions.Location = new System.Drawing.Point(796, 13);
@@ -140,6 +148,250 @@
             this.grpLoadOptions.TabIndex = 4;
             this.grpLoadOptions.TabStop = false;
             this.grpLoadOptions.Text = "Load Options";
+            // 
+            // cmbDelimited
+            // 
+            this.cmbDelimited.Controls.Add(this.txtDelimitedComments);
+            this.cmbDelimited.Controls.Add(this.label11);
+            this.cmbDelimited.Controls.Add(this.cbHeaderRow);
+            this.cmbDelimited.Controls.Add(this.grpDelimiters);
+            this.cmbDelimited.Location = new System.Drawing.Point(14, 65);
+            this.cmbDelimited.Name = "cmbDelimited";
+            this.cmbDelimited.Size = new System.Drawing.Size(491, 213);
+            this.cmbDelimited.TabIndex = 11;
+            this.cmbDelimited.TabStop = false;
+            this.cmbDelimited.Text = "Delimited File Options:";
+            // 
+            // txtDelimitedComments
+            // 
+            this.txtDelimitedComments.Location = new System.Drawing.Point(320, 150);
+            this.txtDelimitedComments.Multiline = true;
+            this.txtDelimitedComments.Name = "txtDelimitedComments";
+            this.txtDelimitedComments.Size = new System.Drawing.Size(138, 54);
+            this.txtDelimitedComments.TabIndex = 4;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(182, 155);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(132, 13);
+            this.label11.TabIndex = 3;
+            this.label11.Text = "Comment Lines Start With:";
+            // 
+            // cbHeaderRow
+            // 
+            this.cbHeaderRow.AutoSize = true;
+            this.cbHeaderRow.Checked = true;
+            this.cbHeaderRow.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbHeaderRow.Location = new System.Drawing.Point(6, 155);
+            this.cbHeaderRow.Name = "cbHeaderRow";
+            this.cbHeaderRow.Size = new System.Drawing.Size(153, 17);
+            this.cbHeaderRow.TabIndex = 2;
+            this.cbHeaderRow.Text = "First Row Has Field Names";
+            this.cbHeaderRow.UseVisualStyleBackColor = true;
+            // 
+            // grpDelimiters
+            // 
+            this.grpDelimiters.Controls.Add(this.rbDelimiterSpace);
+            this.grpDelimiters.Controls.Add(this.txtCustomDelimiter);
+            this.grpDelimiters.Controls.Add(this.rbDelimiterCustom);
+            this.grpDelimiters.Controls.Add(this.rbDelimiterSemicolon);
+            this.grpDelimiters.Controls.Add(this.rbDelimiterTab);
+            this.grpDelimiters.Controls.Add(this.rbDelimiterComma);
+            this.grpDelimiters.Controls.Add(this.rbDelimiterAutoDetect);
+            this.grpDelimiters.Location = new System.Drawing.Point(6, 19);
+            this.grpDelimiters.Name = "grpDelimiters";
+            this.grpDelimiters.Size = new System.Drawing.Size(479, 125);
+            this.grpDelimiters.TabIndex = 1;
+            this.grpDelimiters.TabStop = false;
+            this.grpDelimiters.Text = "Delimiter:";
+            // 
+            // rbDelimiterSpace
+            // 
+            this.rbDelimiterSpace.AutoSize = true;
+            this.rbDelimiterSpace.Location = new System.Drawing.Point(7, 94);
+            this.rbDelimiterSpace.Name = "rbDelimiterSpace";
+            this.rbDelimiterSpace.Size = new System.Drawing.Size(108, 17);
+            this.rbDelimiterSpace.TabIndex = 6;
+            this.rbDelimiterSpace.TabStop = true;
+            this.rbDelimiterSpace.Text = "Space Separated";
+            this.rbDelimiterSpace.UseVisualStyleBackColor = true;
+            // 
+            // txtCustomDelimiter
+            // 
+            this.txtCustomDelimiter.Enabled = false;
+            this.txtCustomDelimiter.Location = new System.Drawing.Point(366, 93);
+            this.txtCustomDelimiter.Name = "txtCustomDelimiter";
+            this.txtCustomDelimiter.Size = new System.Drawing.Size(86, 20);
+            this.txtCustomDelimiter.TabIndex = 5;
+            // 
+            // rbDelimiterCustom
+            // 
+            this.rbDelimiterCustom.AutoSize = true;
+            this.rbDelimiterCustom.Location = new System.Drawing.Point(238, 93);
+            this.rbDelimiterCustom.Name = "rbDelimiterCustom";
+            this.rbDelimiterCustom.Size = new System.Drawing.Size(109, 17);
+            this.rbDelimiterCustom.TabIndex = 4;
+            this.rbDelimiterCustom.TabStop = true;
+            this.rbDelimiterCustom.Text = "Custom Separator";
+            this.rbDelimiterCustom.UseVisualStyleBackColor = true;
+            // 
+            // rbDelimiterSemicolon
+            // 
+            this.rbDelimiterSemicolon.AutoSize = true;
+            this.rbDelimiterSemicolon.Location = new System.Drawing.Point(238, 20);
+            this.rbDelimiterSemicolon.Name = "rbDelimiterSemicolon";
+            this.rbDelimiterSemicolon.Size = new System.Drawing.Size(126, 17);
+            this.rbDelimiterSemicolon.TabIndex = 3;
+            this.rbDelimiterSemicolon.TabStop = true;
+            this.rbDelimiterSemicolon.Text = "Semicolon Separated";
+            this.rbDelimiterSemicolon.UseVisualStyleBackColor = true;
+            // 
+            // rbDelimiterTab
+            // 
+            this.rbDelimiterTab.AutoSize = true;
+            this.rbDelimiterTab.Location = new System.Drawing.Point(238, 58);
+            this.rbDelimiterTab.Name = "rbDelimiterTab";
+            this.rbDelimiterTab.Size = new System.Drawing.Size(98, 17);
+            this.rbDelimiterTab.TabIndex = 2;
+            this.rbDelimiterTab.TabStop = true;
+            this.rbDelimiterTab.Text = "TAB Separated";
+            this.rbDelimiterTab.UseVisualStyleBackColor = true;
+            // 
+            // rbDelimiterComma
+            // 
+            this.rbDelimiterComma.AutoSize = true;
+            this.rbDelimiterComma.Location = new System.Drawing.Point(6, 58);
+            this.rbDelimiterComma.Name = "rbDelimiterComma";
+            this.rbDelimiterComma.Size = new System.Drawing.Size(112, 17);
+            this.rbDelimiterComma.TabIndex = 1;
+            this.rbDelimiterComma.TabStop = true;
+            this.rbDelimiterComma.Text = "Comma Separated";
+            this.rbDelimiterComma.UseVisualStyleBackColor = true;
+            // 
+            // rbDelimiterAutoDetect
+            // 
+            this.rbDelimiterAutoDetect.AutoSize = true;
+            this.rbDelimiterAutoDetect.Checked = true;
+            this.rbDelimiterAutoDetect.Location = new System.Drawing.Point(7, 20);
+            this.rbDelimiterAutoDetect.Name = "rbDelimiterAutoDetect";
+            this.rbDelimiterAutoDetect.Size = new System.Drawing.Size(82, 17);
+            this.rbDelimiterAutoDetect.TabIndex = 0;
+            this.rbDelimiterAutoDetect.TabStop = true;
+            this.rbDelimiterAutoDetect.Text = "Auto Detect";
+            this.rbDelimiterAutoDetect.UseVisualStyleBackColor = true;
+            // 
+            // grpFixedFileOptions
+            // 
+            this.grpFixedFileOptions.Controls.Add(this.lstFixedColumnWidths);
+            this.grpFixedFileOptions.Controls.Add(this.chkFixedFirstRowHasFieldNames);
+            this.grpFixedFileOptions.Controls.Add(this.txtFixedWidthComments);
+            this.grpFixedFileOptions.Controls.Add(this.label12);
+            this.grpFixedFileOptions.Controls.Add(this.btnRemove);
+            this.grpFixedFileOptions.Controls.Add(this.btnAdd);
+            this.grpFixedFileOptions.Controls.Add(this.btnUpdate);
+            this.grpFixedFileOptions.Controls.Add(this.nupColumnWidth);
+            this.grpFixedFileOptions.Controls.Add(this.label4);
+            this.grpFixedFileOptions.Location = new System.Drawing.Point(14, 59);
+            this.grpFixedFileOptions.Name = "grpFixedFileOptions";
+            this.grpFixedFileOptions.Size = new System.Drawing.Size(491, 213);
+            this.grpFixedFileOptions.TabIndex = 12;
+            this.grpFixedFileOptions.TabStop = false;
+            this.grpFixedFileOptions.Text = "Fixed File Options:";
+            // 
+            // lstFixedColumnWidths
+            // 
+            this.lstFixedColumnWidths.FormattingEnabled = true;
+            this.lstFixedColumnWidths.Location = new System.Drawing.Point(15, 40);
+            this.lstFixedColumnWidths.Name = "lstFixedColumnWidths";
+            this.lstFixedColumnWidths.Size = new System.Drawing.Size(186, 134);
+            this.lstFixedColumnWidths.TabIndex = 3;
+            // 
+            // chkFixedFirstRowHasFieldNames
+            // 
+            this.chkFixedFirstRowHasFieldNames.AutoSize = true;
+            this.chkFixedFirstRowHasFieldNames.Checked = true;
+            this.chkFixedFirstRowHasFieldNames.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkFixedFirstRowHasFieldNames.Location = new System.Drawing.Point(15, 180);
+            this.chkFixedFirstRowHasFieldNames.Name = "chkFixedFirstRowHasFieldNames";
+            this.chkFixedFirstRowHasFieldNames.Size = new System.Drawing.Size(153, 17);
+            this.chkFixedFirstRowHasFieldNames.TabIndex = 2;
+            this.chkFixedFirstRowHasFieldNames.Text = "First Row Has Field Names";
+            this.chkFixedFirstRowHasFieldNames.UseVisualStyleBackColor = true;
+            // 
+            // txtFixedWidthComments
+            // 
+            this.txtFixedWidthComments.Location = new System.Drawing.Point(347, 152);
+            this.txtFixedWidthComments.Multiline = true;
+            this.txtFixedWidthComments.Name = "txtFixedWidthComments";
+            this.txtFixedWidthComments.Size = new System.Drawing.Size(138, 54);
+            this.txtFixedWidthComments.TabIndex = 10;
+            this.txtFixedWidthComments.Leave += new System.EventHandler(this.txtFixedWidthComments_Leave);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(209, 157);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(132, 13);
+            this.label12.TabIndex = 9;
+            this.label12.Text = "Comment Lines Start With:";
+            // 
+            // btnRemove
+            // 
+            this.btnRemove.Location = new System.Drawing.Point(222, 100);
+            this.btnRemove.Name = "btnRemove";
+            this.btnRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnRemove.TabIndex = 8;
+            this.btnRemove.Text = "Remove";
+            this.btnRemove.UseVisualStyleBackColor = true;
+            this.btnRemove.Visible = false;
+            // 
+            // btnAdd
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(222, 67);
+            this.btnAdd.Name = "btnAdd";
+            this.btnAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnAdd.TabIndex = 7;
+            this.btnAdd.Text = "Add Column";
+            this.btnAdd.UseVisualStyleBackColor = true;
+            // 
+            // btnUpdate
+            // 
+            this.btnUpdate.Location = new System.Drawing.Point(308, 38);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
+            this.btnUpdate.TabIndex = 6;
+            this.btnUpdate.Text = "Update";
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Visible = false;
+            // 
+            // nupColumnWidth
+            // 
+            this.nupColumnWidth.Location = new System.Drawing.Point(222, 40);
+            this.nupColumnWidth.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nupColumnWidth.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.nupColumnWidth.Name = "nupColumnWidth";
+            this.nupColumnWidth.Size = new System.Drawing.Size(75, 20);
+            this.nupColumnWidth.TabIndex = 5;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 19);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(81, 13);
+            this.label4.TabIndex = 4;
+            this.label4.Text = "Column Widths:";
             // 
             // grpTemplate
             // 
@@ -197,101 +449,6 @@
             this.label7.Size = new System.Drawing.Size(70, 13);
             this.label7.TabIndex = 4;
             this.label7.Text = "XPath Query:";
-            // 
-            // grpFixedFileOptions
-            // 
-            this.grpFixedFileOptions.Controls.Add(this.btnRemove);
-            this.grpFixedFileOptions.Controls.Add(this.btnAdd);
-            this.grpFixedFileOptions.Controls.Add(this.btnUpdate);
-            this.grpFixedFileOptions.Controls.Add(this.nupColumnWidth);
-            this.grpFixedFileOptions.Controls.Add(this.label4);
-            this.grpFixedFileOptions.Controls.Add(this.lstFixedColumnWidths);
-            this.grpFixedFileOptions.Controls.Add(this.chkFixedFirstRowHasFieldNames);
-            this.grpFixedFileOptions.Location = new System.Drawing.Point(20, 65);
-            this.grpFixedFileOptions.Name = "grpFixedFileOptions";
-            this.grpFixedFileOptions.Size = new System.Drawing.Size(491, 213);
-            this.grpFixedFileOptions.TabIndex = 5;
-            this.grpFixedFileOptions.TabStop = false;
-            this.grpFixedFileOptions.Text = "Fixed File Options:";
-            // 
-            // btnRemove
-            // 
-            this.btnRemove.Location = new System.Drawing.Point(222, 150);
-            this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnRemove.TabIndex = 8;
-            this.btnRemove.Text = "Remove";
-            this.btnRemove.UseVisualStyleBackColor = true;
-            this.btnRemove.Visible = false;
-            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Location = new System.Drawing.Point(222, 67);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnAdd.TabIndex = 7;
-            this.btnAdd.Text = "Add Column";
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnUpdate
-            // 
-            this.btnUpdate.Location = new System.Drawing.Point(308, 38);
-            this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
-            this.btnUpdate.TabIndex = 6;
-            this.btnUpdate.Text = "Update";
-            this.btnUpdate.UseVisualStyleBackColor = true;
-            this.btnUpdate.Visible = false;
-            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
-            // 
-            // nupColumnWidth
-            // 
-            this.nupColumnWidth.Location = new System.Drawing.Point(222, 40);
-            this.nupColumnWidth.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.nupColumnWidth.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            this.nupColumnWidth.Name = "nupColumnWidth";
-            this.nupColumnWidth.Size = new System.Drawing.Size(75, 20);
-            this.nupColumnWidth.TabIndex = 5;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 19);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(81, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Column Widths:";
-            // 
-            // lstFixedColumnWidths
-            // 
-            this.lstFixedColumnWidths.FormattingEnabled = true;
-            this.lstFixedColumnWidths.Location = new System.Drawing.Point(15, 40);
-            this.lstFixedColumnWidths.Name = "lstFixedColumnWidths";
-            this.lstFixedColumnWidths.Size = new System.Drawing.Size(186, 134);
-            this.lstFixedColumnWidths.TabIndex = 3;
-            this.lstFixedColumnWidths.SelectedIndexChanged += new System.EventHandler(this.lstFixedColumnWidths_SelectedIndexChanged);
-            // 
-            // chkFixedFirstRowHasFieldNames
-            // 
-            this.chkFixedFirstRowHasFieldNames.AutoSize = true;
-            this.chkFixedFirstRowHasFieldNames.Checked = true;
-            this.chkFixedFirstRowHasFieldNames.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkFixedFirstRowHasFieldNames.Location = new System.Drawing.Point(15, 180);
-            this.chkFixedFirstRowHasFieldNames.Name = "chkFixedFirstRowHasFieldNames";
-            this.chkFixedFirstRowHasFieldNames.Size = new System.Drawing.Size(153, 17);
-            this.chkFixedFirstRowHasFieldNames.TabIndex = 2;
-            this.chkFixedFirstRowHasFieldNames.Text = "First Row Has Field Names";
-            this.chkFixedFirstRowHasFieldNames.UseVisualStyleBackColor = true;
             // 
             // grpFieldNames
             // 
@@ -363,122 +520,6 @@
             this.label8.TabIndex = 0;
             this.label8.Text = "Post Load Tranform Profile:";
             // 
-            // cmbDelimited
-            // 
-            this.cmbDelimited.Controls.Add(this.cbHeaderRow);
-            this.cmbDelimited.Controls.Add(this.grpDelimiters);
-            this.cmbDelimited.Location = new System.Drawing.Point(20, 65);
-            this.cmbDelimited.Name = "cmbDelimited";
-            this.cmbDelimited.Size = new System.Drawing.Size(491, 213);
-            this.cmbDelimited.TabIndex = 2;
-            this.cmbDelimited.TabStop = false;
-            this.cmbDelimited.Text = "Delimited File Options:";
-            // 
-            // cbHeaderRow
-            // 
-            this.cbHeaderRow.AutoSize = true;
-            this.cbHeaderRow.Checked = true;
-            this.cbHeaderRow.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbHeaderRow.Location = new System.Drawing.Point(6, 180);
-            this.cbHeaderRow.Name = "cbHeaderRow";
-            this.cbHeaderRow.Size = new System.Drawing.Size(153, 17);
-            this.cbHeaderRow.TabIndex = 2;
-            this.cbHeaderRow.Text = "First Row Has Field Names";
-            this.cbHeaderRow.UseVisualStyleBackColor = true;
-            this.cbHeaderRow.CheckedChanged += new System.EventHandler(this.txtTextContents_Leave);
-            // 
-            // grpDelimiters
-            // 
-            this.grpDelimiters.Controls.Add(this.rbDelimiterSpace);
-            this.grpDelimiters.Controls.Add(this.txtCustomDelimiter);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterCustom);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterSemicolon);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterTab);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterComma);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterAutoDetect);
-            this.grpDelimiters.Location = new System.Drawing.Point(6, 19);
-            this.grpDelimiters.Name = "grpDelimiters";
-            this.grpDelimiters.Size = new System.Drawing.Size(479, 136);
-            this.grpDelimiters.TabIndex = 1;
-            this.grpDelimiters.TabStop = false;
-            this.grpDelimiters.Text = "Delimiter:";
-            // 
-            // rbDelimiterSpace
-            // 
-            this.rbDelimiterSpace.AutoSize = true;
-            this.rbDelimiterSpace.Location = new System.Drawing.Point(7, 94);
-            this.rbDelimiterSpace.Name = "rbDelimiterSpace";
-            this.rbDelimiterSpace.Size = new System.Drawing.Size(108, 17);
-            this.rbDelimiterSpace.TabIndex = 6;
-            this.rbDelimiterSpace.TabStop = true;
-            this.rbDelimiterSpace.Text = "Space Separated";
-            this.rbDelimiterSpace.UseVisualStyleBackColor = true;
-            // 
-            // txtCustomDelimiter
-            // 
-            this.txtCustomDelimiter.Enabled = false;
-            this.txtCustomDelimiter.Location = new System.Drawing.Point(366, 93);
-            this.txtCustomDelimiter.Name = "txtCustomDelimiter";
-            this.txtCustomDelimiter.Size = new System.Drawing.Size(86, 20);
-            this.txtCustomDelimiter.TabIndex = 5;
-            // 
-            // rbDelimiterCustom
-            // 
-            this.rbDelimiterCustom.AutoSize = true;
-            this.rbDelimiterCustom.Location = new System.Drawing.Point(238, 93);
-            this.rbDelimiterCustom.Name = "rbDelimiterCustom";
-            this.rbDelimiterCustom.Size = new System.Drawing.Size(109, 17);
-            this.rbDelimiterCustom.TabIndex = 4;
-            this.rbDelimiterCustom.TabStop = true;
-            this.rbDelimiterCustom.Text = "Custom Separator";
-            this.rbDelimiterCustom.UseVisualStyleBackColor = true;
-            this.rbDelimiterCustom.CheckedChanged += new System.EventHandler(this.rbDelimiterCustom_CheckedChanged);
-            // 
-            // rbDelimiterSemicolon
-            // 
-            this.rbDelimiterSemicolon.AutoSize = true;
-            this.rbDelimiterSemicolon.Location = new System.Drawing.Point(238, 20);
-            this.rbDelimiterSemicolon.Name = "rbDelimiterSemicolon";
-            this.rbDelimiterSemicolon.Size = new System.Drawing.Size(126, 17);
-            this.rbDelimiterSemicolon.TabIndex = 3;
-            this.rbDelimiterSemicolon.TabStop = true;
-            this.rbDelimiterSemicolon.Text = "Semicolon Separated";
-            this.rbDelimiterSemicolon.UseVisualStyleBackColor = true;
-            // 
-            // rbDelimiterTab
-            // 
-            this.rbDelimiterTab.AutoSize = true;
-            this.rbDelimiterTab.Location = new System.Drawing.Point(238, 58);
-            this.rbDelimiterTab.Name = "rbDelimiterTab";
-            this.rbDelimiterTab.Size = new System.Drawing.Size(98, 17);
-            this.rbDelimiterTab.TabIndex = 2;
-            this.rbDelimiterTab.TabStop = true;
-            this.rbDelimiterTab.Text = "TAB Separated";
-            this.rbDelimiterTab.UseVisualStyleBackColor = true;
-            // 
-            // rbDelimiterComma
-            // 
-            this.rbDelimiterComma.AutoSize = true;
-            this.rbDelimiterComma.Location = new System.Drawing.Point(6, 58);
-            this.rbDelimiterComma.Name = "rbDelimiterComma";
-            this.rbDelimiterComma.Size = new System.Drawing.Size(112, 17);
-            this.rbDelimiterComma.TabIndex = 1;
-            this.rbDelimiterComma.TabStop = true;
-            this.rbDelimiterComma.Text = "Comma Separated";
-            this.rbDelimiterComma.UseVisualStyleBackColor = true;
-            // 
-            // rbDelimiterAutoDetect
-            // 
-            this.rbDelimiterAutoDetect.AutoSize = true;
-            this.rbDelimiterAutoDetect.Checked = true;
-            this.rbDelimiterAutoDetect.Location = new System.Drawing.Point(7, 20);
-            this.rbDelimiterAutoDetect.Name = "rbDelimiterAutoDetect";
-            this.rbDelimiterAutoDetect.Size = new System.Drawing.Size(82, 17);
-            this.rbDelimiterAutoDetect.TabIndex = 0;
-            this.rbDelimiterAutoDetect.TabStop = true;
-            this.rbDelimiterAutoDetect.Text = "Auto Detect";
-            this.rbDelimiterAutoDetect.UseVisualStyleBackColor = true;
-            // 
             // cmbFileType
             // 
             this.cmbFileType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -533,6 +574,9 @@
             // 
             // tabDatasourceFile
             // 
+            this.tabDatasourceFile.Controls.Add(this.label13);
+            this.tabDatasourceFile.Controls.Add(this.nudMaxRows);
+            this.tabDatasourceFile.Controls.Add(this.chkHasMaxRows);
             this.tabDatasourceFile.Controls.Add(this.cbTextExtractor);
             this.tabDatasourceFile.Controls.Add(this.chkUseTextExtractor);
             this.tabDatasourceFile.Controls.Add(this.btnLoad);
@@ -897,6 +941,37 @@
             this.ProgressTimer.Interval = 1000;
             this.ProgressTimer.Tick += new System.EventHandler(this.ProgressTimer_Tick);
             // 
+            // chkHasMaxRows
+            // 
+            this.chkHasMaxRows.AutoSize = true;
+            this.chkHasMaxRows.Location = new System.Drawing.Point(7, 94);
+            this.chkHasMaxRows.Name = "chkHasMaxRows";
+            this.chkHasMaxRows.Size = new System.Drawing.Size(112, 17);
+            this.chkHasMaxRows.TabIndex = 10;
+            this.chkHasMaxRows.Text = "Stop loading after ";
+            this.chkHasMaxRows.UseVisualStyleBackColor = true;
+            // 
+            // nudMaxRows
+            // 
+            this.nudMaxRows.Location = new System.Drawing.Point(126, 94);
+            this.nudMaxRows.Name = "nudMaxRows";
+            this.nudMaxRows.Size = new System.Drawing.Size(35, 20);
+            this.nudMaxRows.TabIndex = 11;
+            this.nudMaxRows.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(168, 94);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(29, 13);
+            this.label13.TabIndex = 12;
+            this.label13.Text = "rows";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -911,19 +986,19 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.grpLoadOptions.ResumeLayout(false);
             this.grpLoadOptions.PerformLayout();
-            this.grpTemplate.ResumeLayout(false);
-            this.grpTemplate.PerformLayout();
-            this.grpHtmlOptions.ResumeLayout(false);
-            this.grpHtmlOptions.PerformLayout();
-            this.grpFixedFileOptions.ResumeLayout(false);
-            this.grpFixedFileOptions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nupColumnWidth)).EndInit();
-            this.grpFieldNames.ResumeLayout(false);
-            this.grpFieldNames.PerformLayout();
             this.cmbDelimited.ResumeLayout(false);
             this.cmbDelimited.PerformLayout();
             this.grpDelimiters.ResumeLayout(false);
             this.grpDelimiters.PerformLayout();
+            this.grpFixedFileOptions.ResumeLayout(false);
+            this.grpFixedFileOptions.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nupColumnWidth)).EndInit();
+            this.grpTemplate.ResumeLayout(false);
+            this.grpTemplate.PerformLayout();
+            this.grpHtmlOptions.ResumeLayout(false);
+            this.grpHtmlOptions.PerformLayout();
+            this.grpFieldNames.ResumeLayout(false);
+            this.grpFieldNames.PerformLayout();
             this.grpDataSource.ResumeLayout(false);
             this.tabDataSource.ResumeLayout(false);
             this.tabDatasourceFile.ResumeLayout(false);
@@ -946,6 +1021,7 @@
             this.tabPage5.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxRows)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -957,25 +1033,7 @@
         private System.Windows.Forms.GroupBox grpLoadOptions;
         private System.Windows.Forms.ComboBox cmbFileType;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox cmbDelimited;
-        private System.Windows.Forms.GroupBox grpDelimiters;
-        private System.Windows.Forms.RadioButton rbDelimiterSpace;
-        private System.Windows.Forms.TextBox txtCustomDelimiter;
-        private System.Windows.Forms.RadioButton rbDelimiterCustom;
-        private System.Windows.Forms.RadioButton rbDelimiterSemicolon;
-        private System.Windows.Forms.RadioButton rbDelimiterTab;
-        private System.Windows.Forms.RadioButton rbDelimiterComma;
-        private System.Windows.Forms.RadioButton rbDelimiterAutoDetect;
-        private System.Windows.Forms.CheckBox cbHeaderRow;
         private System.Windows.Forms.GroupBox grpFieldNames;
-        private System.Windows.Forms.GroupBox grpFixedFileOptions;
-        private System.Windows.Forms.Button btnRemove;
-        private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.Button btnUpdate;
-        private System.Windows.Forms.NumericUpDown nupColumnWidth;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ListBox lstFixedColumnWidths;
-        private System.Windows.Forms.CheckBox chkFixedFirstRowHasFieldNames;
         private System.Windows.Forms.GroupBox grpDataSource;
         private System.Windows.Forms.GroupBox grpHtmlOptions;
         private System.Windows.Forms.TextBox txtXPathQuery;
@@ -1025,6 +1083,31 @@
         private System.Windows.Forms.CheckBox chkUseTextExtractor;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.TextBox txtExceptions;
+        private System.Windows.Forms.GroupBox cmbDelimited;
+        private System.Windows.Forms.TextBox txtDelimitedComments;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox cbHeaderRow;
+        private System.Windows.Forms.GroupBox grpDelimiters;
+        private System.Windows.Forms.RadioButton rbDelimiterSpace;
+        private System.Windows.Forms.TextBox txtCustomDelimiter;
+        private System.Windows.Forms.RadioButton rbDelimiterCustom;
+        private System.Windows.Forms.RadioButton rbDelimiterSemicolon;
+        private System.Windows.Forms.RadioButton rbDelimiterTab;
+        private System.Windows.Forms.RadioButton rbDelimiterComma;
+        private System.Windows.Forms.RadioButton rbDelimiterAutoDetect;
+        private System.Windows.Forms.GroupBox grpFixedFileOptions;
+        private System.Windows.Forms.ListBox lstFixedColumnWidths;
+        private System.Windows.Forms.CheckBox chkFixedFirstRowHasFieldNames;
+        private System.Windows.Forms.TextBox txtFixedWidthComments;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Button btnRemove;
+        private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.Button btnUpdate;
+        private System.Windows.Forms.NumericUpDown nupColumnWidth;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.NumericUpDown nudMaxRows;
+        private System.Windows.Forms.CheckBox chkHasMaxRows;
     }
 }
 
