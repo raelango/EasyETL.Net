@@ -1,8 +1,0 @@
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXml\obj\Debug\EasyXml.csprojResolveAssemblyReference.cache
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXml\bin\Debug\EasyXml.dll
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXml\bin\Debug\EasyXml.pdb
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXml\obj\Debug\EasyXml.dll
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXml\obj\Debug\EasyXml.pdb
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXml\bin\Debug\Newtonsoft.Json.dll
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXml\bin\Debug\Newtonsoft.Json.xml
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXml\bin\Debug\SgmlReaderDll.dll
