@@ -1,1 +1,0 @@
-C:\Users\aelango\LogixHealth\Technology\Software\.Net\EasyETLSolution\EasyXmlSample\bin\Debug\EasyXmlSample.exe.config
