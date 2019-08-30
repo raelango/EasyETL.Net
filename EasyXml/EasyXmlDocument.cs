@@ -20,6 +20,7 @@ namespace EasyXml
         public XslCompiledTransform LastTransformer = null;
         public string LastTransformerTemplate = String.Empty;
         public event EventHandler<XmlNodeChangedEventArgs> OnRowAdd;
+        public event EventHandler<EasyParserExceptionEventArgs> OnError;
 
         public override XmlNode Clone()
         {
@@ -46,8 +47,10 @@ namespace EasyXml
             else
             {
                 Parser.OnRowAdd += OnRowAdd;
+                Parser.OnError += OnError;
                 Parser.Load(inStream, this);
                 Parser.OnRowAdd -= OnRowAdd;
+                Parser.OnError -= OnError;
             }
             Transform();
         }
@@ -75,8 +78,10 @@ namespace EasyXml
             else
             {
                 Parser.OnRowAdd += OnRowAdd;
+                Parser.OnError += OnError;
                 Parser.Load(filename, this);
                 Parser.OnRowAdd -= OnRowAdd;
+                Parser.OnError -= OnError;
             }
             Transform();
         }
@@ -98,8 +103,10 @@ namespace EasyXml
             else
             {
                 Parser.OnRowAdd += OnRowAdd;
+                Parser.OnError += OnError;
                 Parser.Load(txtReader, this);
                 Parser.OnRowAdd -= OnRowAdd;
+                Parser.OnError -= OnError;
             }
             Transform();
         }
@@ -118,8 +125,10 @@ namespace EasyXml
             if (Parser != null)
             {
                 Parser.OnRowAdd += OnRowAdd;
+                Parser.OnError += OnError;
                 Parser.LoadStr(contents, this);
                 Parser.OnRowAdd -= OnRowAdd;
+                Parser.OnError -= OnError;
             }
             else
             {
@@ -291,7 +300,7 @@ namespace EasyXml
                         {
                             BuildXsltString(rootElementName, rowElementName, dctAdditions, lstRemoveCommands, lstFilters, dctRenames, lstRowElements, xslSB);
                             strSortOrder = String.Empty;
-                            TransformXml(rootElementName, lstRowElements, xslSB, dctSortOrders);
+                            TransformXml(xslSB, dctSortOrders);
                             xslSB = new StringBuilder();
                             rootElementName = String.Empty;
                             if (this.FirstChild != null) rootElementName = this.FirstChild.Name;
@@ -324,14 +333,14 @@ namespace EasyXml
             if (bTransformRequired || rowElementName.Contains("=>"))
             {
                 BuildXsltString(rootElementName, rowElementName, dctAdditions, lstRemoveCommands, lstFilters, dctRenames, lstRowElements, xslSB);
-                TransformXml(rootElementName, lstRowElements, xslSB, dctSortOrders);
+                TransformXml(xslSB, dctSortOrders);
             }
 
             return this;
         }
 
 
-        private XmlDocument TransformXml(string rootElementName, List<string> lstRowElements, StringBuilder xslSB, Dictionary<string, string> dctSortOrders)
+        private XmlDocument TransformXml(StringBuilder xslSB, Dictionary<string, string> dctSortOrders)
         {
             try
             {

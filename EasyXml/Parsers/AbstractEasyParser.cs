@@ -11,6 +11,17 @@ using Microsoft.VisualBasic.FileIO;
 
 namespace EasyXml.Parsers
 {
+
+    public class EasyParserExceptionEventArgs : EventArgs
+    {
+        public EasyParserExceptionEventArgs(MalformedLineException exception)
+        {
+            Exception = exception;
+        }
+
+        public MalformedLineException Exception;
+    }
+
     public abstract class AbstractEasyParser : IEasyParser
     {
         public string[] FieldNames = null;
@@ -19,6 +30,7 @@ namespace EasyXml.Parsers
         public string FieldPrefix = "Field_";
         public long MaxRecords = long.MaxValue;
         public event EventHandler<XmlNodeChangedEventArgs> OnRowAdd;
+        public event EventHandler<EasyParserExceptionEventArgs> OnError;
         public List<MalformedLineException> Exceptions = new List<MalformedLineException>();
         public int MaximumErrorsToAbort = 20;
 
@@ -35,14 +47,23 @@ namespace EasyXml.Parsers
                 colIndex++;
             }
 
-            return AddRow(xDoc,rowNode);
+            return AddRow(xDoc, rowNode);
         }
 
-        public virtual XmlNode AddRow(XmlDocument xDoc, XmlNode childNode) {
-            if (OnRowAdd !=null) {
-                OnRowAdd.Invoke(this,new XmlNodeChangedEventArgs(childNode,xDoc.DocumentElement,xDoc.DocumentElement,"","",XmlNodeChangedAction.Insert));
+        public virtual XmlNode AddRow(XmlDocument xDoc, XmlNode childNode)
+        {
+            if (OnRowAdd != null)
+            {
+                OnRowAdd.Invoke(this, new XmlNodeChangedEventArgs(childNode, xDoc.DocumentElement, xDoc.DocumentElement, "", "", XmlNodeChangedAction.Insert));
             }
             return childNode;
+        }
+
+        public virtual void RaiseException(MalformedLineException exception)
+        {
+            if (OnError !=null) {
+                OnError.Invoke(this, new EasyParserExceptionEventArgs(exception));
+            }
         }
 
         public virtual void SetFieldNames(params string[] fieldNames)

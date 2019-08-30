@@ -65,11 +65,13 @@ namespace EasyXml.Parsers
                     {
                         Exceptions.Add(mex);
                         errorCount++;
+                        RaiseException(mex);
                         if (errorCount > MaximumErrorsToAbort) break;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         errorCount++;
+                        RaiseException(new MalformedLineException(ex.Message, ex));
                         if (errorCount > MaximumErrorsToAbort) break;
                     }
                 }

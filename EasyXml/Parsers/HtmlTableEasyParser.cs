@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic.FileIO;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -147,9 +148,10 @@ namespace EasyXml.Parsers
                                 if (rowCount >= MaxRecords) return;
                             }
                         }
-                        catch 
+                        catch (Exception ex)
                         {
                             errorCount++;
+                            RaiseException(new MalformedLineException(Row.Value, iCurrentRow, ex));
                             if (errorCount > MaximumErrorsToAbort) return;
                         }
                     }

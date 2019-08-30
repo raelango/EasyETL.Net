@@ -63,6 +63,7 @@
     <Compile Include="Parsers\SingleLineEasyParser.cs" />
     <Compile Include="Parsers\TemplateEasyParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlUtils.cs" />
     <Compile Include="XsltExtensions\XsltStringExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

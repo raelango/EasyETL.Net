@@ -89,6 +89,7 @@ namespace EasyXml.Parsers
                 {
                     Exceptions.Add(new MalformedLineException(subStr, lineNumber));
                     exceptionCount++;
+                    RaiseException(Exceptions.Last());
                     if (exceptionCount > MaximumErrorsToAbort) break;
                 }
                 if (rowCount >= MaxRecords) break;
