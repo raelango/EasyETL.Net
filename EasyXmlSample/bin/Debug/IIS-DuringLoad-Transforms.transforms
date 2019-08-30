@@ -1,11 +1,12 @@
 rename Field_0 date
 rename Field_1 time
 rename Field_2 ClientIP
-rename Field_3 verb
+rename Field_3 Verb
 remove Field_4
 remove Field_5
 rename Field_6 IncomingPort
 rename field_7 ClientMachineName
+remove Field_8
 rename field_9 BrowserInfo
 rename field_10 CallURL
 rename field_11 ResponseCode
