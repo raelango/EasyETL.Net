@@ -706,7 +706,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(168, 94);
+            this.label13.Location = new System.Drawing.Point(178, 93);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(29, 13);
             this.label13.TabIndex = 12;
@@ -716,8 +716,9 @@
             // 
             this.nudMaxRows.Location = new System.Drawing.Point(126, 94);
             this.nudMaxRows.Name = "nudMaxRows";
-            this.nudMaxRows.Size = new System.Drawing.Size(35, 20);
+            this.nudMaxRows.Size = new System.Drawing.Size(53, 20);
             this.nudMaxRows.TabIndex = 11;
+            this.nudMaxRows.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudMaxRows.Value = new decimal(new int[] {
             20,
             0,
@@ -727,6 +728,8 @@
             // chkHasMaxRows
             // 
             this.chkHasMaxRows.AutoSize = true;
+            this.chkHasMaxRows.Checked = true;
+            this.chkHasMaxRows.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkHasMaxRows.Location = new System.Drawing.Point(7, 94);
             this.chkHasMaxRows.Name = "chkHasMaxRows";
             this.chkHasMaxRows.Size = new System.Drawing.Size(112, 17);

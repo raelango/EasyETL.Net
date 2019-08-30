@@ -16,13 +16,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Xsl;
 
 namespace EasyXmlSample
 {
     public partial class MainForm : Form
     {
         EasyXmlDocument ezDoc = null;
-        string[] onloadCommands = new string[] {};
+        XslCompiledTransform xsl = null;
         Stopwatch stopWatch = new Stopwatch();
         public int intAutoNumber = 0;
         public MainForm()
@@ -72,7 +73,7 @@ namespace EasyXmlSample
             }
             try
             {
-                onloadCommands = txtOnLoadContents.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                xsl = null;
                 EasyXmlDocument xDoc = new EasyXmlDocument();
                 xDoc.OnRowAdd += xDoc_OnRowAdd;
                 xDoc.OnError += xDoc_OnError;
@@ -115,7 +116,7 @@ namespace EasyXmlSample
                             }
                             if (txtDelimitedComments.Text.Trim().Length > 0)
                             {
-                                ((DelimitedEasyParser)ep).SetCommentTokens(txtDelimitedComments.Text.Split(new string[] { Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries ));
+                                ((DelimitedEasyParser)ep).SetCommentTokens(txtDelimitedComments.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
                             }
                             break;
                         case "HL7":
@@ -188,21 +189,14 @@ namespace EasyXmlSample
 
         void xDoc_OnRowAdd(object sender, XmlNodeChangedEventArgs e)
         {
-            if (onloadCommands.Length ==0) return;
+            if (String.IsNullOrWhiteSpace(txtOnLoadContents.Text)) return;
             XmlNode rowNode = e.Node;
-            rowNode = rowNode.TransformXml(onloadCommands);
-            if (rowNode == null)
+            if (xsl == null)
             {
-                e.Node.InnerXml = "";
+                xsl = rowNode.GetCompiledTransform(txtOnLoadContents.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
             }
-            else
-            {
-                e.Node.InnerXml = rowNode.InnerXml;
-            }
-            //XmlNode autoNode = rowNode.OwnerDocument.CreateElement("SNo");
-            //intAutoNumber ++;
-            //autoNode.InnerText = intAutoNumber.ToString();
-            //rowNode.InsertBefore(autoNode, rowNode.FirstChild);
+            rowNode = rowNode.TransformXml(xsl);
+            e.Node.InnerXml = (rowNode == null) ? String.Empty : rowNode.InnerXml;
         }
 
         private void TransformDataFromEzDoc()
@@ -234,7 +228,7 @@ namespace EasyXmlSample
             {
                 txtXmlContents.Text = xDoc.Beautify();
             }
-            catch 
+            catch
             {
             }
 
@@ -264,7 +258,7 @@ namespace EasyXmlSample
             }
 
             stopWatch.Stop();
-            lblRecordCount.Text += Environment.NewLine + String.Format("[{0}:{1}:{2}.{3}]", stopWatch.Elapsed.Hours,stopWatch.Elapsed.Minutes,stopWatch.Elapsed.Seconds,stopWatch.Elapsed.Milliseconds);
+            lblRecordCount.Text += Environment.NewLine + String.Format("[{0}:{1}:{2}.{3}]", stopWatch.Elapsed.Hours, stopWatch.Elapsed.Minutes, stopWatch.Elapsed.Seconds, stopWatch.Elapsed.Milliseconds);
             stopWatch.Reset();
         }
 
@@ -410,7 +404,7 @@ namespace EasyXmlSample
                         dsw = new OfficeDatasetWriter(rds, ofd.FileName) { DestinationType = OfficeFileType.ExcelWorkbook };
                         break;
                     case "XML":
-                        dsw = new XmlDatasetWriter(rds,"" , ofd.FileName);
+                        dsw = new XmlDatasetWriter(rds, "", ofd.FileName);
                         break;
                     case "PDF":
                         dsw = new PDFDatasetWriter(rds, ofd.FileName);
@@ -440,42 +434,42 @@ namespace EasyXmlSample
             TransformDataFromEzDoc();
         }
 
-       private void chkUseTextExtractor_CheckedChanged(object sender, EventArgs e)
+        private void chkUseTextExtractor_CheckedChanged(object sender, EventArgs e)
         {
             cbTextExtractor.Visible = chkUseTextExtractor.Checked;
             LoadDataToGridView();
         }
 
-       private void btnRefreshData_Click(object sender, EventArgs e)
-       {
-           LoadDataToGridView();
-       }
+        private void btnRefreshData_Click(object sender, EventArgs e)
+        {
+            LoadDataToGridView();
+        }
 
-       private void btnRefreshOnLoadProfiles_Click(object sender, EventArgs e)
-       {
-           cbOnLoadProfiles.Items.Clear();
-           foreach (string file in Directory.EnumerateFiles(Application.StartupPath, "*.transforms"))
-           {
-               cbOnLoadProfiles.Items.Add(Path.GetFileNameWithoutExtension(file));
-           }
-       }
+        private void btnRefreshOnLoadProfiles_Click(object sender, EventArgs e)
+        {
+            cbOnLoadProfiles.Items.Clear();
+            foreach (string file in Directory.EnumerateFiles(Application.StartupPath, "*.transforms"))
+            {
+                cbOnLoadProfiles.Items.Add(Path.GetFileNameWithoutExtension(file));
+            }
+        }
 
-       private void btnOnLoadSave_Click(object sender, EventArgs e)
-       {
-           if (!String.IsNullOrWhiteSpace(txtOnLoadFileName.Text))
-           {
-               File.WriteAllText(Path.Combine(Application.StartupPath, txtOnLoadFileName.Text + ".transforms"), txtOnLoadContents.Text);
-               if (!cbOnLoadProfiles.Items.Contains(txtOnLoadFileName.Text)) cbOnLoadProfiles.Items.Add(txtOnLoadFileName.Text);
-               cbOnLoadProfiles.SelectedText = txtOnLoadFileName.Text;
-           }
-       }
+        private void btnOnLoadSave_Click(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrWhiteSpace(txtOnLoadFileName.Text))
+            {
+                File.WriteAllText(Path.Combine(Application.StartupPath, txtOnLoadFileName.Text + ".transforms"), txtOnLoadContents.Text);
+                if (!cbOnLoadProfiles.Items.Contains(txtOnLoadFileName.Text)) cbOnLoadProfiles.Items.Add(txtOnLoadFileName.Text);
+                cbOnLoadProfiles.SelectedText = txtOnLoadFileName.Text;
+            }
+        }
 
-       private void cbOnLoadProfiles_SelectedIndexChanged(object sender, EventArgs e)
-       {
-           txtOnLoadFileName.Text = cbOnLoadProfiles.Text;
-           txtOnLoadContents.Text = File.ReadAllText(Path.Combine(Application.StartupPath, cbOnLoadProfiles.Text + ".transforms"));
-           LoadDataToGridView();
-       }
+        private void cbOnLoadProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            txtOnLoadFileName.Text = cbOnLoadProfiles.Text;
+            txtOnLoadContents.Text = File.ReadAllText(Path.Combine(Application.StartupPath, cbOnLoadProfiles.Text + ".transforms"));
+            LoadDataToGridView();
+        }
 
     }
 }
