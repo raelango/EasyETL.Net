@@ -97,11 +97,24 @@ namespace EasyXml
 
         public static XmlNode TransformXml(this XmlNode xmlNode, StringBuilder xslSB)
         {
+
+            try
+            {
+                XslCompiledTransform xsl = GetCompiledTransform(xslSB);
+                return xmlNode.TransformXml(xsl);
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public static XmlNode TransformXml(this XmlNode xmlNode, XslCompiledTransform xsl)
+        {
             try
             {
                 XsltArgumentList xal = new XsltArgumentList();
                 xal.AddExtensionObject(XsltExtensions.XsltStringExtensions.Namespace, new XsltExtensions.XsltStringExtensions()); //This is to make the "easy" extension functions available...
-                XslCompiledTransform xsl = GetCompiledTransform(xslSB);
                 StringBuilder xmlSB = new StringBuilder();
                 XmlWriterSettings xwSettings = new XmlWriterSettings();
                 xwSettings.OmitXmlDeclaration = true;
@@ -117,6 +130,88 @@ namespace EasyXml
                 return null;
             }
         }
+
+        public static XslCompiledTransform GetCompiledTransform(this XmlNode xmlNode, params string[] settingsCommands)
+        {
+            if ((settingsCommands.Length == 0) || (xmlNode == null) || !xmlNode.HasChildNodes) return null;
+            string rowElementName = xmlNode.Name;
+
+            if (String.IsNullOrWhiteSpace(rowElementName)) return null;
+
+            bool bTransformRequired = false;
+            Dictionary<string, string> dctAdditions = new Dictionary<string, string>();
+            List<string> lstRemoveCommands = new List<string>();
+            List<string> lstFilters = new List<string>();
+            Dictionary<string, string> dctRenames = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+
+            List<string> lstRowElements = new List<string>();
+
+            StringBuilder xslSB = new StringBuilder();
+            Dictionary<string, string> dctSortOrders = new Dictionary<string, string>();
+            string strSortOrder = String.Empty;
+            foreach (string settingCommand in settingsCommands)
+            {
+                string[] settings = settingCommand.Split(' ');
+                switch (settings[0].ToUpper())
+                {
+                    case "ADD":
+                        if (settingCommand.Length > (settings[1].Length + 4))
+                        {
+                            dctAdditions.Add(settings[1], settingCommand.Substring(4 + settings[1].Length + 1));
+                            bTransformRequired = true;
+                        }
+                        break;
+                    case "HIDE":
+                    case "REMOVE":
+                        lstRemoveCommands.Add(settings[1]);
+                        bTransformRequired = true;
+                        break;
+                    case "RENAME":
+                        dctRenames.Add(settings[1], settings[2]);
+                        bTransformRequired = true;
+                        break;
+                    case "FILTER":
+                        lstFilters.Add(settingCommand.Substring(6).Trim());
+                        bTransformRequired = true;
+                        break;
+                    case "GO":
+                    case "EXECUTE":
+                        if (bTransformRequired || rowElementName.Contains("=>"))
+                        {
+                            xmlNode.BuildXsltString(rowElementName, dctAdditions, lstRemoveCommands, lstFilters, dctRenames, lstRowElements, xslSB);
+                            strSortOrder = String.Empty;
+                            xmlNode = xmlNode.TransformXml(xslSB);
+                            if ((xmlNode == null) || (!xmlNode.HasChildNodes)) return null;
+                            xslSB = new StringBuilder();
+                            rowElementName = xmlNode.Name;
+                            bTransformRequired = false;
+                        }
+                        break;
+                }
+                if (!String.IsNullOrWhiteSpace(settingCommand.Trim()))
+                {
+
+
+                    if (settingCommand.Trim()[0] == '[')
+                    {
+                        if (bTransformRequired || rowElementName.Contains("=>"))
+                        {
+                            xmlNode.BuildXsltString(rowElementName, dctAdditions, lstRemoveCommands, lstFilters, dctRenames, lstRowElements, xslSB);
+                            strSortOrder = String.Empty;
+                        }
+                        rowElementName = settingCommand.Trim().Substring(1, settingCommand.Trim().Length - 2);
+                        bTransformRequired = false;
+                    }
+                }
+
+            }
+
+            xmlNode.BuildXsltString(rowElementName, dctAdditions, lstRemoveCommands, lstFilters, dctRenames, lstRowElements, xslSB);
+            return GetCompiledTransform(xslSB);
+        }
+
+
+
 
         public static XslCompiledTransform GetCompiledTransform(StringBuilder xslSB)
         {
