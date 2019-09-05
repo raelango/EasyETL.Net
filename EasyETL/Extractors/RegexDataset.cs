@@ -1,7 +1,9 @@
+using EasyETL.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 
@@ -12,7 +14,7 @@ namespace EasyETL.DataSets
         public Regex ConditionRegex = null;
         public string TableName = "";
         public Regex parseRegex = null;
-
+        public List<RegexColumn> RegexColumns = new List<RegexColumn>();
     }
 
 
@@ -35,6 +37,8 @@ namespace EasyETL.DataSets
         private bool _parsingInProgress = false;
 
         public Queue<string> QueueToParse = new Queue<string>();
+
+        protected Dictionary<string, object> rowDict = new Dictionary<string, object>();
 
         /// <summary>
         ///     The text file to be read
@@ -184,6 +188,8 @@ namespace EasyETL.DataSets
             {
                 string strCondition = String.Empty;
                 string strTableName = TableName;
+                string strTableStructureType = String.Empty;
+                //Conditional Table level attributes...
                 foreach (XmlAttribute xAttr in childNode.Attributes)
                 {
                     switch (xAttr.Name.ToUpper())
@@ -197,15 +203,25 @@ namespace EasyETL.DataSets
                         case "TABLENAME":
                             strTableName = xAttr.Value;
                             break;
+                        case "TABLESTRUCTURETYPE":
+                            strTableStructureType = xAttr.Value;
+                            break;
                     }
 
                 }
                 RegexColumnBuilder conditionalRCB = new RegexColumnBuilder(separator);
-                foreach (XmlNode subNode in childNode.ChildNodes)
+
+                XmlNode tableNode = childNode;
+                if (!String.IsNullOrWhiteSpace(strTableStructureType))
+                {
+                    tableNode = Configuration.GetDataTableNode(strTableStructureType);
+                }
+
+                foreach (XmlNode subNode in tableNode.ChildNodes)
                 {
                     ParseColumnOrParser(conditionalRCB, subNode, separator);
                 }
-                ConditionalRegexParser crp = new ConditionalRegexParser() { ConditionRegex = new Regex(strCondition), TableName = strTableName, parseRegex = conditionalRCB.CreateRegularExpression() };
+                ConditionalRegexParser crp = new ConditionalRegexParser() { ConditionRegex = new Regex(strCondition), TableName = strTableName, parseRegex = conditionalRCB.CreateRegularExpression(), RegexColumns = conditionalRCB.Columns };
                 Parsers.Add(crp);
             }
             else
@@ -214,8 +230,18 @@ namespace EasyETL.DataSets
                 string suffix = "";
                 string strCondition = String.Empty;
                 bool hasDoubleQuotes = false;
+                bool bAutoIncrement = false;
+                Int32 intStartValue = 1;
+                Int32 intIncrement = 1;
+                bool bForeignKey = false;
+                bool bPrimaryKey = false;
+                string strExpression = String.Empty;
+                string strDisplayName = childNode.Name;
+                string strDescription = String.Empty;
+                string strDefault = String.Empty;
                 int columnLength = 0;
                 RegexColumnType rct = RegexColumnType.STRING;
+                //Column level attributes...
                 foreach (XmlAttribute xAttr in childNode.Attributes)
                 {
                     switch (xAttr.Name.ToUpper())
@@ -241,42 +267,119 @@ namespace EasyETL.DataSets
                         case "CONDITION":
                             strCondition = xAttr.Value;
                             break;
+                        case "AUTOINCREMENT":
+                            bAutoIncrement = Boolean.Parse(xAttr.Value);
+                            break;
+                        case "STARTVALUE":
+                        case "START":
+                        case "SEED":
+                            intStartValue = Int32.Parse(xAttr.Value);
+                            break;
+                        case "INCREMENT":
+                            intIncrement = Int32.Parse(xAttr.Value);
+                            break;
+                        case "EXPRESSION":
+                            strExpression = xAttr.Value;
+                            break;
+                        case "FOREIGNKEY":
+                            bForeignKey = Boolean.Parse(xAttr.Value);
+                            break;
+                        case "UNIQUE":
+                        case "PRIMARYKEY":
+                        case "PRIMARY":
+                            bPrimaryKey = Boolean.Parse(xAttr.Value);
+                            break;
+                        case "DISPLAYNAME":
+                        case "CAPTION":
+                            strDisplayName = xAttr.Value;
+                            break;
+                        case "DESCRIPTION":
+                            strDescription = xAttr.Value;
+                            break;
+                        case "DEFAULT":
+                            strDefault = xAttr.Value;
+                            break;
                     }
                 }
-                if (!String.IsNullOrEmpty(separator))
+                bool bColumnAdded = false;
+                string strColumnName = childNode.Name;
+                if (strColumnName.Trim('_') == String.Empty)
                 {
-                    if (hasDoubleQuotes)
+                    strColumnName = String.Empty;
+                }
+                if (bAutoIncrement)
+                {
+                    columnBuilder.AddColumn(strColumnName, bAutoIncrement, intStartValue, intIncrement);
+                    bColumnAdded = true;
+                }
+                if (!bColumnAdded && !String.IsNullOrEmpty(strExpression))
+                {
+                    columnBuilder.AddColumn(strColumnName, rct, strExpression);
+                    bColumnAdded = true;
+                }
+
+                if ((!bColumnAdded) && (bForeignKey))
+                {
+                    columnBuilder.AddColumn(strColumnName, bForeignKey);
+                    bColumnAdded = true;
+                }
+
+                if (!bColumnAdded) //This is a regular column with regex... let us add this to the column builder...
+                {
+                    if (!String.IsNullOrEmpty(separator))
                     {
-                        columnBuilder.AddColumn('\"' + childNode.Name + '\"', separator[0], rct);
-                    }
-                    else
-                    {
-                        if (childNode.NextSibling == null)
+                        if (hasDoubleQuotes)
                         {
-                            columnBuilder.AddColumn(childNode.Name, ".*", rct);
+                            columnBuilder.AddColumn('\"' + strColumnName + '\"', separator[0], rct);
                         }
                         else
                         {
-                            columnBuilder.AddColumn(childNode.Name, "[^" + columnBuilder.RegexFormattedOutput(separator[0]) + "\\n]*", prefix, suffix, rct);
+                            if (childNode.NextSibling == null)
+                            {
+                                columnBuilder.AddColumn(strColumnName, ".*", rct);
+                            }
+                            else
+                            {
+                                columnBuilder.AddColumn(strColumnName, "[^" + columnBuilder.RegexFormattedOutput(separator[0]) + "\\n]*", prefix, suffix, rct);
+                            }
                         }
-                    }
-                }
-                else
-                {
-                    if (columnLength > 0)
-                    {
-                        columnBuilder.AddColumn(childNode.Name, columnLength, rct);
                     }
                     else
                     {
-                        columnBuilder.AddColumn(childNode.Name, ".*", rct);
+                        if (columnLength > 0)
+                        {
+                            columnBuilder.AddColumn(strColumnName, columnLength, rct);
+                        }
+                        else
+                        {
+                            columnBuilder.AddColumn(strColumnName, ".*", rct);
+                        }
                     }
-                }
 
-                if (!String.IsNullOrWhiteSpace(strCondition))
-                {
-                    //There is a condition to be matched with the value... let us set it to the last column added...
-                    columnBuilder.Columns[columnBuilder.Columns.Count - 1].ValueMatchingCondition = strCondition;
+                    RegexColumn addedColumn = columnBuilder.Columns[columnBuilder.Columns.Count - 1];
+
+                    if (!String.IsNullOrWhiteSpace(strCondition))
+                    {
+                        //There is a condition to be matched with the value... let us set it to the last column added...
+                        addedColumn.ValueMatchingCondition = strCondition;
+                    }
+
+                    if (bPrimaryKey)
+                    {
+                        addedColumn.IsUnique = bPrimaryKey;
+                    }
+
+                    if (strDisplayName != strColumnName)
+                    {
+                        addedColumn.DisplayName = strDisplayName;
+                    }
+                    if (!String.IsNullOrEmpty(strDescription)) {
+                        addedColumn.Description = strDescription;
+                    }
+                    if (!String.IsNullOrEmpty(strDefault))
+                    {
+                        addedColumn.Default = strDefault;
+                    }
                 }
 
             }
@@ -304,37 +407,33 @@ namespace EasyETL.DataSets
 
         private void RemoveDataTables()
         {
+            Relations.Clear();
+            foreach (DataTable dt in Tables)
+            {
+                ClearConstraintsOnTable(dt);
+            }
+            EnforceConstraints = false;
             while (Tables.Count > 0)
             {
                 Tables.RemoveAt(0);
             }
+            EnforceConstraints = true;
+        }
+
+        private void ClearConstraintsOnTable(DataTable dt)
+        {
+            foreach (DataRelation dr in dt.ChildRelations)
+            {
+                ClearConstraintsOnTable(dr.ChildTable);
+            }
+            dt.Constraints.Clear();
         }
 
         private void BuildRegexSchemaIntoDataSet()
         {
             if ((ContentExpression == null) && !ContentExpressionHasChanged) return;
             RemoveDataTables();
-            if (ContentExpression != null)
-            {
-
-                foreach (var sGroup in ContentExpression.GetGroupNames())
-                {
-                    short groupNum;
-                    if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
-                    {
-                        var newDc = new DataColumn { DataType = typeof(string) };
-                        if (_regexColumns != null)
-                            foreach (var r in _regexColumns)
-                                if (r.ColumnName == sGroup)
-                                {
-                                    newDc.DataType = r.ColumnTypeAsType;
-                                    break;
-                                }
-                        newDc.ColumnName = sGroup;
-                        DataTable.Columns.Add(newDc);
-                    }
-                }
-            }
+            LoadColumnsToTable(DataTable, _regexColumns);
 
             foreach (ConditionalRegexParser crp in Parsers)
             {
@@ -347,21 +446,75 @@ namespace EasyETL.DataSets
                 {
                     crpDT = Tables[crp.TableName];
                 }
-
-                foreach (var sGroup in crp.parseRegex.GetGroupNames())
-                {
-                    short groupNum;
-                    if ((!crpDT.Columns.Contains(sGroup)) && (sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
-                    {
-                        var newDc = new DataColumn { DataType = typeof(string) };
-                        newDc.ColumnName = sGroup;
-                        crpDT.Columns.Add(newDc);
-                    }
-                }
-
-
+                LoadColumnsToTable(crpDT, crp.RegexColumns);
             }
 
+        }
+
+        private void LoadColumnsToTable(DataTable dataTable, List<RegexColumn> regexColumns)
+        {
+            foreach (RegexColumn rColumn in regexColumns)
+            {
+                if (!String.IsNullOrEmpty(rColumn.ColumnName))
+                {
+
+                    DataColumn dColumn = new DataColumn(rColumn.ColumnName, rColumn.ColumnTypeAsType);
+                    if (rColumn.AutoIncrement)
+                    {
+                        dColumn.AutoIncrement = rColumn.AutoIncrement;
+                        dColumn.AutoIncrementSeed = rColumn.StartValue;
+                        dColumn.AutoIncrementStep = rColumn.Increment;
+                    }
+                    if (!String.IsNullOrEmpty(rColumn.Expression))
+                    {
+                        if (rColumn.Expression.StartsWith("{") && rColumn.Expression.EndsWith("}"))
+                        {
+                            rColumn.Expression = "'" + DynamicCode.EvaluateString(rColumn.Expression.Substring(1, rColumn.Expression.Length - 2)) + "'";
+                        }
+                        try
+                        {
+                            dColumn.Expression = rColumn.Expression;
+                        }
+                        catch
+                        {
+                            try
+                            {
+                                dColumn.Expression = "'" + DynamicCode.EvaluateString(rColumn.Expression) + "'" ;
+                            }
+                            catch
+                            {
+                                dColumn.Expression = String.Empty;
+                            }
+                        }
+                    }
+                    dColumn.Unique = rColumn.IsUnique;
+                    if (!String.IsNullOrEmpty(rColumn.DisplayName))
+                    {
+                        dColumn.Caption = rColumn.DisplayName;
+                    }
+                    if (!String.IsNullOrEmpty(rColumn.Default))
+                    {
+                        dColumn.ExtendedProperties.Add("DefaultValue", rColumn.Default);
+                    }
+                    dataTable.Columns.Add(dColumn);
+
+                    if (rColumn.IsForeignKey)
+                    {
+                        foreach (DataTable dTable in dataTable.DataSet.Tables)
+                        {
+                            if ((dTable.TableName != dataTable.TableName) && (dTable.Columns.Contains(rColumn.ColumnName)))
+                            {
+                                DataColumn parentDataColumn = dTable.Columns[rColumn.ColumnName];
+                                if (parentDataColumn.AutoIncrement || parentDataColumn.Unique)
+                                {
+                                    dColumn.DataType = dTable.Columns[rColumn.ColumnName].DataType;
+                                    this.Relations.Add(dTable.Columns[rColumn.ColumnName], dColumn);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         #region public methods
@@ -371,6 +524,8 @@ namespace EasyETL.DataSets
             bool hasHeaderRow = false;
             bool skipFirstRow = false;
             string separator = "";
+            string TableStructureType = String.Empty;
+            //Table level attributes...
             foreach (XmlAttribute xAttr in xNode.Attributes)
             {
                 switch (xAttr.Name.ToUpper())
@@ -380,6 +535,9 @@ namespace EasyETL.DataSets
                         break;
                     case "TABLENAME":
                         TableName = xAttr.Value;
+                        break;
+                    case "TABLESTRUCTURETYPE":
+                        TableStructureType = xAttr.Value;
                         break;
                     case "HASHEADER":
                         hasHeaderRow = Boolean.Parse(xAttr.Value);
@@ -393,42 +551,52 @@ namespace EasyETL.DataSets
             UseFirstRowNamesAsColumnNames = hasHeaderRow;
             SkipFirstRow = skipFirstRow;
             RegexColumnBuilder rcb = new RegexColumnBuilder(separator);
-            if (xNode.HasChildNodes)
+
+            XmlNode tableNode = xNode;
+            if (!String.IsNullOrWhiteSpace(TableStructureType))
             {
-                foreach (XmlNode childNode in xNode.ChildNodes)
+                tableNode = Configuration.GetDataTableNode(TableStructureType);
+            }
+
+            if (tableNode.HasChildNodes)
+            {
+                foreach (XmlNode childNode in tableNode.ChildNodes)
                 {
                     ParseColumnOrParser(rcb, childNode, separator);
                 }
             }
             ColumnBuilder = rcb;
-            Tables.Clear();
-            DataTable dTable;
-            if (!String.IsNullOrEmpty(TableName) && (rcb.Columns.Count > 0))
-            {
-                dTable = Tables.Add(TableName);
-                foreach (RegexColumn rColumn in rcb.Columns)
-                {
-                    dTable.Columns.Add(rColumn.ColumnName, rColumn.ColumnTypeAsType);
-                }
-            }
-
-            foreach (ConditionalRegexParser parser in Parsers)
-            {
-                if (!Tables.Contains(parser.TableName))
-                {
-                    dTable = Tables.Add(parser.TableName);
-                    foreach (string colName in parser.parseRegex.GetGroupNames())
-                    {
-                        Int16 colNumber;
-                        if ((colName != DefaultGroup) && (!Int16.TryParse(colName, out colNumber)))
-                        {
-                            dTable.Columns.Add(colName);
-                        }
-                    }
-                }
-            }
+            BuildRegexSchemaIntoDataSet();
         }
 
+        public override string GetPropertiesAsXml(string nodeName)
+        {
+            StringBuilder sbResult = new StringBuilder();
+            sbResult.Append("<" + nodeName + " TableName='" + TableName + "'");
+            sbResult.Append(" HasHeader='" + UseFirstRowNamesAsColumnNames.ToString() + "'");
+            sbResult.Append(" SkipFirstRow='" + SkipFirstRow.ToString() + "'");
+            sbResult.AppendLine(">");
+            if ((_regexColumns != null) && (_regexColumns.Count > 0))
+            {
+                foreach (RegexColumn regexColumn in _regexColumns)
+                {
+                    sbResult.AppendLine("\t" + regexColumn.GetPropertiesAsXml());
+                }
+            }
+            foreach (ConditionalRegexParser crp in Parsers)
+            {
+                sbResult.AppendLine("\t<if condition='" + crp.ConditionRegex + "' TableName='" + crp.TableName + "'>");
+                foreach (RegexColumn regexColumn in crp.RegexColumns)
+                {
+                    sbResult.AppendLine("\t\t" + regexColumn.GetPropertiesAsXml());
+                }
+                sbResult.AppendLine("</if>");
+            }
+            sbResult.AppendLine("</" + nodeName + ">");
+            return sbResult.ToString();
+        }
+
+        #region Fill Methods
         /// <summary>
         ///     Reads every line in the text file and tries to match
         ///     it with the given regular expression.
@@ -465,13 +633,13 @@ namespace EasyETL.DataSets
         ///     datatable
         /// </summary>
         /// <param name="textFile"></param>
-        public void Fill(Stream textFile)
+        public override void Fill(Stream textFile)
         {
             TextFile = textFile;
             Fill();
         }
 
-        public virtual void Fill(string textFileName)
+        public override void Fill(string textFileName)
         {
             using (FileStream fs = new FileStream(textFileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
@@ -552,6 +720,7 @@ namespace EasyETL.DataSets
                 if (column.ExtendedProperties.ContainsKey(NewName))
                     column.ColumnName = column.ExtendedProperties[NewName].ToString();
         }
+        #endregion 
 
         public override void ProcessRowObject(object row)
         {
@@ -575,7 +744,7 @@ namespace EasyETL.DataSets
             }
             if (!_parsingInProgress)
             {
-               _parsingInProgress = true;
+                _parsingInProgress = true;
                 ParseAndLoadLinesFromQueue();
                 _parsingInProgress = false;
             }
@@ -600,16 +769,16 @@ namespace EasyETL.DataSets
 
         protected virtual void ParseAndLoadLines(string lines)
         {
-
             foreach (string readLine in lines.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
             {
                 bool bImportRow = false;
+                bool bLineParsed = false;
                 if ((ContentExpression != null) && ContentExpression.IsMatch(readLine))
                 {
                     var m = ContentExpression.Match(readLine);
                     bImportRow = true;
-                    var newRow = DataTable.NewRow();
                     short groupNum;
+                    rowDict = new Dictionary<string, object>();
                     foreach (var sGroup in ContentExpression.GetGroupNames())
                     {
                         if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
@@ -622,68 +791,119 @@ namespace EasyETL.DataSets
                             }
                             string fieldValue = m.Groups[sGroup].Value;
                             fieldValue = fieldValue.Trim('\"');
-                            if (newRow.Table.Columns[sGroup] != null)
+                            if (DataTable.Columns[sGroup] != null)
                             {
 
-                                if (newRow.Table.Columns[sGroup].DataType == typeof(int))
-                                    newRow[sGroup] = Convert.ToInt32(fieldValue);
-                                else if (newRow.Table.Columns[sGroup].DataType == typeof(double))
-                                    newRow[sGroup] = Convert.ToDouble(fieldValue);
-                                else if (newRow.Table.Columns[sGroup].DataType == typeof(DateTime))
-                                    newRow[sGroup] = Convert.ToDateTime(fieldValue);
+                                if (DataTable.Columns[sGroup].DataType == typeof(int))
+                                    rowDict[sGroup] = Convert.ToInt32(fieldValue);
+                                else if (DataTable.Columns[sGroup].DataType == typeof(double))
+                                    rowDict[sGroup] = Convert.ToDouble(fieldValue);
+                                else if (DataTable.Columns[sGroup].DataType == typeof(DateTime))
+                                    rowDict[sGroup] = Convert.ToDateTime(fieldValue);
                                 else
-                                    newRow[sGroup] = fieldValue;
+                                    rowDict[sGroup] = fieldValue;
                             }
                         }
                     }
 
                     if (bImportRow)
                     {
+                        DataRow newRow = DataTable.NewRow();
+                        PopulateDictionaryToRow(newRow);
+                        //foreach (KeyValuePair<string, object> kvPair in rowDict)
+                        //{
+                        //    newRow[kvPair.Key] = kvPair.Value;
+                        //}
                         DataTable.Rows.Add(newRow);
-
+                        PopulateRowToDictionary(DataTable.Rows[DataTable.Rows.Count - 1]);
+                        bLineParsed = true;
                     }
                 }
 
-                if (!bImportRow)
+                if (!bLineParsed)
                 {
-                    bool bLineParsed = false;
                     foreach (ConditionalRegexParser crp in Parsers)
                     {
-                        if (crp.ConditionRegex.IsMatch(readLine))
+                        if (!bLineParsed && crp.ConditionRegex.IsMatch(readLine))
                         {
+                            bImportRow = true;
                             DataTable crpDataTable = Tables[crp.TableName];
                             var m = crp.parseRegex.Match(readLine);
-                            var newRow = crpDataTable.NewRow();
                             short groupNum;
                             foreach (var sGroup in crp.parseRegex.GetGroupNames())
+                            {
                                 if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
                                 {
+                                    RegexColumn curRegexColumn = crp.RegexColumns.Find(r => r.ColumnName == sGroup);
+                                    if (!String.IsNullOrWhiteSpace(curRegexColumn.ValueMatchingCondition) && (!Regex.IsMatch(m.Groups[sGroup].Value, curRegexColumn.ValueMatchingCondition)))
+                                    {
+                                        bImportRow = false;
+                                        break;
+                                    }
                                     string fieldValue = m.Groups[sGroup].Value;
                                     fieldValue = fieldValue.Trim('\"');
-                                    if (newRow.Table.Columns[sGroup] != null)
+                                    if (crpDataTable.Columns[sGroup] != null)
                                     {
-                                        if (newRow.Table.Columns[sGroup].DataType == typeof(int))
-                                            newRow[sGroup] = Convert.ToInt32(fieldValue);
-                                        else if (newRow.Table.Columns[sGroup].DataType == typeof(double))
-                                            newRow[sGroup] = Convert.ToDouble(fieldValue);
-                                        else if (newRow.Table.Columns[sGroup].DataType == typeof(DateTime))
-                                            newRow[sGroup] = Convert.ToDateTime(fieldValue);
+                                        if (crpDataTable.Columns[sGroup].DataType == typeof(int))
+                                            rowDict[sGroup] = Convert.ToInt32(fieldValue);
+                                        else if (crpDataTable.Columns[sGroup].DataType == typeof(double))
+                                            rowDict[sGroup] = Convert.ToDouble(fieldValue);
+                                        else if (crpDataTable.Columns[sGroup].DataType == typeof(DateTime))
+                                            rowDict[sGroup] = Convert.ToDateTime(fieldValue);
                                         else
-                                            newRow[sGroup] = fieldValue;
+                                            rowDict[sGroup] = fieldValue;
                                     }
                                 }
-                            crpDataTable.Rows.Add(newRow);
-                            bLineParsed = true;
-                            bImportRow = true;
+                            }
+                            if (bImportRow)
+                            {
+                                DataRow newRow = crpDataTable.NewRow();
+                                PopulateDictionaryToRow(newRow);
+                                crpDataTable.Rows.Add(newRow);
+                                PopulateRowToDictionary(crpDataTable.Rows[crpDataTable.Rows.Count - 1]);
+                                bLineParsed = true;
+                            }
                         }
                     }
-                    if (!bLineParsed)
-                    {
-                        AddMisRead(readLine);
-                    }
                 }
+                if (!bLineParsed)
+                {
+                    AddMisRead(readLine);
+                }
+
             }
 
+        }
+
+        protected void PopulateRowToDictionary(DataRow dataRow)
+        {
+            foreach (DataColumn dColumn in dataRow.Table.Columns)
+            {
+                rowDict[dColumn.ColumnName] = dataRow[dColumn].ToString();
+            }
+        }
+
+        protected void PopulateDictionaryToRow(DataRow dataRow)
+        {
+            foreach (DataColumn dColumn in dataRow.Table.Columns)
+            {
+                if (dColumn.ExtendedProperties.ContainsKey("DefaultValue"))
+                {
+                    dataRow[dColumn] = dColumn.ExtendedProperties["DefaultValue"].ToString();
+                }
+                if (rowDict.ContainsKey(dColumn.ColumnName))
+                {
+                    if (dColumn.AutoIncrement || !String.IsNullOrEmpty(dColumn.Expression))
+                    {
+                        rowDict.Remove(dColumn.ColumnName);
+                    }
+                    else
+                    {
+                        dataRow[dColumn] = rowDict[dColumn.ColumnName];
+                    }
+                }
+
+            }
         }
         #endregion
 

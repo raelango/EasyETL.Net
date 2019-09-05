@@ -48,7 +48,7 @@ namespace EasyETL.Writers
             returnStr += "<THEAD>" + Environment.NewLine;
             foreach (DataColumn dc in dt.Columns)
             {
-                returnStr += "<TH>" + dc.ColumnName + "</TH>" + Environment.NewLine;
+                returnStr += "<TH>" + GetColumnName(dc) + "</TH>" + Environment.NewLine;
             }
             returnStr += "</THEAD>" + Environment.NewLine;
             return returnStr;

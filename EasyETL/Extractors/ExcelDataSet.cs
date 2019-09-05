@@ -11,7 +11,7 @@ using System.Data.OleDb;
 
 namespace EasyETL.DataSets
 {
-    public class ExcelDataSet : RegexDataSet
+    public class ExcelDataSet : RegexDataSet 
     {
 
         private string _excelFileName = String.Empty;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasyEndpoint;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -113,6 +114,11 @@ namespace EasyETL.Writers
             {
                 handler(this, e);
             }
+        }
+
+        protected string GetColumnName(DataColumn dColumn)
+        {
+            return String.IsNullOrWhiteSpace(dColumn.Caption) ? dColumn.ColumnName : dColumn.Caption;
         }
 
     }

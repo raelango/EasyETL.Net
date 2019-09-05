@@ -118,7 +118,7 @@ namespace EasyETL.Writers
 
                                     excel.Cell cell = new excel.Cell();
                                     cell.DataType = excel.CellValues.String;
-                                    cell.CellValue = new excel.CellValue(column.ColumnName);
+                                    cell.CellValue = new excel.CellValue(GetColumnName(column));
                                     headerRow.AppendChild(cell);
                                 }
 
@@ -223,7 +223,7 @@ namespace EasyETL.Writers
             {
                 word.GridColumn gridColumn = new word.GridColumn();
                 word.TableCell tableCell = new word.TableCell();
-                tableCell.Append(GetParagraph(dataColumn.ColumnName));
+                tableCell.Append(GetParagraph(GetColumnName(dataColumn)));
                 headerRow.Append(tableCell);
                 tableGrid.Append(gridColumn);
             }
@@ -259,7 +259,7 @@ namespace EasyETL.Writers
             excel.Row excelRow = new excel.Row();
             foreach (DataColumn dataColumn in dataTable.Columns)
             {
-                excelRow.Append(new excel.Cell() { CellValue = new excel.CellValue(dataColumn.ColumnName) });
+                excelRow.Append(new excel.Cell() { CellValue = new excel.CellValue(GetColumnName(dataColumn)) });
             }
             sheetData.AppendChild(excelRow);
 

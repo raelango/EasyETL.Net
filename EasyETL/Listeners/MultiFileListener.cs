@@ -35,7 +35,6 @@ namespace EasyETL.Listeners
                         eventArgs.Data["AdditionalContent"] = sr.ReadToEnd();
                         FilePositions[FullFileName] = _textReader.Position;
                     }
-
                 }
             }
             else {

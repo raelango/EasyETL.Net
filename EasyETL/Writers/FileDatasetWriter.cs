@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasyEndpoint;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -11,7 +12,7 @@ namespace EasyETL.Writers
     public abstract class FileDatasetWriter : DatasetWriter
     {
         protected string _fileName = String.Empty;
-
+        protected IEasyEndpoint endpoint = null;
         public FileDatasetWriter()
             : base()
         {
@@ -36,23 +37,32 @@ namespace EasyETL.Writers
             }
         }
 
-        public virtual void Write(string fileName)
+        public virtual void Write(string fileName, IEasyEndpoint epoint = null)
         {
             _fileName = fileName;
+            endpoint = epoint;
             Write();
         }
 
-        public virtual void Write(DataSet dataSet, string fileName = "")
+        public virtual void Write(DataSet dataSet, string fileName = "", IEasyEndpoint epoint = null)
         {
             _dataSet = dataSet;
-            Write(fileName);
+            Write(fileName, epoint);
         }
 
         public virtual void SaveContentToFile(string contentToWrite)
         {
-            using (StreamWriter outputFile = new StreamWriter(_fileName,false))
+            if (endpoint == null)
             {
-                outputFile.Write(contentToWrite);
+
+                using (StreamWriter outputFile = new StreamWriter(_fileName, false))
+                {
+                    outputFile.Write(contentToWrite);
+                }
+            }
+            else
+            {
+                endpoint.Write(_fileName, ASCIIEncoding.ASCII.GetBytes(contentToWrite));
             }
         }    
     }

@@ -45,7 +45,7 @@ namespace EasyETL.Writers
             string returnStr = "{" + Environment.NewLine;
             foreach (DataColumn dc in dr.Table.Columns)
             {
-                returnStr += "\"" + dc.ColumnName + "\":\"" + dr[dc].ToString() + "\"";
+                returnStr += "\"" + GetColumnName(dc) + "\":\"" + dr[dc].ToString() + "\"";
                 if (dc.Ordinal < (dr.Table.Columns.Count - 1))
                 {
                     returnStr += ",";

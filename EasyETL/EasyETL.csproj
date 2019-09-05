@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EasyETL</RootNamespace>
     <AssemblyName>EasyETL</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -83,6 +83,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EasyETLJob.cs" />
+    <Compile Include="Extractors\AbstractContentExtractor.cs" />
+    <Compile Include="Extractors\DelimitedDataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Extractors\EasyDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -92,16 +96,20 @@
     <Compile Include="Extractors\ExcelDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Extractors\HL7DataSet.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Extractors\HtmlDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Extractors\IContentExtractor.cs" />
     <Compile Include="Extractors\JsonDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Extractors\DatabaseDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Extractors\Extractor.cs" />
+    <Compile Include="Extractors\DatasetParser.cs" />
     <Compile Include="Extractors\MsMqDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -110,10 +118,12 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Listeners\ConfigurationClasses.cs" />
     <Compile Include="Listeners\EventLogListener.cs" />
     <Compile Include="Listeners\FileListener.cs" />
     <Compile Include="Listeners\FolderListener.cs" />
     <Compile Include="Listeners\JobListener.cs" />
+    <Compile Include="Listeners\MailListener.cs" />
     <Compile Include="Listeners\MsMqListener.cs" />
     <Compile Include="Listeners\MultiFileListener.cs" />
     <Compile Include="Listeners\TimerListener.cs" />
@@ -122,6 +132,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>HL7_Ver_2.4.xsd</DependentUpon>
     </Compile>
+    <Compile Include="Utils\Configuration.cs" />
+    <Compile Include="Utils\DynamicCode.cs" />
     <Compile Include="Writers\DatabaseDatasetWriter.cs" />
     <Compile Include="Writers\DatasetWriter.cs" />
     <Compile Include="Writers\DelimitedDatasetWriter.cs" />
@@ -150,6 +162,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="DataTables.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="profiles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -170,6 +185,12 @@
     <None Include="Schemas\HL7_Ver_2.4.xss">
       <DependentUpon>HL7_Ver_2.4.xsd</DependentUpon>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EasyEndpoint\EasyEndpoint.csproj">
+      <Project>{51925788-a8e5-4d41-a192-d206cdefee35}</Project>
+      <Name>EasyEndpoint</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

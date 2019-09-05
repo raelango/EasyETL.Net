@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<datatables>
+  <HL7_MessageHeader>
+    <MessageID AutoIncrement="true" />
+    <SegmentName />
+    <EndcodingCharacters length="4"/>
+    <SendingApp/>
+    <SendingFacility/>
+    <ReceivingApp/>
+    <ReceivingFacility/>
+    <DateTimeOfMessage/>
+    <Security/>
+    <MessageType/>
+    <MessageControlID Unique="true"/>
+    <ProcessingID/>
+    <VersionID/>
+    <SequenceID/>
+    <ContinuationPointer/>
+    <AcceptAckType/>
+    <AppAckType/>
+    <CountryCode/>
+    <CharacterSet/>
+    <PrincipalLanguageOfMessage />
+  </HL7_MessageHeader>
+  <HL7_PatientDetails>
+    <MessageControlID ForeignKey="true" />
+    <SegmentName/>
+    <PatientID/>
+    <ExternalID/>
+    <InternalID/>
+    <AlternateID/>
+    <PatientName/>
+    <MotherMaidenName/>
+    <DateTimeOfBirth/>
+    <Sex/>
+    <PatientAlias/>
+    <Race/>
+    <PatientAddress/>
+    <CountryCode/>
+    <HomePhone/>
+    <BusinessPhone/>
+    <PrimaryLanguage/>
+    <MaritalStatus/>
+    <Religion/>
+    <AccountNumber/>
+    <SSN/>
+    <DL/>
+    <MotherIdentifier/>
+    <EthinicGroup/>
+    <BirthPlace/>
+    <MultipleBirthIndicator/>
+    <BirthOrder/>
+    <Citizenship/>
+    <VeteranStatus/>
+    <Nationality/>
+    <DateTimeOfDeath/>
+    <DeathIndicator />
+  </HL7_PatientDetails>
+  <HL7_PatientAdditionalDetails>
+    <MessageControlID ForeignKey="true" />
+    <SegmentName/>
+    <LivingDependency/>
+    <LivingArrangement/>
+    <PrimaryFacility/>
+    <PCPNameAndID/>
+    <StudentIndicator/>
+    <Handicap/>
+    <LivingWillCode/>
+    <OrganDonorCode/>
+    <SeparateBill/>
+    <DuplicatePatient/>
+    <PublicityCode/>
+    <ProtectionIndicator/>
+    <ProtIndEffectiveDate/>
+    <PlaceOfWorship/>
+    <AdvanceDirectiveCode/>
+    <ImmRegStatus/>
+    <ImmRegStatEffDate/>
+    <PubCodeEffDate/>
+    <MilitaryBranch/>
+    <MilitaryRank/>
+    <MilitaryStatus />
+  </HL7_PatientAdditionalDetails>
+  <HL7_ObservationRequest>
+    <ObrID AutoIncrement ="true" />
+    <MessageControlID ForeignKey="true" />
+    <SegmentName/>
+    <SetID Caption="Record Index"/>
+    <PlacerOrderNumber/>
+    <_ FieldName="FillerOrderNumber"/>
+    <UnversalServiceID/>
+    <Priority/>
+    <RequestDateTime/>
+    <ObservationDateTime/>
+    <ObsEndDateTime/>
+    <CollectionVolume/>
+    <CollectorIdentifier/>
+    <SpecimenActionCode/>
+    <DangerCode/>
+    <RelevantClinicalInfo/>
+    <SpecimenReceivedDateTime/>
+    <SpecimenSource/>
+    <OrderingProvider/>
+    <OrderCallbackPhone/>
+    <PlacerField1/>
+    <PlacerField2/>
+    <FillerField1/>
+    <FillerField2/>
+    <ResultsReportDateTime/>
+    <ChargeToPractice/>
+    <DiagnosticServiceSectID/>
+    <ResultStatus/>
+    <ParentResult/>
+    <QuantityTiming/>
+    <ResultCopiesTo/>
+    <Parent/>
+    <TransportationMode/>
+    <ReasonForStudy/>
+    <PrincipalResultInterpreter/>
+    <AssistantResultInterpreter/>
+    <Technician/>
+    <Transcriptionist/>
+    <ScheduledDateTime/>
+    <NumberOfSampleContainers/>
+    <TransportLogisticsForCollSample/>
+    <CollectorComment/>
+    <TransportArrangementResponsibility/>
+    <TransportArranged/>
+    <EscortRequired/>
+    <PlannedTransportComment />
+  </HL7_ObservationRequest>
+  <HL7_ObservationResult>
+    <ObxID AutoIncrement ="true" />
+    <ObrID ForeignKey="true" />
+    <SegmentName/>
+    <SetID/>
+    <ValueType/>
+    <ObsIdentifier/>
+    <ObsValue/>
+    <Units/>
+    <ReferenceRange/>
+    <AbnormalFlags/>
+    <Probability/>
+    <NatureOfAbnormalTest/>
+    <ObsResultStatus/>
+    <DateDastObsNormalValues/>
+    <UserDefinedAccessChecks/>
+    <DateTimeOfObs/>
+    <ProducerID/>
+    <ResponsibileObserver/>
+    <ObsMethod />
+  </HL7_ObservationResult>
+  <HL7_NextOfKinDetails>
+    <PatientID ForeignKey="True"/>
+    <SetID />
+    <NextOfKinName />
+    <Relationship />
+    <Address />
+    <PhoneNumber />
+    <BusinessPhoneNumber />
+    <ContactRole />
+    <StartDate />
+    <EndDate />
+    <JobTitle />
+    <JobCode />
+    <EmployeeNumber />
+    <OrganizationName />
+    <MaritalStatus />
+    <Sex />
+    <DateOfBirth />
+  </HL7_NextOfKinDetails>
+  <HL7_CommonOrder>
+    <MessageControlID ForeignKey ="true"/>
+    <OrderControl/>
+    <_ />
+    <_ />
+    <GroupNumber/>
+    <OrderStatus />
+    <ResponseFlag />
+    <QuantityTiming/>
+    <ParentOrder />
+    <TransactionDateTime />
+  </HL7_CommonOrder>
+  <HL7_PatientVisitDetails>
+    <PatientID ForeignKey="true" />
+    <VisitSetID />
+    <PatientClass/>
+    <AssignedLocation/>
+    <AdmissionType/>
+    <PreadmitNumber/>
+    <PriorPatientLocation/>
+  </HL7_PatientVisitDetails>
+</datatables>
