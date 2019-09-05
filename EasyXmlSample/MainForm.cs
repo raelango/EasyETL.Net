@@ -26,6 +26,160 @@ namespace EasyXmlSample
         XslCompiledTransform xsl = null;
         Stopwatch stopWatch = new Stopwatch();
         public int intAutoNumber = 0;
+        public string SettingsPath = "";
+        public string SettingsFileName = "";
+
+
+        public void LoadSettingsFromXml(string settingsFileName, string settingsPath)
+        {
+            SettingsFileName = settingsFileName;
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.Load(SettingsFileName);
+            string clientName = settingsPath.Split('\\')[0];
+            string etlName = settingsPath.Split('\\')[2];
+            SettingsPath = "//clients/client[@name='" + clientName + "']/etls/etl[@name='" + etlName + "']";
+            XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
+            if (xNode != null)
+            {
+                #region Transformations Load
+                XmlNode transformationNode = xNode.SelectSingleNode("transformations"); 
+                if (transformationNode != null)
+                {
+                    XmlNode duringLoadNode = transformationNode.SelectSingleNode("duringload");
+                    if (duringLoadNode != null)
+                    {
+                        foreach (XmlAttribute xAttr in duringLoadNode.Attributes)
+                        {
+                            switch (xAttr.Name.ToLower())
+                            {
+                                case "profilename":
+                                    cbOnLoadProfiles.Text = xAttr.Value; break;
+                                case "savefilename":
+                                    txtOnLoadFileName.Text = xAttr.Value; break;
+                            }
+                        }
+                        txtOnLoadContents.Text = duringLoadNode.InnerText;
+                    }
+                    XmlNode afterLoadNode = transformationNode.SelectSingleNode("afterload");
+                    if (afterLoadNode != null)
+                    {
+                        foreach (XmlAttribute xAttr in afterLoadNode.Attributes)
+                        {
+                            switch (xAttr.Name.ToLower())
+                            {
+                                case "profilename":
+                                    cbTransformProfiles.Text = xAttr.Value; break;
+                                case "savefilename":
+                                    txtTransformFileName.Text = xAttr.Value; break;
+                            }
+                        }
+                        txtTransformText.Text = afterLoadNode.InnerText;
+                    }
+                }
+                #endregion
+
+                #region Parse Options Load
+                string delimiter = "";
+                XmlNode optionsNode = xNode.SelectSingleNode("parseoptions");
+                if (optionsNode != null) { 
+                foreach (XmlAttribute xAttr in optionsNode.Attributes)
+                {
+                    switch (xAttr.Name.ToLower())
+                    {
+                        case "parsertype":
+                            cmbFileType.SelectedItem = xAttr.Value;
+                            cmbFileType_SelectedIndexChanged(this, null);
+                            break;
+                        case "delimiter":
+                            delimiter = xAttr.Value;
+                            Control c = this.Controls.Find("rbDelimiter" + delimiter,true)[0];
+                            ((CheckBox)c).Checked = true;
+                            break;
+                        case "hasheader":
+                            cbHeaderRow.Checked = Convert.ToBoolean(xAttr.Value);
+                            break;
+                        case "separator":
+                            txtCustomDelimiter.Text = xAttr.InnerText; break;
+                    }
+                    if (optionsNode.SelectSingleNode("comments") != null)
+                    {
+                        if (delimiter == "Delimited")
+                            txtDelimitedComments.Text = optionsNode.SelectSingleNode("comments").InnerText;
+                        else
+                            txtFixedWidthComments.Text = optionsNode.SelectSingleNode("comments").InnerText;
+                    }
+
+                    if (optionsNode.SelectSingleNode("xpath") != null)
+                    {
+                        txtXPathQuery.Text = optionsNode.SelectSingleNode("xpath").InnerText;
+                    }
+
+                    if (optionsNode.SelectSingleNode("template") != null)
+                    {
+                        txtTemplateString.Text = optionsNode.SelectSingleNode("template").InnerText;
+                    }
+
+                    XmlNodeList widthList = xNode.SelectNodes("width");
+                    if (widthList != null)
+                    {
+                        lstFixedColumnWidths.Items.Clear();
+                        foreach (XmlNode widthNode in widthList)
+                        {
+                            lstFixedColumnWidths.Items.Add(Convert.ToInt16(widthNode.InnerText));
+                        }
+                    }
+
+
+                }
+                }
+                #endregion
+
+                #region Output Settings Load
+                XmlNode dataNode = xNode.SelectSingleNode("output");
+                if ((dataNode != null) && (dataNode.Attributes["exportformat"] != null)) cmbDestination.SelectedItem = dataNode.Attributes["exportformat"].Value;
+                #endregion
+
+                #region Datasource Node Load
+                XmlNode datasourceNode = xNode.SelectSingleNode("datasource");
+                if (datasourceNode != null)
+                {
+
+                    foreach (XmlAttribute xAttr in datasourceNode.Attributes)
+                    {
+                        switch (xAttr.Name.ToLower())
+                        {
+                            case "sourcetype":
+                                tabDataSource.SelectTab("tabDatasource" + xAttr.Value); break;
+                            case "filename":
+                                txtFileName.Text = xAttr.Value; break;
+                            case "usetextextractor":
+                                chkUseTextExtractor.Checked = Convert.ToBoolean(xAttr.Value); break;
+                            case "textextractor":
+                                cbTextExtractor.Text = xAttr.Value; break;
+                            case "hasmaxrows":
+                                chkHasMaxRows.Checked = Convert.ToBoolean(xAttr.Value); break;
+                            case "maxrows":
+                                nudMaxRows.Value = Convert.ToInt64(xAttr.Value); break;
+                            case "connectionstring":
+                                txtDatabaseConnectionString.Text = xAttr.Value; break;
+                            case "connectiontype":
+                                cmbDatabaseConnectionType.Text = xAttr.Value; break;
+                        }
+                    }
+                    if (datasourceNode.SelectSingleNode("textcontents") != null)
+                    {
+                        txtTextContents.Text = datasourceNode.SelectSingleNode("textcontents").InnerText;
+                    }
+                    if (datasourceNode.SelectSingleNode("query") != null)
+                    {
+                        txtDatabaseQuery.Text = datasourceNode.SelectSingleNode("query").InnerText;
+                    }
+                } 
+                #endregion
+            }
+
+        }
+
         public MainForm()
         {
             InitializeComponent();
@@ -43,7 +197,7 @@ namespace EasyXmlSample
             }
         }
 
-        private void LoadDataToGridView()
+        public void LoadDataToGridView()
         {
             if (stopWatch.IsRunning) stopWatch.Stop();
             if ((tabDataSource.SelectedTab == tabDatasourceText) && (txtTextContents.TextLength == 0)) return;
@@ -75,7 +229,7 @@ namespace EasyXmlSample
             {
                 xsl = null;
                 EasyXmlDocument xDoc = new EasyXmlDocument();
-                xDoc.OnRowAdd += xDoc_OnRowAdd;
+                //xDoc.OnRowAdd += xDoc_OnRowAdd;
                 xDoc.OnError += xDoc_OnError;
                 if (tabDataSource.SelectedTab == tabDatasourceDatabase)
                 {
@@ -149,6 +303,8 @@ namespace EasyXmlSample
                             break;
                     }
                     if (chkHasMaxRows.Checked) ep.MaxRecords = Convert.ToInt64(nudMaxRows.Value);
+                    if (!String.IsNullOrWhiteSpace(txtOnLoadContents.Text))
+                        ep.OnLoadSettings = txtOnLoadContents.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     if ((tabDataSource.SelectedTab == tabDatasourceFile))
                         xDoc.Load(txtFileName.Text, ep, extractor);
                     else
@@ -262,7 +418,7 @@ namespace EasyXmlSample
             stopWatch.Reset();
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        public void LoadControls()
         {
             cmbFileType.SelectedIndex = 0;
             cmbDatabaseConnectionType.SelectedIndex = 0;
@@ -289,9 +445,14 @@ namespace EasyXmlSample
                     break;
                 case "Html":
                     grpHtmlOptions.Visible = true;
+                    grpHtmlOptions.Top = grpFixedFileOptions.Top;
+                    grpHtmlOptions.Left = grpFixedFileOptions.Left;
                     break;
                 case "Template":
                     grpTemplate.Visible = true;
+                    txtTemplateString.Visible = true;
+                    grpTemplate.Top = grpFixedFileOptions.Top;
+                    grpTemplate.Left = grpFixedFileOptions.Left;
                     break;
 
             }
@@ -469,6 +630,126 @@ namespace EasyXmlSample
             txtOnLoadFileName.Text = cbOnLoadProfiles.Text;
             txtOnLoadContents.Text = File.ReadAllText(Path.Combine(Application.StartupPath, cbOnLoadProfiles.Text + ".transforms"));
             LoadDataToGridView();
+        }
+
+        private void btnSaveSettings_Click(object sender, EventArgs e)
+        {
+            SaveSettingsToXmlFile();
+        }
+
+        private void SaveSettingsToXmlFile()
+        {
+            if (String.IsNullOrWhiteSpace(SettingsFileName)) return;
+            if (!File.Exists(SettingsFileName)) return;
+            XmlDocument xDoc = new XmlDocument();
+            xDoc.Load(SettingsFileName);
+            XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
+            xNode.InnerText = "";
+            #region Datasource Section
+            XmlElement datasourceNode = xDoc.CreateElement("datasource");
+            datasourceNode.SetAttribute("sourcetype", tabDataSource.SelectedTab.Text);
+            switch (tabDataSource.SelectedTab.Text)
+            {
+                case "File":
+                    datasourceNode.SetAttribute("usetextextractor", chkUseTextExtractor.Checked.ToString());
+                    datasourceNode.SetAttribute("textextractor", cbTextExtractor.Text);
+                    datasourceNode.SetAttribute("hasmaxrows", chkHasMaxRows.Checked.ToString());
+                    datasourceNode.SetAttribute("maxrows", nudMaxRows.Value.ToString());
+                    datasourceNode.SetAttribute("filename", txtFileName.Text);
+                    break;
+                case "Text":
+                    XmlElement textContents = xDoc.CreateElement("textcontents");
+                    textContents.InnerText = txtTextContents.Text;
+                    datasourceNode.AppendChild(textContents);
+                    break;
+                case "Database":
+                    datasourceNode.SetAttribute("connectionstring", txtDatabaseConnectionString.Text);
+                    datasourceNode.SetAttribute("connectiontype", cmbDatabaseConnectionType.Text);
+                    XmlElement queryNode = xDoc.CreateElement("query");
+                    queryNode.InnerText = txtDatabaseQuery.Text;
+                    datasourceNode.AppendChild(queryNode);
+                    break;
+            }
+            xNode.AppendChild(datasourceNode); 
+            #endregion
+
+            #region Transformations section
+            XmlElement transformationNode = xDoc.CreateElement("transformations");
+            XmlElement duringLoadNode = xDoc.CreateElement("duringload");
+            duringLoadNode.SetAttribute("profilename", cbOnLoadProfiles.Text);
+            duringLoadNode.SetAttribute("savefilename", txtOnLoadFileName.Text);
+            duringLoadNode.InnerText = txtOnLoadContents.Text;
+            XmlElement afterLoadNode = xDoc.CreateElement("afterload");
+            afterLoadNode.SetAttribute("profilename", cbTransformProfiles.Text);
+            afterLoadNode.SetAttribute("savefilename", txtTransformFileName.Text);
+            afterLoadNode.InnerText = txtTransformText.Text;
+            transformationNode.AppendChild(duringLoadNode);
+            transformationNode.AppendChild(afterLoadNode);
+            xNode.AppendChild(transformationNode); 
+            #endregion
+
+            #region Parse Options section 
+            XmlElement optionsNode = xDoc.CreateElement("parseoptions");
+            optionsNode.SetAttribute("parsertype", cmbFileType.Text);
+            switch (cmbFileType.Text)
+            {
+                case "Delimited":
+                    string delimiter = "AutoDetect";
+                    if (rbDelimiterComma.Checked) delimiter  = "Comma";
+                    if (rbDelimiterSemicolon.Checked) delimiter = "Semicolon";
+                    if (rbDelimiterSpace.Checked) delimiter = "Space";
+                    if (rbDelimiterTab.Checked) delimiter = "Tab";
+                    if (rbDelimiterCustom.Checked) delimiter = "Custom";
+                    string separator = String.Empty;
+                    if (rbDelimiterCustom.Checked) separator = txtCustomDelimiter.Text;
+                    optionsNode.SetAttribute("delimiter",delimiter);
+                    optionsNode.SetAttribute("separator",separator);
+                    optionsNode.SetAttribute("hasheader",cbHeaderRow.Checked.ToString());
+                    XmlElement dCommentsElement = xDoc.CreateElement("comments");
+                    dCommentsElement.InnerText = txtDelimitedComments.Text;
+                    optionsNode.AppendChild(dCommentsElement);
+                    break;
+                case "Fixed Width":
+                    XmlElement fCommentsElement = xDoc.CreateElement("comments");
+                    fCommentsElement.InnerText = txtFixedWidthComments.Text;
+                    optionsNode.AppendChild(fCommentsElement);
+                    foreach (int i in lstFixedColumnWidths.Items.Cast<int>())
+                    {
+                        XmlElement widthNode = xDoc.CreateElement("width");
+                        widthNode.InnerText = i.ToString();
+                        optionsNode.AppendChild(widthNode);
+                    }
+                    break;
+                case "Html":
+                    XmlElement htmlElement = xDoc.CreateElement("xpath");
+                    htmlElement.InnerText = txtXPathQuery.Text;
+                    break;
+                case "Template":
+                    XmlElement templateElement = xDoc.CreateElement("template");
+                    templateElement.InnerText = txtTemplateString.Text;
+                    optionsNode.AppendChild(templateElement);
+                    break;
+            }
+            xNode.AppendChild(optionsNode);
+            #endregion
+
+            #region Output Settings 
+            XmlElement dataNode = xDoc.CreateElement("output");
+            dataNode.SetAttribute("exportformat", cmbDestination.Text);
+            xNode.AppendChild(dataNode);
+            #endregion
+
+            xDoc.Save(SettingsFileName);
+        }
+
+        private void btnCloseWindow_Click(object sender, EventArgs e)
+        {
+            if ( (this.Parent != null) && (this.Parent is TabPage))
+            {
+                TabPage tpage = (TabPage)this.Parent;
+                TabControl tcontrol = (TabControl)tpage.Parent;
+                tcontrol.TabPages.Remove(tpage);
+            }
         }
 
     }

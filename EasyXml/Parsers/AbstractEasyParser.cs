@@ -29,6 +29,8 @@ namespace EasyXml.Parsers
         public string RowNodeName = "row";
         public string FieldPrefix = "Field_";
         public long MaxRecords = long.MaxValue;
+        public string[] OnLoadSettings = null;
+        public XslCompiledTransform OnLoadXsl = null;
         public event EventHandler<XmlNodeChangedEventArgs> OnRowAdd;
         public event EventHandler<EasyParserExceptionEventArgs> OnError;
         public List<MalformedLineException> Exceptions = new List<MalformedLineException>();
@@ -52,11 +54,28 @@ namespace EasyXml.Parsers
 
         public virtual XmlNode AddRow(XmlDocument xDoc, XmlNode childNode)
         {
-            if (OnRowAdd != null)
+           
+            XmlNode returnNode = childNode;
+            if (OnLoadSettings != null)
             {
-                OnRowAdd.Invoke(this, new XmlNodeChangedEventArgs(childNode, xDoc.DocumentElement, xDoc.DocumentElement, "", "", XmlNodeChangedAction.Insert));
+                if (OnLoadXsl == null)
+                {
+                    returnNode = childNode.Clone();
+                    XmlDocument rDoc = new XmlDocument();
+                    returnNode = rDoc.ImportNode(childNode, true);
+                    OnLoadXsl = returnNode.GetCompiledTransform(OnLoadSettings);
+                }
+                returnNode = childNode.TransformXml(OnLoadXsl);
             }
-            return childNode;
+            if ((returnNode != null) && (OnRowAdd != null))
+            {
+                OnRowAdd.Invoke(this, new XmlNodeChangedEventArgs(returnNode, xDoc.DocumentElement, xDoc.DocumentElement, "", "", XmlNodeChangedAction.Insert));
+            }
+            if (returnNode == null) 
+                childNode.RemoveAll();
+            else 
+                childNode.InnerXml = returnNode.InnerXml;
+            return returnNode;
         }
 
         public virtual void RaiseException(MalformedLineException exception)
