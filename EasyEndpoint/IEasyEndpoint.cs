@@ -15,7 +15,8 @@ namespace EasyEndpoint
         bool CanRead { get; }
         bool CanWrite { get; }
         bool CanList { get; }
-        bool Overwrite { get; set; }        
+        bool Overwrite { get; }
+        bool CanListen { get; }
         #endregion
 
         #region Methods
@@ -25,7 +26,7 @@ namespace EasyEndpoint
         void CopyTo(IEasyEndpoint destEasyEndPoint, params string[] fileNames);
         bool Write(string fileName, byte[] data);
         bool FileExists(string fileName);
-        bool Delete(string fileName); 
+        bool Delete(string fileName);
         #endregion
 
     }

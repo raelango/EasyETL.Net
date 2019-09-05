@@ -36,6 +36,11 @@ namespace EasyEndpoint
             get { throw new NotImplementedException(); }
         }
 
+        public virtual bool CanListen
+        {
+            get { throw new NotImplementedException();  }
+        }
+
         public virtual bool Overwrite
         {
             get

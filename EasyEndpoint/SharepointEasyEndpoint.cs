@@ -38,6 +38,14 @@ namespace EasyEndpoint
             Overwrite = overwriteFiles;
         }
 
+        public override bool CanListen
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         #region Public overriden methods
         public override string[] GetList(string filter = "*.*")
         {

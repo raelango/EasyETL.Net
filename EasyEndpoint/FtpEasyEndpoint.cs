@@ -34,6 +34,14 @@ namespace EasyEndpoint
             EstablishFTPConnection();
         }
 
+        public override bool CanListen
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         #region public properties
         public string CurrentDirectory
         {
@@ -150,8 +158,6 @@ namespace EasyEndpoint
             }
         }
         #endregion
-
-
 
 
         public void Dispose()

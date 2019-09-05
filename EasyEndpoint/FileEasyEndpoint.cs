@@ -11,6 +11,14 @@ namespace EasyEndpoint
     {
         string FolderName = String.Empty;
 
+        public override bool CanListen
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public FileEasyEndpoint(string folderName, bool overwriteFiles = true)
         {
             FolderName = Path.GetFullPath(folderName);
