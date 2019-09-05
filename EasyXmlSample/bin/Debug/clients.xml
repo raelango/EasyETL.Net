@@ -73,6 +73,8 @@
       <etl id="3_etl_11" name="3_etl_12" />
       <etl id="3_etl_1" name="3_etl_13" />
       <etl id="3_etl_1" name="3_etl_14" />
+      <etl id="3_etl_1" name="3_etl_15" />
+      <etl id="3_etl_1" name="3_etl_16" />
     </etls>
   </client>
   <client id="4" name="My Fourth Client">
@@ -91,7 +93,7 @@ Add SNo AutoNumber</afterload>
         <parseoptions parsertype="Template">
           <template>[Date] [Time],[Action:(\w)] [Contents]</template>
         </parseoptions>
-        <output exportformat="" />
+        <output exportformat="EXCEL" />
       </etl>
     </etls>
   </client>

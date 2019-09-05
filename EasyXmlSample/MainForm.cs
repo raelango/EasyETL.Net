@@ -637,7 +637,7 @@ namespace EasyXmlSample
             SaveSettingsToXmlFile();
         }
 
-        private void SaveSettingsToXmlFile()
+        public void SaveSettingsToXmlFile()
         {
             if (String.IsNullOrWhiteSpace(SettingsFileName)) return;
             if (!File.Exists(SettingsFileName)) return;

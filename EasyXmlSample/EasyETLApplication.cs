@@ -281,5 +281,18 @@ namespace EasyXmlSample
             }
         }
 
+        private void saveToolStripButton_Click(object sender, EventArgs e)
+        {
+            if (MainTablControl.SelectedTab != null)
+            {
+                ((MainForm)MainTablControl.SelectedTab.Controls[0]).SaveSettingsToXmlFile();
+            }
+        }
+
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            saveToolStripButton_Click(this, null);
+        }
+
     }
 }
