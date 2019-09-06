@@ -82,9 +82,9 @@ namespace EasyXmlSample
                     clientname = child_node.Name;
                 }
                 TreeNode new_node = parent_nodes.Add(clientid, clientname);
-                
+
                 // Recursively make this node's descendants.
-                if (currentDepth < 2)  AddTreeViewChildNodes(new_node.Nodes, child_node, currentDepth + 1 );
+                if (currentDepth < 2) AddTreeViewChildNodes(new_node.Nodes, child_node, currentDepth + 1);
 
                 // If this is a leaf node, make sure it's visible.
                 //if (new_node.Nodes.Count == 0) new_node.EnsureVisible();
@@ -249,6 +249,18 @@ namespace EasyXmlSample
             bool allowEdit = false;
             if (e.Node.Parent == null) allowEdit = true;
             if ((!allowEdit) && (e.Node.Nodes != null)) allowEdit = true;
+            if (allowEdit)
+            {
+                foreach (TabPage p in MainTablControl.TabPages)
+                {
+                    if (p.Text == tvClients.SelectedNode.FullPath)
+                    {
+                        MessageBox.Show("This configuration is open.  Please close window before attempting to rename.");
+                        allowEdit = false;
+                        break;
+                    }
+                }
+            }
             e.CancelEdit = !allowEdit;
         }
 
@@ -292,6 +304,11 @@ namespace EasyXmlSample
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveToolStripButton_Click(this, null);
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            if (MainTablControl.SelectedTab != null) MainTablControl.TabPages.Remove(MainTablControl.SelectedTab);
         }
 
     }
