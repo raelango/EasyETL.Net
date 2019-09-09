@@ -1,9 +1,0 @@
-Add SNo AutoNumber
-Add Disp substring(Disposition,1,2)
-Add Age substring-before(AgeGen,' ')
-HIDE ArrivalMode
-Hide AdmitPhysician
-Hide Unused
-Hide DischargeLoc
-Hide Disposition
-Hide AgeGen
