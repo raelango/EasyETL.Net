@@ -57,6 +57,7 @@ namespace EasyXml.Parsers
             while (subStr != null)
             {
                 lineNumber++;
+                UpdateProgress(lineNumber);
                 bool matched = false;
                 foreach ( KeyValuePair<Regex,string> kvRegex in dctRegex)
                 {

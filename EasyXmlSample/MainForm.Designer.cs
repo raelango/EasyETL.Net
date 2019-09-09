@@ -31,7 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.ofd = new System.Windows.Forms.OpenFileDialog();
-            this.grpLoadOptions = new System.Windows.Forms.GroupBox();
+            this.btnCloseWindow = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.btnRefreshData = new System.Windows.Forms.Button();
             this.cmbDelimited = new System.Windows.Forms.GroupBox();
@@ -62,7 +62,6 @@
             this.grpTemplate = new System.Windows.Forms.GroupBox();
             this.txtTemplateString = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
-            this.grpFieldNames = new System.Windows.Forms.GroupBox();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabDuringLoad = new System.Windows.Forms.TabPage();
             this.label14 = new System.Windows.Forms.Label();
@@ -80,7 +79,6 @@
             this.cbTransformProfiles = new System.Windows.Forms.ComboBox();
             this.cmbFileType = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.grpDataSource = new System.Windows.Forms.GroupBox();
             this.tabDataSource = new System.Windows.Forms.TabControl();
             this.tabDatasourceFile = new System.Windows.Forms.TabPage();
             this.label13 = new System.Windows.Forms.Label();
@@ -101,13 +99,11 @@
             this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.lblRecordCount = new System.Windows.Forms.Label();
-            this.cmbDestination = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.btnExport = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.cmbTableName = new System.Windows.Forms.ComboBox();
+            this.lblRecordCount = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtXmlContents = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -116,26 +112,32 @@
             this.txtRegexContents = new System.Windows.Forms.TextBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.txtExceptions = new System.Windows.Forms.TextBox();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.StatusBarLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.ProgressBar = new System.Windows.Forms.ToolStripProgressBar();
+            this.cmbDestination = new System.Windows.Forms.ComboBox();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.label9 = new System.Windows.Forms.Label();
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
-            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
-            this.btnCloseWindow = new System.Windows.Forms.Button();
-            this.grpLoadOptions.SuspendLayout();
+            this.tabSource = new System.Windows.Forms.TabControl();
+            this.tabDataSourceOptions = new System.Windows.Forms.TabPage();
+            this.tabParseOptions = new System.Windows.Forms.TabPage();
+            this.cmbParserProfile = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.tabTransformationOptions = new System.Windows.Forms.TabPage();
+            this.tabExportOptions = new System.Windows.Forms.TabPage();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label16 = new System.Windows.Forms.Label();
+            this.txtParserProfileSaveFileName = new System.Windows.Forms.TextBox();
+            this.panelParserProfileSave = new System.Windows.Forms.Panel();
+            this.btnSaveParserProfile = new System.Windows.Forms.Button();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nupColumnWidth)).BeginInit();
             this.grpHtmlOptions.SuspendLayout();
             this.grpTemplate.SuspendLayout();
-            this.grpFieldNames.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabDuringLoad.SuspendLayout();
             this.tabAfterLoad.SuspendLayout();
-            this.grpDataSource.SuspendLayout();
             this.tabDataSource.SuspendLayout();
             this.tabDatasourceFile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxRows)).BeginInit();
@@ -143,49 +145,40 @@
             this.tabDatasourceDatabase.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabPage5.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
-            this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
-            this.toolStripContainer1.ContentPanel.SuspendLayout();
-            this.toolStripContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
+            this.tabSource.SuspendLayout();
+            this.tabDataSourceOptions.SuspendLayout();
+            this.tabParseOptions.SuspendLayout();
+            this.tabTransformationOptions.SuspendLayout();
+            this.tabExportOptions.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            this.panelParserProfileSave.SuspendLayout();
             this.SuspendLayout();
             // 
-            // grpLoadOptions
+            // btnCloseWindow
             // 
-            this.grpLoadOptions.Controls.Add(this.btnCloseWindow);
-            this.grpLoadOptions.Controls.Add(this.btnSaveSettings);
-            this.grpLoadOptions.Controls.Add(this.btnRefreshData);
-            this.grpLoadOptions.Controls.Add(this.cmbDelimited);
-            this.grpLoadOptions.Controls.Add(this.grpFixedFileOptions);
-            this.grpLoadOptions.Controls.Add(this.grpHtmlOptions);
-            this.grpLoadOptions.Controls.Add(this.grpTemplate);
-            this.grpLoadOptions.Controls.Add(this.grpFieldNames);
-            this.grpLoadOptions.Controls.Add(this.cmbFileType);
-            this.grpLoadOptions.Controls.Add(this.label2);
-            this.grpLoadOptions.Dock = System.Windows.Forms.DockStyle.Right;
-            this.grpLoadOptions.Location = new System.Drawing.Point(808, 0);
-            this.grpLoadOptions.Name = "grpLoadOptions";
-            this.grpLoadOptions.Size = new System.Drawing.Size(517, 848);
-            this.grpLoadOptions.TabIndex = 4;
-            this.grpLoadOptions.TabStop = false;
-            this.grpLoadOptions.Text = "Load Options";
+            this.btnCloseWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCloseWindow.Location = new System.Drawing.Point(1226, 3);
+            this.btnCloseWindow.Name = "btnCloseWindow";
+            this.btnCloseWindow.Size = new System.Drawing.Size(96, 23);
+            this.btnCloseWindow.TabIndex = 15;
+            this.btnCloseWindow.Text = "Close Window";
+            this.btnCloseWindow.UseVisualStyleBackColor = true;
+            this.btnCloseWindow.Click += new System.EventHandler(this.btnCloseWindow_Click);
             // 
             // btnSaveSettings
             // 
             this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSaveSettings.Location = new System.Drawing.Point(322, 818);
+            this.btnSaveSettings.Location = new System.Drawing.Point(1145, 3);
             this.btnSaveSettings.Name = "btnSaveSettings";
             this.btnSaveSettings.Size = new System.Drawing.Size(75, 23);
             this.btnSaveSettings.TabIndex = 14;
@@ -196,7 +189,7 @@
             // btnRefreshData
             // 
             this.btnRefreshData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefreshData.Location = new System.Drawing.Point(199, 818);
+            this.btnRefreshData.Location = new System.Drawing.Point(1202, 6);
             this.btnRefreshData.Name = "btnRefreshData";
             this.btnRefreshData.Size = new System.Drawing.Size(100, 23);
             this.btnRefreshData.TabIndex = 13;
@@ -210,25 +203,25 @@
             this.cmbDelimited.Controls.Add(this.label11);
             this.cmbDelimited.Controls.Add(this.cbHeaderRow);
             this.cmbDelimited.Controls.Add(this.grpDelimiters);
-            this.cmbDelimited.Location = new System.Drawing.Point(14, 65);
+            this.cmbDelimited.Location = new System.Drawing.Point(348, 6);
             this.cmbDelimited.Name = "cmbDelimited";
-            this.cmbDelimited.Size = new System.Drawing.Size(491, 213);
+            this.cmbDelimited.Size = new System.Drawing.Size(676, 185);
             this.cmbDelimited.TabIndex = 11;
             this.cmbDelimited.TabStop = false;
             this.cmbDelimited.Text = "Delimited File Options:";
             // 
             // txtDelimitedComments
             // 
-            this.txtDelimitedComments.Location = new System.Drawing.Point(320, 150);
+            this.txtDelimitedComments.Location = new System.Drawing.Point(504, 57);
             this.txtDelimitedComments.Multiline = true;
             this.txtDelimitedComments.Name = "txtDelimitedComments";
-            this.txtDelimitedComments.Size = new System.Drawing.Size(138, 54);
+            this.txtDelimitedComments.Size = new System.Drawing.Size(153, 58);
             this.txtDelimitedComments.TabIndex = 4;
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(182, 155);
+            this.label11.Location = new System.Drawing.Point(501, 41);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(132, 13);
             this.label11.TabIndex = 3;
@@ -239,7 +232,7 @@
             this.cbHeaderRow.AutoSize = true;
             this.cbHeaderRow.Checked = true;
             this.cbHeaderRow.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbHeaderRow.Location = new System.Drawing.Point(6, 155);
+            this.cbHeaderRow.Location = new System.Drawing.Point(504, 19);
             this.cbHeaderRow.Name = "cbHeaderRow";
             this.cbHeaderRow.Size = new System.Drawing.Size(153, 17);
             this.cbHeaderRow.TabIndex = 2;
@@ -257,7 +250,7 @@
             this.grpDelimiters.Controls.Add(this.rbDelimiterAutoDetect);
             this.grpDelimiters.Location = new System.Drawing.Point(6, 19);
             this.grpDelimiters.Name = "grpDelimiters";
-            this.grpDelimiters.Size = new System.Drawing.Size(479, 125);
+            this.grpDelimiters.Size = new System.Drawing.Size(432, 96);
             this.grpDelimiters.TabIndex = 1;
             this.grpDelimiters.TabStop = false;
             this.grpDelimiters.Text = "Delimiter:";
@@ -265,7 +258,7 @@
             // rbDelimiterSpace
             // 
             this.rbDelimiterSpace.AutoSize = true;
-            this.rbDelimiterSpace.Location = new System.Drawing.Point(7, 94);
+            this.rbDelimiterSpace.Location = new System.Drawing.Point(7, 67);
             this.rbDelimiterSpace.Name = "rbDelimiterSpace";
             this.rbDelimiterSpace.Size = new System.Drawing.Size(108, 17);
             this.rbDelimiterSpace.TabIndex = 6;
@@ -276,15 +269,15 @@
             // txtCustomDelimiter
             // 
             this.txtCustomDelimiter.Enabled = false;
-            this.txtCustomDelimiter.Location = new System.Drawing.Point(366, 93);
+            this.txtCustomDelimiter.Location = new System.Drawing.Point(347, 64);
             this.txtCustomDelimiter.Name = "txtCustomDelimiter";
-            this.txtCustomDelimiter.Size = new System.Drawing.Size(86, 20);
+            this.txtCustomDelimiter.Size = new System.Drawing.Size(67, 20);
             this.txtCustomDelimiter.TabIndex = 5;
             // 
             // rbDelimiterCustom
             // 
             this.rbDelimiterCustom.AutoSize = true;
-            this.rbDelimiterCustom.Location = new System.Drawing.Point(238, 93);
+            this.rbDelimiterCustom.Location = new System.Drawing.Point(238, 66);
             this.rbDelimiterCustom.Name = "rbDelimiterCustom";
             this.rbDelimiterCustom.Size = new System.Drawing.Size(109, 17);
             this.rbDelimiterCustom.TabIndex = 4;
@@ -306,7 +299,7 @@
             // rbDelimiterTab
             // 
             this.rbDelimiterTab.AutoSize = true;
-            this.rbDelimiterTab.Location = new System.Drawing.Point(238, 58);
+            this.rbDelimiterTab.Location = new System.Drawing.Point(238, 43);
             this.rbDelimiterTab.Name = "rbDelimiterTab";
             this.rbDelimiterTab.Size = new System.Drawing.Size(98, 17);
             this.rbDelimiterTab.TabIndex = 2;
@@ -317,7 +310,7 @@
             // rbDelimiterComma
             // 
             this.rbDelimiterComma.AutoSize = true;
-            this.rbDelimiterComma.Location = new System.Drawing.Point(6, 58);
+            this.rbDelimiterComma.Location = new System.Drawing.Point(6, 43);
             this.rbDelimiterComma.Name = "rbDelimiterComma";
             this.rbDelimiterComma.Size = new System.Drawing.Size(112, 17);
             this.rbDelimiterComma.TabIndex = 1;
@@ -348,9 +341,9 @@
             this.grpFixedFileOptions.Controls.Add(this.btnUpdate);
             this.grpFixedFileOptions.Controls.Add(this.nupColumnWidth);
             this.grpFixedFileOptions.Controls.Add(this.label4);
-            this.grpFixedFileOptions.Location = new System.Drawing.Point(14, 59);
+            this.grpFixedFileOptions.Location = new System.Drawing.Point(342, 25);
             this.grpFixedFileOptions.Name = "grpFixedFileOptions";
-            this.grpFixedFileOptions.Size = new System.Drawing.Size(491, 213);
+            this.grpFixedFileOptions.Size = new System.Drawing.Size(676, 185);
             this.grpFixedFileOptions.TabIndex = 12;
             this.grpFixedFileOptions.TabStop = false;
             this.grpFixedFileOptions.Text = "Fixed File Options:";
@@ -360,7 +353,7 @@
             this.lstFixedColumnWidths.FormattingEnabled = true;
             this.lstFixedColumnWidths.Location = new System.Drawing.Point(15, 40);
             this.lstFixedColumnWidths.Name = "lstFixedColumnWidths";
-            this.lstFixedColumnWidths.Size = new System.Drawing.Size(186, 134);
+            this.lstFixedColumnWidths.Size = new System.Drawing.Size(195, 134);
             this.lstFixedColumnWidths.TabIndex = 3;
             // 
             // chkFixedFirstRowHasFieldNames
@@ -368,7 +361,7 @@
             this.chkFixedFirstRowHasFieldNames.AutoSize = true;
             this.chkFixedFirstRowHasFieldNames.Checked = true;
             this.chkFixedFirstRowHasFieldNames.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkFixedFirstRowHasFieldNames.Location = new System.Drawing.Point(15, 180);
+            this.chkFixedFirstRowHasFieldNames.Location = new System.Drawing.Point(355, 18);
             this.chkFixedFirstRowHasFieldNames.Name = "chkFixedFirstRowHasFieldNames";
             this.chkFixedFirstRowHasFieldNames.Size = new System.Drawing.Size(153, 17);
             this.chkFixedFirstRowHasFieldNames.TabIndex = 2;
@@ -377,16 +370,16 @@
             // 
             // txtFixedWidthComments
             // 
-            this.txtFixedWidthComments.Location = new System.Drawing.Point(347, 152);
+            this.txtFixedWidthComments.Location = new System.Drawing.Point(355, 62);
             this.txtFixedWidthComments.Multiline = true;
             this.txtFixedWidthComments.Name = "txtFixedWidthComments";
-            this.txtFixedWidthComments.Size = new System.Drawing.Size(138, 54);
+            this.txtFixedWidthComments.Size = new System.Drawing.Size(153, 94);
             this.txtFixedWidthComments.TabIndex = 10;
             // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(209, 157);
+            this.label12.Location = new System.Drawing.Point(352, 41);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(132, 13);
             this.label12.TabIndex = 9;
@@ -394,7 +387,7 @@
             // 
             // btnRemove
             // 
-            this.btnRemove.Location = new System.Drawing.Point(222, 100);
+            this.btnRemove.Location = new System.Drawing.Point(226, 147);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(75, 23);
             this.btnRemove.TabIndex = 8;
@@ -404,7 +397,7 @@
             // 
             // btnAdd
             // 
-            this.btnAdd.Location = new System.Drawing.Point(222, 67);
+            this.btnAdd.Location = new System.Drawing.Point(223, 92);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(75, 23);
             this.btnAdd.TabIndex = 7;
@@ -413,7 +406,7 @@
             // 
             // btnUpdate
             // 
-            this.btnUpdate.Location = new System.Drawing.Point(308, 38);
+            this.btnUpdate.Location = new System.Drawing.Point(223, 63);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(75, 23);
             this.btnUpdate.TabIndex = 6;
@@ -423,7 +416,7 @@
             // 
             // nupColumnWidth
             // 
-            this.nupColumnWidth.Location = new System.Drawing.Point(222, 40);
+            this.nupColumnWidth.Location = new System.Drawing.Point(223, 37);
             this.nupColumnWidth.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -451,19 +444,19 @@
             // 
             this.grpHtmlOptions.Controls.Add(this.txtXPathQuery);
             this.grpHtmlOptions.Controls.Add(this.label7);
-            this.grpHtmlOptions.Location = new System.Drawing.Point(179, 20);
+            this.grpHtmlOptions.Location = new System.Drawing.Point(1030, 10);
             this.grpHtmlOptions.Name = "grpHtmlOptions";
-            this.grpHtmlOptions.Size = new System.Drawing.Size(491, 213);
+            this.grpHtmlOptions.Size = new System.Drawing.Size(449, 99);
             this.grpHtmlOptions.TabIndex = 7;
             this.grpHtmlOptions.TabStop = false;
             this.grpHtmlOptions.Text = "Html Options:";
             // 
             // txtXPathQuery
             // 
-            this.txtXPathQuery.Location = new System.Drawing.Point(117, 26);
+            this.txtXPathQuery.Location = new System.Drawing.Point(91, 26);
             this.txtXPathQuery.Multiline = true;
             this.txtXPathQuery.Name = "txtXPathQuery";
-            this.txtXPathQuery.Size = new System.Drawing.Size(362, 62);
+            this.txtXPathQuery.Size = new System.Drawing.Size(352, 62);
             this.txtXPathQuery.TabIndex = 5;
             // 
             // label7
@@ -479,19 +472,19 @@
             // 
             this.grpTemplate.Controls.Add(this.txtTemplateString);
             this.grpTemplate.Controls.Add(this.label10);
-            this.grpTemplate.Location = new System.Drawing.Point(236, 16);
+            this.grpTemplate.Location = new System.Drawing.Point(1040, 16);
             this.grpTemplate.Name = "grpTemplate";
-            this.grpTemplate.Size = new System.Drawing.Size(491, 213);
+            this.grpTemplate.Size = new System.Drawing.Size(449, 169);
             this.grpTemplate.TabIndex = 10;
             this.grpTemplate.TabStop = false;
             this.grpTemplate.Text = "Template Options:";
             // 
             // txtTemplateString
             // 
-            this.txtTemplateString.Location = new System.Drawing.Point(117, 23);
+            this.txtTemplateString.Location = new System.Drawing.Point(105, 23);
             this.txtTemplateString.Multiline = true;
             this.txtTemplateString.Name = "txtTemplateString";
-            this.txtTemplateString.Size = new System.Drawing.Size(362, 62);
+            this.txtTemplateString.Size = new System.Drawing.Size(338, 140);
             this.txtTemplateString.TabIndex = 7;
             this.txtTemplateString.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
@@ -504,24 +497,15 @@
             this.label10.TabIndex = 6;
             this.label10.Text = "Template String:";
             // 
-            // grpFieldNames
-            // 
-            this.grpFieldNames.Controls.Add(this.tabControl2);
-            this.grpFieldNames.Location = new System.Drawing.Point(14, 284);
-            this.grpFieldNames.Name = "grpFieldNames";
-            this.grpFieldNames.Size = new System.Drawing.Size(491, 458);
-            this.grpFieldNames.TabIndex = 3;
-            this.grpFieldNames.TabStop = false;
-            this.grpFieldNames.Text = "Transformations";
-            // 
             // tabControl2
             // 
             this.tabControl2.Controls.Add(this.tabDuringLoad);
             this.tabControl2.Controls.Add(this.tabAfterLoad);
-            this.tabControl2.Location = new System.Drawing.Point(9, 20);
+            this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(478, 438);
+            this.tabControl2.Size = new System.Drawing.Size(1311, 199);
             this.tabControl2.TabIndex = 6;
             // 
             // tabDuringLoad
@@ -535,7 +519,7 @@
             this.tabDuringLoad.Location = new System.Drawing.Point(4, 22);
             this.tabDuringLoad.Name = "tabDuringLoad";
             this.tabDuringLoad.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDuringLoad.Size = new System.Drawing.Size(470, 412);
+            this.tabDuringLoad.Size = new System.Drawing.Size(1303, 173);
             this.tabDuringLoad.TabIndex = 0;
             this.tabDuringLoad.Text = "During Load";
             this.tabDuringLoad.UseVisualStyleBackColor = true;
@@ -551,14 +535,14 @@
             // 
             // txtOnLoadFileName
             // 
-            this.txtOnLoadFileName.Location = new System.Drawing.Point(5, 384);
+            this.txtOnLoadFileName.Location = new System.Drawing.Point(500, 7);
             this.txtOnLoadFileName.Name = "txtOnLoadFileName";
-            this.txtOnLoadFileName.Size = new System.Drawing.Size(380, 20);
+            this.txtOnLoadFileName.Size = new System.Drawing.Size(195, 20);
             this.txtOnLoadFileName.TabIndex = 22;
             // 
             // btnOnLoadSave
             // 
-            this.btnOnLoadSave.Location = new System.Drawing.Point(391, 384);
+            this.btnOnLoadSave.Location = new System.Drawing.Point(711, 5);
             this.btnOnLoadSave.Name = "btnOnLoadSave";
             this.btnOnLoadSave.Size = new System.Drawing.Size(75, 23);
             this.btnOnLoadSave.TabIndex = 21;
@@ -571,13 +555,13 @@
             this.txtOnLoadContents.Location = new System.Drawing.Point(6, 34);
             this.txtOnLoadContents.Multiline = true;
             this.txtOnLoadContents.Name = "txtOnLoadContents";
-            this.txtOnLoadContents.Size = new System.Drawing.Size(460, 344);
+            this.txtOnLoadContents.Size = new System.Drawing.Size(780, 115);
             this.txtOnLoadContents.TabIndex = 20;
             // 
             // btnRefreshOnLoadProfiles
             // 
             this.btnRefreshOnLoadProfiles.Image = ((System.Drawing.Image)(resources.GetObject("btnRefreshOnLoadProfiles.Image")));
-            this.btnRefreshOnLoadProfiles.Location = new System.Drawing.Point(439, 6);
+            this.btnRefreshOnLoadProfiles.Location = new System.Drawing.Point(264, 7);
             this.btnRefreshOnLoadProfiles.Name = "btnRefreshOnLoadProfiles";
             this.btnRefreshOnLoadProfiles.Size = new System.Drawing.Size(27, 22);
             this.btnRefreshOnLoadProfiles.TabIndex = 19;
@@ -590,7 +574,7 @@
             this.cbOnLoadProfiles.FormattingEnabled = true;
             this.cbOnLoadProfiles.Location = new System.Drawing.Point(124, 7);
             this.cbOnLoadProfiles.Name = "cbOnLoadProfiles";
-            this.cbOnLoadProfiles.Size = new System.Drawing.Size(309, 21);
+            this.cbOnLoadProfiles.Size = new System.Drawing.Size(134, 21);
             this.cbOnLoadProfiles.TabIndex = 18;
             this.cbOnLoadProfiles.SelectedIndexChanged += new System.EventHandler(this.cbOnLoadProfiles_SelectedIndexChanged);
             // 
@@ -605,7 +589,7 @@
             this.tabAfterLoad.Location = new System.Drawing.Point(4, 22);
             this.tabAfterLoad.Name = "tabAfterLoad";
             this.tabAfterLoad.Padding = new System.Windows.Forms.Padding(3);
-            this.tabAfterLoad.Size = new System.Drawing.Size(470, 412);
+            this.tabAfterLoad.Size = new System.Drawing.Size(1303, 173);
             this.tabAfterLoad.TabIndex = 1;
             this.tabAfterLoad.Text = "After Load";
             this.tabAfterLoad.UseVisualStyleBackColor = true;
@@ -621,14 +605,14 @@
             // 
             // txtTransformFileName
             // 
-            this.txtTransformFileName.Location = new System.Drawing.Point(5, 384);
+            this.txtTransformFileName.Location = new System.Drawing.Point(510, 6);
             this.txtTransformFileName.Name = "txtTransformFileName";
-            this.txtTransformFileName.Size = new System.Drawing.Size(380, 20);
+            this.txtTransformFileName.Size = new System.Drawing.Size(195, 20);
             this.txtTransformFileName.TabIndex = 16;
             // 
             // btnTransformSave
             // 
-            this.btnTransformSave.Location = new System.Drawing.Point(391, 384);
+            this.btnTransformSave.Location = new System.Drawing.Point(711, 5);
             this.btnTransformSave.Name = "btnTransformSave";
             this.btnTransformSave.Size = new System.Drawing.Size(75, 23);
             this.btnTransformSave.TabIndex = 15;
@@ -638,17 +622,17 @@
             // 
             // txtTransformText
             // 
-            this.txtTransformText.Location = new System.Drawing.Point(6, 34);
+            this.txtTransformText.Location = new System.Drawing.Point(9, 33);
             this.txtTransformText.Multiline = true;
             this.txtTransformText.Name = "txtTransformText";
-            this.txtTransformText.Size = new System.Drawing.Size(460, 344);
+            this.txtTransformText.Size = new System.Drawing.Size(777, 116);
             this.txtTransformText.TabIndex = 14;
             this.txtTransformText.Leave += new System.EventHandler(this.txtTransformText_Leave);
             // 
             // btnTransformProfilesLoad
             // 
             this.btnTransformProfilesLoad.Image = ((System.Drawing.Image)(resources.GetObject("btnTransformProfilesLoad.Image")));
-            this.btnTransformProfilesLoad.Location = new System.Drawing.Point(439, 6);
+            this.btnTransformProfilesLoad.Location = new System.Drawing.Point(264, 6);
             this.btnTransformProfilesLoad.Name = "btnTransformProfilesLoad";
             this.btnTransformProfilesLoad.Size = new System.Drawing.Size(27, 22);
             this.btnTransformProfilesLoad.TabIndex = 13;
@@ -661,7 +645,7 @@
             this.cbTransformProfiles.FormattingEnabled = true;
             this.cbTransformProfiles.Location = new System.Drawing.Point(124, 7);
             this.cbTransformProfiles.Name = "cbTransformProfiles";
-            this.cbTransformProfiles.Size = new System.Drawing.Size(309, 21);
+            this.cbTransformProfiles.Size = new System.Drawing.Size(134, 21);
             this.cbTransformProfiles.TabIndex = 12;
             this.cbTransformProfiles.SelectedIndexChanged += new System.EventHandler(this.cbTransformProfiles_SelectedIndexChanged);
             // 
@@ -670,7 +654,7 @@
             this.cmbFileType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbFileType.FormattingEnabled = true;
             this.cmbFileType.Items.AddRange(new object[] {
-            "Delimited ",
+            "Delimited",
             "Fixed Width",
             "HL7",
             "Html",
@@ -678,7 +662,7 @@
             "Json",
             "Template",
             "Xml"});
-            this.cmbFileType.Location = new System.Drawing.Point(91, 26);
+            this.cmbFileType.Location = new System.Drawing.Point(90, 42);
             this.cmbFileType.Name = "cmbFileType";
             this.cmbFileType.Size = new System.Drawing.Size(252, 21);
             this.cmbFileType.Sorted = true;
@@ -689,22 +673,11 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(17, 26);
+            this.label2.Location = new System.Drawing.Point(16, 42);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(34, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "Type:";
-            // 
-            // grpDataSource
-            // 
-            this.grpDataSource.Controls.Add(this.tabDataSource);
-            this.grpDataSource.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpDataSource.Location = new System.Drawing.Point(0, 0);
-            this.grpDataSource.Name = "grpDataSource";
-            this.grpDataSource.Size = new System.Drawing.Size(808, 186);
-            this.grpDataSource.TabIndex = 7;
-            this.grpDataSource.TabStop = false;
-            this.grpDataSource.Text = "Data Source:";
             // 
             // tabDataSource
             // 
@@ -712,10 +685,10 @@
             this.tabDataSource.Controls.Add(this.tabDatasourceText);
             this.tabDataSource.Controls.Add(this.tabDatasourceDatabase);
             this.tabDataSource.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabDataSource.Location = new System.Drawing.Point(3, 16);
+            this.tabDataSource.Location = new System.Drawing.Point(3, 3);
             this.tabDataSource.Name = "tabDataSource";
             this.tabDataSource.SelectedIndex = 0;
-            this.tabDataSource.Size = new System.Drawing.Size(802, 167);
+            this.tabDataSource.Size = new System.Drawing.Size(1305, 193);
             this.tabDataSource.TabIndex = 9;
             this.tabDataSource.SelectedIndexChanged += new System.EventHandler(this.tabDataSource_SelectedIndexChanged);
             // 
@@ -731,7 +704,7 @@
             this.tabDatasourceFile.Location = new System.Drawing.Point(4, 22);
             this.tabDatasourceFile.Name = "tabDatasourceFile";
             this.tabDatasourceFile.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDatasourceFile.Size = new System.Drawing.Size(794, 141);
+            this.tabDatasourceFile.Size = new System.Drawing.Size(1297, 167);
             this.tabDatasourceFile.TabIndex = 0;
             this.tabDatasourceFile.Text = "File";
             this.tabDatasourceFile.UseVisualStyleBackColor = true;
@@ -782,7 +755,7 @@
             this.cbTextExtractor.Items.AddRange(new object[] {
             "PDF",
             "Word"});
-            this.cbTextExtractor.Location = new System.Drawing.Point(145, 70);
+            this.cbTextExtractor.Location = new System.Drawing.Point(126, 70);
             this.cbTextExtractor.Name = "cbTextExtractor";
             this.cbTextExtractor.Size = new System.Drawing.Size(242, 21);
             this.cbTextExtractor.TabIndex = 9;
@@ -825,7 +798,7 @@
             this.tabDatasourceText.Location = new System.Drawing.Point(4, 22);
             this.tabDatasourceText.Name = "tabDatasourceText";
             this.tabDatasourceText.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDatasourceText.Size = new System.Drawing.Size(761, 119);
+            this.tabDatasourceText.Size = new System.Drawing.Size(1297, 167);
             this.tabDatasourceText.TabIndex = 1;
             this.tabDatasourceText.Text = "Text";
             this.tabDatasourceText.UseVisualStyleBackColor = true;
@@ -836,7 +809,7 @@
             this.txtTextContents.Location = new System.Drawing.Point(3, 3);
             this.txtTextContents.Multiline = true;
             this.txtTextContents.Name = "txtTextContents";
-            this.txtTextContents.Size = new System.Drawing.Size(755, 113);
+            this.txtTextContents.Size = new System.Drawing.Size(1291, 161);
             this.txtTextContents.TabIndex = 10;
             this.txtTextContents.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
@@ -850,7 +823,7 @@
             this.tabDatasourceDatabase.Controls.Add(this.label1);
             this.tabDatasourceDatabase.Location = new System.Drawing.Point(4, 22);
             this.tabDatasourceDatabase.Name = "tabDatasourceDatabase";
-            this.tabDatasourceDatabase.Size = new System.Drawing.Size(761, 119);
+            this.tabDatasourceDatabase.Size = new System.Drawing.Size(1297, 167);
             this.tabDatasourceDatabase.TabIndex = 2;
             this.tabDatasourceDatabase.Text = "Database";
             this.tabDatasourceDatabase.UseVisualStyleBackColor = true;
@@ -923,10 +896,10 @@
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
+            this.tabControl1.Location = new System.Drawing.Point(3, 264);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(808, 658);
+            this.tabControl1.Size = new System.Drawing.Size(1319, 603);
             this.tabControl1.TabIndex = 8;
             // 
             // tabPage1
@@ -935,18 +908,150 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(800, 632);
+            this.tabPage1.Size = new System.Drawing.Size(1311, 577);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Dataset";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add(this.cmbTableName);
+            this.splitContainer2.Panel1.Controls.Add(this.lblRecordCount);
+            this.splitContainer2.Panel1.Controls.Add(this.btnRefreshData);
+            this.splitContainer2.Panel1.Controls.Add(this.label3);
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add(this.dataGridView1);
+            this.splitContainer2.Size = new System.Drawing.Size(1305, 571);
+            this.splitContainer2.SplitterDistance = 34;
+            this.splitContainer2.TabIndex = 15;
+            // 
+            // cmbTableName
+            // 
+            this.cmbTableName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTableName.FormattingEnabled = true;
+            this.cmbTableName.Location = new System.Drawing.Point(93, 11);
+            this.cmbTableName.Name = "cmbTableName";
+            this.cmbTableName.Size = new System.Drawing.Size(246, 21);
+            this.cmbTableName.TabIndex = 7;
+            this.cmbTableName.SelectedIndexChanged += new System.EventHandler(this.cmbTableName_SelectedIndexChanged);
+            // 
             // lblRecordCount
             // 
-            this.lblRecordCount.Location = new System.Drawing.Point(508, 7);
+            this.lblRecordCount.Location = new System.Drawing.Point(369, 11);
             this.lblRecordCount.Name = "lblRecordCount";
-            this.lblRecordCount.Size = new System.Drawing.Size(169, 25);
+            this.lblRecordCount.Size = new System.Drawing.Size(265, 25);
             this.lblRecordCount.TabIndex = 14;
             this.lblRecordCount.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(11, 14);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(68, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Table Name:";
+            // 
+            // dataGridView1
+            // 
+            this.dataGridView1.AllowUserToAddRows = false;
+            this.dataGridView1.AllowUserToDeleteRows = false;
+            this.dataGridView1.AllowUserToOrderColumns = true;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.ReadOnly = true;
+            this.dataGridView1.RowHeadersVisible = false;
+            this.dataGridView1.Size = new System.Drawing.Size(1305, 533);
+            this.dataGridView1.TabIndex = 10;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.txtXmlContents);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1311, 577);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Xml";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // txtXmlContents
+            // 
+            this.txtXmlContents.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtXmlContents.Location = new System.Drawing.Point(3, 3);
+            this.txtXmlContents.Multiline = true;
+            this.txtXmlContents.Name = "txtXmlContents";
+            this.txtXmlContents.Size = new System.Drawing.Size(1305, 571);
+            this.txtXmlContents.TabIndex = 0;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.txtXPathContents);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(1311, 577);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "XPath";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // txtXPathContents
+            // 
+            this.txtXPathContents.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtXPathContents.Location = new System.Drawing.Point(0, 0);
+            this.txtXPathContents.Multiline = true;
+            this.txtXPathContents.Name = "txtXPathContents";
+            this.txtXPathContents.Size = new System.Drawing.Size(1311, 577);
+            this.txtXPathContents.TabIndex = 0;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.txtRegexContents);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Size = new System.Drawing.Size(1311, 577);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Regex";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // txtRegexContents
+            // 
+            this.txtRegexContents.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtRegexContents.Location = new System.Drawing.Point(0, 0);
+            this.txtRegexContents.Multiline = true;
+            this.txtRegexContents.Name = "txtRegexContents";
+            this.txtRegexContents.Size = new System.Drawing.Size(1311, 577);
+            this.txtRegexContents.TabIndex = 1;
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Controls.Add(this.txtExceptions);
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Size = new System.Drawing.Size(1311, 577);
+            this.tabPage5.TabIndex = 4;
+            this.tabPage5.Text = "Exceptions";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // txtExceptions
+            // 
+            this.txtExceptions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtExceptions.Location = new System.Drawing.Point(0, 0);
+            this.txtExceptions.Multiline = true;
+            this.txtExceptions.Name = "txtExceptions";
+            this.txtExceptions.Size = new System.Drawing.Size(1311, 577);
+            this.txtExceptions.TabIndex = 0;
             // 
             // cmbDestination
             // 
@@ -961,23 +1066,15 @@
             "XML",
             "PDF",
             "JSON"});
-            this.cmbDestination.Location = new System.Drawing.Point(445, 11);
+            this.cmbDestination.Location = new System.Drawing.Point(96, 9);
             this.cmbDestination.Name = "cmbDestination";
             this.cmbDestination.Size = new System.Drawing.Size(57, 21);
             this.cmbDestination.TabIndex = 13;
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(363, 14);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(75, 13);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "Export Format:";
-            // 
             // btnExport
             // 
-            this.btnExport.Location = new System.Drawing.Point(683, 11);
+            this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExport.Location = new System.Drawing.Point(1230, 129);
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(75, 23);
             this.btnExport.TabIndex = 11;
@@ -985,227 +1082,177 @@
             this.btnExport.UseVisualStyleBackColor = true;
             this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
             // 
-            // dataGridView1
+            // label9
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(794, 581);
-            this.dataGridView1.TabIndex = 10;
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(14, 12);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(75, 13);
+            this.label9.TabIndex = 12;
+            this.label9.Text = "Export Format:";
             // 
-            // cmbTableName
+            // tabSource
             // 
-            this.cmbTableName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbTableName.FormattingEnabled = true;
-            this.cmbTableName.Location = new System.Drawing.Point(93, 11);
-            this.cmbTableName.Name = "cmbTableName";
-            this.cmbTableName.Size = new System.Drawing.Size(246, 21);
-            this.cmbTableName.TabIndex = 7;
-            this.cmbTableName.SelectedIndexChanged += new System.EventHandler(this.cmbTableName_SelectedIndexChanged);
+            this.tabSource.Controls.Add(this.tabDataSourceOptions);
+            this.tabSource.Controls.Add(this.tabParseOptions);
+            this.tabSource.Controls.Add(this.tabTransformationOptions);
+            this.tabSource.Controls.Add(this.tabExportOptions);
+            this.tabSource.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabSource.Location = new System.Drawing.Point(3, 3);
+            this.tabSource.Name = "tabSource";
+            this.tabSource.SelectedIndex = 0;
+            this.tabSource.Size = new System.Drawing.Size(1319, 225);
+            this.tabSource.TabIndex = 8;
+            this.tabSource.SelectedIndexChanged += new System.EventHandler(this.tabSource_SelectedIndexChanged);
             // 
-            // label3
+            // tabDataSourceOptions
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 14);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(68, 13);
-            this.label3.TabIndex = 8;
-            this.label3.Text = "Table Name:";
+            this.tabDataSourceOptions.Controls.Add(this.tabDataSource);
+            this.tabDataSourceOptions.Location = new System.Drawing.Point(4, 22);
+            this.tabDataSourceOptions.Name = "tabDataSourceOptions";
+            this.tabDataSourceOptions.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDataSourceOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabDataSourceOptions.TabIndex = 0;
+            this.tabDataSourceOptions.Text = "Data Source";
+            this.tabDataSourceOptions.UseVisualStyleBackColor = true;
             // 
-            // tabPage2
+            // tabParseOptions
             // 
-            this.tabPage2.Controls.Add(this.txtXmlContents);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(791, 632);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Xml";
-            this.tabPage2.UseVisualStyleBackColor = true;
+            this.tabParseOptions.Controls.Add(this.panelParserProfileSave);
+            this.tabParseOptions.Controls.Add(this.cmbParserProfile);
+            this.tabParseOptions.Controls.Add(this.label15);
+            this.tabParseOptions.Controls.Add(this.grpTemplate);
+            this.tabParseOptions.Controls.Add(this.grpFixedFileOptions);
+            this.tabParseOptions.Controls.Add(this.grpHtmlOptions);
+            this.tabParseOptions.Controls.Add(this.cmbDelimited);
+            this.tabParseOptions.Controls.Add(this.cmbFileType);
+            this.tabParseOptions.Controls.Add(this.label2);
+            this.tabParseOptions.Location = new System.Drawing.Point(4, 22);
+            this.tabParseOptions.Name = "tabParseOptions";
+            this.tabParseOptions.Padding = new System.Windows.Forms.Padding(3);
+            this.tabParseOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabParseOptions.TabIndex = 1;
+            this.tabParseOptions.Text = "Parser";
+            this.tabParseOptions.UseVisualStyleBackColor = true;
             // 
-            // txtXmlContents
+            // cmbParserProfile
             // 
-            this.txtXmlContents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtXmlContents.Location = new System.Drawing.Point(3, 3);
-            this.txtXmlContents.Multiline = true;
-            this.txtXmlContents.Name = "txtXmlContents";
-            this.txtXmlContents.Size = new System.Drawing.Size(785, 626);
-            this.txtXmlContents.TabIndex = 0;
+            this.cmbParserProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbParserProfile.FormattingEnabled = true;
+            this.cmbParserProfile.Location = new System.Drawing.Point(90, 6);
+            this.cmbParserProfile.Name = "cmbParserProfile";
+            this.cmbParserProfile.Size = new System.Drawing.Size(252, 21);
+            this.cmbParserProfile.Sorted = true;
+            this.cmbParserProfile.TabIndex = 3;
+            this.cmbParserProfile.SelectedIndexChanged += new System.EventHandler(this.cmbParserProfile_SelectedIndexChanged);
             // 
-            // tabPage3
+            // label15
             // 
-            this.tabPage3.Controls.Add(this.txtXPathContents);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(791, 632);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "XPath";
-            this.tabPage3.UseVisualStyleBackColor = true;
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(16, 6);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(72, 13);
+            this.label15.TabIndex = 2;
+            this.label15.Text = "Parser Profile:";
             // 
-            // txtXPathContents
+            // tabTransformationOptions
             // 
-            this.txtXPathContents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtXPathContents.Location = new System.Drawing.Point(0, 0);
-            this.txtXPathContents.Multiline = true;
-            this.txtXPathContents.Name = "txtXPathContents";
-            this.txtXPathContents.Size = new System.Drawing.Size(791, 632);
-            this.txtXPathContents.TabIndex = 0;
+            this.tabTransformationOptions.Controls.Add(this.tabControl2);
+            this.tabTransformationOptions.Location = new System.Drawing.Point(4, 22);
+            this.tabTransformationOptions.Name = "tabTransformationOptions";
+            this.tabTransformationOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabTransformationOptions.TabIndex = 2;
+            this.tabTransformationOptions.Text = "Transformations";
+            this.tabTransformationOptions.UseVisualStyleBackColor = true;
             // 
-            // tabPage4
+            // tabExportOptions
             // 
-            this.tabPage4.Controls.Add(this.txtRegexContents);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(791, 632);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Regex";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.tabExportOptions.Controls.Add(this.cmbDestination);
+            this.tabExportOptions.Controls.Add(this.label9);
+            this.tabExportOptions.Controls.Add(this.btnExport);
+            this.tabExportOptions.Location = new System.Drawing.Point(4, 22);
+            this.tabExportOptions.Name = "tabExportOptions";
+            this.tabExportOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabExportOptions.TabIndex = 3;
+            this.tabExportOptions.Text = "Export";
+            this.tabExportOptions.UseVisualStyleBackColor = true;
             // 
-            // txtRegexContents
+            // tableLayoutPanel1
             // 
-            this.txtRegexContents.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtRegexContents.Location = new System.Drawing.Point(0, 0);
-            this.txtRegexContents.Multiline = true;
-            this.txtRegexContents.Name = "txtRegexContents";
-            this.txtRegexContents.Size = new System.Drawing.Size(791, 632);
-            this.txtRegexContents.TabIndex = 1;
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.tabControl1, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.tabSource, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 1);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 231F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1325, 870);
+            this.tableLayoutPanel1.TabIndex = 11;
             // 
-            // tabPage5
+            // flowLayoutPanel1
             // 
-            this.tabPage5.Controls.Add(this.txtExceptions);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(791, 632);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Exceptions";
-            this.tabPage5.UseVisualStyleBackColor = true;
+            this.flowLayoutPanel1.Controls.Add(this.btnCloseWindow);
+            this.flowLayoutPanel1.Controls.Add(this.btnSaveSettings);
+            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 231);
+            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(1325, 30);
+            this.flowLayoutPanel1.TabIndex = 9;
             // 
-            // txtExceptions
+            // label16
             // 
-            this.txtExceptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtExceptions.Location = new System.Drawing.Point(0, 0);
-            this.txtExceptions.Multiline = true;
-            this.txtExceptions.Name = "txtExceptions";
-            this.txtExceptions.Size = new System.Drawing.Size(791, 632);
-            this.txtExceptions.TabIndex = 0;
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(115, 11);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(98, 13);
+            this.label16.TabIndex = 13;
+            this.label16.Text = "Save Profile Name:";
             // 
-            // statusStrip1
+            // txtParserProfileSaveFileName
             // 
-            this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.StatusBarLabel,
-            this.ProgressBar});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 0);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1325, 22);
-            this.statusStrip1.TabIndex = 9;
-            this.statusStrip1.Text = "statusStrip1";
+            this.txtParserProfileSaveFileName.Location = new System.Drawing.Point(10, 30);
+            this.txtParserProfileSaveFileName.Name = "txtParserProfileSaveFileName";
+            this.txtParserProfileSaveFileName.Size = new System.Drawing.Size(311, 20);
+            this.txtParserProfileSaveFileName.TabIndex = 14;
+            this.txtParserProfileSaveFileName.TextChanged += new System.EventHandler(this.txtParserProfileSaveFileName_TextChanged);
             // 
-            // StatusBarLabel
+            // panelParserProfileSave
             // 
-            this.StatusBarLabel.Name = "StatusBarLabel";
-            this.StatusBarLabel.Size = new System.Drawing.Size(0, 17);
+            this.panelParserProfileSave.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.panelParserProfileSave.Controls.Add(this.btnSaveParserProfile);
+            this.panelParserProfileSave.Controls.Add(this.txtParserProfileSaveFileName);
+            this.panelParserProfileSave.Controls.Add(this.label16);
+            this.panelParserProfileSave.Location = new System.Drawing.Point(6, 87);
+            this.panelParserProfileSave.Name = "panelParserProfileSave";
+            this.panelParserProfileSave.Size = new System.Drawing.Size(336, 104);
+            this.panelParserProfileSave.TabIndex = 15;
             // 
-            // ProgressBar
+            // btnSaveParserProfile
             // 
-            this.ProgressBar.Name = "ProgressBar";
-            this.ProgressBar.Size = new System.Drawing.Size(100, 16);
-            // 
-            // ProgressTimer
-            // 
-            this.ProgressTimer.Enabled = true;
-            this.ProgressTimer.Interval = 1000;
-            this.ProgressTimer.Tick += new System.EventHandler(this.ProgressTimer_Tick);
-            // 
-            // toolStripContainer1
-            // 
-            // 
-            // toolStripContainer1.BottomToolStripPanel
-            // 
-            this.toolStripContainer1.BottomToolStripPanel.Controls.Add(this.statusStrip1);
-            // 
-            // toolStripContainer1.ContentPanel
-            // 
-            this.toolStripContainer1.ContentPanel.AutoScroll = true;
-            this.toolStripContainer1.ContentPanel.Controls.Add(this.splitContainer1);
-            this.toolStripContainer1.ContentPanel.Controls.Add(this.grpLoadOptions);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(1325, 848);
-            this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
-            this.toolStripContainer1.Name = "toolStripContainer1";
-            this.toolStripContainer1.Size = new System.Drawing.Size(1325, 870);
-            this.toolStripContainer1.TabIndex = 10;
-            this.toolStripContainer1.Text = "toolStripContainer1";
-            // 
-            // splitContainer1
-            // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer1.Panel1
-            // 
-            this.splitContainer1.Panel1.Controls.Add(this.grpDataSource);
-            // 
-            // splitContainer1.Panel2
-            // 
-            this.splitContainer1.Panel2.Controls.Add(this.tabControl1);
-            this.splitContainer1.Size = new System.Drawing.Size(808, 848);
-            this.splitContainer1.SplitterDistance = 186;
-            this.splitContainer1.TabIndex = 9;
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.Location = new System.Drawing.Point(3, 3);
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.cmbTableName);
-            this.splitContainer2.Panel1.Controls.Add(this.lblRecordCount);
-            this.splitContainer2.Panel1.Controls.Add(this.label3);
-            this.splitContainer2.Panel1.Controls.Add(this.cmbDestination);
-            this.splitContainer2.Panel1.Controls.Add(this.btnExport);
-            this.splitContainer2.Panel1.Controls.Add(this.label9);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.dataGridView1);
-            this.splitContainer2.Size = new System.Drawing.Size(794, 626);
-            this.splitContainer2.SplitterDistance = 41;
-            this.splitContainer2.TabIndex = 15;
-            // 
-            // btnCloseWindow
-            // 
-            this.btnCloseWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCloseWindow.Location = new System.Drawing.Point(403, 819);
-            this.btnCloseWindow.Name = "btnCloseWindow";
-            this.btnCloseWindow.Size = new System.Drawing.Size(96, 23);
-            this.btnCloseWindow.TabIndex = 15;
-            this.btnCloseWindow.Text = "Close Window";
-            this.btnCloseWindow.UseVisualStyleBackColor = true;
-            this.btnCloseWindow.Click += new System.EventHandler(this.btnCloseWindow_Click);
+            this.btnSaveParserProfile.Enabled = false;
+            this.btnSaveParserProfile.Location = new System.Drawing.Point(84, 69);
+            this.btnSaveParserProfile.Name = "btnSaveParserProfile";
+            this.btnSaveParserProfile.Size = new System.Drawing.Size(157, 23);
+            this.btnSaveParserProfile.TabIndex = 15;
+            this.btnSaveParserProfile.Text = "Save Parser Profile";
+            this.btnSaveParserProfile.UseVisualStyleBackColor = true;
+            this.btnSaveParserProfile.Click += new System.EventHandler(this.btnSaveParserProfile_Click);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1325, 870);
-            this.Controls.Add(this.toolStripContainer1);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "MainForm";
             this.Text = "Easy Controls Demo Application";
-            this.grpLoadOptions.ResumeLayout(false);
-            this.grpLoadOptions.PerformLayout();
             this.cmbDelimited.ResumeLayout(false);
             this.cmbDelimited.PerformLayout();
             this.grpDelimiters.ResumeLayout(false);
@@ -1217,13 +1264,11 @@
             this.grpHtmlOptions.PerformLayout();
             this.grpTemplate.ResumeLayout(false);
             this.grpTemplate.PerformLayout();
-            this.grpFieldNames.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.tabDuringLoad.ResumeLayout(false);
             this.tabDuringLoad.PerformLayout();
             this.tabAfterLoad.ResumeLayout(false);
             this.tabAfterLoad.PerformLayout();
-            this.grpDataSource.ResumeLayout(false);
             this.tabDataSource.ResumeLayout(false);
             this.tabDatasourceFile.ResumeLayout(false);
             this.tabDatasourceFile.PerformLayout();
@@ -1234,6 +1279,11 @@
             this.tabDatasourceDatabase.PerformLayout();
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.splitContainer2.Panel1.ResumeLayout(false);
+            this.splitContainer2.Panel1.PerformLayout();
+            this.splitContainer2.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+            this.splitContainer2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
@@ -1243,22 +1293,17 @@
             this.tabPage4.PerformLayout();
             this.tabPage5.ResumeLayout(false);
             this.tabPage5.PerformLayout();
-            this.statusStrip1.ResumeLayout(false);
-            this.statusStrip1.PerformLayout();
-            this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
-            this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
-            this.toolStripContainer1.ContentPanel.ResumeLayout(false);
-            this.toolStripContainer1.ResumeLayout(false);
-            this.toolStripContainer1.PerformLayout();
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-            this.splitContainer1.ResumeLayout(false);
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel1.PerformLayout();
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
-            this.splitContainer2.ResumeLayout(false);
+            this.tabSource.ResumeLayout(false);
+            this.tabDataSourceOptions.ResumeLayout(false);
+            this.tabParseOptions.ResumeLayout(false);
+            this.tabParseOptions.PerformLayout();
+            this.tabTransformationOptions.ResumeLayout(false);
+            this.tabExportOptions.ResumeLayout(false);
+            this.tabExportOptions.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.panelParserProfileSave.ResumeLayout(false);
+            this.panelParserProfileSave.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1266,11 +1311,8 @@
         #endregion
 
         private System.Windows.Forms.OpenFileDialog ofd;
-        private System.Windows.Forms.GroupBox grpLoadOptions;
         private System.Windows.Forms.ComboBox cmbFileType;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox grpFieldNames;
-        private System.Windows.Forms.GroupBox grpDataSource;
         private System.Windows.Forms.GroupBox grpHtmlOptions;
         private System.Windows.Forms.TextBox txtXPathQuery;
         private System.Windows.Forms.Label label7;
@@ -1281,8 +1323,6 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.TextBox txtXmlContents;
-        private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.ToolStripStatusLabel StatusBarLabel;
         private System.Windows.Forms.TabControl tabDataSource;
         private System.Windows.Forms.TabPage tabDatasourceFile;
         private System.Windows.Forms.Button btnLoad;
@@ -1296,7 +1336,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ComboBox cmbDatabaseConnectionType;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ToolStripProgressBar ProgressBar;
         private System.Windows.Forms.Timer ProgressTimer;
         private System.Windows.Forms.ComboBox cmbDestination;
         private System.Windows.Forms.Label label9;
@@ -1355,10 +1394,21 @@
         private System.Windows.Forms.Button btnRefreshOnLoadProfiles;
         private System.Windows.Forms.ComboBox cbOnLoadProfiles;
         private System.Windows.Forms.Button btnSaveSettings;
-        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-        private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Button btnCloseWindow;
+        private System.Windows.Forms.TabControl tabSource;
+        private System.Windows.Forms.TabPage tabDataSourceOptions;
+        private System.Windows.Forms.TabPage tabParseOptions;
+        private System.Windows.Forms.TabPage tabTransformationOptions;
+        private System.Windows.Forms.TabPage tabExportOptions;
+        private System.Windows.Forms.ComboBox cmbParserProfile;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Panel panelParserProfileSave;
+        private System.Windows.Forms.Button btnSaveParserProfile;
+        private System.Windows.Forms.TextBox txtParserProfileSaveFileName;
+        private System.Windows.Forms.Label label16;
     }
 }
 

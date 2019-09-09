@@ -1,0 +1,11 @@
+[row=>PatientDetails]
+Add DispCode substring-before(Disposition,' ')
+Add Age substring-before(AgeGen,' ')
+Add Gender substring-after(AgeGen,'/')
+--filter1 starts-with(PatientName,'W') or Disposition='05 Eloped'
+--filter1 starts-with(PrimaryNurse,'MURRAY') and starts-with(Disposition,'02')
+--filter starts-with(Disposition,'02') and starts-with(PrimaryNurse,'HUDSON')
+filter starts-with(MRN,'7')
+GO
+filter Age>50 and easy:Upper(Gender)='MALE' and starts-with(DispCode,'0')
+sort Sno

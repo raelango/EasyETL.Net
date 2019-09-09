@@ -1,0 +1,6 @@
+[row=>Data]
+filter not(easy:IsEmpty(easy:Replace(FileName,'.',''))) and not(easy:IsEmpty(Size))
+sort Size
+go
+Add SNo AutoNumber
+(?=\d)[DateTime] (AM|PM)( )+[Size:(\d,)] [FileName]\r\n

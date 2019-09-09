@@ -21,6 +21,7 @@ namespace EasyXml
         public string LastTransformerTemplate = String.Empty;
         public event EventHandler<XmlNodeChangedEventArgs> OnRowAdd;
         public event EventHandler<EasyParserExceptionEventArgs> OnError;
+        public event EventHandler<EasyParserProgressEventArgs> OnProgress;
 
         public override XmlNode Clone()
         {
@@ -48,9 +49,11 @@ namespace EasyXml
             {
                 Parser.OnRowAdd += OnRowAdd;
                 Parser.OnError += OnError;
+                Parser.OnProgress += OnProgress;
                 Parser.Load(inStream, this);
                 Parser.OnRowAdd -= OnRowAdd;
                 Parser.OnError -= OnError;
+                Parser.OnProgress -= OnProgress;
             }
             Transform();
         }
@@ -79,9 +82,11 @@ namespace EasyXml
             {
                 Parser.OnRowAdd += OnRowAdd;
                 Parser.OnError += OnError;
+                Parser.OnProgress += OnProgress;
                 Parser.Load(filename, this);
                 Parser.OnRowAdd -= OnRowAdd;
                 Parser.OnError -= OnError;
+                Parser.OnProgress -= OnProgress;
             }
             Transform();
         }
@@ -104,9 +109,11 @@ namespace EasyXml
             {
                 Parser.OnRowAdd += OnRowAdd;
                 Parser.OnError += OnError;
+                Parser.OnProgress += OnProgress;
                 Parser.Load(txtReader, this);
                 Parser.OnRowAdd -= OnRowAdd;
                 Parser.OnError -= OnError;
+                Parser.OnProgress -= OnProgress;
             }
             Transform();
         }
@@ -126,9 +133,11 @@ namespace EasyXml
             {
                 Parser.OnRowAdd += OnRowAdd;
                 Parser.OnError += OnError;
+                Parser.OnProgress += OnProgress;
                 Parser.LoadStr(contents, this);
                 Parser.OnRowAdd -= OnRowAdd;
                 Parser.OnError -= OnError;
+                Parser.OnProgress -= OnProgress;
             }
             else
             {

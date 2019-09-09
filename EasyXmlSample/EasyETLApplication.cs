@@ -14,7 +14,6 @@ namespace EasyXmlSample
 {
     public partial class EasyETLApplication : Form
     {
-        private int childFormNumber = 0;
         private string xmlFileName;
         public EasyETLApplication()
         {
@@ -25,7 +24,7 @@ namespace EasyXmlSample
         private void LoadClients(string visibleNodeFullpath = "")
         {
             tvClients.Nodes.Clear();
-            xmlFileName = Path.Combine(Environment.CurrentDirectory, "clients.xml");
+            xmlFileName = Path.Combine(Environment.CurrentDirectory, "config.xml");
             if (!File.Exists(xmlFileName))
             {
                 using (StreamWriter sw = File.CreateText(xmlFileName))
@@ -36,7 +35,7 @@ namespace EasyXmlSample
             }
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(xmlFileName);
-            AddTreeViewChildNodes(tvClients.Nodes, xDoc.DocumentElement);
+            AddTreeViewChildNodes(tvClients.Nodes, xDoc.SelectSingleNode("//clients"));
             xDoc = null;
             if (!String.IsNullOrWhiteSpace(visibleNodeFullpath))
             {
@@ -68,7 +67,7 @@ namespace EasyXmlSample
                 // Make the new TreeView node.
                 string clientid = child_node.Name;
                 string clientname = child_node.Name;
-                if (child_node.Attributes["id"] != null)
+                if ((child_node.Attributes !=null) && (child_node.Attributes["id"] != null))
                 {
                     clientid = child_node.Attributes["id"].Value;
                     clientname = child_node.Attributes["name"].Value;
@@ -236,7 +235,7 @@ namespace EasyXmlSample
                     childNode.AppendChild(trNode);
                     childNode.AppendChild(etlNode);
 
-                    xDoc.DocumentElement.AppendChild(childNode);
+                    xDoc.SelectSingleNode("//clients").AppendChild(childNode);
                 }
             }
             xDoc.Save(xmlFileName);
@@ -283,12 +282,13 @@ namespace EasyXmlSample
                 mForm.TopLevel = false;
                 mForm.MdiParent = this;
                 mForm.FormBorderStyle = FormBorderStyle.None;
+                mForm.SettingsFileName = xmlFileName;
                 mForm.LoadControls();
-                mForm.LoadSettingsFromXml(xmlFileName, tvClients.SelectedNode.FullPath);
-                mForm.LoadDataToGridView();
+                mForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
                 newTabPage.Controls.Add(mForm);
-                mForm.WindowState = FormWindowState.Maximized;
+                mForm.Dock = DockStyle.Fill;
                 mForm.Show();
+                //mForm.LoadDataToGridView();
                 MainTablControl.SelectedTab = newTabPage;
             }
         }

@@ -39,6 +39,7 @@ namespace EasyXml.Parsers
             int rowCount = 0;
             while (!txtFieldParser.EndOfData)
             {
+                UpdateProgress(txtFieldParser.LineNumber);
                 bool skipRow = false;
                 if (FirstRowHasFieldNames && bFirstRow)
                 {
@@ -56,6 +57,7 @@ namespace EasyXml.Parsers
                         XmlNode childNode = ConvertFieldsToXmlNode(xDoc, fieldValues);
                         if ((childNode != null) && (childNode.HasChildNodes))
                         {
+                            childNode = xDoc.ImportNode(childNode, true);
                             rootNode.AppendChild(childNode);
                             rowCount++;
                             if (rowCount >= MaxRecords) break;

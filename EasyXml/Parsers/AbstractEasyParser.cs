@@ -22,6 +22,15 @@ namespace EasyXml.Parsers
         public MalformedLineException Exception;
     }
 
+    public class EasyParserProgressEventArgs : EventArgs
+    {
+        public EasyParserProgressEventArgs(long lNumber)
+        {
+            LineNumber = lNumber;
+        }
+        public long LineNumber;
+    }
+
     public abstract class AbstractEasyParser : IEasyParser
     {
         public string[] FieldNames = null;
@@ -33,8 +42,12 @@ namespace EasyXml.Parsers
         public XslCompiledTransform OnLoadXsl = null;
         public event EventHandler<XmlNodeChangedEventArgs> OnRowAdd;
         public event EventHandler<EasyParserExceptionEventArgs> OnError;
+        public event EventHandler<EasyParserProgressEventArgs> OnProgress;
+
         public List<MalformedLineException> Exceptions = new List<MalformedLineException>();
         public int MaximumErrorsToAbort = 20;
+        public int ProgressInterval = 1;
+        public int LastProgressUpdate = 0;
 
         public virtual XmlNode ConvertFieldsToXmlNode(XmlDocument xDoc, string[] fieldValues)
         {
@@ -82,6 +95,15 @@ namespace EasyXml.Parsers
         {
             if (OnError !=null) {
                 OnError.Invoke(this, new EasyParserExceptionEventArgs(exception));
+            }
+        }
+
+        public void UpdateProgress(long lineNumber)
+        {
+            if (OnProgress == null) return;
+            if ((lineNumber % ProgressInterval) == 0)
+            {
+                OnProgress.Invoke(this, new EasyParserProgressEventArgs(lineNumber));
             }
         }
 
