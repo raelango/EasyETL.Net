@@ -1,3 +1,0 @@
-[row=>Names]
-Add SerialNo autonumber
-Add FullName normalize-space(translate(concat(FirstName,' ',LastName),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
