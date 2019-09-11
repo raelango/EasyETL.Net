@@ -1,3 +1,0 @@
-[row=>Policies]
-filter eq_site_limit > 0
-orderby policyid
