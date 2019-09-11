@@ -1,5 +1,0 @@
-Add SNo AutoNumber
-Add DispCode substring-before(Disposition,' ')
-Add Age substring-before(AgeGen,' ')
-filter1 starts-with(PatientName,'W') or Disposition='05 Eloped'
-filter starts-with(Disposition,'01') and starts-with(AgeGen,'7')
