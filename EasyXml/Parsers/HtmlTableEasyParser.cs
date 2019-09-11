@@ -38,6 +38,7 @@ namespace EasyXml.Parsers
         private void ConvertHTMLTablesXml(string HTML, XmlDocument xDoc, XmlNode rootNode)
         {
             string TableExpression = "<TABLE[^>]*>(.*?)</TABLE>";
+            string HeadRowExpression = "(<THEAD>|<THEAD[\\s]>)(.*?)</THEAD>";
             string HeaderExpression = "(<TH>|<TH[\\s]>)(.*?)</TH>";
             string RowExpression = "(<TR>|<TR[\\s]>)(.*?)</TR>";
             string ColumnExpression = "(<TD>|<TD[\\s]>)(.*?)</TD>";
@@ -47,12 +48,12 @@ namespace EasyXml.Parsers
             // Get a match for all the tables in the HTML  
             MatchCollection Tables = Regex.Matches(HTML, TableExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
             // Loop through each table element  
-            int tableIndex = 1;
+            int tableIndex = 0;
             foreach (Match Table in Tables)
             {
                 List<string> lstFields = new List<string>();
                 tableIndex++;
-                string tableName = RowNodeName + tableIndex.ToString();
+                string tableName = RootNodeName + tableIndex.ToString();
                 // Reset the current row counter and the header flag  
                 iCurrentRow = 0;
                 HeadersExist = false;
@@ -63,15 +64,10 @@ namespace EasyXml.Parsers
                 if (TableNameMatch != null)
                     tableName = TableNameMatch.Groups["TableName"].ToString().Trim('"');
 
-                //// Add a new table to the DataSet  
-                //XmlNode tableNode = rootNode.OwnerDocument.CreateElement(tableName);
-                //rootNode.AppendChild(tableNode);
-                //Create the relevant amount of columns for this table (use the headers if they exist, otherwise use default names)  
-
                 if (Table.Value.IndexOf("<TH", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     // Set the HeadersExist flag  
-                    HeadersExist = true;
+                    HeadersExist = !Regex.IsMatch(Table.Value, HeadRowExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
                     // Get a match for all the rows in the table  
                     MatchCollection Headers = Regex.Matches(Table.Value, HeaderExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
                     // Loop through each header element  
@@ -133,7 +129,7 @@ namespace EasyXml.Parsers
                             // Loop through each column element  
                             foreach (Match Column in Columns)
                             {
-                                XmlNode columnNode = rowNode.OwnerDocument.CreateElement(FieldNames[iCurrentColumn]);
+                                XmlNode columnNode = rowNode.OwnerDocument.CreateElement(XmlConvert.EncodeName(FieldNames[iCurrentColumn]));
                                 if (Column.Groups.Count > 2) columnNode.InnerText = Column.Groups[2].ToString();
                                 rowNode.AppendChild(columnNode);
                                 iCurrentColumn++;

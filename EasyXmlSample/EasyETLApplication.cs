@@ -29,7 +29,7 @@ namespace EasyXmlSample
             {
                 using (StreamWriter sw = File.CreateText(xmlFileName))
                 {
-                    sw.WriteLine("<clients></clients>");
+                    sw.WriteLine("<config><clients></clients><transforms></transforms><profiles></profiles><config>");
                 }
 
             }
@@ -278,7 +278,7 @@ namespace EasyXmlSample
                 }
                 MainTablControl.TabPages.Add(tvClients.SelectedNode.FullPath);
                 TabPage newTabPage = MainTablControl.TabPages[MainTablControl.TabCount - 1];
-                MainForm mForm = new MainForm();
+                ETLForm mForm = new ETLForm();
                 mForm.TopLevel = false;
                 mForm.MdiParent = this;
                 mForm.FormBorderStyle = FormBorderStyle.None;
@@ -297,7 +297,7 @@ namespace EasyXmlSample
         {
             if (MainTablControl.SelectedTab != null)
             {
-                ((MainForm)MainTablControl.SelectedTab.Controls[0]).SaveSettingsToXmlFile();
+                ((ETLForm)MainTablControl.SelectedTab.Controls[0]).SaveSettingsToXmlFile();
             }
         }
 

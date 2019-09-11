@@ -38,10 +38,10 @@
       </transfers>
       <etls>
         <etl id="2_etl_1" name="IIS Errors">
-          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="True" maxrows="10" filename="C:\Users\aelango\Desktop\u_ex190610.log" />
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="1000" filename="C:\temp\u_ex190610.log" />
           <transformations>
-            <duringload profilename="IIS-DuringLoad-Transforms" savefilename="IIS-DuringLoad-Transforms">filter starts-with(Field_11,'4')
-filter starts-with(Field_11,'5')</duringload>
+            <duringload profilename="IIS-DuringLoad-Transforms" savefilename="IIS-DuringLoad-Transforms">
+            </duringload>
             <afterload profilename="IIS-DuringLoad-Transforms" savefilename="IIS-DuringLoad-Transforms">[row=&gt;log]
 rename Field_0 date
 rename Field_1 time
@@ -50,6 +50,8 @@ rename Field_3 Verb
 remove Field_4
 remove Field_5
 rename Field_6 IncomingPort
+filter starts-with(Field_11,'4')
+filter starts-with(Field_11,'5')
 rename field_7 ClientMachineName
 remove Field_8
 rename field_9 BrowserInfo
@@ -64,7 +66,7 @@ Add SNo AutoNumber</afterload>
           <parseoptions profilename="IIS-Log-Parser" parsertype="Delimited" delimiter="Space" separator="" hasheader="False">
             <comments>#</comments>
           </parseoptions>
-          <output exportformat="" />
+          <output exportformat="XML" exportfilename="C:\temp\u_ex190610.html" xsltfilename="C:\temp\IIS Export Template.xslt" />
         </etl>
         <etl id="2_etl_2" name="LF Archive Log">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="True" maxrows="20" filename="C:\temp\LFTArchiveLog.txt" />
@@ -77,6 +79,39 @@ Add SNo AutoNumber</afterload>
             <template>[Date] [Time],[Action:(\w)] [Contents]</template>
           </parseoptions>
           <output exportformat="" />
+        </etl>
+        <etl id="2_etl_3" name="Insurance Data">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;insurance]
+remove statecode
+remove eq_site_limit
+remove hu_site_limit
+remove fl_site_limit
+remove fr_site_limit
+remove tiv_2011
+remove tiv_2012
+filter line='Residential' and construction='Wood' and hu_site_deductible&gt;0
+</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="" />
+        </etl>
+        <etl id="2_etl_4" name="HTML File">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\u_ex190610.html" />
+          <transformations>
+            <duringload profilename="" savefilename="">rename Verb MyVerb
+rename Client_x0020_IP ClientIP</duringload>
+            <afterload profilename="" savefilename="">
+            </afterload>
+          </transformations>
+          <parseoptions parsertype="HtmlTable" />
+          <output exportformat="" exportfilename="C:\temp\u_ex190610." xsltfilename="" />
         </etl>
       </etls>
     </client>
@@ -99,7 +134,7 @@ Add SNo AutoNumber</afterload>
           <parseoptions profilename="TemplateFolderNameOnly" parsertype="Template">
             <template>[FolderNameOnly]</template>
           </parseoptions>
-          <output exportformat="WORD" />
+          <output exportformat="WORD" exportfilename="C:\temp\AllFolders.docx" xsltfilename="" />
         </etl>
         <etl id="3_etl_2" name="etls_3_etl_2">
           <datasource sourcetype="File" filename="" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" />
