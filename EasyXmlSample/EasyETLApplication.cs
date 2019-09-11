@@ -18,10 +18,10 @@ namespace EasyXmlSample
         public EasyETLApplication()
         {
             InitializeComponent();
-            LoadClients();
+            LoadConfiguration();
         }
 
-        private void LoadClients(string visibleNodeFullpath = "")
+        private void LoadConfiguration(string visibleNodeFullpath = "")
         {
             tvClients.Nodes.Clear();
             xmlFileName = Path.Combine(Environment.CurrentDirectory, "config.xml");
@@ -67,7 +67,7 @@ namespace EasyXmlSample
                 // Make the new TreeView node.
                 string clientid = child_node.Name;
                 string clientname = child_node.Name;
-                if ((child_node.Attributes !=null) && (child_node.Attributes["id"] != null))
+                if ((child_node.Attributes != null) && (child_node.Attributes["id"] != null))
                 {
                     clientid = child_node.Attributes["id"].Value;
                     clientname = child_node.Attributes["name"].Value;
@@ -106,7 +106,7 @@ namespace EasyXmlSample
             if (tNode != null)
             {
                 SaveXmlFile(tNode, tNode.Text);
-                LoadClients(tNode.FullPath);
+                LoadConfiguration(tNode.FullPath);
             }
         }
 
@@ -309,6 +309,50 @@ namespace EasyXmlSample
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             if (MainTablControl.SelectedTab != null) MainTablControl.TabPages.Remove(MainTablControl.SelectedTab);
+        }
+
+        private void tvClients_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                bool allowDelete = (tvClients.SelectedNode != null) && ((tvClients.SelectedNode.Parent == null) || (tvClients.SelectedNode.Nodes.Count == 0));
+                TreeNode node = tvClients.SelectedNode;
+                if (allowDelete)
+                {
+                    foreach (TabPage p in MainTablControl.TabPages)
+                    {
+                        if (p.Text == node.FullPath)
+                        {
+                            MessageBox.Show("This configuration is open.  Please close window before attempting to delete the node.");
+                            allowDelete = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (allowDelete)
+                {
+                    XmlDocument xDoc = new XmlDocument();
+                    xDoc.Load(xmlFileName);
+                    string xPath = "//clients/client[@name='" + node.FullPath + "']";
+                    if (node.FullPath.Contains('\\'))
+                    {
+                        string clientName = node.FullPath.Split('\\')[0];
+                        string nodeCategory = node.FullPath.Split('\\')[1];
+                        string nodeName = node.FullPath.Split('\\')[2];
+                        xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@id='" + node.Name + "']";
+                    }
+                    XmlNode xNode = xDoc.SelectSingleNode(xPath);
+                    xNode.ParentNode.RemoveChild(xNode);
+                    xDoc.Save(xmlFileName);
+                    LoadConfiguration();
+                }
+            }
+        }
+
+        private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            tvClients_KeyDown(this,new KeyEventArgs(Keys.Delete));
         }
 
     }

@@ -104,7 +104,22 @@ namespace EasyXmlSample
 
                 #region Output Settings Load
                 XmlNode dataNode = xNode.SelectSingleNode("output");
-                if ((dataNode != null) && (dataNode.Attributes["exportformat"] != null)) cmbDestination.SelectedItem = dataNode.Attributes["exportformat"].Value;
+                if (dataNode != null)
+                {
+                    foreach (XmlAttribute xAttr in dataNode.Attributes)
+                    {
+                        switch (xAttr.Name.ToLower())
+                        {
+                            case "exportformat":
+                                cmbDestination.SelectedItem = xAttr.Value; break;
+                            case "exportfilename":
+                                txtExportFileName.Text = xAttr.Value; break;
+                            case "xsltfilename":
+                                txtExportXsltFileName.Text = xAttr.Value; break;
+                        }
+                    }
+                }
+                //if ((dataNode != null) && (dataNode.Attributes["exportformat"] != null)) cmbDestination.SelectedItem = dataNode.Attributes["exportformat"].Value;
                 #endregion
 
                 #region Datasource Node Load

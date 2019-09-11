@@ -24,7 +24,6 @@
         <transfer id="transfers_1_transfer_8" name="transfers_1_transfer_8" />
       </transfers>
       <etls>
-        <etl id="1_etl_1" name="1_etl_1" />
       </etls>
     </client>
     <client id="2" name="Demonstration">
@@ -175,91 +174,6 @@ Add SNo AutoNumber</afterload>
           <output exportformat="EXCEL" />
         </etl>
       </etls>
-    </client>
-    <client id="5" name="Client5">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="6" name="Client6">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="7" name="Client7">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="8" name="Client8">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="9" name="Client9">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="10" name="Client10">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="11" name="Client11">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="12" name="Client12">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="13" name="Client13">
-      <endpoints>
-        <endpoint id="13_endpoint_1" name="13_endpoint_1" />
-      </endpoints>
-      <transfers>
-        <transfer id="13_transfer_1" name="13_transfer_1" />
-      </transfers>
-      <etls />
-    </client>
-    <client id="14" name="Client14">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="15" name="Client15">
-      <endpoints />
-      <transfers />
-      <etls />
-    </client>
-    <client id="16" name="Client16">
-      <endpoints />
-      <transfers />
-      <etls>
-        <etl id="etls_16_etl_1" name="etls_16_etl_1" />
-      </etls>
-    </client>
-    <client id="17" name="Client17">
-      <endpoints />
-      <transfers />
-      <etls>
-        <etl id="17_etl_1" name="17_etl_1" />
-      </etls>
-    </client>
-    <client id="18" name="Client18">
-      <endpoints />
-      <transfers />
-      <etls>
-        <etl id="18_etl_1" name="18_etl_1" />
-      </etls>
-    </client>
-    <client id="19" name="Client19">
-      <endpoints />
-      <transfers />
-      <etls />
     </client>
   </clients>
   <profiles>
