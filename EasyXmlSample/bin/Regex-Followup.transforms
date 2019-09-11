@@ -1,4 +1,0 @@
-[row=>Names]
-Add SerialNo autonumber
-filter not(translate(FileName,'.','')='') 
-sort FileName
