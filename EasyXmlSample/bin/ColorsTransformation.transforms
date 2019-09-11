@@ -1,6 +1,0 @@
-Add SNo AutoNumber
-Hide hex
-hide category
-Add ucategory translate(category,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')
-rename color Color
-rename type ColorType
