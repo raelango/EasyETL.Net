@@ -1,4 +1,5 @@
 ﻿using EasyETL.DataSets;
+using EasyETL.Utils;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -27,13 +28,7 @@ namespace EasyETL.Parsers
 
         public void LoadProfile(string profileName)
         {
-            ProfileNode = null;
-            if (!String.IsNullOrWhiteSpace(profileName))
-            {
-                XmlDocument xDoc = new XmlDocument();
-                xDoc.Load("profiles.xml");
-                ProfileNode = xDoc.SelectSingleNode("profiles/" + profileName);
-            }
+            ProfileNode = Configuration.GetProfileNode(profileName) ;
         }
 
         public static EasyDataSet Parse(string parseFileName) {
@@ -125,14 +120,23 @@ namespace EasyETL.Parsers
                 case "XML":
                     Data = new XmlDataSet();
                     break;
+                case "DELIMITED":
+                    Data = new DelimitedDataSet();
+                    break;
+                case "HL7":
+                    Data = new HL7DataSet();
+                    break;
                 default:
                     Data = new RegexDataSet();
                     break;
             }
             Data.LoadProfileSettings(ProfileNode);
             Data.RowReadAndProcessed += resultDataSet_RowReadAndProcessed;
-            if ((!String.IsNullOrWhiteSpace(FileToParse)) && (File.Exists(FileToParse)) && (Data is RegexDataSet)  ) {
-                ((RegexDataSet)Data).Fill(FileToParse);
+            if ((!String.IsNullOrWhiteSpace(FileToParse)) && (File.Exists(FileToParse))  ) {
+                if (Data is EasyDataSet)
+                {
+                    ((EasyDataSet)Data).Fill(FileToParse);
+                }
             }
             return Data;
         }

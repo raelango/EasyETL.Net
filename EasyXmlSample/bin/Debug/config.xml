@@ -1,0 +1,401 @@
+<config>
+  <clients>
+    <client id="2" name="Demonstration of Parsing">
+      <endpoints>
+        <endpoint id="2_endpoint_1" name="2_endpoint_1" />
+      </endpoints>
+      <transfers>
+        <transfer id="2_transfer_1" name="2_transfer_1" />
+        <transfer id="2_transfer_2" name="2_transfer_2" />
+        <transfer id="2_transfer_3" name="2_transfer_3" />
+      </transfers>
+      <etls>
+        <etl id="2_etl_1" name="IIS Errors">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="1000" filename="C:\temp\u_ex190610.log" />
+          <transformations>
+            <duringload profilename="IIS-DuringLoad-Transforms" savefilename="IIS-DuringLoad-Transforms">
+            </duringload>
+            <afterload profilename="IIS-DuringLoad-Transforms" savefilename="IIS-DuringLoad-Transforms">[row=&gt;log]
+rename Field_0 date
+rename Field_1 time
+rename Field_2 ClientIP
+rename Field_3 Verb
+remove Field_4
+remove Field_5
+rename Field_6 IncomingPort
+filter starts-with(Field_11,'4')
+filter starts-with(Field_11,'5')
+rename field_7 ClientMachineName
+remove Field_8
+rename field_9 BrowserInfo
+rename field_10 CallURL
+rename field_11 ResponseCode
+remove field_12
+remove Field_13
+remove Field_14
+Add BrowserName substring-before(Field_9,'/')
+Add SNo AutoNumber</afterload>
+          </transformations>
+          <parseoptions profilename="IIS-Log-Parser" parsertype="Delimited" delimiter="Space" separator="" hasheader="False">
+            <comments>#</comments>
+          </parseoptions>
+          <output exportformat="XML" exportfilename="C:\temp\u_ex190610.html" xsltfilename="C:\temp\IIS Export Template.xslt" />
+        </etl>
+        <etl id="2_etl_2" name="LF Archive Log">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="True" maxrows="20" filename="C:\temp\LFTArchiveLog.txt" />
+          <transformations>
+            <duringload profilename="" savefilename="">filter Action='Working'</duringload>
+            <afterload profilename="" savefilename="">
+            </afterload>
+          </transformations>
+          <parseoptions parsertype="Template">
+            <template>[Date] [Time],[Action:(\w)] [Contents]</template>
+          </parseoptions>
+          <output exportformat="" />
+        </etl>
+        <etl id="2_etl_3" name="Insurance Data">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;insurance]
+remove statecode
+remove eq_site_limit
+remove hu_site_limit
+remove fl_site_limit
+remove fr_site_limit
+remove tiv_2011
+remove tiv_2012
+filter line='Residential' and construction='Wood' and hu_site_deductible&gt;0
+</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="" />
+        </etl>
+        <etl id="2_etl_4" name="HTML File">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\u_ex190610.html" />
+          <transformations>
+            <duringload profilename="" savefilename="">rename Client_x0020_IP ClientIP
+filter Verb='GET'</duringload>
+            <afterload profilename="" savefilename="">
+            </afterload>
+          </transformations>
+          <parseoptions parsertype="HtmlTable" />
+          <output exportformat="CSV" exportfilename="C:\temp\u_ex190610_Export.CSV" templatefilename="" />
+        </etl>
+      </etls>
+    </client>
+    <client id="3" name="My Third Client">
+      <endpoints>
+        <endpoint id="3_endpoint_1" name="3_endpoint_1" />
+      </endpoints>
+      <transfers>
+        <transfer id="3_transfer_1" name="Third Client Transfer 1" />
+        <transfer id="transfers_3_transfer_2" name="transfers_3_transfer_2" />
+      </transfers>
+      <etls>
+        <etl id="3_etl_1" name="3_etl_1">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="True" maxrows="20" filename="C:\temp\AllFolders.txt" />
+          <transformations>
+            <duringload profilename="" savefilename="">filter starts-with(FolderNameOnly,'C')</duringload>
+            <afterload profilename="" savefilename="">
+            </afterload>
+          </transformations>
+          <parseoptions profilename="TemplateFolderNameOnly" parsertype="Template">
+            <template>[FolderNameOnly]</template>
+          </parseoptions>
+          <output exportformat="WORD" exportfilename="C:\temp\AllFolders.docx" xsltfilename="" />
+        </etl>
+        <etl id="3_etl_2" name="etls_3_etl_2">
+          <datasource sourcetype="File" filename="" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" />
+        </etl>
+        <etl id="etls_3_etl_2" name="etls_3_etl_3" />
+        <etl id="etls_3_etl_2" name="etls_3_etl_4" />
+        <etl id="etls_3_etl_2" name="etls_3_etl_5" />
+        <etl id="3_etl_6" name="3_etl_6" />
+        <etl id="3_etl_7" name="3_etl_7" />
+        <etl id="3_etl_8" name="3_etl_8" />
+        <etl id="3_etl_9" name="3_etl_9" />
+        <etl id="3_etl_10" name="3_etl_10" />
+        <etl id="3_etl_11" name="3_etl_11" />
+        <etl id="3_etl_11" name="3_etl_12" />
+        <etl id="3_etl_1" name="3_etl_13" />
+        <etl id="3_etl_1" name="3_etl_14" />
+        <etl id="3_etl_1" name="3_etl_15" />
+        <etl id="3_etl_1" name="3_etl_16" />
+        <etl id="3_etl_17" name="3_etl_17" />
+      </etls>
+    </client>
+    <client id="4" name="My Fourth Client">
+      <endpoints />
+      <transfers>
+        <transfer id="4_transfer_1" name="My Transfer Session" />
+      </transfers>
+      <etls>
+        <etl id="4_etl_1" name="My ETL Session">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="True" maxrows="20" filename="C:\temp\LFPArchiveLog.txt" />
+          <transformations>
+            <duringload profilename="" savefilename="">filter Action='Moving'</duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+Add SNo AutoNumber</afterload>
+          </transformations>
+          <parseoptions parsertype="Template">
+            <template>[Date] [Time],[Action:(\w)] [Contents]</template>
+          </parseoptions>
+          <output exportformat="EXCEL" />
+        </etl>
+      </etls>
+    </client>
+    <client id="5" name="Demonstration of Export">
+      <endpoints>
+        <endpoint id="5_endpoint_1" name="5_endpoint_1" />
+      </endpoints>
+      <datasources>
+        <datasource id="5_datasource_1" name="5_datasource_1" />
+      </datasources>
+      <queues>
+        <queue id="5_queue_1" name="5_queue_1" />
+      </queues>
+      <transfers>
+        <transfer id="5_transfer_1" name="5_transfer_1" />
+      </transfers>
+      <etls>
+        <etl id="5_etl_1" name="Export in CSV Format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">remove statecode
+remove county
+filter eq_site_limit &gt;0 and line='Residential' and construction='Wood'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="CSV" exportfilename="C:\temp\FL_insurance_export.CSV" xsltfilename="" />
+        </etl>
+        <etl id="5_etl_2" name="Export To Excel File">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter line='Residential'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="AutoDetect" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="EXCEL" exportfilename="C:\temp\FL_insurance_export1.xlsx" templatefilename="C:\temp\FL_insurance_template.xltx" />
+        </etl>
+        <etl id="5_etl_3" name="Export To Word File">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter construction='Masonry'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="WORD" exportfilename="C:\temp\FL_insurance_export.docx" templatefilename="C:\temp\FL_insurance_export.dotx" />
+        </etl>
+        <etl id="5_etl_4" name="Export in TAB Format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">remove statecode
+remove county
+filter eq_site_limit &gt;0 and line='Residential' and construction='Wood'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="TAB" exportfilename="C:\temp\FL_insurance_tab_export.txt" templatefilename="" />
+        </etl>
+        <etl id="5_etl_5" name="Export in HTML Format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter construction='Masonry' and county='CLAY COUNTY'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="HTML" exportfilename="C:\temp\FL_insurance_export.HTML" templatefilename="C:\temp\FL_insurance_log_template.html" />
+        </etl>
+        <etl id="5_etl_6" name="Export in JSON format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">filter county='CLAY COUNTY'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="JSON" exportfilename="C:\temp\FL_insurance_export.JSON" templatefilename="" />
+        </etl>
+        <etl id="5_etl_7" name="Export To PDF File">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">filter tiv_2012 &gt; 20000000</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="PDF" exportfilename="C:\temp\FL_insurance_export.PDF" templatefilename="" />
+        </etl>
+        <etl id="5_etl_8" name="Export in XML Format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter policyID &gt; 950000</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" />
+        </etl>
+      </etls>
+    </client>
+  </clients>
+  <profiles>
+    <profile parsertype="Template" profilename="TemplateFolderNameOnly">
+      <template>[FolderName]</template>
+    </profile>
+    <profile profilename="IIS-Log-Parser" parsertype="Delimited" delimiter="Space" separator="" hasheader="False">
+      <comments>#</comments>
+    </profile>
+    <profile profilename="IIS-Log-Parser1" parsertype="Delimited" delimiter="Space" separator="" hasheader="False">
+      <comments>#</comments>
+    </profile>
+  </profiles>
+  <transforms>
+    <transform profilename="ColorsTransformation">Add SNo AutoNumber
+Hide hex
+hide category
+Add ucategory translate(category,'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+rename color Color
+rename type ColorType</transform>
+    <transform profilename="CSV Multiple Transforms">[row=&gt;PatientVisit]
+Add SNo AutoNumber
+Add DispCode substring-before(Disposition,' ')
+filter starts-with(PatientName,'W') or Disposition='05 Eloped'
+filter starts-with(PrimaryNurse,'MURRAY') and starts-with(Disposition,'02')
+GO
+Add SNo1 SNo+1
+Add Val 'Test Value'
+sort AgeGen
+//GO</transform>
+    <transform profilename="CSV Onload Transform">Add SetNo 1</transform>
+    <transform profilename="FilterCsvFile-H">[row=&gt;PatientDetails]
+Add DispCode substring-before(Disposition,' ')
+Add Age substring-before(AgeGen,' ')
+Add Gender substring-after(AgeGen,'/')
+--filter1 starts-with(PatientName,'W') or Disposition='05 Eloped'
+--filter1 starts-with(PrimaryNurse,'MURRAY') and starts-with(Disposition,'02')
+--filter starts-with(Disposition,'02') and starts-with(PrimaryNurse,'HUDSON')
+filter starts-with(MRN,'7')
+GO
+filter Age&gt;50 and easy:Upper(Gender)='MALE' and starts-with(DispCode,'0')
+sort Sno</transform>
+    <transform profilename="FilterCsvFile">Add SNo AutoNumber
+Add DispCode substring-before(Disposition,' ')
+Add Age substring-before(AgeGen,' ')
+filter1 starts-with(PatientName,'W') or Disposition='05 Eloped'
+filter starts-with(Disposition,'01') and starts-with(AgeGen,'7')</transform>
+    <transform profilename="HL7-PID">[PID=&gt;PatientDetails]
+Add SNo number</transform>
+    <transform profilename="HL7">[MSH=&gt;MessageHeader]
+rename msh_0 SegmentName
+rename msh_1 Separators
+rename MSH_2 SourceOrganization
+rename msh_3 SourceApplication
+rename MSH_4 TargetOrganization
+rename msh_5 TargetApplication
+Add SNo AutoNumber
+[PID=&gt;PatientData]
+rename pid_0 SegmentName
+rename PID_1 OccurenceIndex
+[PD1=&gt;PatientAdditionalData]
+[OBX=&gt;ObservationResults]
+rename obx_0 SegmentName
+GO
+[PatientData]
+sort OccurenceIndex data-type='number' order='descending'
+[ObservationResults]
+sort OBX_1
+GO</transform>
+    <transform profilename="IIS-DuringLoad-Transforms">[row=&gt;log]
+rename Field_0 date
+rename Field_1 time
+rename Field_2 ClientIP
+rename Field_3 Verb
+remove Field_4
+remove Field_5
+rename Field_6 IncomingPort
+rename field_7 ClientMachineName
+remove Field_8
+rename field_9 BrowserInfo
+rename field_10 CallURL
+rename field_11 ResponseCode
+remove field_12
+remove Field_13
+remove Field_14
+Add BrowserName substring-before(Field_9,'/')
+Add SNo AutoNumber</transform>
+    <transform profilename="IIS-LogFile-Parser">[row=&gt;logrecord]
+rename Field_0 Date
+rename Field_1 Time
+rename Field_2 SourceIP
+rename Field_3 CallMethod
+rename Field_4 CallURL
+rename Field_5 CallParams
+rename Field_6 CallPort
+GO</transform>
+    <transform profilename="IncludePrimaryKey">Add SNo AutoNumber
+Add Disp substring(Disposition,1,2)
+Add Age substring-before(AgeGen,' ')
+HIDE ArrivalMode
+Hide AdmitPhysician
+Hide Unused
+Hide DischargeLoc
+Hide Disposition
+Hide AgeGen</transform>
+    <transform profilename="Insurance_Sample">[row=&gt;Policies]
+filter eq_site_limit &gt; 0
+orderby policyid</transform>
+    <transform profilename="Regex Test">[row=&gt;Data]
+filter not(easy:IsEmpty(easy:Replace(FileName,'.',''))) and not(easy:IsEmpty(Size))
+sort Size
+go
+Add SNo AutoNumber
+(?=\d)[DateTime] (AM|PM)( )+[Size:(\d,)] [FileName]\r\n</transform>
+    <transform profilename="Regex-Followup">[row=&gt;Names]
+Add SerialNo autonumber
+filter not(translate(FileName,'.','')='') 
+sort FileName</transform>
+    <transform profilename="Regex-Names">[row=&gt;Names]
+Add SerialNo autonumber
+Add FullName normalize-space(translate(concat(FirstName,' ',LastName),'abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ'))</transform>
+  </transforms>
+</config>

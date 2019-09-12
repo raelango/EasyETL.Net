@@ -53,6 +53,9 @@ namespace EasyETL.Writers
 
         public virtual string BuildOutputString()
         {
+            if (_dataSet != null)
+            {
+
             outputString = BuildHeaderString();
             foreach (DataTable dt in _dataSet.Tables)
             {
@@ -69,6 +72,7 @@ namespace EasyETL.Writers
                 outputString += TableDelimeter(_dataSet.Tables[_dataSet.Tables.Count -1].Equals(dt));
             }
             outputString += BuildFooterString();
+            }
             return outputString;
         }
 

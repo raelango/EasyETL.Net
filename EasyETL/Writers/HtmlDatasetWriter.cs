@@ -5,11 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using System.IO;
 
 namespace EasyETL.Writers
 {
     public class HtmlDatasetWriter : FileDatasetWriter
     {
+        public string TemplateFileName = String.Empty;
         public Dictionary<string, string> DocProperties = new Dictionary<string, string>();
 
         public HtmlDatasetWriter()
@@ -22,9 +24,10 @@ namespace EasyETL.Writers
         {
         }
 
-        public HtmlDatasetWriter(DataSet dataSet, string fileName)
+        public HtmlDatasetWriter(DataSet dataSet, string fileName, string templateFileName = "")
             : base(dataSet, fileName)
         {
+            TemplateFileName = templateFileName;
         }
 
         public override string BuildOutputString()
@@ -35,10 +38,60 @@ namespace EasyETL.Writers
         public override string BuildHeaderString()
         {
             string returnStr = "<HTML>" + Environment.NewLine;
-            returnStr += "<HEAD>" + Environment.NewLine;
-            returnStr += "</HEAD>" + Environment.NewLine;
-            returnStr += "<BODY>" + Environment.NewLine;
+            if (!String.IsNullOrWhiteSpace(TemplateFileName) && (File.Exists(TemplateFileName)))
+            {
+                string htmlContents = File.ReadAllText(TemplateFileName);
+                returnStr += GetHtmlHeader(htmlContents) + Environment.NewLine;
+                returnStr += GetBodyContents(htmlContents) + Environment.NewLine;
+            }
+            else
+            {
+                returnStr += "<HEAD>" + Environment.NewLine;
+                returnStr += "</HEAD>" + Environment.NewLine;
+                returnStr += "<BODY>" + Environment.NewLine;
+            }
             return returnStr;
+        }
+
+        private string GetBodyContents(string htmlContents)
+        {
+            int headEndPosition = htmlContents.IndexOf("</body>", StringComparison.CurrentCultureIgnoreCase);
+            if (headEndPosition >= 0)
+            {
+                htmlContents = htmlContents.Substring(0, headEndPosition);
+            }
+            int headStartPosition = htmlContents.IndexOf("<body>", StringComparison.CurrentCultureIgnoreCase);
+            if (headStartPosition < 1) headStartPosition = htmlContents.IndexOf("<body ", StringComparison.CurrentCultureIgnoreCase);
+            if (headStartPosition > 0)
+            {
+                htmlContents = htmlContents.Substring(headStartPosition);
+            }
+            else
+            {
+                htmlContents = "<body>";
+            }
+            return htmlContents;
+        }
+
+        private string GetHtmlHeader(string htmlContents)
+        {
+            int headEndPosition = htmlContents.IndexOf("</head>", StringComparison.CurrentCultureIgnoreCase);
+            if ( headEndPosition >= 0)
+            {
+                htmlContents = htmlContents.Substring(0, headEndPosition);
+            }
+            int headStartPosition = htmlContents.IndexOf("<head>",StringComparison.CurrentCultureIgnoreCase);
+            if (headStartPosition < 1) headStartPosition = htmlContents.IndexOf("<head ", StringComparison.CurrentCultureIgnoreCase);
+            if (headStartPosition > 0)
+            {
+                htmlContents = htmlContents.Substring(headStartPosition);
+                htmlContents += "</head>";
+            }
+            else
+            {
+                htmlContents = "<head></head>";
+            }
+            return htmlContents;
         }
 
         public override string BuildTableHeaderString(DataTable dt)

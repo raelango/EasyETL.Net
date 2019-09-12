@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
-using word=DocumentFormat.OpenXml.Wordprocessing;
-using excel=DocumentFormat.OpenXml.Spreadsheet;
+using word = DocumentFormat.OpenXml.Wordprocessing;
+using excel = DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.CustomProperties;
+using System.IO;
+using DocumentFormat.OpenXml.Spreadsheet;
 
 namespace EasyETL.Writers
 {
@@ -20,6 +22,7 @@ namespace EasyETL.Writers
     }
     public class OfficeDatasetWriter : FileDatasetWriter
     {
+        public string TemplateFileName = String.Empty;
         public Dictionary<string, string> DocProperties = new Dictionary<string, string>();
 
         public OfficeFileType DestinationType = OfficeFileType.WordDocument;
@@ -35,9 +38,10 @@ namespace EasyETL.Writers
         {
         }
 
-        public OfficeDatasetWriter(DataSet dataSet, string fileName)
+        public OfficeDatasetWriter(DataSet dataSet, string fileName, string templateFileName = "")
             : base(dataSet, fileName)
         {
+            TemplateFileName = templateFileName;
         }
 
 
@@ -50,64 +54,98 @@ namespace EasyETL.Writers
                 switch (DestinationType)
                 {
                     case OfficeFileType.WordDocument:
-                        using (WordprocessingDocument doc = WordprocessingDocument.Create(_fileName, WordprocessingDocumentType.Document))
+                        WordprocessingDocument doc;
+                        if (File.Exists(TemplateFileName))
                         {
-                            CustomFilePropertiesPart customProp = doc.AddCustomFilePropertiesPart();
-                            SetFileProperties(customProp);
-
-                            MainDocumentPart mainDoc = doc.AddMainDocumentPart();
-                            mainDoc.Document = new word.Document();
-                            word.Body body = new word.Body();
-                            bool firstTable = true;
-                            foreach (DataTable dt in _dataSet.Tables)
-                            {
-                                if (!firstTable)
-                                {
-                                    body.Append(GetPageBreak());
-                                }
-                                else
-                                {
-                                    firstTable = false;
-                                }
-                                body.Append(GetParagraph(dt.TableName));
-                                body.Append(GetWordTable(dt));
-                            }
-                            mainDoc.Document.Append(body);
-                            mainDoc.Document.Save();
+                            doc = WordprocessingDocument.CreateFromTemplate(TemplateFileName);
+                            doc = (WordprocessingDocument)doc.SaveAs(_fileName);
                         }
+                        else
+                        {
+                            doc = WordprocessingDocument.Create(_fileName, WordprocessingDocumentType.Document);
+                        }
+                        CustomFilePropertiesPart customProp = doc.CustomFilePropertiesPart;
+                        if (customProp == null) customProp = doc.AddCustomFilePropertiesPart();
+                        SetFileProperties(customProp);
+
+                        MainDocumentPart mainDoc = doc.MainDocumentPart;
+                        if (mainDoc == null) mainDoc = doc.AddMainDocumentPart();
+                        if (mainDoc.Document == null) mainDoc.Document = new word.Document();
+                        word.Body body = new word.Body();
+                        bool firstTable = true;
+                        foreach (DataTable dt in _dataSet.Tables)
+                        {
+                            if (!firstTable)
+                            {
+                                body.Append(GetPageBreak());
+                            }
+                            else
+                            {
+                                firstTable = false;
+                            }
+                            body.Append(GetParagraph(dt.TableName));
+                            body.Append(GetWordTable(dt));
+                        }
+                        mainDoc.Document.Append(body);
+                        mainDoc.Document.Save();
+                        doc.Dispose();
+                        doc = null;
                         break;
                     case OfficeFileType.ExcelWorkbook:
-                        using (SpreadsheetDocument workbook = SpreadsheetDocument.Create(_fileName, SpreadsheetDocumentType.Workbook))
+                        SpreadsheetDocument spreadSheet;
+                        if (File.Exists(TemplateFileName))
+                        {
+                            spreadSheet = SpreadsheetDocument.CreateFromTemplate(TemplateFileName);
+                            spreadSheet = (SpreadsheetDocument)spreadSheet.SaveAs(_fileName);
+                        }
+                        else
+                        {
+                            spreadSheet = SpreadsheetDocument.Create(_fileName, SpreadsheetDocumentType.Workbook);
+                            spreadSheet.Save();
+                        }
+                        using (SpreadsheetDocument workbook = spreadSheet)
                         {
 
-                            CustomFilePropertiesPart customProp = workbook.AddCustomFilePropertiesPart();
-                            SetFileProperties(customProp);
-                            
-                            WorkbookPart workbookPart = workbook.AddWorkbookPart();
+                            CustomFilePropertiesPart excelCustomProp = workbook.AddCustomFilePropertiesPart();
+                            SetFileProperties(excelCustomProp);
 
-                            workbook.WorkbookPart.Workbook = new excel.Workbook();
-
-                            workbook.WorkbookPart.Workbook.Sheets = new excel.Sheets();
-
-                            foreach (System.Data.DataTable table in _dataSet.Tables)
+                            if (workbook.WorkbookPart == null) workbook.AddWorkbookPart();
+                            if (workbook.WorkbookPart.Workbook == null) workbook.WorkbookPart.Workbook = new excel.Workbook();
+                            if (workbook.WorkbookPart.Workbook.Sheets == null) workbook.WorkbookPart.Workbook.Sheets = new excel.Sheets();
+                            excel.Sheets sheets = workbook.WorkbookPart.Workbook.Sheets;
+                            foreach (DataTable table in _dataSet.Tables)
                             {
 
-                                WorksheetPart sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>();
-                                excel.SheetData sheetData = new excel.SheetData();
-                                sheetPart.Worksheet = new excel.Worksheet(sheetData);
-
-                                excel.Sheets sheets = workbook.WorkbookPart.Workbook.GetFirstChild<excel.Sheets>();
-                                string relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart);
-
-                                uint sheetId = 1;
-                                if (sheets.Elements<excel.Sheet>().Count() > 0)
+                                excel.SheetData sheetData = null;
+                                WorksheetPart sheetPart = null;
+                                excel.Sheet sheet = null;
+                                foreach (OpenXmlElement element in sheets.Elements())
                                 {
-                                    sheetId =
-                                        sheets.Elements<excel.Sheet>().Select(s => s.SheetId.Value).Max() + 1;
+                                    if (element is Sheet)
+                                    {
+                                        sheet = (Sheet)element;
+                                        if (sheet.Name.Value.Equals(table.TableName, StringComparison.CurrentCultureIgnoreCase))
+                                        {
+                                            //Assign the sheetPart 
+                                            sheetPart = (WorksheetPart)workbook.WorkbookPart.GetPartById(sheet.Id.Value);
+                                            sheetData = sheetPart.Worksheet.GetFirstChild<SheetData>();
+                                            break;
+                                        }
+                                    }
+                                    sheet = null;
                                 }
 
-                                excel.Sheet sheet = new excel.Sheet() { Id = relationshipId, SheetId = sheetId, Name = table.TableName };
-                                sheets.Append(sheet);
+                                if (sheet == null)
+                                {
+                                    sheetPart = workbook.WorkbookPart.AddNewPart<WorksheetPart>(); //Create a new WorksheetPart
+                                    sheetData = new excel.SheetData(); //create a new SheetData
+                                    sheetPart.Worksheet = new excel.Worksheet(sheetData); /// Create a new Worksheet with the sheetData and link it to the sheetPart...
+
+                                    string relationshipId = workbook.WorkbookPart.GetIdOfPart(sheetPart); //get the ID of the sheetPart. 
+                                    sheet = new excel.Sheet() { Id = relationshipId, SheetId = 1, Name = table.TableName }; //create a new sheet
+                                    sheets.Append(sheet); //append the sheet to the sheets.
+                                }
+
 
                                 excel.Row headerRow = new excel.Row();
 
@@ -138,14 +176,33 @@ namespace EasyETL.Writers
 
                                     sheetData.AppendChild(newRow);
                                 }
-
+                                sheetPart.Worksheet.Save();
                             }
+                            workbook.WorkbookPart.Workbook.Save();
+                            workbook.Save();
+                            workbook.Close();
                         }
+                        spreadSheet = null;
                         break;
                 }
 
 
             }
+        }
+
+
+        private static WorksheetPart GetWorksheetPartByName(SpreadsheetDocument document, string sheetName)
+        {
+            IEnumerable<Sheet> sheets =
+               document.WorkbookPart.Workbook.GetFirstChild<Sheets>().
+               Elements<Sheet>().Where(s => s.Name == sheetName);
+
+            if (sheets.Count() == 0) return null;
+            string relationshipId = sheets.First().Id.Value;
+            WorksheetPart worksheetPart = (WorksheetPart)
+                 document.WorkbookPart.GetPartById(relationshipId);
+            return worksheetPart;
+
         }
 
         private void SetFileProperties(CustomFilePropertiesPart customProp)
