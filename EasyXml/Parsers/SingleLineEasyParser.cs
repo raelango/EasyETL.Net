@@ -37,9 +37,11 @@ namespace EasyXml.Parsers
             }
             int errorCount = 0;
             int rowCount = 0;
+            long currentLineNumber = txtFieldParser.LineNumber;
             while (!txtFieldParser.EndOfData)
             {
-                UpdateProgress(txtFieldParser.LineNumber);
+                currentLineNumber = txtFieldParser.LineNumber;
+                UpdateProgress(currentLineNumber);
                 bool skipRow = false;
                 if (FirstRowHasFieldNames && bFirstRow)
                 {
@@ -78,6 +80,7 @@ namespace EasyXml.Parsers
                     }
                 }
             }
+            UpdateProgress(currentLineNumber, true);
             return xDoc;
         }
 

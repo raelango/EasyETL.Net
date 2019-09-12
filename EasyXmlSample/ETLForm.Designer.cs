@@ -81,6 +81,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tabDataSource = new System.Windows.Forms.TabControl();
             this.tabDatasourceFile = new System.Windows.Forms.TabPage();
+            this.label18 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.nudMaxRows = new System.Windows.Forms.NumericUpDown();
             this.chkHasMaxRows = new System.Windows.Forms.CheckBox();
@@ -127,16 +128,15 @@
             this.label15 = new System.Windows.Forms.Label();
             this.tabTransformationOptions = new System.Windows.Forms.TabPage();
             this.tabExportOptions = new System.Windows.Forms.TabPage();
+            this.pnlExportXsltDetails = new System.Windows.Forms.Panel();
+            this.btnExportXsltFileName = new System.Windows.Forms.Button();
+            this.txtExportXsltFileName = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.btnExportFileName = new System.Windows.Forms.Button();
+            this.txtExportFileName = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.label17 = new System.Windows.Forms.Label();
-            this.txtExportFileName = new System.Windows.Forms.TextBox();
-            this.btnExportFileName = new System.Windows.Forms.Button();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.pnlExportXsltDetails = new System.Windows.Forms.Panel();
-            this.txtExportXsltFileName = new System.Windows.Forms.TextBox();
-            this.btnExportXsltFileName = new System.Windows.Forms.Button();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -168,9 +168,9 @@
             this.panelParserProfileSave.SuspendLayout();
             this.tabTransformationOptions.SuspendLayout();
             this.tabExportOptions.SuspendLayout();
+            this.pnlExportXsltDetails.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
-            this.pnlExportXsltDetails.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCloseWindow
@@ -718,6 +718,15 @@
             this.tabDatasourceFile.Text = "File";
             this.tabDatasourceFile.UseVisualStyleBackColor = true;
             // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(7, 13);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(57, 13);
+            this.label18.TabIndex = 13;
+            this.label18.Text = "File Name:";
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -1084,6 +1093,7 @@
             // btnExport
             // 
             this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExport.Enabled = false;
             this.btnExport.Location = new System.Drawing.Point(1219, 157);
             this.btnExport.Name = "btnExport";
             this.btnExport.Size = new System.Drawing.Size(75, 23);
@@ -1230,6 +1240,70 @@
             this.tabExportOptions.Text = "Export";
             this.tabExportOptions.UseVisualStyleBackColor = true;
             // 
+            // pnlExportXsltDetails
+            // 
+            this.pnlExportXsltDetails.Controls.Add(this.btnExportXsltFileName);
+            this.pnlExportXsltDetails.Controls.Add(this.txtExportXsltFileName);
+            this.pnlExportXsltDetails.Controls.Add(this.label19);
+            this.pnlExportXsltDetails.Location = new System.Drawing.Point(5, 52);
+            this.pnlExportXsltDetails.Name = "pnlExportXsltDetails";
+            this.pnlExportXsltDetails.Size = new System.Drawing.Size(902, 44);
+            this.pnlExportXsltDetails.TabIndex = 18;
+            this.pnlExportXsltDetails.Visible = false;
+            // 
+            // btnExportXsltFileName
+            // 
+            this.btnExportXsltFileName.Location = new System.Drawing.Point(712, 9);
+            this.btnExportXsltFileName.Name = "btnExportXsltFileName";
+            this.btnExportXsltFileName.Size = new System.Drawing.Size(75, 23);
+            this.btnExportXsltFileName.TabIndex = 19;
+            this.btnExportXsltFileName.Text = "Browse File";
+            this.btnExportXsltFileName.UseVisualStyleBackColor = true;
+            this.btnExportXsltFileName.Click += new System.EventHandler(this.btnExportXsltFileName_Click);
+            // 
+            // txtExportXsltFileName
+            // 
+            this.txtExportXsltFileName.Location = new System.Drawing.Point(149, 6);
+            this.txtExportXsltFileName.Name = "txtExportXsltFileName";
+            this.txtExportXsltFileName.Size = new System.Drawing.Size(526, 20);
+            this.txtExportXsltFileName.TabIndex = 18;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(9, 9);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(104, 13);
+            this.label19.TabIndex = 17;
+            this.label19.Text = "Template File Name:";
+            // 
+            // btnExportFileName
+            // 
+            this.btnExportFileName.Location = new System.Drawing.Point(844, 6);
+            this.btnExportFileName.Name = "btnExportFileName";
+            this.btnExportFileName.Size = new System.Drawing.Size(75, 23);
+            this.btnExportFileName.TabIndex = 16;
+            this.btnExportFileName.Text = "Browse File";
+            this.btnExportFileName.UseVisualStyleBackColor = true;
+            this.btnExportFileName.Click += new System.EventHandler(this.btnExportFileName_Click);
+            // 
+            // txtExportFileName
+            // 
+            this.txtExportFileName.Enabled = false;
+            this.txtExportFileName.Location = new System.Drawing.Point(341, 12);
+            this.txtExportFileName.Name = "txtExportFileName";
+            this.txtExportFileName.Size = new System.Drawing.Size(479, 20);
+            this.txtExportFileName.TabIndex = 15;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(244, 16);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(90, 13);
+            this.label17.TabIndex = 14;
+            this.label17.Text = "Export File Name:";
+            // 
             // tableLayoutPanel1
             // 
             this.tableLayoutPanel1.ColumnCount = 1;
@@ -1258,79 +1332,6 @@
             this.flowLayoutPanel1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.flowLayoutPanel1.Size = new System.Drawing.Size(1325, 30);
             this.flowLayoutPanel1.TabIndex = 9;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(244, 16);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(90, 13);
-            this.label17.TabIndex = 14;
-            this.label17.Text = "Export File Name:";
-            // 
-            // txtExportFileName
-            // 
-            this.txtExportFileName.Enabled = false;
-            this.txtExportFileName.Location = new System.Drawing.Point(341, 12);
-            this.txtExportFileName.Name = "txtExportFileName";
-            this.txtExportFileName.Size = new System.Drawing.Size(479, 20);
-            this.txtExportFileName.TabIndex = 15;
-            // 
-            // btnExportFileName
-            // 
-            this.btnExportFileName.Location = new System.Drawing.Point(844, 6);
-            this.btnExportFileName.Name = "btnExportFileName";
-            this.btnExportFileName.Size = new System.Drawing.Size(75, 23);
-            this.btnExportFileName.TabIndex = 16;
-            this.btnExportFileName.Text = "Browse File";
-            this.btnExportFileName.UseVisualStyleBackColor = true;
-            this.btnExportFileName.Click += new System.EventHandler(this.btnExportFileName_Click);
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(7, 13);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(57, 13);
-            this.label18.TabIndex = 13;
-            this.label18.Text = "File Name:";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(9, 9);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(134, 13);
-            this.label19.TabIndex = 17;
-            this.label19.Text = "XSLT Template File Name:";
-            // 
-            // pnlExportXsltDetails
-            // 
-            this.pnlExportXsltDetails.Controls.Add(this.btnExportXsltFileName);
-            this.pnlExportXsltDetails.Controls.Add(this.txtExportXsltFileName);
-            this.pnlExportXsltDetails.Controls.Add(this.label19);
-            this.pnlExportXsltDetails.Location = new System.Drawing.Point(5, 52);
-            this.pnlExportXsltDetails.Name = "pnlExportXsltDetails";
-            this.pnlExportXsltDetails.Size = new System.Drawing.Size(902, 44);
-            this.pnlExportXsltDetails.TabIndex = 18;
-            this.pnlExportXsltDetails.Visible = false;
-            // 
-            // txtExportXsltFileName
-            // 
-            this.txtExportXsltFileName.Location = new System.Drawing.Point(149, 6);
-            this.txtExportXsltFileName.Name = "txtExportXsltFileName";
-            this.txtExportXsltFileName.Size = new System.Drawing.Size(526, 20);
-            this.txtExportXsltFileName.TabIndex = 18;
-            // 
-            // btnExportXsltFileName
-            // 
-            this.btnExportXsltFileName.Location = new System.Drawing.Point(712, 9);
-            this.btnExportXsltFileName.Name = "btnExportXsltFileName";
-            this.btnExportXsltFileName.Size = new System.Drawing.Size(75, 23);
-            this.btnExportXsltFileName.TabIndex = 19;
-            this.btnExportXsltFileName.Text = "Browse File";
-            this.btnExportXsltFileName.UseVisualStyleBackColor = true;
-            this.btnExportXsltFileName.Click += new System.EventHandler(this.btnExportXsltFileName_Click);
             // 
             // ETLForm
             // 
@@ -1389,10 +1390,10 @@
             this.tabTransformationOptions.ResumeLayout(false);
             this.tabExportOptions.ResumeLayout(false);
             this.tabExportOptions.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.ResumeLayout(false);
             this.pnlExportXsltDetails.ResumeLayout(false);
             this.pnlExportXsltDetails.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

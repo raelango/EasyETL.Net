@@ -114,7 +114,7 @@ namespace EasyXmlSample
                                 cmbDestination.SelectedItem = xAttr.Value; break;
                             case "exportfilename":
                                 txtExportFileName.Text = xAttr.Value; break;
-                            case "xsltfilename":
+                            case "templatefilename":
                                 txtExportXsltFileName.Text = xAttr.Value; break;
                         }
                     }
@@ -442,6 +442,7 @@ namespace EasyXmlSample
                     }
                 }
                 dataGridView1.DataSource = ds;
+                btnExport.Enabled = ((ds != null) && (ds.Tables.Count > 0));
                 if (cmbTableName.Items.Count > 0)
                 {
                     cmbTableName.SelectedIndex = 0;
@@ -583,13 +584,13 @@ namespace EasyXmlSample
                     dsw = new DelimitedDatasetWriter(rds, txtExportFileName.Text) { Delimiter = '\t', IncludeHeaders = true, IncludeQuotes = true };
                     break;
                 case "HTML":
-                    dsw = new HtmlDatasetWriter(rds, txtExportFileName.Text);
+                    dsw = new HtmlDatasetWriter(rds, txtExportFileName.Text, txtExportXsltFileName.Text);
                     break;
                 case "WORD":
-                    dsw = new OfficeDatasetWriter(rds, txtExportFileName.Text);
+                    dsw = new OfficeDatasetWriter(rds, txtExportFileName.Text, txtExportXsltFileName.Text);
                     break;
                 case "EXCEL":
-                    dsw = new OfficeDatasetWriter(rds, txtExportFileName.Text) { DestinationType = OfficeFileType.ExcelWorkbook };
+                    dsw = new OfficeDatasetWriter(rds, txtExportFileName.Text, txtExportXsltFileName.Text) { DestinationType = OfficeFileType.ExcelWorkbook };
                     break;
                 case "XML":
                     dsw = new XmlDatasetWriter(rds, txtExportXsltFileName.Text, txtExportFileName.Text);
@@ -767,7 +768,7 @@ namespace EasyXmlSample
             XmlElement dataNode = xDoc.CreateElement("output");
             dataNode.SetAttribute("exportformat", cmbDestination.Text);
             dataNode.SetAttribute("exportfilename", txtExportFileName.Text);
-            dataNode.SetAttribute("xsltfilename", txtExportXsltFileName.Text);
+            dataNode.SetAttribute("templatefilename", txtExportXsltFileName.Text);
             xNode.AppendChild(dataNode);
             #endregion
 
@@ -911,7 +912,7 @@ namespace EasyXmlSample
         {
             if (String.IsNullOrWhiteSpace(txtExportFileName.Text)) txtExportFileName.Text = txtFileName.Text;
             txtExportFileName.Text = Path.ChangeExtension(txtExportFileName.Text, GetExportPathExtension());
-            pnlExportXsltDetails.Visible = (cmbDestination.Text == "XML");
+            pnlExportXsltDetails.Visible = ((cmbDestination.Text == "XML") || (cmbDestination.Text == "EXCEL") || (cmbDestination.Text == "WORD") || (cmbDestination.Text == "HTML"));
             if (!File.Exists(txtExportXsltFileName.Text)) txtExportXsltFileName.Text = "";
         }
 

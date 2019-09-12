@@ -1,32 +1,6 @@
 <config>
   <clients>
-    <client id="1" name="Client 1">
-      <endpoints>
-        <endpoint id="1_endpoint_1" name="1_endpoint_1" />
-        <endpoint id="1_endpoint_1" name="endpoints_1_1_endpoint_1_1" />
-        <endpoint id="1_endpoint_1" name="endpoints_1_endpoint_3" />
-        <endpoint id="1_endpoint_1" name="endpoints_1_endpoint_4" />
-        <endpoint id="1_endpoint_1" name="endpoints_1_endpoint_5" />
-        <endpoint id="1_endpoint_1" name="endpoints_1_endpoint_6" />
-        <endpoint id="1_endpoint_1" name="endpoints_1_endpoint_7" />
-        <endpoint id="endpoints_1_endpoint_5" name="endpoints_1_endpoint_8" />
-        <endpoint id="endpoints_1_endpoint_5" name="endpoints_1_endpoint_9" />
-        <endpoint id="endpoints_1_endpoint_10" name="endpoints_1_endpoint_10" />
-      </endpoints>
-      <transfers>
-        <transfer id="transfers_1_transfer_1" name="transfers_1_transfer_1" />
-        <transfer id="transfers_1_transfer_1" name="transfers_1_transfer_2" />
-        <transfer id="transfers_1_transfer_1" name="transfers_1_transfer_3" />
-        <transfer id="transfers_1_transfer_1" name="transfers_1_transfer_4" />
-        <transfer id="transfers_1_transfer_1" name="transfers_1_transfer_5" />
-        <transfer id="transfers_1_transfer_1" name="transfers_1_transfer_6" />
-        <transfer id="transfers_1_transfer_1" name="transfers_1_transfer_7" />
-        <transfer id="transfers_1_transfer_8" name="transfers_1_transfer_8" />
-      </transfers>
-      <etls>
-      </etls>
-    </client>
-    <client id="2" name="Demonstration">
+    <client id="2" name="Demonstration of Parsing">
       <endpoints>
         <endpoint id="2_endpoint_1" name="2_endpoint_1" />
       </endpoints>
@@ -104,13 +78,13 @@ filter line='Residential' and construction='Wood' and hu_site_deductible&gt;0
         <etl id="2_etl_4" name="HTML File">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\u_ex190610.html" />
           <transformations>
-            <duringload profilename="" savefilename="">rename Verb MyVerb
-rename Client_x0020_IP ClientIP</duringload>
+            <duringload profilename="" savefilename="">rename Client_x0020_IP ClientIP
+filter Verb='GET'</duringload>
             <afterload profilename="" savefilename="">
             </afterload>
           </transformations>
           <parseoptions parsertype="HtmlTable" />
-          <output exportformat="" exportfilename="C:\temp\u_ex190610." xsltfilename="" />
+          <output exportformat="CSV" exportfilename="C:\temp\u_ex190610_Export.CSV" templatefilename="" />
         </etl>
       </etls>
     </client>
@@ -172,6 +146,134 @@ Add SNo AutoNumber</afterload>
             <template>[Date] [Time],[Action:(\w)] [Contents]</template>
           </parseoptions>
           <output exportformat="EXCEL" />
+        </etl>
+      </etls>
+    </client>
+    <client id="5" name="Demonstration of Export">
+      <endpoints>
+        <endpoint id="5_endpoint_1" name="5_endpoint_1" />
+      </endpoints>
+      <datasources>
+        <datasource id="5_datasource_1" name="5_datasource_1" />
+      </datasources>
+      <queues>
+        <queue id="5_queue_1" name="5_queue_1" />
+      </queues>
+      <transfers>
+        <transfer id="5_transfer_1" name="5_transfer_1" />
+      </transfers>
+      <etls>
+        <etl id="5_etl_1" name="Export in CSV Format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">remove statecode
+remove county
+filter eq_site_limit &gt;0 and line='Residential' and construction='Wood'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="CSV" exportfilename="C:\temp\FL_insurance_export.CSV" xsltfilename="" />
+        </etl>
+        <etl id="5_etl_2" name="Export To Excel File">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter line='Residential'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="AutoDetect" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="EXCEL" exportfilename="C:\temp\FL_insurance_export1.xlsx" templatefilename="C:\temp\FL_insurance_template.xltx" />
+        </etl>
+        <etl id="5_etl_3" name="Export To Word File">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter construction='Masonry'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="WORD" exportfilename="C:\temp\FL_insurance_export.docx" templatefilename="C:\temp\FL_insurance_export.dotx" />
+        </etl>
+        <etl id="5_etl_4" name="Export in TAB Format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">remove statecode
+remove county
+filter eq_site_limit &gt;0 and line='Residential' and construction='Wood'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="TAB" exportfilename="C:\temp\FL_insurance_tab_export.txt" templatefilename="" />
+        </etl>
+        <etl id="5_etl_5" name="Export in HTML Format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter construction='Masonry' and county='CLAY COUNTY'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="HTML" exportfilename="C:\temp\FL_insurance_export.HTML" templatefilename="C:\temp\FL_insurance_log_template.html" />
+        </etl>
+        <etl id="5_etl_6" name="Export in JSON format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">filter county='CLAY COUNTY'</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="JSON" exportfilename="C:\temp\FL_insurance_export.JSON" templatefilename="" />
+        </etl>
+        <etl id="5_etl_7" name="Export To PDF File">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">filter tiv_2012 &gt; 20000000</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="PDF" exportfilename="C:\temp\FL_insurance_export.PDF" templatefilename="" />
+        </etl>
+        <etl id="5_etl_8" name="Export in XML Format">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter policyID &gt; 950000</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" />
         </etl>
       </etls>
     </client>

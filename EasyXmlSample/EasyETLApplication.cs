@@ -15,6 +15,7 @@ namespace EasyXmlSample
     public partial class EasyETLApplication : Form
     {
         private string xmlFileName;
+        private string clientCategories = "endpoints;datasources;queues;transfers;etls";
         public EasyETLApplication()
         {
             InitializeComponent();
@@ -100,7 +101,7 @@ namespace EasyXmlSample
             else
             {
                 TreeNode categoryNode = tvClients.SelectedNode;
-                if ("endpoints;transfers;etls".Split(';').Contains(tvClients.SelectedNode.Parent.Text)) categoryNode = tvClients.SelectedNode.Parent;
+                if (clientCategories.Split(';').Contains(tvClients.SelectedNode.Parent.Text)) categoryNode = tvClients.SelectedNode.Parent;
                 if (tNode == null) tNode = tvClients.SelectedNode.Nodes.Add(categoryNode.Parent.Name + "_" + categoryNode.Text.TrimEnd('s') + "_" + (categoryNode.Nodes.Count + 1).ToString());
             }
             if (tNode != null)
@@ -228,12 +229,11 @@ namespace EasyXmlSample
                     XmlElement childNode = xDoc.CreateElement(nodeType);
                     childNode.SetAttribute("id", node.Name);
                     childNode.SetAttribute("name", node.Text);
-                    XmlElement epNode = xDoc.CreateElement("endpoints");
-                    XmlElement trNode = xDoc.CreateElement("transfers");
-                    XmlElement etlNode = xDoc.CreateElement("etls");
-                    childNode.AppendChild(epNode);
-                    childNode.AppendChild(trNode);
-                    childNode.AppendChild(etlNode);
+                    foreach (string clientCategory in clientCategories.Split(';'))
+                    {
+                        XmlElement ccNode = xDoc.CreateElement(clientCategory);
+                        childNode.AppendChild(ccNode);
+                    }
 
                     xDoc.SelectSingleNode("//clients").AppendChild(childNode);
                 }
@@ -247,7 +247,7 @@ namespace EasyXmlSample
         {
             bool allowEdit = false;
             if (e.Node.Parent == null) allowEdit = true;
-            if ((!allowEdit) && (e.Node.Nodes != null)) allowEdit = true;
+            if ((!allowEdit) && (e.Node.Nodes.Count == 0)) allowEdit = true;
             if (allowEdit)
             {
                 foreach (TabPage p in MainTablControl.TabPages)

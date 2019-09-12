@@ -97,6 +97,7 @@ namespace EasyXml.Parsers
                 subStr = txtReader.ReadLine();
             }
 
+            UpdateProgress(lineNumber, true);
             return xDoc;
         }
 

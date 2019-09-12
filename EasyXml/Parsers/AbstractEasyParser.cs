@@ -98,10 +98,10 @@ namespace EasyXml.Parsers
             }
         }
 
-        public void UpdateProgress(long lineNumber)
+        public void UpdateProgress(long lineNumber, bool forceInvoke = false)
         {
             if (OnProgress == null) return;
-            if ((lineNumber % ProgressInterval) == 0)
+            if ((forceInvoke) || ((lineNumber % ProgressInterval) == 0))
             {
                 OnProgress.Invoke(this, new EasyParserProgressEventArgs(lineNumber));
             }
