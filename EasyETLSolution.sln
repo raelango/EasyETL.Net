@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.PDF", "EasyETL.PDF\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyXml", "EasyXml\EasyXml.csproj", "{5CF95A36-7BC7-4617-827D-4F9056161F14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyXmlSample", "EasyXmlSample\EasyXmlSample.csproj", "{155433A3-85EC-4065-9B13-FB18374A1E34}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETLDemo", "EasyETLDemo\EasyETLDemo.csproj", "{155433A3-85EC-4065-9B13-FB18374A1E34}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyEndpoint", "EasyEndpoint\EasyEndpoint.csproj", "{51925788-A8E5-4D41-A192-D206CDEFEE35}"
 EndProject
