@@ -147,6 +147,7 @@ Add SNo AutoNumber</afterload>
           </parseoptions>
           <output exportformat="EXCEL" />
         </etl>
+        <etl id="6_etl_1" name="6_etl_1" />
       </etls>
     </client>
     <client id="5" name="Demonstration of Export">
@@ -275,6 +276,15 @@ filter policyID &gt; 950000</afterload>
           </parseoptions>
           <output exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" />
         </etl>
+      </etls>
+    </client>
+    <client id="6" name="Client6">
+      <endpoints />
+      <datasources />
+      <filestores />
+      <messagequeues />
+      <transfers />
+      <etls>
       </etls>
     </client>
   </clients>

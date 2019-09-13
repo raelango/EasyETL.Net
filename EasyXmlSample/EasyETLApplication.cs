@@ -15,7 +15,7 @@ namespace EasyXmlSample
     public partial class EasyETLApplication : Form
     {
         private string xmlFileName;
-        private string clientCategories = "endpoints;datasources;queues;transfers;etls";
+        private string clientCategories = "endpoints;datasources;filestores;messagequeues;transfers;etls";
         public EasyETLApplication()
         {
             InitializeComponent();
@@ -96,7 +96,9 @@ namespace EasyXmlSample
             TreeNode tNode = null;
             if ((tvClients.SelectedNode == null) || (tvClients.SelectedNode.Parent == null))
             {
-                tNode = tvClients.Nodes.Add((tvClients.Nodes.Count + 1).ToString(), "Client" + (tvClients.Nodes.Count + 1).ToString());
+                int nodeCount = tvClients.Nodes.Count + 1;
+                while (tvClients.Nodes[nodeCount.ToString()] != null) nodeCount++;
+                tNode = tvClients.Nodes.Add(nodeCount.ToString(), "Client" + nodeCount.ToString());
             }
             else
             {
@@ -239,15 +241,19 @@ namespace EasyXmlSample
                 }
             }
             xDoc.Save(xmlFileName);
-            //LoadClients();
-            //throw new NotImplementedException();
         }
 
         private void tvClients_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
+            TreeNode selectedNode = e.Node;
+            e.CancelEdit = !CanAllowEdit(selectedNode);
+        }
+
+        private bool CanAllowEdit(TreeNode selectedNode)
+        {
             bool allowEdit = false;
-            if (e.Node.Parent == null) allowEdit = true;
-            if ((!allowEdit) && (e.Node.Nodes.Count == 0)) allowEdit = true;
+            if (selectedNode.Parent == null) allowEdit = true;
+            if ((!allowEdit) && (selectedNode.Nodes.Count == 0) && (selectedNode.Parent !=null) && (selectedNode.Parent.Parent !=null)) allowEdit = true;
             if (allowEdit)
             {
                 foreach (TabPage p in MainTablControl.TabPages)
@@ -260,7 +266,7 @@ namespace EasyXmlSample
                     }
                 }
             }
-            e.CancelEdit = !allowEdit;
+            return allowEdit;
         }
 
         private void tvClients_DoubleClick(object sender, EventArgs e)
@@ -306,11 +312,6 @@ namespace EasyXmlSample
             saveToolStripButton_Click(this, null);
         }
 
-        private void toolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            if (MainTablControl.SelectedTab != null) MainTablControl.TabPages.Remove(MainTablControl.SelectedTab);
-        }
-
         private void tvClients_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)
@@ -354,6 +355,59 @@ namespace EasyXmlSample
         {
             tvClients_KeyDown(this,new KeyEventArgs(Keys.Delete));
         }
+
+        private void renameStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if ((tvClients.SelectedNode != null) && (CanAllowEdit(tvClients.SelectedNode))) tvClients.SelectedNode.BeginEdit();
+        }
+
+        private void RenameToolStripButton_Click(object sender, EventArgs e)
+        {
+            renameStripMenuItem_Click(this, null);
+        }
+
+        private void DeleteToolStripButton_Click(object sender, EventArgs e)
+        {
+            tvClients_KeyDown(this, new KeyEventArgs(Keys.Delete));
+        }
+
+        private void CloseToolStripButton_Click(object sender, EventArgs e)
+        {
+            CloseToolStripMenuItem_Click(this, null);
+        }
+
+        private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (MainTablControl.SelectedTab != null) MainTablControl.TabPages.Remove(MainTablControl.SelectedTab);
+        }
+
+        private void ExitToolStripButton_Click(object sender, EventArgs e)
+        {
+            ExitToolsStripMenuItem_Click(this, null);
+        }
+
+        private void MoveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if ((tvClients.SelectedNode !=null) && (tvClients.SelectedNode.FullPath.Split('\\').Length == 3) && CanAllowEdit(tvClients.SelectedNode))
+            {
+                MoveConfigurationForm moveForm = new MoveConfigurationForm();
+                moveForm.OriginalPath = tvClients.SelectedNode.FullPath;
+                moveForm.SettingsFileName = xmlFileName;
+                moveForm.LoadClients(tvClients.SelectedNode.FullPath.Split('\\')[0]);
+                moveForm.SetMoveLabel("Move " + tvClients.SelectedNode.Text + " to:");
+                moveForm.Text = "Move from " + tvClients.SelectedNode.FullPath.Split('\\')[0];
+                moveForm.ShowDialog(this);
+                LoadConfiguration();
+                //MessageBox.Show("We can move this");
+            }
+        }
+
+        private void MoveToolStripButton_Click(object sender, EventArgs e)
+        {
+            MoveToolStripMenuItem_Click(this, null);
+        }
+
+
 
     }
 }

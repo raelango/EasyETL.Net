@@ -159,6 +159,15 @@ namespace EasyXmlSample
                     }
                 }
                 #endregion
+
+                if (xNode.Attributes.GetNamedItem("autorefresh") != null)
+                {
+                    chkAutoRefresh.Checked = Boolean.Parse(xNode.Attributes.GetNamedItem("autorefresh").Value);
+                }
+                else
+                {
+                    chkAutoRefresh.Checked = false;
+                }
             }
 
         }
@@ -497,7 +506,7 @@ namespace EasyXmlSample
                     break;
 
             }
-            //LoadDataToGridView();
+            if (chkAutoRefresh.Checked) LoadDataToGridView();
         }
 
         private void rbDelimiterCustom_CheckedChanged(object sender, EventArgs e)
@@ -546,7 +555,7 @@ namespace EasyXmlSample
 
         private void txtTextContents_Leave(object sender, EventArgs e)
         {
-            //LoadDataToGridView();
+            if (chkAutoRefresh.Checked) LoadDataToGridView();
         }
 
         private void cbTransformProfiles_SelectedIndexChanged(object sender, EventArgs e)
@@ -636,13 +645,13 @@ namespace EasyXmlSample
 
         private void txtTransformText_Leave(object sender, EventArgs e)
         {
-            //TransformDataFromEzDoc();
+            if (chkAutoRefresh.Checked) TransformDataFromEzDoc();
         }
 
         private void chkUseTextExtractor_CheckedChanged(object sender, EventArgs e)
         {
             cbTextExtractor.Visible = chkUseTextExtractor.Checked;
-            //LoadDataToGridView();
+            if (chkAutoRefresh.Checked) LoadDataToGridView();
         }
 
         private void btnRefreshData_Click(object sender, EventArgs e)
@@ -711,6 +720,9 @@ namespace EasyXmlSample
             xDoc.Load(SettingsFileName);
             XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
             xNode.InnerText = "";
+            XmlAttribute autoRefresh = xDoc.CreateAttribute("autorefresh");
+            autoRefresh.Value = chkAutoRefresh.Checked.ToString();
+            xNode.Attributes.Append(autoRefresh);
             #region Datasource Section
             XmlElement datasourceNode = xDoc.CreateElement("datasource");
             datasourceNode.SetAttribute("sourcetype", tabDataSource.SelectedTab.Text);
@@ -904,7 +916,7 @@ namespace EasyXmlSample
                 case "TAB":
                     return "txt";
                 default:
-                    return cmbDestination.Text;
+                    return cmbDestination.Text.ToLower();
             }
         }
 
@@ -923,6 +935,36 @@ namespace EasyXmlSample
             if (ofd.ShowDialog() == DialogResult.OK) txtExportXsltFileName.Text = ofd.FileName;
         }
 
+        private void txtFileName_TextChanged(object sender, EventArgs e)
+        {
+            if (chkAutoRefresh.Checked) LoadDataToGridView();
+        }
+
+        private void nudMaxRows_ValueChanged(object sender, EventArgs e)
+        {
+            chkHasMaxRows.Checked = true;
+            if (chkAutoRefresh.Checked) LoadDataToGridView();
+        }
+
+        private void chkHasMaxRows_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkAutoRefresh.Checked) LoadDataToGridView();
+        }
+
+        private void txtTextContents_TextChanged(object sender, EventArgs e)
+        {
+            if (chkAutoRefresh.Checked) LoadDataToGridView();
+        }
+
+        private void chkFixedFirstRowHasFieldNames_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkAutoRefresh.Checked) LoadDataToGridView();
+        }
+
+        private void txtCustomDelimiter_TextChanged(object sender, EventArgs e)
+        {
+            if (chkAutoRefresh.Checked) LoadDataToGridView();
+        }
 
     }
 }

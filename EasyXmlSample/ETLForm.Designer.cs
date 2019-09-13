@@ -137,6 +137,7 @@
             this.label17 = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkAutoRefresh = new System.Windows.Forms.CheckBox();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -212,7 +213,7 @@
             this.cmbDelimited.Controls.Add(this.label11);
             this.cmbDelimited.Controls.Add(this.cbHeaderRow);
             this.cmbDelimited.Controls.Add(this.grpDelimiters);
-            this.cmbDelimited.Location = new System.Drawing.Point(348, 6);
+            this.cmbDelimited.Location = new System.Drawing.Point(348, 8);
             this.cmbDelimited.Name = "cmbDelimited";
             this.cmbDelimited.Size = new System.Drawing.Size(676, 185);
             this.cmbDelimited.TabIndex = 11;
@@ -226,6 +227,7 @@
             this.txtDelimitedComments.Name = "txtDelimitedComments";
             this.txtDelimitedComments.Size = new System.Drawing.Size(153, 58);
             this.txtDelimitedComments.TabIndex = 4;
+            this.txtDelimitedComments.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // label11
             // 
@@ -247,6 +249,7 @@
             this.cbHeaderRow.TabIndex = 2;
             this.cbHeaderRow.Text = "First Row Has Field Names";
             this.cbHeaderRow.UseVisualStyleBackColor = true;
+            this.cbHeaderRow.CheckedChanged += new System.EventHandler(this.chkFixedFirstRowHasFieldNames_CheckedChanged);
             // 
             // grpDelimiters
             // 
@@ -282,6 +285,7 @@
             this.txtCustomDelimiter.Name = "txtCustomDelimiter";
             this.txtCustomDelimiter.Size = new System.Drawing.Size(67, 20);
             this.txtCustomDelimiter.TabIndex = 5;
+            this.txtCustomDelimiter.TextChanged += new System.EventHandler(this.txtCustomDelimiter_TextChanged);
             // 
             // rbDelimiterCustom
             // 
@@ -376,6 +380,7 @@
             this.chkFixedFirstRowHasFieldNames.TabIndex = 2;
             this.chkFixedFirstRowHasFieldNames.Text = "First Row Has Field Names";
             this.chkFixedFirstRowHasFieldNames.UseVisualStyleBackColor = true;
+            this.chkFixedFirstRowHasFieldNames.CheckedChanged += new System.EventHandler(this.chkFixedFirstRowHasFieldNames_CheckedChanged);
             // 
             // txtFixedWidthComments
             // 
@@ -384,6 +389,7 @@
             this.txtFixedWidthComments.Name = "txtFixedWidthComments";
             this.txtFixedWidthComments.Size = new System.Drawing.Size(153, 94);
             this.txtFixedWidthComments.TabIndex = 10;
+            this.txtFixedWidthComments.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // label12
             // 
@@ -396,13 +402,14 @@
             // 
             // btnRemove
             // 
-            this.btnRemove.Location = new System.Drawing.Point(226, 147);
+            this.btnRemove.Location = new System.Drawing.Point(220, 148);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(75, 23);
             this.btnRemove.TabIndex = 8;
             this.btnRemove.Text = "Remove";
             this.btnRemove.UseVisualStyleBackColor = true;
             this.btnRemove.Visible = false;
+            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
             // 
             // btnAdd
             // 
@@ -412,6 +419,7 @@
             this.btnAdd.TabIndex = 7;
             this.btnAdd.Text = "Add Column";
             this.btnAdd.UseVisualStyleBackColor = true;
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
             // 
             // btnUpdate
             // 
@@ -422,6 +430,7 @@
             this.btnUpdate.Text = "Update";
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Visible = false;
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
             // 
             // nupColumnWidth
             // 
@@ -566,6 +575,7 @@
             this.txtOnLoadContents.Name = "txtOnLoadContents";
             this.txtOnLoadContents.Size = new System.Drawing.Size(780, 115);
             this.txtOnLoadContents.TabIndex = 20;
+            this.txtOnLoadContents.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // btnRefreshOnLoadProfiles
             // 
@@ -753,6 +763,7 @@
             0,
             0,
             0});
+            this.nudMaxRows.ValueChanged += new System.EventHandler(this.nudMaxRows_ValueChanged);
             // 
             // chkHasMaxRows
             // 
@@ -765,6 +776,7 @@
             this.chkHasMaxRows.TabIndex = 10;
             this.chkHasMaxRows.Text = "Stop loading after ";
             this.chkHasMaxRows.UseVisualStyleBackColor = true;
+            this.chkHasMaxRows.CheckedChanged += new System.EventHandler(this.chkHasMaxRows_CheckedChanged);
             // 
             // cbTextExtractor
             // 
@@ -809,6 +821,7 @@
             this.txtFileName.Name = "txtFileName";
             this.txtFileName.Size = new System.Drawing.Size(663, 20);
             this.txtFileName.TabIndex = 6;
+            this.txtFileName.TextChanged += new System.EventHandler(this.txtFileName_TextChanged);
             // 
             // tabDatasourceText
             // 
@@ -829,6 +842,7 @@
             this.txtTextContents.Name = "txtTextContents";
             this.txtTextContents.Size = new System.Drawing.Size(1291, 161);
             this.txtTextContents.TabIndex = 10;
+            this.txtTextContents.TextChanged += new System.EventHandler(this.txtTextContents_TextChanged);
             this.txtTextContents.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // tabDatasourceDatabase
@@ -1138,13 +1152,13 @@
             // 
             // tabParseOptions
             // 
+            this.tabParseOptions.Controls.Add(this.cmbDelimited);
             this.tabParseOptions.Controls.Add(this.panelParserProfileSave);
             this.tabParseOptions.Controls.Add(this.cmbParserProfile);
             this.tabParseOptions.Controls.Add(this.label15);
             this.tabParseOptions.Controls.Add(this.grpTemplate);
             this.tabParseOptions.Controls.Add(this.grpFixedFileOptions);
             this.tabParseOptions.Controls.Add(this.grpHtmlOptions);
-            this.tabParseOptions.Controls.Add(this.cmbDelimited);
             this.tabParseOptions.Controls.Add(this.cmbFileType);
             this.tabParseOptions.Controls.Add(this.label2);
             this.tabParseOptions.Location = new System.Drawing.Point(4, 22);
@@ -1325,6 +1339,7 @@
             // 
             this.flowLayoutPanel1.Controls.Add(this.btnCloseWindow);
             this.flowLayoutPanel1.Controls.Add(this.btnSaveSettings);
+            this.flowLayoutPanel1.Controls.Add(this.chkAutoRefresh);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 231);
             this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
@@ -1332,6 +1347,18 @@
             this.flowLayoutPanel1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.flowLayoutPanel1.Size = new System.Drawing.Size(1325, 30);
             this.flowLayoutPanel1.TabIndex = 9;
+            // 
+            // chkAutoRefresh
+            // 
+            this.chkAutoRefresh.AutoSize = true;
+            this.chkAutoRefresh.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkAutoRefresh.Location = new System.Drawing.Point(832, 3);
+            this.chkAutoRefresh.Name = "chkAutoRefresh";
+            this.chkAutoRefresh.Padding = new System.Windows.Forms.Padding(0, 0, 100, 0);
+            this.chkAutoRefresh.Size = new System.Drawing.Size(307, 23);
+            this.chkAutoRefresh.TabIndex = 16;
+            this.chkAutoRefresh.Text = "Refresh Data on configuration change";
+            this.chkAutoRefresh.UseVisualStyleBackColor = true;
             // 
             // ETLForm
             // 
@@ -1394,6 +1421,7 @@
             this.pnlExportXsltDetails.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1507,6 +1535,7 @@
         private System.Windows.Forms.Button btnExportXsltFileName;
         private System.Windows.Forms.TextBox txtExportXsltFileName;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.CheckBox chkAutoRefresh;
     }
 }
 
