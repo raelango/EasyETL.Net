@@ -274,6 +274,14 @@ filter policyID &gt; 950000</afterload>
         </etl>
       </etls>
     </client>
+    <client id="6" name="Client6">
+      <endpoints />
+      <datasources />
+      <filestores />
+      <messagequeues />
+      <transfers />
+      <etls />
+    </client>
   </clients>
   <profiles>
     <profile parsertype="Template" profilename="TemplateFolderNameOnly">
