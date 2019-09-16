@@ -111,9 +111,9 @@
       <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>
       <Name>EasyETL</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EasyXml\EasyXml.csproj">
+    <ProjectReference Include="..\EasyXml\EasyETL.Xml.csproj">
       <Project>{5cf95a36-7bc7-4617-827d-4f9056161f14}</Project>
-      <Name>EasyXml</Name>
+      <Name>EasyETL.Xml</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

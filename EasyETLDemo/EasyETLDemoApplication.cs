@@ -314,46 +314,46 @@ namespace EasyXmlSample
 
         private void tvClients_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Delete)
+            if (e.Control && e.KeyCode == Keys.Delete)
             {
-                bool allowDelete = (tvClients.SelectedNode != null) && ((tvClients.SelectedNode.Parent == null) || (tvClients.SelectedNode.Nodes.Count == 0));
-                TreeNode node = tvClients.SelectedNode;
-                if (allowDelete)
-                {
-                    foreach (TabPage p in MainTablControl.TabPages)
-                    {
-                        if (p.Text == node.FullPath)
-                        {
-                            MessageBox.Show("This configuration is open.  Please close window before attempting to delete the node.");
-                            allowDelete = false;
-                            break;
-                        }
-                    }
-                }
-
-                if ((allowDelete) && (MessageBox.Show("Deleted nodes cannot be recovered.  Are you sure to delete ?","Deleting Configuration",MessageBoxButtons.YesNo) == DialogResult.Yes))
-                {
-                    XmlDocument xDoc = new XmlDocument();
-                    xDoc.Load(xmlFileName);
-                    string xPath = "//clients/client[@name='" + node.FullPath + "']";
-                    if (node.FullPath.Contains('\\'))
-                    {
-                        string clientName = node.FullPath.Split('\\')[0];
-                        string nodeCategory = node.FullPath.Split('\\')[1];
-                        string nodeName = node.FullPath.Split('\\')[2];
-                        xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@id='" + node.Name + "']";
-                    }
-                    XmlNode xNode = xDoc.SelectSingleNode(xPath);
-                    xNode.ParentNode.RemoveChild(xNode);
-                    xDoc.Save(xmlFileName);
-                    LoadConfiguration();
-                }
+                
             }
         }
 
         private void DeleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tvClients_KeyDown(this,new KeyEventArgs(Keys.Delete));
+            bool allowDelete = (tvClients.SelectedNode != null) && ((tvClients.SelectedNode.Parent == null) || (tvClients.SelectedNode.Nodes.Count == 0));
+            TreeNode node = tvClients.SelectedNode;
+            if (allowDelete)
+            {
+                foreach (TabPage p in MainTablControl.TabPages)
+                {
+                    if (p.Text == node.FullPath)
+                    {
+                        MessageBox.Show("This configuration is open.  Please close window before attempting to delete the node.");
+                        allowDelete = false;
+                        break;
+                    }
+                }
+            }
+
+            if ((allowDelete) && (MessageBox.Show("Deleted nodes cannot be recovered.  Are you sure to delete ?", "Deleting Configuration", MessageBoxButtons.YesNo) == DialogResult.Yes))
+            {
+                XmlDocument xDoc = new XmlDocument();
+                xDoc.Load(xmlFileName);
+                string xPath = "//clients/client[@name='" + node.FullPath + "']";
+                if (node.FullPath.Contains('\\'))
+                {
+                    string clientName = node.FullPath.Split('\\')[0];
+                    string nodeCategory = node.FullPath.Split('\\')[1];
+                    string nodeName = node.FullPath.Split('\\')[2];
+                    xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@id='" + node.Name + "']";
+                }
+                XmlNode xNode = xDoc.SelectSingleNode(xPath);
+                xNode.ParentNode.RemoveChild(xNode);
+                xDoc.Save(xmlFileName);
+                LoadConfiguration();
+            }
         }
 
         private void renameStripMenuItem_Click(object sender, EventArgs e)
@@ -368,7 +368,7 @@ namespace EasyXmlSample
 
         private void DeleteToolStripButton_Click(object sender, EventArgs e)
         {
-            tvClients_KeyDown(this, new KeyEventArgs(Keys.Delete));
+            DeleteToolStripMenuItem_Click(this, null);
         }
 
         private void CloseToolStripButton_Click(object sender, EventArgs e)

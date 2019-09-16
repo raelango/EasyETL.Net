@@ -32,7 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ETLForm));
             this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.btnCloseWindow = new System.Windows.Forms.Button();
-            this.btnSaveSettings = new System.Windows.Forms.Button();
             this.btnRefreshData = new System.Windows.Forms.Button();
             this.cmbDelimited = new System.Windows.Forms.GroupBox();
             this.txtDelimitedComments = new System.Windows.Forms.TextBox();
@@ -104,7 +103,7 @@
             this.cmbTableName = new System.Windows.Forms.ComboBox();
             this.lblRecordCount = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.dataGrid = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.txtXmlContents = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -113,8 +112,7 @@
             this.txtRegexContents = new System.Windows.Forms.TextBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.txtExceptions = new System.Windows.Forms.TextBox();
-            this.cmbDestination = new System.Windows.Forms.ComboBox();
-            this.btnExport = new System.Windows.Forms.Button();
+            this.cmbExportDestination = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
             this.tabSource = new System.Windows.Forms.TabControl();
@@ -127,16 +125,37 @@
             this.cmbParserProfile = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
             this.tabTransformationOptions = new System.Windows.Forms.TabPage();
+            this.tabActionOptions = new System.Windows.Forms.TabPage();
             this.tabExportOptions = new System.Windows.Forms.TabPage();
+            this.label20 = new System.Windows.Forms.Label();
+            this.cmbExportSettings = new System.Windows.Forms.ComboBox();
+            this.grpExportSettings = new System.Windows.Forms.GroupBox();
+            this.chkIncludeTableHeader = new System.Windows.Forms.CheckBox();
+            this.btnExportDeleteSetting = new System.Windows.Forms.Button();
+            this.btnSaveExportSettings = new System.Windows.Forms.Button();
+            this.txtExportSettingName = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.txtExportFileName = new System.Windows.Forms.TextBox();
             this.pnlExportXsltDetails = new System.Windows.Forms.Panel();
             this.btnExportXsltFileName = new System.Windows.Forms.Button();
-            this.txtExportXsltFileName = new System.Windows.Forms.TextBox();
+            this.txtExportTemplateFileName = new System.Windows.Forms.TextBox();
             this.label19 = new System.Windows.Forms.Label();
             this.btnExportFileName = new System.Windows.Forms.Button();
-            this.txtExportFileName = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
+            this.tabPermissionOptions = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chkCanExportData = new System.Windows.Forms.CheckBox();
+            this.chkCanDeleteData = new System.Windows.Forms.CheckBox();
+            this.chkCanAddData = new System.Windows.Forms.CheckBox();
+            this.chkCanEditData = new System.Windows.Forms.CheckBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkCanEditConfiguration = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnSaveSettings = new System.Windows.Forms.Button();
+            this.pnlExport = new System.Windows.Forms.Panel();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.cmbExport = new System.Windows.Forms.ComboBox();
             this.chkAutoRefresh = new System.Windows.Forms.CheckBox();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
@@ -158,7 +177,7 @@
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).BeginInit();
             this.tabPage2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -169,9 +188,14 @@
             this.panelParserProfileSave.SuspendLayout();
             this.tabTransformationOptions.SuspendLayout();
             this.tabExportOptions.SuspendLayout();
+            this.grpExportSettings.SuspendLayout();
             this.pnlExportXsltDetails.SuspendLayout();
+            this.tabPermissionOptions.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
+            this.pnlExport.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCloseWindow
@@ -184,17 +208,6 @@
             this.btnCloseWindow.Text = "Close Window";
             this.btnCloseWindow.UseVisualStyleBackColor = true;
             this.btnCloseWindow.Click += new System.EventHandler(this.btnCloseWindow_Click);
-            // 
-            // btnSaveSettings
-            // 
-            this.btnSaveSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSaveSettings.Location = new System.Drawing.Point(1145, 3);
-            this.btnSaveSettings.Name = "btnSaveSettings";
-            this.btnSaveSettings.Size = new System.Drawing.Size(75, 23);
-            this.btnSaveSettings.TabIndex = 14;
-            this.btnSaveSettings.Text = "Save";
-            this.btnSaveSettings.UseVisualStyleBackColor = true;
-            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
             // btnRefreshData
             // 
@@ -961,7 +974,7 @@
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add(this.dataGridView1);
+            this.splitContainer2.Panel2.Controls.Add(this.dataGrid);
             this.splitContainer2.Size = new System.Drawing.Size(1305, 571);
             this.splitContainer2.SplitterDistance = 34;
             this.splitContainer2.TabIndex = 15;
@@ -993,20 +1006,19 @@
             this.label3.TabIndex = 8;
             this.label3.Text = "Table Name:";
             // 
-            // dataGridView1
+            // dataGrid
             // 
-            this.dataGridView1.AllowUserToAddRows = false;
-            this.dataGridView1.AllowUserToDeleteRows = false;
-            this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dataGridView1.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.ReadOnly = true;
-            this.dataGridView1.RowHeadersVisible = false;
-            this.dataGridView1.Size = new System.Drawing.Size(1305, 533);
-            this.dataGridView1.TabIndex = 10;
+            this.dataGrid.AllowUserToAddRows = false;
+            this.dataGrid.AllowUserToDeleteRows = false;
+            this.dataGrid.AllowUserToOrderColumns = true;
+            this.dataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dataGrid.Location = new System.Drawing.Point(0, 0);
+            this.dataGrid.Name = "dataGrid";
+            this.dataGrid.ReadOnly = true;
+            this.dataGrid.RowHeadersVisible = false;
+            this.dataGrid.Size = new System.Drawing.Size(1305, 533);
+            this.dataGrid.TabIndex = 10;
             // 
             // tabPage2
             // 
@@ -1085,11 +1097,11 @@
             this.txtExceptions.Size = new System.Drawing.Size(1311, 577);
             this.txtExceptions.TabIndex = 0;
             // 
-            // cmbDestination
+            // cmbExportDestination
             // 
-            this.cmbDestination.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDestination.FormattingEnabled = true;
-            this.cmbDestination.Items.AddRange(new object[] {
+            this.cmbExportDestination.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbExportDestination.FormattingEnabled = true;
+            this.cmbExportDestination.Items.AddRange(new object[] {
             "CSV",
             "TAB",
             "HTML",
@@ -1097,29 +1109,18 @@
             "EXCEL",
             "XML",
             "PDF",
-            "JSON"});
-            this.cmbDestination.Location = new System.Drawing.Point(96, 9);
-            this.cmbDestination.Name = "cmbDestination";
-            this.cmbDestination.Size = new System.Drawing.Size(127, 21);
-            this.cmbDestination.TabIndex = 13;
-            this.cmbDestination.SelectedIndexChanged += new System.EventHandler(this.cmbDestination_SelectedIndexChanged);
-            // 
-            // btnExport
-            // 
-            this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnExport.Enabled = false;
-            this.btnExport.Location = new System.Drawing.Point(1219, 157);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(75, 23);
-            this.btnExport.TabIndex = 11;
-            this.btnExport.Text = "Export";
-            this.btnExport.UseVisualStyleBackColor = true;
-            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            "JSON",
+            "MAILMERGE-WORD"});
+            this.cmbExportDestination.Location = new System.Drawing.Point(97, 58);
+            this.cmbExportDestination.Name = "cmbExportDestination";
+            this.cmbExportDestination.Size = new System.Drawing.Size(127, 21);
+            this.cmbExportDestination.TabIndex = 13;
+            this.cmbExportDestination.SelectedIndexChanged += new System.EventHandler(this.cmbDestination_SelectedIndexChanged);
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(14, 12);
+            this.label9.Location = new System.Drawing.Point(15, 61);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(75, 13);
             this.label9.TabIndex = 12;
@@ -1130,7 +1131,9 @@
             this.tabSource.Controls.Add(this.tabDataSourceOptions);
             this.tabSource.Controls.Add(this.tabParseOptions);
             this.tabSource.Controls.Add(this.tabTransformationOptions);
+            this.tabSource.Controls.Add(this.tabActionOptions);
             this.tabSource.Controls.Add(this.tabExportOptions);
+            this.tabSource.Controls.Add(this.tabPermissionOptions);
             this.tabSource.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSource.Location = new System.Drawing.Point(3, 3);
             this.tabSource.Name = "tabSource";
@@ -1238,15 +1241,20 @@
             this.tabTransformationOptions.Text = "Transformations";
             this.tabTransformationOptions.UseVisualStyleBackColor = true;
             // 
+            // tabActionOptions
+            // 
+            this.tabActionOptions.Location = new System.Drawing.Point(4, 22);
+            this.tabActionOptions.Name = "tabActionOptions";
+            this.tabActionOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabActionOptions.TabIndex = 5;
+            this.tabActionOptions.Text = "Actions";
+            this.tabActionOptions.UseVisualStyleBackColor = true;
+            // 
             // tabExportOptions
             // 
-            this.tabExportOptions.Controls.Add(this.pnlExportXsltDetails);
-            this.tabExportOptions.Controls.Add(this.btnExportFileName);
-            this.tabExportOptions.Controls.Add(this.txtExportFileName);
-            this.tabExportOptions.Controls.Add(this.label17);
-            this.tabExportOptions.Controls.Add(this.cmbDestination);
-            this.tabExportOptions.Controls.Add(this.label9);
-            this.tabExportOptions.Controls.Add(this.btnExport);
+            this.tabExportOptions.Controls.Add(this.label20);
+            this.tabExportOptions.Controls.Add(this.cmbExportSettings);
+            this.tabExportOptions.Controls.Add(this.grpExportSettings);
             this.tabExportOptions.Location = new System.Drawing.Point(4, 22);
             this.tabExportOptions.Name = "tabExportOptions";
             this.tabExportOptions.Size = new System.Drawing.Size(1311, 199);
@@ -1254,20 +1262,112 @@
             this.tabExportOptions.Text = "Export";
             this.tabExportOptions.UseVisualStyleBackColor = true;
             // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(6, 15);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(81, 13);
+            this.label20.TabIndex = 21;
+            this.label20.Text = "Export Settings:";
+            // 
+            // cmbExportSettings
+            // 
+            this.cmbExportSettings.FormattingEnabled = true;
+            this.cmbExportSettings.Location = new System.Drawing.Point(148, 15);
+            this.cmbExportSettings.Name = "cmbExportSettings";
+            this.cmbExportSettings.Size = new System.Drawing.Size(121, 21);
+            this.cmbExportSettings.TabIndex = 20;
+            this.cmbExportSettings.SelectedIndexChanged += new System.EventHandler(this.cmbExportSettings_SelectedIndexChanged);
+            // 
+            // grpExportSettings
+            // 
+            this.grpExportSettings.Controls.Add(this.chkIncludeTableHeader);
+            this.grpExportSettings.Controls.Add(this.btnExportDeleteSetting);
+            this.grpExportSettings.Controls.Add(this.btnSaveExportSettings);
+            this.grpExportSettings.Controls.Add(this.txtExportSettingName);
+            this.grpExportSettings.Controls.Add(this.label21);
+            this.grpExportSettings.Controls.Add(this.txtExportFileName);
+            this.grpExportSettings.Controls.Add(this.pnlExportXsltDetails);
+            this.grpExportSettings.Controls.Add(this.label9);
+            this.grpExportSettings.Controls.Add(this.btnExportFileName);
+            this.grpExportSettings.Controls.Add(this.cmbExportDestination);
+            this.grpExportSettings.Controls.Add(this.label17);
+            this.grpExportSettings.Location = new System.Drawing.Point(6, 42);
+            this.grpExportSettings.Name = "grpExportSettings";
+            this.grpExportSettings.Size = new System.Drawing.Size(928, 154);
+            this.grpExportSettings.TabIndex = 19;
+            this.grpExportSettings.TabStop = false;
+            this.grpExportSettings.Text = "Export Settings:";
+            // 
+            // chkIncludeTableHeader
+            // 
+            this.chkIncludeTableHeader.AutoSize = true;
+            this.chkIncludeTableHeader.Location = new System.Drawing.Point(13, 131);
+            this.chkIncludeTableHeader.Name = "chkIncludeTableHeader";
+            this.chkIncludeTableHeader.Size = new System.Drawing.Size(129, 17);
+            this.chkIncludeTableHeader.TabIndex = 23;
+            this.chkIncludeTableHeader.Text = "Include Table Header";
+            this.chkIncludeTableHeader.UseVisualStyleBackColor = true;
+            // 
+            // btnExportDeleteSetting
+            // 
+            this.btnExportDeleteSetting.Location = new System.Drawing.Point(819, 48);
+            this.btnExportDeleteSetting.Name = "btnExportDeleteSetting";
+            this.btnExportDeleteSetting.Size = new System.Drawing.Size(103, 38);
+            this.btnExportDeleteSetting.TabIndex = 22;
+            this.btnExportDeleteSetting.Text = "Delete Setting";
+            this.btnExportDeleteSetting.UseVisualStyleBackColor = true;
+            this.btnExportDeleteSetting.Click += new System.EventHandler(this.btnExportDeleteSetting_Click);
+            // 
+            // btnSaveExportSettings
+            // 
+            this.btnSaveExportSettings.Location = new System.Drawing.Point(819, 93);
+            this.btnSaveExportSettings.Name = "btnSaveExportSettings";
+            this.btnSaveExportSettings.Size = new System.Drawing.Size(103, 38);
+            this.btnSaveExportSettings.TabIndex = 21;
+            this.btnSaveExportSettings.Text = "Save Settings";
+            this.btnSaveExportSettings.UseVisualStyleBackColor = true;
+            this.btnSaveExportSettings.Click += new System.EventHandler(this.btnSaveExportSettings_Click);
+            // 
+            // txtExportSettingName
+            // 
+            this.txtExportSettingName.Location = new System.Drawing.Point(97, 12);
+            this.txtExportSettingName.Name = "txtExportSettingName";
+            this.txtExportSettingName.Size = new System.Drawing.Size(127, 20);
+            this.txtExportSettingName.TabIndex = 20;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(13, 20);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(79, 13);
+            this.label21.TabIndex = 19;
+            this.label21.Text = "Settings Name:";
+            // 
+            // txtExportFileName
+            // 
+            this.txtExportFileName.Enabled = false;
+            this.txtExportFileName.Location = new System.Drawing.Point(342, 61);
+            this.txtExportFileName.Name = "txtExportFileName";
+            this.txtExportFileName.Size = new System.Drawing.Size(346, 20);
+            this.txtExportFileName.TabIndex = 15;
+            // 
             // pnlExportXsltDetails
             // 
             this.pnlExportXsltDetails.Controls.Add(this.btnExportXsltFileName);
-            this.pnlExportXsltDetails.Controls.Add(this.txtExportXsltFileName);
+            this.pnlExportXsltDetails.Controls.Add(this.txtExportTemplateFileName);
             this.pnlExportXsltDetails.Controls.Add(this.label19);
-            this.pnlExportXsltDetails.Location = new System.Drawing.Point(5, 52);
+            this.pnlExportXsltDetails.Location = new System.Drawing.Point(13, 87);
             this.pnlExportXsltDetails.Name = "pnlExportXsltDetails";
-            this.pnlExportXsltDetails.Size = new System.Drawing.Size(902, 44);
+            this.pnlExportXsltDetails.Size = new System.Drawing.Size(776, 34);
             this.pnlExportXsltDetails.TabIndex = 18;
             this.pnlExportXsltDetails.Visible = false;
             // 
             // btnExportXsltFileName
             // 
-            this.btnExportXsltFileName.Location = new System.Drawing.Point(712, 9);
+            this.btnExportXsltFileName.Location = new System.Drawing.Point(691, 9);
             this.btnExportXsltFileName.Name = "btnExportXsltFileName";
             this.btnExportXsltFileName.Size = new System.Drawing.Size(75, 23);
             this.btnExportXsltFileName.TabIndex = 19;
@@ -1275,12 +1375,12 @@
             this.btnExportXsltFileName.UseVisualStyleBackColor = true;
             this.btnExportXsltFileName.Click += new System.EventHandler(this.btnExportXsltFileName_Click);
             // 
-            // txtExportXsltFileName
+            // txtExportTemplateFileName
             // 
-            this.txtExportXsltFileName.Location = new System.Drawing.Point(149, 6);
-            this.txtExportXsltFileName.Name = "txtExportXsltFileName";
-            this.txtExportXsltFileName.Size = new System.Drawing.Size(526, 20);
-            this.txtExportXsltFileName.TabIndex = 18;
+            this.txtExportTemplateFileName.Location = new System.Drawing.Point(149, 6);
+            this.txtExportTemplateFileName.Name = "txtExportTemplateFileName";
+            this.txtExportTemplateFileName.Size = new System.Drawing.Size(526, 20);
+            this.txtExportTemplateFileName.TabIndex = 18;
             // 
             // label19
             // 
@@ -1293,7 +1393,7 @@
             // 
             // btnExportFileName
             // 
-            this.btnExportFileName.Location = new System.Drawing.Point(844, 6);
+            this.btnExportFileName.Location = new System.Drawing.Point(704, 58);
             this.btnExportFileName.Name = "btnExportFileName";
             this.btnExportFileName.Size = new System.Drawing.Size(75, 23);
             this.btnExportFileName.TabIndex = 16;
@@ -1301,22 +1401,102 @@
             this.btnExportFileName.UseVisualStyleBackColor = true;
             this.btnExportFileName.Click += new System.EventHandler(this.btnExportFileName_Click);
             // 
-            // txtExportFileName
-            // 
-            this.txtExportFileName.Enabled = false;
-            this.txtExportFileName.Location = new System.Drawing.Point(341, 12);
-            this.txtExportFileName.Name = "txtExportFileName";
-            this.txtExportFileName.Size = new System.Drawing.Size(479, 20);
-            this.txtExportFileName.TabIndex = 15;
-            // 
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(244, 16);
+            this.label17.Location = new System.Drawing.Point(245, 65);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(90, 13);
             this.label17.TabIndex = 14;
             this.label17.Text = "Export File Name:";
+            // 
+            // tabPermissionOptions
+            // 
+            this.tabPermissionOptions.Controls.Add(this.groupBox2);
+            this.tabPermissionOptions.Controls.Add(this.groupBox1);
+            this.tabPermissionOptions.Location = new System.Drawing.Point(4, 22);
+            this.tabPermissionOptions.Name = "tabPermissionOptions";
+            this.tabPermissionOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabPermissionOptions.TabIndex = 4;
+            this.tabPermissionOptions.Text = "Permissions";
+            this.tabPermissionOptions.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.chkCanExportData);
+            this.groupBox2.Controls.Add(this.chkCanDeleteData);
+            this.groupBox2.Controls.Add(this.chkCanAddData);
+            this.groupBox2.Controls.Add(this.chkCanEditData);
+            this.groupBox2.Location = new System.Drawing.Point(539, 14);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(495, 166);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Data Access:";
+            // 
+            // chkCanExportData
+            // 
+            this.chkCanExportData.AutoSize = true;
+            this.chkCanExportData.Location = new System.Drawing.Point(18, 124);
+            this.chkCanExportData.Name = "chkCanExportData";
+            this.chkCanExportData.Size = new System.Drawing.Size(104, 17);
+            this.chkCanExportData.TabIndex = 3;
+            this.chkCanExportData.Text = "Can Export Data";
+            this.chkCanExportData.UseVisualStyleBackColor = true;
+            this.chkCanExportData.CheckedChanged += new System.EventHandler(this.chkCanExportData_CheckedChanged);
+            // 
+            // chkCanDeleteData
+            // 
+            this.chkCanDeleteData.AutoSize = true;
+            this.chkCanDeleteData.Location = new System.Drawing.Point(18, 87);
+            this.chkCanDeleteData.Name = "chkCanDeleteData";
+            this.chkCanDeleteData.Size = new System.Drawing.Size(105, 17);
+            this.chkCanDeleteData.TabIndex = 2;
+            this.chkCanDeleteData.Text = "Can Delete Data";
+            this.chkCanDeleteData.UseVisualStyleBackColor = true;
+            this.chkCanDeleteData.CheckedChanged += new System.EventHandler(this.chkCanDeleteData_CheckedChanged);
+            // 
+            // chkCanAddData
+            // 
+            this.chkCanAddData.AutoSize = true;
+            this.chkCanAddData.Location = new System.Drawing.Point(18, 20);
+            this.chkCanAddData.Name = "chkCanAddData";
+            this.chkCanAddData.Size = new System.Drawing.Size(93, 17);
+            this.chkCanAddData.TabIndex = 1;
+            this.chkCanAddData.Text = "Can Add Data";
+            this.chkCanAddData.UseVisualStyleBackColor = true;
+            this.chkCanAddData.CheckedChanged += new System.EventHandler(this.chkCanAddData_CheckedChanged);
+            // 
+            // chkCanEditData
+            // 
+            this.chkCanEditData.AutoSize = true;
+            this.chkCanEditData.Location = new System.Drawing.Point(18, 54);
+            this.chkCanEditData.Name = "chkCanEditData";
+            this.chkCanEditData.Size = new System.Drawing.Size(92, 17);
+            this.chkCanEditData.TabIndex = 0;
+            this.chkCanEditData.Text = "Can Edit Data";
+            this.chkCanEditData.UseVisualStyleBackColor = true;
+            this.chkCanEditData.CheckedChanged += new System.EventHandler(this.chkCanEditData_CheckedChanged);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.chkCanEditConfiguration);
+            this.groupBox1.Location = new System.Drawing.Point(18, 14);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(495, 166);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Configuration Access:";
+            // 
+            // chkCanEditConfiguration
+            // 
+            this.chkCanEditConfiguration.AutoSize = true;
+            this.chkCanEditConfiguration.Location = new System.Drawing.Point(7, 20);
+            this.chkCanEditConfiguration.Name = "chkCanEditConfiguration";
+            this.chkCanEditConfiguration.Size = new System.Drawing.Size(131, 17);
+            this.chkCanEditConfiguration.TabIndex = 0;
+            this.chkCanEditConfiguration.Text = "Can Edit Configuration";
+            this.chkCanEditConfiguration.UseVisualStyleBackColor = true;
             // 
             // tableLayoutPanel1
             // 
@@ -1339,6 +1519,7 @@
             // 
             this.flowLayoutPanel1.Controls.Add(this.btnCloseWindow);
             this.flowLayoutPanel1.Controls.Add(this.btnSaveSettings);
+            this.flowLayoutPanel1.Controls.Add(this.pnlExport);
             this.flowLayoutPanel1.Controls.Add(this.chkAutoRefresh);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 231);
@@ -1348,11 +1529,53 @@
             this.flowLayoutPanel1.Size = new System.Drawing.Size(1325, 30);
             this.flowLayoutPanel1.TabIndex = 9;
             // 
+            // btnSaveSettings
+            // 
+            this.btnSaveSettings.Location = new System.Drawing.Point(1129, 3);
+            this.btnSaveSettings.Name = "btnSaveSettings";
+            this.btnSaveSettings.Size = new System.Drawing.Size(91, 21);
+            this.btnSaveSettings.TabIndex = 18;
+            this.btnSaveSettings.Text = "Save";
+            this.btnSaveSettings.UseVisualStyleBackColor = true;
+            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
+            // 
+            // pnlExport
+            // 
+            this.pnlExport.Controls.Add(this.btnExport);
+            this.pnlExport.Controls.Add(this.cmbExport);
+            this.pnlExport.Location = new System.Drawing.Point(923, 3);
+            this.pnlExport.Name = "pnlExport";
+            this.pnlExport.Size = new System.Drawing.Size(200, 23);
+            this.pnlExport.TabIndex = 17;
+            this.pnlExport.Visible = false;
+            // 
+            // btnExport
+            // 
+            this.btnExport.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnExport.Enabled = false;
+            this.btnExport.Location = new System.Drawing.Point(125, 0);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(75, 23);
+            this.btnExport.TabIndex = 16;
+            this.btnExport.Text = "Export";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
+            // cmbExport
+            // 
+            this.cmbExport.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmbExport.FormattingEnabled = true;
+            this.cmbExport.Location = new System.Drawing.Point(0, 0);
+            this.cmbExport.Name = "cmbExport";
+            this.cmbExport.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.cmbExport.Size = new System.Drawing.Size(121, 21);
+            this.cmbExport.TabIndex = 15;
+            // 
             // chkAutoRefresh
             // 
             this.chkAutoRefresh.AutoSize = true;
             this.chkAutoRefresh.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkAutoRefresh.Location = new System.Drawing.Point(832, 3);
+            this.chkAutoRefresh.Location = new System.Drawing.Point(610, 3);
             this.chkAutoRefresh.Name = "chkAutoRefresh";
             this.chkAutoRefresh.Padding = new System.Windows.Forms.Padding(0, 0, 100, 0);
             this.chkAutoRefresh.Size = new System.Drawing.Size(307, 23);
@@ -1399,7 +1622,7 @@
             this.splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGrid)).EndInit();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
             this.tabPage3.ResumeLayout(false);
@@ -1417,11 +1640,19 @@
             this.tabTransformationOptions.ResumeLayout(false);
             this.tabExportOptions.ResumeLayout(false);
             this.tabExportOptions.PerformLayout();
+            this.grpExportSettings.ResumeLayout(false);
+            this.grpExportSettings.PerformLayout();
             this.pnlExportXsltDetails.ResumeLayout(false);
             this.pnlExportXsltDetails.PerformLayout();
+            this.tabPermissionOptions.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.flowLayoutPanel1.PerformLayout();
+            this.pnlExport.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1436,7 +1667,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.DataGridView dataGrid;
         private System.Windows.Forms.ComboBox cmbTableName;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TabPage tabPage2;
@@ -1455,9 +1686,8 @@
         private System.Windows.Forms.ComboBox cmbDatabaseConnectionType;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer ProgressTimer;
-        private System.Windows.Forms.ComboBox cmbDestination;
+        private System.Windows.Forms.ComboBox cmbExportDestination;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.Label lblRecordCount;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TextBox txtXPathContents;
@@ -1511,7 +1741,6 @@
         private System.Windows.Forms.TextBox txtOnLoadContents;
         private System.Windows.Forms.Button btnRefreshOnLoadProfiles;
         private System.Windows.Forms.ComboBox cbOnLoadProfiles;
-        private System.Windows.Forms.Button btnSaveSettings;
         private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Button btnCloseWindow;
         private System.Windows.Forms.TabControl tabSource;
@@ -1533,9 +1762,30 @@
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Panel pnlExportXsltDetails;
         private System.Windows.Forms.Button btnExportXsltFileName;
-        private System.Windows.Forms.TextBox txtExportXsltFileName;
+        private System.Windows.Forms.TextBox txtExportTemplateFileName;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.CheckBox chkAutoRefresh;
+        private System.Windows.Forms.TabPage tabActionOptions;
+        private System.Windows.Forms.TabPage tabPermissionOptions;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.CheckBox chkCanExportData;
+        private System.Windows.Forms.CheckBox chkCanDeleteData;
+        private System.Windows.Forms.CheckBox chkCanAddData;
+        private System.Windows.Forms.CheckBox chkCanEditData;
+        private System.Windows.Forms.CheckBox chkCanEditConfiguration;
+        private System.Windows.Forms.Button btnSaveSettings;
+        private System.Windows.Forms.Panel pnlExport;
+        private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.ComboBox cmbExport;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.ComboBox cmbExportSettings;
+        private System.Windows.Forms.GroupBox grpExportSettings;
+        private System.Windows.Forms.TextBox txtExportSettingName;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Button btnExportDeleteSetting;
+        private System.Windows.Forms.Button btnSaveExportSettings;
+        private System.Windows.Forms.CheckBox chkIncludeTableHeader;
     }
 }
 

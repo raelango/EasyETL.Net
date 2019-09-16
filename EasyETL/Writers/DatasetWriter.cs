@@ -14,15 +14,19 @@ namespace EasyETL.Writers
         public int RowNumber { get; set; }
         public DataRow Row;
         public string TableName;
-        
+
     }
     public abstract class DatasetWriter
-    { 
+    {
         protected DataSet _dataSet = null;
         protected string outputString = String.Empty;
+        public bool PrintHeader = true;
+        public bool PrintFooter = true;
+        public bool PrintTableHeader = true;
+        public bool PrintTableFooter = true;
 
         public event EventHandler<RowWrittenEventArgs> RowWritten;
-        
+
         public DatasetWriter()
         {
             _dataSet = null;
@@ -55,23 +59,23 @@ namespace EasyETL.Writers
         {
             if (_dataSet != null)
             {
-
-            outputString = BuildHeaderString();
-            foreach (DataTable dt in _dataSet.Tables)
-            {
-                outputString += BuildTableHeaderString(dt) ;
-                int rowNumber = 0;
-                foreach (DataRow dr in dt.Rows)
+                outputString = String.Empty;
+                if (PrintHeader) outputString = BuildHeaderString();
+                foreach (DataTable dt in _dataSet.Tables)
                 {
-                    outputString += BuildRowString(dr);
-                    outputString += RowDelimeter(dt.Rows[dt.Rows.Count - 1].Equals(dr));
-                    OnRowWritten(new RowWrittenEventArgs() { RowNumber = rowNumber, Row = dr, TableName = dt.TableName });
-                    rowNumber++;
+                    if (PrintTableHeader) outputString += BuildTableHeaderString(dt);
+                    int rowNumber = 0;
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        outputString += BuildRowString(dr);
+                        outputString += RowDelimiter(dt.Rows[dt.Rows.Count - 1].Equals(dr));
+                        OnRowWritten(new RowWrittenEventArgs() { RowNumber = rowNumber, Row = dr, TableName = dt.TableName });
+                        rowNumber++;
+                    }
+                    if (PrintTableFooter) outputString += BuildTableFooterString(dt);
+                    outputString += TableDelimiter(_dataSet.Tables[_dataSet.Tables.Count - 1].Equals(dt));
                 }
-                outputString += BuildTableFooterString(dt);
-                outputString += TableDelimeter(_dataSet.Tables[_dataSet.Tables.Count -1].Equals(dt));
-            }
-            outputString += BuildFooterString();
+                if (PrintFooter) outputString += BuildFooterString();
             }
             return outputString;
         }
@@ -91,12 +95,12 @@ namespace EasyETL.Writers
             return String.Empty;
         }
 
-        public virtual string RowDelimeter(bool lastRow)
+        public virtual string RowDelimiter(bool lastRow)
         {
             return String.Empty;
         }
 
-        public virtual string TableDelimeter(bool lastTable)
+        public virtual string TableDelimiter(bool lastTable)
         {
             return String.Empty;
         }

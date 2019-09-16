@@ -1,8 +1,8 @@
 ﻿using EasyETL.DataSets;
 using EasyETL.Extractors;
 using EasyETL.Writers;
-using EasyXml;
-using EasyXml.Parsers;
+using EasyETL.Xml;
+using EasyETL.Xml.Parsers;
 using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
@@ -20,11 +20,13 @@ using System.Xml.Xsl;
 
 namespace EasyXmlSample
 {
+
     public partial class ETLForm : Form
     {
         EasyXmlDocument ezDoc = null;
         XslCompiledTransform xsl = null;
         Stopwatch stopWatch = new Stopwatch();
+        List<ExportSettings> AllExportSettings = new List<ExportSettings>();
         public int intAutoNumber = 0;
         public string SettingsPath = "";
         public string SettingsFileName = "";
@@ -103,24 +105,62 @@ namespace EasyXmlSample
                 #endregion
 
                 #region Output Settings Load
-                XmlNode dataNode = xNode.SelectSingleNode("output");
-                if (dataNode != null)
+                XmlNodeList outputNodes = xNode.SelectNodes("output");
+                AllExportSettings.Clear();
+                foreach (XmlNode dataNode in outputNodes)
                 {
+                    ExportSettings eSettings = new ExportSettings() { SettingName = "" }; 
                     foreach (XmlAttribute xAttr in dataNode.Attributes)
                     {
                         switch (xAttr.Name.ToLower())
                         {
+                            case "name":
+                                eSettings.SettingName = xAttr.Value; break;
                             case "exportformat":
-                                cmbDestination.SelectedItem = xAttr.Value; break;
+                                eSettings.ExportFormat = xAttr.Value; break;
                             case "exportfilename":
-                                txtExportFileName.Text = xAttr.Value; break;
+                                eSettings.ExportFileName = xAttr.Value; break;
                             case "templatefilename":
-                                txtExportXsltFileName.Text = xAttr.Value; break;
+                                eSettings.TemplateFileName = xAttr.Value; break;
+                            case "includeheader":
+                                eSettings.IncludeTableHeader = Convert.ToBoolean(xAttr.Value); break;
+                        }
+                    }
+                    AllExportSettings.Add(eSettings);
+                }
+                RefreshExportSettingsCombo();
+                //if ((dataNode != null) && (dataNode.Attributes["exportformat"] != null)) cmbDestination.SelectedItem = dataNode.Attributes["exportformat"].Value;
+                #endregion
+
+                //#region Permissions Settings
+                XmlNode permissionsNode = xNode.SelectSingleNode("permissions");
+                if (permissionsNode != null)
+                {
+                    foreach (XmlAttribute xAttr in permissionsNode.Attributes)
+                    {
+                        switch (xAttr.Name.ToLower())
+                        {
+                            case "canviewsettings":
+                                tableLayoutPanel1.RowStyles[0].Height = tabSource.Height + 6;                                
+                                if (!Convert.ToBoolean(xAttr.Value)) tableLayoutPanel1.RowStyles[0].Height = 0;
+                                break;
+                            case "caneditsettings":
+                                chkCanEditConfiguration.Checked = Convert.ToBoolean(xAttr.Value); break;
+                            case "canadddata":
+                                chkCanAddData.Checked = Convert.ToBoolean(xAttr.Value); break;
+                            case "caneditdata":
+                                chkCanEditData.Checked = Convert.ToBoolean(xAttr.Value); break;
+                            case "candeletedata":
+                                chkCanDeleteData.Checked = Convert.ToBoolean(xAttr.Value); break;
+                            case "canexportdata":
+                                chkCanExportData.Checked = Convert.ToBoolean(xAttr.Value); break;
                         }
                     }
                 }
-                //if ((dataNode != null) && (dataNode.Attributes["exportformat"] != null)) cmbDestination.SelectedItem = dataNode.Attributes["exportformat"].Value;
-                #endregion
+                //permissionsNode.SetAttribute("canviewsettings", tabSource.Parent.Visible.ToString());
+                //xNode.AppendChild(permissionsNode);
+                //#endregion
+
 
                 #region Datasource Node Load
                 XmlNode datasourceNode = xNode.SelectSingleNode("datasource");
@@ -450,14 +490,14 @@ namespace EasyXmlSample
                         cmbTableName.Items.Add(table.TableName);
                     }
                 }
-                dataGridView1.DataSource = ds;
+                dataGrid.DataSource = ds;
                 btnExport.Enabled = ((ds != null) && (ds.Tables.Count > 0));
                 if (cmbTableName.Items.Count > 0)
                 {
                     cmbTableName.SelectedIndex = 0;
-                    dataGridView1.DataMember = cmbTableName.Text;
+                    dataGrid.DataMember = cmbTableName.Text;
                     lblRecordCount.Text = "(No Records)";
-                    if (dataGridView1.RowCount > 0) lblRecordCount.Text = dataGridView1.RowCount + " Record(s)";
+                    if (dataGrid.RowCount > 0) lblRecordCount.Text = dataGrid.RowCount + " Record(s)";
                 }
             }
             catch
@@ -517,11 +557,11 @@ namespace EasyXmlSample
 
         private void cmbTableName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            dataGridView1.DataMember = cmbTableName.Text;
+            dataGrid.DataMember = cmbTableName.Text;
             lblRecordCount.Text = "(No Records)";
-            if (dataGridView1.RowCount > 0)
+            if (dataGrid.RowCount > 0)
             {
-                lblRecordCount.Text = dataGridView1.RowCount + " Record(s)";
+                lblRecordCount.Text = dataGrid.RowCount + " Record(s)";
             }
         }
 
@@ -581,39 +621,51 @@ namespace EasyXmlSample
 
         private void btnExport_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(txtExportFileName.Text)) return;
-            DataSet rds = (DataSet)dataGridView1.DataSource;
+            if (cmbExport.SelectedItem == null) return;
+            if (String.IsNullOrWhiteSpace(cmbExport.SelectedItem.ToString())) return;
+            DataSet rds = (DataSet)dataGrid.DataSource;
             DatasetWriter dsw = null;
-            switch (cmbDestination.Text.ToUpper())
+            ExportSettings eSettings = AllExportSettings.Find(m => m.SettingName == cmbExport.SelectedItem.ToString());
+            if (eSettings == null)
+            {
+                MessageBox.Show("Please select a valid export type");
+                return;
+            }
+            switch (eSettings.ExportFormat.ToUpper())
             {
                 case "CSV":
-                    dsw = new DelimitedDatasetWriter(rds, txtExportFileName.Text) { Delimiter = ',', IncludeHeaders = true, IncludeQuotes = true };
+                    dsw = new DelimitedDatasetWriter(rds, eSettings.ExportFileName) { Delimiter = ',', IncludeHeaders = true, IncludeQuotes = true };
                     break;
                 case "TAB":
-                    dsw = new DelimitedDatasetWriter(rds, txtExportFileName.Text) { Delimiter = '\t', IncludeHeaders = true, IncludeQuotes = true };
+                    dsw = new DelimitedDatasetWriter(rds, eSettings.ExportFileName) { Delimiter = '\t', IncludeHeaders = true, IncludeQuotes = true };
                     break;
                 case "HTML":
-                    dsw = new HtmlDatasetWriter(rds, txtExportFileName.Text, txtExportXsltFileName.Text);
+                    dsw = new HtmlDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
                     break;
                 case "WORD":
-                    dsw = new OfficeDatasetWriter(rds, txtExportFileName.Text, txtExportXsltFileName.Text);
+                    dsw = new OfficeDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
                     break;
                 case "EXCEL":
-                    dsw = new OfficeDatasetWriter(rds, txtExportFileName.Text, txtExportXsltFileName.Text) { DestinationType = OfficeFileType.ExcelWorkbook };
+                    dsw = new OfficeDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName) { DestinationType = OfficeFileType.ExcelWorkbook };
+                    break;
+                case "MAILMERGE-WORD":
+                    dsw = new OfficeMailMergeDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
                     break;
                 case "XML":
-                    dsw = new XmlDatasetWriter(rds, txtExportXsltFileName.Text, txtExportFileName.Text);
+                    dsw = new XmlDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
                     break;
                 case "PDF":
-                    dsw = new PDFDatasetWriter(rds, txtExportFileName.Text);
+                    dsw = new PDFDatasetWriter(rds, eSettings.ExportFileName);
                     break;
                 case "JSON":
-                    dsw = new JsonDatasetWriter(rds, txtExportFileName.Text);
+                    dsw = new JsonDatasetWriter(rds, eSettings.ExportFileName);
                     break;
             }
+            dsw.PrintHeader = eSettings.IncludeTableHeader;
             dsw.Write();
-            MessageBox.Show("Saved file in " + txtExportFileName.Text);
-            Process.Start(txtExportFileName.Text);
+            MessageBox.Show("Saved file in " + Path.GetDirectoryName(eSettings.ExportFileName));
+            Process.Start(Path.GetDirectoryName(eSettings.ExportFileName));
+            //Process.Start(txtExportFileName.Text);
         }
 
         private void btnTransformSave_Click(object sender, EventArgs e)
@@ -776,12 +828,29 @@ namespace EasyXmlSample
             xNode.AppendChild(optionsNode);
             #endregion
 
-            #region Output Settings
-            XmlElement dataNode = xDoc.CreateElement("output");
-            dataNode.SetAttribute("exportformat", cmbDestination.Text);
-            dataNode.SetAttribute("exportfilename", txtExportFileName.Text);
-            dataNode.SetAttribute("templatefilename", txtExportXsltFileName.Text);
-            xNode.AppendChild(dataNode);
+            #region Export Settings
+            foreach (ExportSettings eSettings in AllExportSettings)
+            {
+                XmlElement dataNode = xDoc.CreateElement("output");
+                dataNode.SetAttribute("name", eSettings.SettingName);
+                dataNode.SetAttribute("exportformat", eSettings.ExportFormat);
+                dataNode.SetAttribute("exportfilename", eSettings.ExportFileName);
+                dataNode.SetAttribute("templatefilename", eSettings.TemplateFileName);
+                dataNode.SetAttribute("includeheader", eSettings.IncludeTableHeader.ToString());
+                xNode.AppendChild(dataNode);
+            }
+            #endregion
+
+            #region Permissions Settings
+            XmlElement permissionsNode = xDoc.CreateElement("permissions");
+            permissionsNode.SetAttribute("role", "owner");
+            permissionsNode.SetAttribute("canviewsettings", (tableLayoutPanel1.RowStyles[0].Height >0).ToString());
+            permissionsNode.SetAttribute("caneditsettings", chkCanEditConfiguration.Checked.ToString());
+            permissionsNode.SetAttribute("canadddata", chkCanAddData.Checked.ToString());
+            permissionsNode.SetAttribute("caneditdata", chkCanEditData.Checked.ToString());
+            permissionsNode.SetAttribute("candeletedata", chkCanDeleteData.Checked.ToString());
+            permissionsNode.SetAttribute("canexportdata", chkCanExportData.Checked.ToString());
+            xNode.AppendChild(permissionsNode);
             #endregion
 
             xDoc.Save(SettingsFileName);
@@ -907,16 +976,17 @@ namespace EasyXmlSample
 
         private string GetExportPathExtension()
         {
-            switch (cmbDestination.Text.ToUpper())
+            switch (cmbExportDestination.Text.ToUpper())
             {
                 case "WORD":
+                case "MAILMERGE-WORD":
                     return "docx";
                 case "EXCEL":
                     return "xlsx";
                 case "TAB":
                     return "txt";
                 default:
-                    return cmbDestination.Text.ToLower();
+                    return cmbExportDestination.Text.ToLower();
             }
         }
 
@@ -924,15 +994,15 @@ namespace EasyXmlSample
         {
             if (String.IsNullOrWhiteSpace(txtExportFileName.Text)) txtExportFileName.Text = txtFileName.Text;
             txtExportFileName.Text = Path.ChangeExtension(txtExportFileName.Text, GetExportPathExtension());
-            pnlExportXsltDetails.Visible = ((cmbDestination.Text == "XML") || (cmbDestination.Text == "EXCEL") || (cmbDestination.Text == "WORD") || (cmbDestination.Text == "HTML"));
-            if (!File.Exists(txtExportXsltFileName.Text)) txtExportXsltFileName.Text = "";
+            pnlExportXsltDetails.Visible = ((cmbExportDestination.Text == "XML") || (cmbExportDestination.Text == "EXCEL") || (cmbExportDestination.Text == "WORD") || (cmbExportDestination.Text == "HTML") || (cmbExportDestination.Text == "MAILMERGE-WORD"));
+            if (!File.Exists(txtExportTemplateFileName.Text)) txtExportTemplateFileName.Text = "";
         }
 
         private void btnExportXsltFileName_Click(object sender, EventArgs e)
         {
             ofd.CheckFileExists = true;
             ofd.DefaultExt = "xslt";
-            if (ofd.ShowDialog() == DialogResult.OK) txtExportXsltFileName.Text = ofd.FileName;
+            if (ofd.ShowDialog() == DialogResult.OK) txtExportTemplateFileName.Text = ofd.FileName;
         }
 
         private void txtFileName_TextChanged(object sender, EventArgs e)
@@ -966,5 +1036,105 @@ namespace EasyXmlSample
             if (chkAutoRefresh.Checked) LoadDataToGridView();
         }
 
+        private void chkCanAddData_CheckedChanged(object sender, EventArgs e)
+        {
+            dataGrid.AllowUserToAddRows = chkCanAddData.Checked;
+            dataGrid.RowHeadersVisible = (!dataGrid.ReadOnly || dataGrid.AllowUserToAddRows || dataGrid.AllowUserToDeleteRows);
+        }
+
+        private void chkCanEditData_CheckedChanged(object sender, EventArgs e)
+        {
+            dataGrid.ReadOnly = !chkCanEditData.Checked;
+            dataGrid.EditMode = DataGridViewEditMode.EditOnF2;
+            dataGrid.RowHeadersVisible = (!dataGrid.ReadOnly || dataGrid.AllowUserToAddRows || dataGrid.AllowUserToDeleteRows);
+        }
+
+        private void chkCanDeleteData_CheckedChanged(object sender, EventArgs e)
+        {
+            dataGrid.AllowUserToDeleteRows = chkCanDeleteData.Checked;
+            dataGrid.RowHeadersVisible = (!dataGrid.ReadOnly || dataGrid.AllowUserToAddRows || dataGrid.AllowUserToDeleteRows);
+        }
+
+        private void chkCanExportData_CheckedChanged(object sender, EventArgs e)
+        {
+            pnlExport.Visible = chkCanExportData.Checked;
+        }
+
+        private void btnSaveExportSettings_Click(object sender, EventArgs e)
+        {
+            if (!String.IsNullOrWhiteSpace(txtExportSettingName.Text))
+            {
+                ExportSettings eSettings = AllExportSettings.Find(m => m.SettingName == txtExportSettingName.Text);
+                if (eSettings == null)
+                {
+                    eSettings = new ExportSettings() { SettingName = txtExportSettingName.Text };
+                    AllExportSettings.Add(eSettings);
+                }
+                eSettings.ExportFormat = cmbExportDestination.SelectedItem.ToString();
+                eSettings.ExportFileName = txtExportFileName.Text;
+                eSettings.TemplateFileName = txtExportTemplateFileName.Text;
+                eSettings.IncludeTableHeader = chkIncludeTableHeader.Checked;
+            }
+            RefreshExportSettingsCombo();
+        }
+
+        private void RefreshExportSettingsCombo()
+        {
+            cmbExportSettings.Items.Clear();
+            cmbExport.Items.Clear();
+            foreach (ExportSettings eSetting in AllExportSettings)
+            {
+                cmbExportSettings.Items.Add(eSetting.SettingName);
+                cmbExport.Items.Add(eSetting.SettingName);
+            }
+        }
+
+        private void cmbExportSettings_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cmbExportSettings.SelectedItem != null)
+            {
+                ExportSettings eSettings = AllExportSettings.Find(m => m.SettingName == cmbExportSettings.SelectedItem.ToString());
+                if (eSettings != null)
+                {
+                    grpExportSettings.Text = eSettings.SettingName;
+                    txtExportSettingName.Text = eSettings.SettingName;
+                    txtExportFileName.Text = eSettings.ExportFileName;
+                    txtExportTemplateFileName.Text = eSettings.TemplateFileName;
+                    cmbExportDestination.Text = eSettings.ExportFormat;
+                    chkIncludeTableHeader.Checked = eSettings.IncludeTableHeader;
+                }
+                else
+                {
+                    txtExportSettingName.Text = "";
+                    txtExportFileName.Text = "";
+                    txtExportTemplateFileName.Text = "";
+                    cmbExportDestination.Text = "";
+                    chkIncludeTableHeader.Checked = true;
+                }
+            }
+        }
+
+        private void btnExportDeleteSetting_Click(object sender, EventArgs e)
+        {
+            ExportSettings eSettings = AllExportSettings.Find(m => m.SettingName == txtExportSettingName.Text);
+            if (eSettings != null) AllExportSettings.Remove(eSettings);
+            txtExportSettingName.Text = "";
+            txtExportFileName.Text = "";
+            txtExportTemplateFileName.Text = "";
+            cmbExportDestination.Text = "";
+            RefreshExportSettingsCombo();
+        }
+
     }
+
+
+    public class ExportSettings
+    {
+        public string SettingName;
+        public string ExportFormat;
+        public string ExportFileName;
+        public string TemplateFileName;
+        public bool IncludeTableHeader;
+    }
+
 }

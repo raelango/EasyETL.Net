@@ -56,12 +56,12 @@ namespace EasyETL.Writers
             return returnStr;
         }
 
-        public override string RowDelimeter(bool lastRow)
+        public override string RowDelimiter(bool lastRow)
         {
             return lastRow ? String.Empty:"," + Environment.NewLine;
         }
 
-        public override string TableDelimeter(bool lastTable)
+        public override string TableDelimiter(bool lastTable)
         {
             return lastTable ? String.Empty : "," + Environment.NewLine;
         }

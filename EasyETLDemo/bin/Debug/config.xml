@@ -132,7 +132,7 @@ filter Verb='GET'</duringload>
         <transfer id="4_transfer_1" name="My Transfer Session" />
       </transfers>
       <etls>
-        <etl id="4_etl_1" name="My ETL Session">
+        <etl id="4_etl_1" name="My ETL Session" autorefresh="False">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="True" maxrows="20" filename="C:\temp\LFPArchiveLog.txt" />
           <transformations>
             <duringload profilename="" savefilename="">filter Action='Moving'</duringload>
@@ -142,7 +142,8 @@ Add SNo AutoNumber</afterload>
           <parseoptions parsertype="Template">
             <template>[Date] [Time],[Action:(\w)] [Contents]</template>
           </parseoptions>
-          <output exportformat="EXCEL" />
+          <output name="To Excel" exportformat="EXCEL" exportfilename="C:\temp\LFPArchiveLog.xlsx" templatefilename="" includeheader="True" />
+          <permissions role="owner" canviewsettings="False" caneditsettings="False" canadddata="False" caneditdata="False" candeletedata="False" canexportdata="True" />
         </etl>
       </etls>
     </client>
@@ -160,7 +161,7 @@ Add SNo AutoNumber</afterload>
         <transfer id="5_transfer_1" name="5_transfer_1" />
       </transfers>
       <etls>
-        <etl id="5_etl_1" name="Export in CSV Format">
+        <etl id="5_etl_1" name="Export in CSV Format" autorefresh="False">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
           <transformations>
             <duringload profilename="" savefilename="">
@@ -173,35 +174,41 @@ filter eq_site_limit &gt;0 and line='Residential' and construction='Wood'</after
             <comments>
             </comments>
           </parseoptions>
-          <output exportformat="CSV" exportfilename="C:\temp\FL_insurance_export.CSV" xsltfilename="" />
+          <output name="To CSV" exportformat="CSV" exportfilename="C:\temp\FL_insurance_export.csv" templatefilename="" />
+          <permissions role="owner" canviewsettings="True" caneditsettings="False" canadddata="False" caneditdata="False" candeletedata="False" canexportdata="False" />
         </etl>
-        <etl id="5_etl_2" name="Export To Excel File">
+        <etl id="5_etl_2" name="Export To Excel File" autorefresh="True">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
           <transformations>
             <duringload profilename="" savefilename="">
             </duringload>
             <afterload profilename="" savefilename="">[row=&gt;log]
-filter line='Residential'</afterload>
+filter line='Residential' and eq_site_deductible &gt;0 and construction='Wood' and point_granularity=3 and tiv_2012 &gt; 15000</afterload>
           </transformations>
           <parseoptions parsertype="Delimited" delimiter="AutoDetect" separator="" hasheader="True">
             <comments>
             </comments>
           </parseoptions>
-          <output exportformat="EXCEL" exportfilename="C:\temp\FL_insurance_export1.xlsx" templatefilename="C:\temp\FL_insurance_template.xltx" />
+          <output name="To Excel" exportformat="EXCEL" exportfilename="C:\temp\FL_insurance_export1.xlsx" templatefilename="C:\temp\FL_insurance_template.xltx" />
+          <output name="To Word" exportformat="WORD" exportfilename="C:\temp\FL_insurance_export1.docx" templatefilename="C:\temp\FL_insurance_export.dotx" />
+          <output name="To MailMerge" exportformat="MAILMERGE-WORD" exportfilename="C:\temp\FL_insurance_export_[policyID].docx" templatefilename="C:\temp\FL_insurance_export.dotx" />
+          <permissions role="owner" canviewsettings="True" caneditsettings="True" canadddata="False" caneditdata="True" candeletedata="True" canexportdata="True" />
         </etl>
-        <etl id="5_etl_3" name="Export To Word File">
+        <etl id="5_etl_3" name="Export To Word File" autorefresh="False">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
           <transformations>
             <duringload profilename="" savefilename="">
             </duringload>
             <afterload profilename="" savefilename="">[row=&gt;log]
-filter construction='Masonry'</afterload>
+filter construction='Masonry' and fr_site_deductible &gt; 0</afterload>
           </transformations>
           <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
             <comments>
             </comments>
           </parseoptions>
-          <output exportformat="WORD" exportfilename="C:\temp\FL_insurance_export.docx" templatefilename="C:\temp\FL_insurance_export.dotx" />
+          <output name="To Word Without Header" exportformat="WORD" exportfilename="C:\temp\FL_insurance_export_[policyID].docx" templatefilename="C:\temp\FL_insurance_export.dotx" includeheader="False" />
+          <output name="To Word With Header" exportformat="WORD" exportfilename="C:\temp\FL_insurance_export_[policyID].docx" templatefilename="C:\temp\FL_insurance_export.dotx" includeheader="True" />
+          <permissions role="owner" canviewsettings="True" caneditsettings="False" canadddata="False" caneditdata="False" candeletedata="False" canexportdata="True" />
         </etl>
         <etl id="5_etl_4" name="Export in TAB Format">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
@@ -273,14 +280,6 @@ filter policyID &gt; 950000</afterload>
           <output exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" />
         </etl>
       </etls>
-    </client>
-    <client id="6" name="Client6">
-      <endpoints />
-      <datasources />
-      <filestores />
-      <messagequeues />
-      <transfers />
-      <etls />
     </client>
   </clients>
   <profiles>

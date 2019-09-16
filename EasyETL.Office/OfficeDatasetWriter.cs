@@ -11,6 +11,7 @@ using excel = DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.CustomProperties;
 using System.IO;
 using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace EasyETL.Writers
 {
@@ -20,11 +21,13 @@ namespace EasyETL.Writers
         ExcelWorkbook
         //PowerpointPresentation
     }
+
     public class OfficeDatasetWriter : FileDatasetWriter
     {
         public string TemplateFileName = String.Empty;
         public Dictionary<string, string> DocProperties = new Dictionary<string, string>();
 
+        public bool PopulatePropertiesOnly = false;
         public OfficeFileType DestinationType = OfficeFileType.WordDocument;
 
         public OfficeDatasetWriter(OfficeFileType fileType = OfficeFileType.WordDocument)
@@ -51,6 +54,22 @@ namespace EasyETL.Writers
             {
                 DocProperties["FileName"] = _fileName;
                 DocProperties["TableCount"] = _dataSet.Tables.Count.ToString();
+                if (PopulatePropertiesOnly)
+                {
+                    if (_dataSet != null)
+                    {
+                        foreach (DataTable dTable in _dataSet.Tables)
+                        {
+                            if (dTable.Rows.Count > 0)
+                            {
+                                foreach (DataColumn dColumn in dTable.Columns)
+                                {
+                                    DocProperties[dColumn.ColumnName] = dTable.Rows[0][dColumn].ToString();
+                                }
+                            }
+                        }
+                    }
+                }
                 switch (DestinationType)
                 {
                     case OfficeFileType.WordDocument:
@@ -70,23 +89,33 @@ namespace EasyETL.Writers
 
                         MainDocumentPart mainDoc = doc.MainDocumentPart;
                         if (mainDoc == null) mainDoc = doc.AddMainDocumentPart();
-                        if (mainDoc.Document == null) mainDoc.Document = new word.Document();
-                        word.Body body = new word.Body();
-                        bool firstTable = true;
-                        foreach (DataTable dt in _dataSet.Tables)
+
+                        DocumentSettingsPart settingsPart = mainDoc.GetPartsOfType<DocumentSettingsPart>().First();
+                        UpdateFieldsOnOpen updateFields = new UpdateFieldsOnOpen();
+                        updateFields.Val = new OnOffValue(true);
+                        settingsPart.Settings.PrependChild<UpdateFieldsOnOpen>(updateFields);
+                        settingsPart.Settings.Save();
+
+                        if (!PopulatePropertiesOnly)
                         {
-                            if (!firstTable)
+                            if (mainDoc.Document == null) mainDoc.Document = new word.Document();
+                            word.Body body = new word.Body();
+                            bool firstTable = true;
+                            foreach (DataTable dt in _dataSet.Tables)
                             {
-                                body.Append(GetPageBreak());
+                                if (!firstTable)
+                                {
+                                    body.Append(GetPageBreak());
+                                }
+                                else
+                                {
+                                    firstTable = false;
+                                }
+                                body.Append(GetParagraph(dt.TableName));
+                                body.Append(GetWordTable(dt));
                             }
-                            else
-                            {
-                                firstTable = false;
-                            }
-                            body.Append(GetParagraph(dt.TableName));
-                            body.Append(GetWordTable(dt));
+                            mainDoc.Document.Append(body);
                         }
-                        mainDoc.Document.Append(body);
                         mainDoc.Document.Save();
                         doc.Dispose();
                         doc = null;
@@ -146,24 +175,29 @@ namespace EasyETL.Writers
                                     sheets.Append(sheet); //append the sheet to the sheets.
                                 }
 
-
-                                excel.Row headerRow = new excel.Row();
-
                                 List<String> columns = new List<string>();
                                 foreach (System.Data.DataColumn column in table.Columns)
                                 {
                                     columns.Add(column.ColumnName);
+                                }
+                                if (PrintHeader)
+                                {
 
-                                    excel.Cell cell = new excel.Cell();
-                                    cell.DataType = excel.CellValues.String;
-                                    cell.CellValue = new excel.CellValue(GetColumnName(column));
-                                    headerRow.AppendChild(cell);
+                                    excel.Row headerRow = new excel.Row();
+
+                                    foreach (string column in columns)
+                                    {
+                                        excel.Cell cell = new excel.Cell();
+                                        cell.DataType = excel.CellValues.String;
+                                        cell.CellValue = new excel.CellValue(GetColumnName(table.Columns[column]));
+                                        headerRow.AppendChild(cell);
+                                    }
+
+
+                                    sheetData.AppendChild(headerRow);
                                 }
 
-
-                                sheetData.AppendChild(headerRow);
-
-                                foreach (System.Data.DataRow dsrow in table.Rows)
+                                foreach (DataRow dsrow in table.Rows)
                                 {
                                     excel.Row newRow = new excel.Row();
                                     foreach (String col in columns)
@@ -274,18 +308,22 @@ namespace EasyETL.Writers
             #endregion
 
             word.TableGrid tableGrid = new word.TableGrid();
-            word.TableRow headerRow = new word.TableRow();
-
-            foreach (DataColumn dataColumn in dataTable.Columns)
-            {
-                word.GridColumn gridColumn = new word.GridColumn();
-                word.TableCell tableCell = new word.TableCell();
-                tableCell.Append(GetParagraph(GetColumnName(dataColumn)));
-                headerRow.Append(tableCell);
-                tableGrid.Append(gridColumn);
-            }
             table.Append(tableGrid);
-            table.Append(headerRow);
+            if (PrintHeader)
+            {
+
+                word.TableRow headerRow = new word.TableRow();
+
+                foreach (DataColumn dataColumn in dataTable.Columns)
+                {
+                    word.GridColumn gridColumn = new word.GridColumn();
+                    word.TableCell tableCell = new word.TableCell();
+                    tableCell.Append(GetParagraph(GetColumnName(dataColumn)));
+                    headerRow.Append(tableCell);
+                    tableGrid.Append(gridColumn);
+                }
+                table.Append(headerRow);
+            }
 
 
 
