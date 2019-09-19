@@ -18,7 +18,7 @@ namespace EasyETL.Writers
         {
         }
 
-        public XmlDatasetWriter(DataSet dataSet, string XsltFileName = "", string filename = "")
+        public XmlDatasetWriter(DataSet dataSet, string filename = "", string XsltFileName = "")
             : base(dataSet, filename)
         {
             xsltFileName = XsltFileName;
