@@ -265,8 +265,9 @@ filter construction='Masonry' and county='CLAY COUNTY'</afterload>
           </parseoptions>
           <output exportformat="PDF" exportfilename="C:\temp\FL_insurance_export.PDF" templatefilename="" />
         </etl>
-        <etl id="5_etl_8" name="Export in XML Format">
+        <etl id="5_etl_8" name="Export in XML Format" autorefresh="False">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <actions />
           <transformations>
             <duringload profilename="" savefilename="">
             </duringload>
@@ -277,7 +278,41 @@ filter policyID &gt; 950000</afterload>
             <comments>
             </comments>
           </parseoptions>
-          <output exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" />
+          <output name="To XML" exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" includeheader="False" />
+          <permissions role="owner" canviewsettings="True" caneditsettings="True" canadddata="False" caneditdata="False" candeletedata="False" canexportdata="True" />
+        </etl>
+      </etls>
+    </client>
+    <client id="6" name="Demonstration of Action">
+      <actions>
+        <action id="6_action_1" name="Set Status" libraryname="EasyDemoActions" classname="Set Field Status">
+          <field name="FieldValue" value="200;1002" />
+          <field name="FieldName" value="fr_site_deductible;fl_site_deductible" />
+        </action>
+        <action id="6_action_2" name="Delete Record" libraryname="EasyDemoActions" classname="Delete Record">
+        </action>
+      </actions>
+      <endpoints />
+      <datasources />
+      <filestores />
+      <messagequeues />
+      <transfers />
+      <etls>
+        <etl id="Copy of Export in XML Format" name="Copy of Export in XML Format" autorefresh="False">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <actions />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter policyID &gt; 950000</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output name="To XML" exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" includeheader="False" />
+          <permissions role="owner" canviewsettings="True" caneditsettings="True" canadddata="False" caneditdata="False" candeletedata="False" canexportdata="True" />
         </etl>
       </etls>
     </client>

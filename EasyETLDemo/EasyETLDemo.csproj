@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ActionForm.Designer.cs">
+      <DependentUpon>ActionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EasyETLDemoApplication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -65,7 +71,16 @@
       <DependentUpon>MoveConfigurationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
+    <Compile Include="ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProgressForm.Designer.cs">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ActionForm.resx">
+      <DependentUpon>ActionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EasyETLDemoApplication.resx">
       <DependentUpon>EasyETLDemoApplication.cs</DependentUpon>
     </EmbeddedResource>
@@ -74,6 +89,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MoveConfigurationForm.resx">
       <DependentUpon>MoveConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressForm.resx">
+      <DependentUpon>ProgressForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -99,6 +117,14 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EasyETL.Actions\EasyETL.Actions.csproj">
+      <Project>{0da7a5a0-e2ee-4af9-9089-478a12369f88}</Project>
+      <Name>EasyETL.Actions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
+      <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
+      <Name>EasyETL.Dynamic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyETL.Office\EasyETL.Office.csproj">
       <Project>{ea54969b-76ba-4423-972e-9a1c037324a5}</Project>
       <Name>EasyETL.Office</Name>

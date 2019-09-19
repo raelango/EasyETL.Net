@@ -1,4 +1,6 @@
-﻿using EasyETL.DataSets;
+﻿using EasyETL;
+using EasyETL.Actions;
+using EasyETL.DataSets;
 using EasyETL.Extractors;
 using EasyETL.Writers;
 using EasyETL.Xml;
@@ -23,10 +25,14 @@ namespace EasyXmlSample
 
     public partial class ETLForm : Form
     {
+        bool actionInProgress = false;
         EasyXmlDocument ezDoc = null;
         XslCompiledTransform xsl = null;
         Stopwatch stopWatch = new Stopwatch();
         List<ExportSettings> AllExportSettings = new List<ExportSettings>();
+        public Dictionary<string, ClassMapping> dctClassMapping = new Dictionary<string, ClassMapping>();
+        public Dictionary<string, Dictionary<string, string>> dctActionFieldSettings = new Dictionary<string, Dictionary<string, string>>();
+
         public int intAutoNumber = 0;
         public string SettingsPath = "";
         public string SettingsFileName = "";
@@ -48,12 +54,75 @@ namespace EasyXmlSample
             #endregion
 
 
+
+
             string clientName = settingsPath.Split('\\')[0];
             string etlName = settingsPath.Split('\\')[2];
             SettingsPath = "//clients/client[@name='" + clientName + "']/etls/etl[@name='" + etlName + "']";
+
+            chkAvailableActions.Items.Clear();
+            fpActions.Controls.Clear();
+            XmlNodeList actionNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/actions/action");
+            dctClassMapping.Clear();
+            dctActionFieldSettings.Clear();
+            string actionFolderName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Actions");
+            foreach (XmlNode actionNode in actionNodes)
+            {
+                string actionName = actionNode.Attributes.GetNamedItem("name").Value;
+                chkAvailableActions.Items.Add(actionName);
+                Button btnControl = new Button();
+                btnControl.Text = actionName;
+                btnControl.Click += btnControl_Click;
+                fpActions.Controls.Add(btnControl);
+
+                string libraryName = actionNode.Attributes.GetNamedItem("libraryname").Value;
+                string className = actionNode.Attributes.GetNamedItem("classname").Value;
+                ClassMapping cMapping = ReflectionUtils.LoadClassFromLibrary(Path.Combine(actionFolderName, libraryName + ".dll"), typeof(AbstractEasyAction), className);
+
+                if (cMapping != null)
+                {
+                    dctClassMapping.Add(actionName, cMapping);
+                    Dictionary<string, string> actionDictionary = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+                    dctActionFieldSettings.Add(actionName, actionDictionary);
+                    XmlNodeList actionFieldNodeList = actionNode.SelectNodes("field");
+                    foreach (XmlNode actionFieldNode in actionFieldNodeList)
+                    {
+                        actionDictionary.Add(actionFieldNode.Attributes.GetNamedItem("name").Value, actionFieldNode.Attributes.GetNamedItem("value").Value);
+                    }
+
+                }
+
+
+            }
+
+
             XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
             if (xNode != null)
             {
+                #region Actions Load
+                XmlNode actionsNode = xNode.SelectSingleNode("actions");
+                actionNodes = null;
+                if (actionsNode != null) actionNodes = actionsNode.SelectNodes("action");
+                if (actionNodes != null)
+                {
+
+                    foreach (XmlNode actionNode in actionNodes)
+                    {
+                        if (actionNode.Attributes.GetNamedItem("name") != null)
+                        {
+                            int loadIndex = chkAvailableActions.Items.IndexOf(actionNode.Attributes.GetNamedItem("name").Value);
+                            bool toCheck = true;
+                            if ((actionNode.Attributes.GetNamedItem("enabled") != null) && (!Convert.ToBoolean(actionNode.Attributes.GetNamedItem("enabled").Value)))
+                            {
+                                toCheck = false;
+                            }
+                            if (loadIndex >= 0) chkAvailableActions.SetItemChecked(loadIndex, toCheck);
+                        }
+                    }
+                }
+                DisplayActionButtonsAsNeeded();
+                #endregion
+
                 #region Transformations Load
                 XmlNode transformationNode = xNode.SelectSingleNode("transformations");
                 if (transformationNode != null)
@@ -109,7 +178,7 @@ namespace EasyXmlSample
                 AllExportSettings.Clear();
                 foreach (XmlNode dataNode in outputNodes)
                 {
-                    ExportSettings eSettings = new ExportSettings() { SettingName = "" }; 
+                    ExportSettings eSettings = new ExportSettings() { SettingName = "" };
                     foreach (XmlAttribute xAttr in dataNode.Attributes)
                     {
                         switch (xAttr.Name.ToLower())
@@ -132,7 +201,7 @@ namespace EasyXmlSample
                 //if ((dataNode != null) && (dataNode.Attributes["exportformat"] != null)) cmbDestination.SelectedItem = dataNode.Attributes["exportformat"].Value;
                 #endregion
 
-                //#region Permissions Settings
+                #region Permissions Settings
                 XmlNode permissionsNode = xNode.SelectSingleNode("permissions");
                 if (permissionsNode != null)
                 {
@@ -141,7 +210,7 @@ namespace EasyXmlSample
                         switch (xAttr.Name.ToLower())
                         {
                             case "canviewsettings":
-                                tableLayoutPanel1.RowStyles[0].Height = tabSource.Height + 6;                                
+                                tableLayoutPanel1.RowStyles[0].Height = tabSource.Height + 6;
                                 if (!Convert.ToBoolean(xAttr.Value)) tableLayoutPanel1.RowStyles[0].Height = 0;
                                 break;
                             case "caneditsettings":
@@ -157,10 +226,7 @@ namespace EasyXmlSample
                         }
                     }
                 }
-                //permissionsNode.SetAttribute("canviewsettings", tabSource.Parent.Visible.ToString());
-                //xNode.AppendChild(permissionsNode);
-                //#endregion
-
+                #endregion
 
                 #region Datasource Node Load
                 XmlNode datasourceNode = xNode.SelectSingleNode("datasource");
@@ -211,6 +277,52 @@ namespace EasyXmlSample
             }
 
         }
+
+        private void DisplayActionButtonsAsNeeded()
+        {
+            foreach (Control c in fpActions.Controls)
+            {
+                if (c is Button)
+                {
+                    Button b = (Button)c;
+                    b.Visible = chkAvailableActions.CheckedItems.Contains(b.Text);
+                }
+            }
+        }
+
+        void btnControl_Click(object sender, EventArgs e)
+        {
+            actionInProgress = true;
+            string actionName = ((Button)sender).Text;
+            if (dctClassMapping[actionName] != null)
+            {
+                AbstractEasyAction aea = (AbstractEasyAction)Activator.CreateInstance(dctClassMapping[actionName].Class);
+                foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[actionName])
+                {
+                    aea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
+                }
+                ProgressForm pForm = new ProgressForm();
+                //pForm.TopLevel = false;
+                pForm.TopMost = true;
+                //splitContainer2.Panel2.Controls.Add(pForm);
+                pForm.Show(splitContainer2.Panel2);
+                pForm.MaximumItems = dataGrid.SelectedRows.Count;
+                pForm.ActionName = actionName;
+                int currentIndex = 0;
+                foreach (DataGridViewRow dgvRow in dataGrid.SelectedRows)
+                {
+                    currentIndex++;
+                    pForm.SetCurrentIndex(currentIndex);
+                    Application.DoEvents();
+                    aea.Execute(((DataRowView)dgvRow.DataBoundItem).Row);
+                }
+                //splitContainer2.Panel2.Controls.Remove(pForm);
+                pForm.Close();
+            }
+            actionInProgress = false;
+            EnableActionButtonsAsNeeded();
+        }
+
 
         private void LoadParseOptionsFromNode(XmlNode optionsNode)
         {
@@ -480,18 +592,20 @@ namespace EasyXmlSample
             }
 
             DataSet ds = null;
+            fpActions.Visible = false;
             try
             {
                 ds = xDoc.ToDataSet();
                 if (ds != null)
                 {
+                    fpActions.Visible = true;
                     foreach (DataTable table in ds.Tables)
                     {
                         cmbTableName.Items.Add(table.TableName);
                     }
                 }
                 dataGrid.DataSource = ds;
-                btnExport.Enabled = ((ds != null) && (ds.Tables.Count > 0));
+                EnableExportButtonIfNeeded();
                 if (cmbTableName.Items.Count > 0)
                 {
                     cmbTableName.SelectedIndex = 0;
@@ -508,6 +622,12 @@ namespace EasyXmlSample
             stopWatch.Stop();
             lblRecordCount.Text += Environment.NewLine + String.Format("[{0}:{1}:{2}.{3}]", stopWatch.Elapsed.Hours, stopWatch.Elapsed.Minutes, stopWatch.Elapsed.Seconds, stopWatch.Elapsed.Milliseconds);
             stopWatch.Reset();
+        }
+
+        private void EnableExportButtonIfNeeded()
+        {
+            DataSet ds = (DataSet)dataGrid.DataSource;
+            btnExport.Enabled = ((ds != null) && (ds.Tables.Count > 0)) && (cmbExport.SelectedItem != null) && (!String.IsNullOrWhiteSpace(cmbExport.SelectedItem.ToString()));
         }
 
         public void LoadControls()
@@ -771,6 +891,17 @@ namespace EasyXmlSample
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(SettingsFileName);
             XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
+            if (xNode == null)
+            {
+                string etlName = SettingsPath.Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[3];
+                etlName = System.Text.RegularExpressions.Regex.Match(etlName, "name='(?<ETLName>.*?)'").Groups["ETLName"].Value;
+                XmlElement xElement = xDoc.CreateElement("etl");
+                xElement.SetAttribute("name", etlName);
+                string parentPath = SettingsPath.Remove(SettingsPath.IndexOf("/etls/etl")+5);
+                xDoc.SelectSingleNode(parentPath).AppendChild(xElement);
+                xNode = xDoc.SelectSingleNode(SettingsPath);
+            }
+            
             xNode.InnerText = "";
             XmlAttribute autoRefresh = xDoc.CreateAttribute("autorefresh");
             autoRefresh.Value = chkAutoRefresh.Checked.ToString();
@@ -801,6 +932,18 @@ namespace EasyXmlSample
                     break;
             }
             xNode.AppendChild(datasourceNode);
+            #endregion
+
+            #region Actions section
+            XmlElement actionsNode = xDoc.CreateElement("actions");
+            foreach (var cic in chkAvailableActions.CheckedItems)
+            {
+                XmlElement actionNode = xDoc.CreateElement("action");
+                actionNode.SetAttribute("name", cic.ToString());
+                actionNode.SetAttribute("enabled", "True");
+                actionsNode.AppendChild(actionNode);
+            }
+            xNode.AppendChild(actionsNode);
             #endregion
 
             #region Transformations section
@@ -844,7 +987,7 @@ namespace EasyXmlSample
             #region Permissions Settings
             XmlElement permissionsNode = xDoc.CreateElement("permissions");
             permissionsNode.SetAttribute("role", "owner");
-            permissionsNode.SetAttribute("canviewsettings", (tableLayoutPanel1.RowStyles[0].Height >0).ToString());
+            permissionsNode.SetAttribute("canviewsettings", (tableLayoutPanel1.RowStyles[0].Height > 0).ToString());
             permissionsNode.SetAttribute("caneditsettings", chkCanEditConfiguration.Checked.ToString());
             permissionsNode.SetAttribute("canadddata", chkCanAddData.Checked.ToString());
             permissionsNode.SetAttribute("caneditdata", chkCanEditData.Checked.ToString());
@@ -1123,6 +1266,73 @@ namespace EasyXmlSample
             txtExportTemplateFileName.Text = "";
             cmbExportDestination.Text = "";
             RefreshExportSettingsCombo();
+        }
+
+        private void chkCanEditConfiguration_CheckedChanged(object sender, EventArgs e)
+        {
+            btnSaveSettings.Visible = chkCanEditConfiguration.Checked;
+            chkAutoRefresh.Visible = chkCanEditConfiguration.Checked;
+            if (!chkAutoRefresh.Visible) chkAutoRefresh.Checked = true;
+        }
+
+        private void cmbExport_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            EnableExportButtonIfNeeded();
+        }
+
+        private void cmbExport_TextChanged(object sender, EventArgs e)
+        {
+            EnableExportButtonIfNeeded();
+        }
+
+        private void chkAvailableActions_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            foreach (Control c in fpActions.Controls)
+            {
+                if (c is Button)
+                {
+                    Button b = (Button)c;
+                    b.Visible = (b.Text == chkAvailableActions.Items[e.Index].ToString()) && (e.NewValue == CheckState.Checked);
+                }
+            }
+        }
+
+        private void EnableActionButtonsAsNeeded()
+        {
+            if (actionInProgress) return;
+            foreach (Control c in fpActions.Controls)
+            {
+                if (c is Button)
+                {
+                    Button b = (Button)c;
+                    fpActions.Visible = true;
+                    if (dctClassMapping.ContainsKey(b.Text) && (dctClassMapping[b.Text] != null))
+                    {
+                        AbstractEasyAction ea = (AbstractEasyAction)Activator.CreateInstance(dctClassMapping[b.Text].Class);
+                        foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[b.Text])
+                        {
+                            ea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
+                        }
+
+                        foreach (DataGridViewRow dRow in dataGrid.SelectedRows)
+                        {
+                            DataRow row = ((DataRowView)dRow.DataBoundItem).Row;
+                            if (!ea.CanExecute(row))
+                            {
+                                b.Enabled = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void dataGrid_SelectionChanged(object sender, EventArgs e)
+        {
+            fpActions.Visible = false;
+            if (dataGrid.SelectedRows.Count == 0) return;
+            EnableActionButtonsAsNeeded();
         }
 
     }

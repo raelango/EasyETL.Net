@@ -15,7 +15,7 @@ namespace EasyXmlSample
     public partial class EasyETLDemoApplication : Form
     {
         private string xmlFileName;
-        private string clientCategories = "endpoints;datasources;filestores;messagequeues;transfers;etls";
+        private string clientCategories = "actions;endpoints;datasources;filestores;messagequeues;transfers;etls";
         public EasyETLDemoApplication()
         {
             InitializeComponent();
@@ -94,9 +94,10 @@ namespace EasyXmlSample
         private void ShowNewForm(object sender, EventArgs e)
         {
             TreeNode tNode = null;
+            int nodeCount = 0;
             if ((tvClients.SelectedNode == null) || (tvClients.SelectedNode.Parent == null))
             {
-                int nodeCount = tvClients.Nodes.Count + 1;
+                nodeCount = tvClients.Nodes.Count + 1;
                 while (tvClients.Nodes[nodeCount.ToString()] != null) nodeCount++;
                 tNode = tvClients.Nodes.Add(nodeCount.ToString(), "Client" + nodeCount.ToString());
             }
@@ -104,7 +105,14 @@ namespace EasyXmlSample
             {
                 TreeNode categoryNode = tvClients.SelectedNode;
                 if (clientCategories.Split(';').Contains(tvClients.SelectedNode.Parent.Text)) categoryNode = tvClients.SelectedNode.Parent;
-                if (tNode == null) tNode = tvClients.SelectedNode.Nodes.Add(categoryNode.Parent.Name + "_" + categoryNode.Text.TrimEnd('s') + "_" + (categoryNode.Nodes.Count + 1).ToString());
+                nodeCount = categoryNode.Nodes.Count + 1;
+                string newNodeName = categoryNode.Parent.Name + "_" + categoryNode.Text.TrimEnd('s') + "_" + nodeCount.ToString();
+                while (categoryNode.Nodes[newNodeName] != null)
+                {
+                    nodeCount++;
+                    newNodeName = categoryNode.Parent.Name + "_" + categoryNode.Text.TrimEnd('s') + "_" + nodeCount.ToString();
+                }
+                tNode = tvClients.SelectedNode.Nodes.Add(newNodeName, newNodeName);
             }
             if (tNode != null)
             {
@@ -132,18 +140,6 @@ namespace EasyXmlSample
         private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void CutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void CopyToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-        }
-
-        private void PasteToolStripMenuItem_Click(object sender, EventArgs e)
-        {
         }
 
         private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e)
@@ -198,7 +194,7 @@ namespace EasyXmlSample
         {
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(xmlFileName);
-            XmlNode xNode = xDoc.SelectSingleNode("//clients/client[@id='" + node.Name + "']");
+            XmlNode xNode = xDoc.SelectSingleNode("//clients/client[@id='" + node.Text + "']");
             if (xNode != null)
             {
                 xNode.Attributes["name"].Value = newLabel;
@@ -220,7 +216,7 @@ namespace EasyXmlSample
                     {
                         xNode = xDoc.SelectSingleNode("//clients/client[@name='" + clientName + "']/" + nodeCategory);
                         XmlElement xElement = xDoc.CreateElement(nodeCategory.TrimEnd('s'));
-                        xElement.SetAttribute("id", nodeName);
+                        xElement.SetAttribute("id", nodeLabel);
                         xElement.SetAttribute("name", nodeLabel);
                         xNode.AppendChild(xElement);
                     }
@@ -253,7 +249,7 @@ namespace EasyXmlSample
         {
             bool allowEdit = false;
             if (selectedNode.Parent == null) allowEdit = true;
-            if ((!allowEdit) && (selectedNode.Nodes.Count == 0) && (selectedNode.Parent !=null) && (selectedNode.Parent.Parent !=null)) allowEdit = true;
+            if ((!allowEdit) && (selectedNode.Nodes.Count == 0) && (selectedNode.Parent != null) && (selectedNode.Parent.Parent != null)) allowEdit = true;
             if (allowEdit)
             {
                 foreach (TabPage p in MainTablControl.TabPages)
@@ -272,7 +268,7 @@ namespace EasyXmlSample
         private void tvClients_DoubleClick(object sender, EventArgs e)
         {
 
-            if ((tvClients.SelectedNode != null) && (tvClients.SelectedNode.Parent != null) && (tvClients.SelectedNode.Parent.Text == "etls") && (tvClients.SelectedNode.Parent.Parent != null))
+            if ((tvClients.SelectedNode != null) && (tvClients.SelectedNode.Parent != null) && (tvClients.SelectedNode.Parent.Parent != null))
             {
                 foreach (TabPage p in MainTablControl.TabPages)
                 {
@@ -282,20 +278,40 @@ namespace EasyXmlSample
                         return;
                     }
                 }
-                MainTablControl.TabPages.Add(tvClients.SelectedNode.FullPath);
-                TabPage newTabPage = MainTablControl.TabPages[MainTablControl.TabCount - 1];
-                ETLForm mForm = new ETLForm();
-                mForm.TopLevel = false;
-                mForm.MdiParent = this;
-                mForm.FormBorderStyle = FormBorderStyle.None;
-                mForm.SettingsFileName = xmlFileName;
-                mForm.LoadControls();
-                mForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
-                newTabPage.Controls.Add(mForm);
-                mForm.Dock = DockStyle.Fill;
-                mForm.Show();
-                //mForm.LoadDataToGridView();
-                MainTablControl.SelectedTab = newTabPage;
+                if ("actions;etls".Split(';').Contains(tvClients.SelectedNode.Parent.Text))
+                {
+                    MainTablControl.TabPages.Add(tvClients.SelectedNode.FullPath);
+                    TabPage newTabPage = MainTablControl.TabPages[MainTablControl.TabCount - 1];
+                    Form currentForm = null;
+                    switch (tvClients.SelectedNode.Parent.Text)
+                    {
+                        case "etls":
+                            ETLForm mForm = new ETLForm();
+                            mForm.SettingsFileName = xmlFileName;
+                            mForm.LoadControls();
+                            mForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
+                            currentForm = mForm;
+                            break;
+                        case "actions":
+                            ActionForm aForm = new ActionForm();
+                            aForm.SettingsFileName = xmlFileName;
+                            aForm.LoadFormControls();
+                            aForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
+                            currentForm = aForm;
+                            break;
+
+                    }
+                    if (currentForm != null)
+                    {
+                        currentForm.TopLevel = false;
+                        currentForm.MdiParent = this;
+                        newTabPage.Controls.Add(currentForm);
+                        currentForm.Dock = DockStyle.Fill;
+                        currentForm.Show();
+                        currentForm.FormBorderStyle = FormBorderStyle.None;
+                        MainTablControl.SelectedTab = newTabPage;
+                    }
+                }
             }
         }
 
@@ -316,7 +332,7 @@ namespace EasyXmlSample
         {
             if (e.Control && e.KeyCode == Keys.Delete)
             {
-                
+
             }
         }
 
@@ -347,12 +363,18 @@ namespace EasyXmlSample
                     string clientName = node.FullPath.Split('\\')[0];
                     string nodeCategory = node.FullPath.Split('\\')[1];
                     string nodeName = node.FullPath.Split('\\')[2];
-                    xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@id='" + node.Name + "']";
+                    xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + node.Text + "']";
                 }
+                string selectedNodePath = "";
+                if (node.NextNode != null) selectedNodePath = node.NextNode.FullPath;
+                if (node.PrevNode != null) selectedNodePath = node.PrevNode.FullPath;
                 XmlNode xNode = xDoc.SelectSingleNode(xPath);
-                xNode.ParentNode.RemoveChild(xNode);
-                xDoc.Save(xmlFileName);
-                LoadConfiguration();
+                if (xNode != null)
+                {
+                    xNode.ParentNode.RemoveChild(xNode);
+                    xDoc.Save(xmlFileName);
+                    LoadConfiguration(selectedNodePath);
+                }
             }
         }
 
@@ -388,16 +410,17 @@ namespace EasyXmlSample
 
         private void MoveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if ((tvClients.SelectedNode !=null) && (tvClients.SelectedNode.FullPath.Split('\\').Length == 3) && CanAllowEdit(tvClients.SelectedNode))
+            if ((tvClients.SelectedNode != null) && (tvClients.SelectedNode.FullPath.Split('\\').Length == 3) && CanAllowEdit(tvClients.SelectedNode))
             {
                 MoveConfigurationForm moveForm = new MoveConfigurationForm();
                 moveForm.OriginalPath = tvClients.SelectedNode.FullPath;
+                moveForm.NewPath = moveForm.OriginalPath;
                 moveForm.SettingsFileName = xmlFileName;
                 moveForm.LoadClients(tvClients.SelectedNode.FullPath.Split('\\')[0]);
                 moveForm.SetMoveLabel("Move " + tvClients.SelectedNode.Text + " to:");
                 moveForm.Text = "Move from " + tvClients.SelectedNode.FullPath.Split('\\')[0];
                 moveForm.ShowDialog(this);
-                LoadConfiguration();
+                LoadConfiguration(moveForm.NewPath);
                 //MessageBox.Show("We can move this");
             }
         }
@@ -420,19 +443,27 @@ namespace EasyXmlSample
                 xDoc.Load(xmlFileName);
                 TreeNode node = tvClients.SelectedNode;
                 string xPath = "//clients/client[@name='" + node.FullPath + "']";
+
+                string clientName = node.FullPath;
+                string nodeCategory = "";
+                string nodeName = node.Text;
+                string newNodeName = "Copy of " + nodeName;
+                string newNodePath = newNodeName;
                 if (node.FullPath.Contains('\\'))
                 {
-                    string clientName = node.FullPath.Split('\\')[0];
-                    string nodeCategory = node.FullPath.Split('\\')[1];
-                    string nodeName = node.FullPath.Split('\\')[2];
-                    xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + node.Text + "']";
+                    clientName = node.FullPath.Split('\\')[0];
+                    nodeCategory = node.FullPath.Split('\\')[1];
+                    nodeName = node.FullPath.Split('\\')[2];
+                    xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + nodeName + "']";
+                    newNodePath = clientName + '\\' + nodeCategory + '\\' + newNodeName;
                 }
                 XmlNode xNode = xDoc.SelectSingleNode(xPath);
                 XmlNode cloneNode = xNode.CloneNode(true);
-                cloneNode.Attributes.GetNamedItem("name").Value = "Copy of " + node.Text;
+                cloneNode.Attributes.GetNamedItem("name").Value = newNodeName;
+                cloneNode.Attributes.GetNamedItem("id").Value = newNodeName;
                 xNode.ParentNode.AppendChild(cloneNode);
                 xDoc.Save(xmlFileName);
-                LoadConfiguration();
+                LoadConfiguration(newNodePath);
             }
         }
 
