@@ -1067,6 +1067,7 @@
             this.dataGrid.RowHeadersVisible = false;
             this.dataGrid.Size = new System.Drawing.Size(1292, 510);
             this.dataGrid.TabIndex = 10;
+            this.dataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellContentClick);
             this.dataGrid.SelectionChanged += new System.EventHandler(this.dataGrid_SelectionChanged);
             this.dataGrid.DoubleClick += new System.EventHandler(this.dataGrid_DoubleClick);
             // 

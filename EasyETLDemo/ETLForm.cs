@@ -313,6 +313,9 @@ namespace EasyXmlSample
                 {
                     dataRows.Add(((DataRowView)dgvRow.DataBoundItem).Row);
                 }
+                if ((dataRows.Count ==0) && (dataGrid.CurrentCell !=null)) {
+                    dataRows.Add(((DataRowView)dataGrid.Rows[dataGrid.CurrentCell.RowIndex].DataBoundItem).Row);
+                }
                 pbProgress.Maximum = dataRows.Count;
                 aea.OnProgress += aea_OnProgress;
                 pbProgress.Visible = true;
@@ -1322,7 +1325,7 @@ namespace EasyXmlSample
             }
         }
 
-        private void EnableActionButtonsAsNeeded()
+        private void EnableActionButtonsAsNeeded(DataRow dataRow = null)
         {
             if (actionInProgress) return;
             List<DataRow> dataRows = null;
@@ -1335,12 +1338,19 @@ namespace EasyXmlSample
                     b.Enabled = false;
                     if (dctClassMapping.ContainsKey(b.Text) && (dctClassMapping[b.Text] != null))
                     {
-                        if (dataRows == null)
+                        if (dataRows == null) 
                         {
                             dataRows = new List<DataRow>();
-                            foreach (DataGridViewRow dRow in dataGrid.SelectedRows)
+                            if (dataRow == null)
                             {
-                                dataRows.Add(((DataRowView)dRow.DataBoundItem).Row);
+                                foreach (DataGridViewRow dRow in dataGrid.SelectedRows)
+                                {
+                                    dataRows.Add(((DataRowView)dRow.DataBoundItem).Row);
+                                }
+                            }
+                            else
+                            {
+                                dataRows.Add(dataRow);
                             }
                         }
                         AbstractEasyAction ea = (AbstractEasyAction)Activator.CreateInstance(dctClassMapping[b.Text].Class);
@@ -1357,6 +1367,10 @@ namespace EasyXmlSample
         private void dataGrid_SelectionChanged(object sender, EventArgs e)
         {
             fpActions.Visible = false;
+            if ((dataGrid.SelectedRows.Count == 0) && (dataGrid.CurrentCell !=null))
+            {
+                EnableActionButtonsAsNeeded(((DataRowView)dataGrid.Rows[dataGrid.CurrentCell.RowIndex].DataBoundItem).Row);
+            }
             if (dataGrid.SelectedRows.Count == 0) return;
             EnableActionButtonsAsNeeded();
         }
@@ -1395,6 +1409,11 @@ namespace EasyXmlSample
         private void btnHideSettings_Click(object sender, EventArgs e)
         {
             ToggleDisplayConfigurationSection(false);
+        }
+
+        private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            dataGrid_DoubleClick(this, null);
         }
 
     }

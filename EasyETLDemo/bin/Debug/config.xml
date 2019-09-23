@@ -315,6 +315,7 @@ filter policyID &gt; 950000</afterload>
         <etl id="Copy of Export in XML Format" name="Copy of Export in XML Format" autorefresh="True">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
           <actions>
+            <action name="Set to CA" enabled="True" />
             <action name="Delete Record" enabled="True" />
             <action name="Move to CA" enabled="True" />
             <action name="Move to FL" enabled="True" />
