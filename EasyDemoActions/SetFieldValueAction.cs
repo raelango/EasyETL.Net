@@ -8,11 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Dynamic;
 using System.ComponentModel;
+using System.Xml;
 
 namespace EasyDemoActions
 {
-    [DisplayName("Set Field Status")]
-    [Description("This sets the status based on the variable code")]
+    [DisplayName("Set Field Value")]
+    [Description("This sets the value of fields mentioned in <<FieldName>> to values specified in <<FieldValue>>")]
     [EasyField("FieldName", "This is the name of the column. use ';' to separate multiple columns")]
     [EasyField("FieldValue","This is the value of the column.  use ';' to separate multiple columnns.  Please note that the columns in FieldName should match the columns in FieldValue")]
     public class SetFieldValueAction : AbstractEasyAction
@@ -50,7 +51,7 @@ namespace EasyDemoActions
             }
         }
 
-        public override void Execute(System.Xml.XmlNode dataNode)
+        public override void Execute(XmlNode dataNode)
         {
             string[] fieldNames = SettingsDictionary["FieldName"].Split(';');
             string[] fieldValues = SettingsDictionary["FieldValue"].Split(';');

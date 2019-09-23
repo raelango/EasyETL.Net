@@ -168,9 +168,9 @@
     <Folder Include="Transformers\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EasyEndpoint\EasyEndpoint.csproj">
+    <ProjectReference Include="..\EasyETL.Endpoint\EasyETL.Endpoint.csproj">
       <Project>{51925788-a8e5-4d41-a192-d206cdefee35}</Project>
-      <Name>EasyEndpoint</Name>
+      <Name>EasyETL.Endpoint</Name>
     </ProjectReference>
     <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
       <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>

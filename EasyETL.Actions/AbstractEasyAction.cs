@@ -10,7 +10,24 @@ namespace EasyETL.Actions
 {
     public abstract class AbstractEasyAction : IEasyAction
     {
+
+        public event EventHandler<EasyActionProgressEventArgs> OnProgress;
+
         public Dictionary<string, string> SettingsDictionary = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+
+        public int MaximumItems;
+
+        #region Protected Methods
+        public void SetProgress(int currentIndex)
+        {
+            if (OnProgress != null)
+            {
+                OnProgress.Invoke(this, new EasyActionProgressEventArgs(MaximumItems,currentIndex));
+            }
+        }
+        #endregion
+
+
         #region Implemented CanExecute methods
         public bool CanExecute(params Dictionary<string, string>[] dataDictionaries)
         {
@@ -93,32 +110,44 @@ namespace EasyETL.Actions
         #region Implemented Execute Methods
         public void Execute(params Dictionary<string, string>[] dataDictionaries)
         {
+            MaximumItems = dataDictionaries.Length;
+            int currentIndex = 0;
             foreach (Dictionary<string, string> data in dataDictionaries)
             {
+                SetProgress(currentIndex++);
                 Execute(data);
             }
         }
 
         public void Execute(params XmlNode[] dataNodes)
         {
+            MaximumItems = dataNodes.Length;
+            int currentIndex = 0;
             foreach (XmlNode dataNode in dataNodes)
             {
+                SetProgress(currentIndex++);
                 Execute(dataNode);
             }
         }
 
         public void Execute(params EasyDynamicObject[] dataObjects)
         {
+            MaximumItems = dataObjects.Length;
+            int currentIndex = 0;
             foreach (EasyDynamicObject dataObject in dataObjects)
             {
+                SetProgress(currentIndex++);
                 Execute(dataObject);
             }
         }
 
         public void Execute(params DataRow[] dataRows)
         {
+            MaximumItems = dataRows.Length;
+            int currentIndex = 0;
             foreach (DataRow dataRow in dataRows)
             {
+                SetProgress(currentIndex++);
                 Execute(dataRow);
             }
         }
@@ -178,4 +207,16 @@ namespace EasyETL.Actions
             throw new NotImplementedException();
         }
     }
+
+    public class EasyActionProgressEventArgs : EventArgs
+    {
+        public int MaximumItems;
+        public int CurrentIndex;
+        public EasyActionProgressEventArgs(int maximumItems, int currentIndex)
+        {
+            MaximumItems = maximumItems;
+            CurrentIndex = currentIndex;
+        }
+    }
+
 }
