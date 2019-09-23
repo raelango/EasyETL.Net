@@ -421,7 +421,6 @@ namespace EasyXmlSample
                 moveForm.Text = "Move from " + tvClients.SelectedNode.FullPath.Split('\\')[0];
                 moveForm.ShowDialog(this);
                 LoadConfiguration(moveForm.NewPath);
-                //MessageBox.Show("We can move this");
             }
         }
 

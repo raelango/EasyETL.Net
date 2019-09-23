@@ -285,11 +285,25 @@ filter policyID &gt; 950000</afterload>
     </client>
     <client id="6" name="Demonstration of Action">
       <actions>
-        <action id="6_action_1" name="Set Status" libraryname="EasyDemoActions" classname="Set Field Status">
-          <field name="FieldValue" value="200;1002" />
-          <field name="FieldName" value="fr_site_deductible;fl_site_deductible" />
+        <action id="6_action_1" name="Set to CA" libraryname="EasyDemoActions" classname="Set Field Value">
+          <field name="FieldName" value="statecode" />
+          <field name="FieldValue" value="CA" />
         </action>
         <action id="6_action_2" name="Delete Record" libraryname="EasyDemoActions" classname="Delete Record">
+        </action>
+        <action id="6_action_3" name="Move to CA" libraryname="EasyDemoActions" classname="Conditional Set Field Value">
+          <field name="FieldName" value="statecode" />
+          <field name="CurrentFieldValue" value="FL" />
+          <field name="NewFieldValue" value="CA" />
+        </action>
+        <action id="Copy of Move to CA" name="Move to FL" libraryname="EasyDemoActions" classname="Conditional Set Field Value">
+          <field name="FieldName" value="statecode" />
+          <field name="CurrentFieldValue" value="CA" />
+          <field name="NewFieldValue" value="FL" />
+        </action>
+        <action id="Copy of Set to CA" name="Set to FL" libraryname="EasyDemoActions" classname="Set Field Value">
+          <field name="FieldName" value="statecode" />
+          <field name="FieldValue" value="FL" />
         </action>
       </actions>
       <endpoints />
@@ -298,9 +312,15 @@ filter policyID &gt; 950000</afterload>
       <messagequeues />
       <transfers />
       <etls>
-        <etl id="Copy of Export in XML Format" name="Copy of Export in XML Format" autorefresh="False">
+        <etl id="Copy of Export in XML Format" name="Copy of Export in XML Format" autorefresh="True">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
-          <actions />
+          <actions>
+            <action name="Delete Record" enabled="True" />
+            <action name="Move to CA" enabled="True" />
+            <action name="Move to FL" enabled="True" />
+            <action name="Set to FL" enabled="True" />
+            <defaultaction name="Move to FL" />
+          </actions>
           <transformations>
             <duringload profilename="" savefilename="">
             </duringload>
@@ -312,7 +332,7 @@ filter policyID &gt; 950000</afterload>
             </comments>
           </parseoptions>
           <output name="To XML" exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" includeheader="False" />
-          <permissions role="owner" canviewsettings="True" caneditsettings="True" canadddata="False" caneditdata="False" candeletedata="False" canexportdata="True" />
+          <permissions role="owner" canviewsettings="True" caneditsettings="True" canadddata="False" caneditdata="True" candeletedata="False" canexportdata="True" />
         </etl>
       </etls>
     </client>

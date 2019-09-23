@@ -117,6 +117,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EasyETL.Endpoint\EasyETL.Endpoint.csproj">
+      <Project>{51925788-a8e5-4d41-a192-d206cdefee35}</Project>
+      <Name>EasyETL.Endpoint</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyETL.Actions\EasyETL.Actions.csproj">
       <Project>{0da7a5a0-e2ee-4af9-9089-478a12369f88}</Project>
       <Name>EasyETL.Actions</Name>
@@ -124,6 +128,10 @@
     <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
       <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
       <Name>EasyETL.Dynamic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Endpoint.Sharepoint\EasyETL.Endpoint.Sharepoint.csproj">
+      <Project>{75f3a27e-6279-47dc-a03b-e512f71e071c}</Project>
+      <Name>EasyETL.Endpoint.Sharepoint</Name>
     </ProjectReference>
     <ProjectReference Include="..\EasyETL.Office\EasyETL.Office.csproj">
       <Project>{ea54969b-76ba-4423-972e-9a1c037324a5}</Project>

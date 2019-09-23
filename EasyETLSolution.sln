@@ -13,13 +13,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Xml", "EasyETL.Xml\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETLDemo", "EasyETLDemo\EasyETLDemo.csproj", "{155433A3-85EC-4065-9B13-FB18374A1E34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyEndpoint", "EasyEndpoint\EasyEndpoint.csproj", "{51925788-A8E5-4D41-A192-D206CDEFEE35}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint", "EasyETL.Endpoint\EasyETL.Endpoint.csproj", "{51925788-A8E5-4D41-A192-D206CDEFEE35}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyDemoActions", "EasyDemoActions\EasyDemoActions.csproj", "{4DA52AAD-3E76-430F-B08A-B32BA7EE7CDE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Actions", "EasyETL.Actions\EasyETL.Actions.csproj", "{0DA7A5A0-E2EE-4AF9-9089-478A12369F88}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Dynamic", "EasyETL.Dynamic\EasyETL.Dynamic.csproj", "{A9568049-8A98-4FBA-A7A8-4742D56FFE0F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint.Sharepoint", "EasyETL.Endpoint.Sharepoint\EasyETL.Endpoint.Sharepoint.csproj", "{75F3A27E-6279-47DC-A03B-E512F71E071C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,12 @@ Global
 		{A9568049-8A98-4FBA-A7A8-4742D56FFE0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9568049-8A98-4FBA-A7A8-4742D56FFE0F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A9568049-8A98-4FBA-A7A8-4742D56FFE0F}.Release|x86.ActiveCfg = Release|Any CPU
+		{75F3A27E-6279-47DC-A03B-E512F71E071C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75F3A27E-6279-47DC-A03B-E512F71E071C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75F3A27E-6279-47DC-A03B-E512F71E071C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{75F3A27E-6279-47DC-A03B-E512F71E071C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75F3A27E-6279-47DC-A03B-E512F71E071C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75F3A27E-6279-47DC-A03B-E512F71E071C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

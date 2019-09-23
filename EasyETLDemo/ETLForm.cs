@@ -119,7 +119,13 @@ namespace EasyXmlSample
                             if (loadIndex >= 0) chkAvailableActions.SetItemChecked(loadIndex, toCheck);
                         }
                     }
+                    XmlNode defaultActionNode = actionsNode.SelectSingleNode("defaultaction");
+                    if ((defaultActionNode !=null) && (defaultActionNode.Attributes.GetNamedItem("name") != null))
+                    {
+                        cmbDefaultAction.Text = defaultActionNode.Attributes.GetNamedItem("name").Value;
+                    }
                 }
+
                 DisplayActionButtonsAsNeeded();
                 #endregion
 
@@ -202,6 +208,7 @@ namespace EasyXmlSample
                 #endregion
 
                 #region Permissions Settings
+                btnSaveSettings.Visible = false;
                 XmlNode permissionsNode = xNode.SelectSingleNode("permissions");
                 if (permissionsNode != null)
                 {
@@ -210,8 +217,7 @@ namespace EasyXmlSample
                         switch (xAttr.Name.ToLower())
                         {
                             case "canviewsettings":
-                                tableLayoutPanel1.RowStyles[0].Height = tabSource.Height + 6;
-                                if (!Convert.ToBoolean(xAttr.Value)) tableLayoutPanel1.RowStyles[0].Height = 0;
+                                ToggleDisplayConfigurationSection(Convert.ToBoolean(xAttr.Value));
                                 break;
                             case "caneditsettings":
                                 chkCanEditConfiguration.Checked = Convert.ToBoolean(xAttr.Value); break;
@@ -225,6 +231,7 @@ namespace EasyXmlSample
                                 chkCanExportData.Checked = Convert.ToBoolean(xAttr.Value); break;
                         }
                     }
+                    btnSaveSettings.Visible = chkCanEditConfiguration.Checked;
                 }
                 #endregion
 
@@ -294,33 +301,36 @@ namespace EasyXmlSample
         {
             actionInProgress = true;
             string actionName = ((Button)sender).Text;
-            if (dctClassMapping[actionName] != null)
+            if (dctClassMapping.ContainsKey(actionName))
             {
                 AbstractEasyAction aea = (AbstractEasyAction)Activator.CreateInstance(dctClassMapping[actionName].Class);
                 foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[actionName])
                 {
                     aea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
                 }
-                ProgressForm pForm = new ProgressForm();
-                //pForm.TopLevel = false;
-                pForm.TopMost = true;
-                //splitContainer2.Panel2.Controls.Add(pForm);
-                pForm.Show(splitContainer2.Panel2);
-                pForm.MaximumItems = dataGrid.SelectedRows.Count;
-                pForm.ActionName = actionName;
-                int currentIndex = 0;
+                List<DataRow> dataRows = new List<DataRow>();
                 foreach (DataGridViewRow dgvRow in dataGrid.SelectedRows)
                 {
-                    currentIndex++;
-                    pForm.SetCurrentIndex(currentIndex);
-                    Application.DoEvents();
-                    aea.Execute(((DataRowView)dgvRow.DataBoundItem).Row);
+                    dataRows.Add(((DataRowView)dgvRow.DataBoundItem).Row);
                 }
-                //splitContainer2.Panel2.Controls.Remove(pForm);
-                pForm.Close();
+                pbProgress.Maximum = dataRows.Count;
+                aea.OnProgress += aea_OnProgress;
+                pbProgress.Visible = true;
+                lblProgress.Visible = true;
+                aea.Execute(dataRows.ToArray());
+                lblProgress.Visible = false;
+                pbProgress.Visible = false;
             }
             actionInProgress = false;
             EnableActionButtonsAsNeeded();
+        }
+
+        void aea_OnProgress(object sender, EasyActionProgressEventArgs e)
+        {
+            pbProgress.Value = e.CurrentIndex;
+            double dblProgress = (e.CurrentIndex * 1.0) / pbProgress.Maximum;
+            lblProgress.Text = dblProgress.ToString("P");
+            Application.DoEvents();
         }
 
 
@@ -943,6 +953,14 @@ namespace EasyXmlSample
                 actionNode.SetAttribute("enabled", "True");
                 actionsNode.AppendChild(actionNode);
             }
+
+            if (!String.IsNullOrWhiteSpace(cmbDefaultAction.Text))
+            {
+                XmlElement defaultActionNode = xDoc.CreateElement("defaultaction");
+                defaultActionNode.SetAttribute("name", cmbDefaultAction.Text);
+                actionsNode.AppendChild(defaultActionNode);
+            }
+
             xNode.AppendChild(actionsNode);
             #endregion
 
@@ -1270,7 +1288,6 @@ namespace EasyXmlSample
 
         private void chkCanEditConfiguration_CheckedChanged(object sender, EventArgs e)
         {
-            btnSaveSettings.Visible = chkCanEditConfiguration.Checked;
             chkAutoRefresh.Visible = chkCanEditConfiguration.Checked;
             if (!chkAutoRefresh.Visible) chkAutoRefresh.Checked = true;
         }
@@ -1289,40 +1306,49 @@ namespace EasyXmlSample
         {
             foreach (Control c in fpActions.Controls)
             {
-                if (c is Button)
+                if ((c is Button) && (((Button)c).Text == chkAvailableActions.Items[e.Index].ToString()))
                 {
                     Button b = (Button)c;
-                    b.Visible = (b.Text == chkAvailableActions.Items[e.Index].ToString()) && (e.NewValue == CheckState.Checked);
+                    b.Visible = (e.NewValue == CheckState.Checked);
                 }
+            }
+            if (e.NewValue == CheckState.Checked)
+            {
+                cmbDefaultAction.Items.Add(chkAvailableActions.Items[e.Index].ToString());
+            }
+            else 
+            {
+                cmbDefaultAction.Items.Remove(chkAvailableActions.Items[e.Index].ToString());
             }
         }
 
         private void EnableActionButtonsAsNeeded()
         {
             if (actionInProgress) return;
+            List<DataRow> dataRows = null;
             foreach (Control c in fpActions.Controls)
             {
                 if (c is Button)
                 {
                     Button b = (Button)c;
                     fpActions.Visible = true;
+                    b.Enabled = false;
                     if (dctClassMapping.ContainsKey(b.Text) && (dctClassMapping[b.Text] != null))
                     {
+                        if (dataRows == null)
+                        {
+                            dataRows = new List<DataRow>();
+                            foreach (DataGridViewRow dRow in dataGrid.SelectedRows)
+                            {
+                                dataRows.Add(((DataRowView)dRow.DataBoundItem).Row);
+                            }
+                        }
                         AbstractEasyAction ea = (AbstractEasyAction)Activator.CreateInstance(dctClassMapping[b.Text].Class);
                         foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[b.Text])
                         {
                             ea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
                         }
-
-                        foreach (DataGridViewRow dRow in dataGrid.SelectedRows)
-                        {
-                            DataRow row = ((DataRowView)dRow.DataBoundItem).Row;
-                            if (!ea.CanExecute(row))
-                            {
-                                b.Enabled = false;
-                                break;
-                            }
-                        }
+                        b.Enabled = ea.CanExecute(dataRows.ToArray());
                     }
                 }
             }
@@ -1333,6 +1359,42 @@ namespace EasyXmlSample
             fpActions.Visible = false;
             if (dataGrid.SelectedRows.Count == 0) return;
             EnableActionButtonsAsNeeded();
+        }
+
+        private void dataGrid_DoubleClick(object sender, EventArgs e)
+        {
+            if (String.IsNullOrWhiteSpace(cmbDefaultAction.Text)) return;
+            foreach (Control c in fpActions.Controls)
+            {
+                if ( (c.Visible) && (c.Enabled) && (c is Button) && (c.Text == cmbDefaultAction.Text)) {
+                    btnControl_Click(c, null);
+                }
+            }
+
+        }
+
+        private void btnShowSettings_Click(object sender, EventArgs e)
+        {
+            ToggleDisplayConfigurationSection(true);
+        }
+
+        private void ToggleDisplayConfigurationSection(bool bShow)
+        {
+            if (bShow)
+            {
+                btnShowSettings.Visible = false;
+                tableLayoutPanel1.RowStyles[0].Height = 232;
+            }
+            else
+            {
+                btnShowSettings.Visible = true;
+                tableLayoutPanel1.RowStyles[0].Height = 1;
+            }
+        }
+
+        private void btnHideSettings_Click(object sender, EventArgs e)
+        {
+            ToggleDisplayConfigurationSection(false);
         }
 
     }
