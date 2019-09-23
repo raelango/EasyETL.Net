@@ -12,7 +12,7 @@ using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.VisualBasic;
 using System.IO;
 
-namespace EasyEndpoint
+namespace EasyETL.Endpoint
 {
     public class FtpEasyEndpoint : AbstractFileEasyEndpoint, IDisposable
     {

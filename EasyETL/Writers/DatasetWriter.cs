@@ -1,4 +1,4 @@
-﻿using EasyEndpoint;
+﻿using EasyETL.Endpoint;
 using System;
 using System.Collections.Generic;
 using System.Data;

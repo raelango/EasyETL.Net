@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyEndpoint
+namespace EasyETL.Endpoint
 {
     public abstract class AbstractFileEasyEndpoint : AbstractEasyEndpoint
     {

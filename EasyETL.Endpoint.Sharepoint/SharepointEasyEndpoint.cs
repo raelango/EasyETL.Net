@@ -9,6 +9,7 @@ using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using System.Security;
 using System.Net;
+using EasyETL.Endpoint;
 
 namespace EasyEndpoint
 {
