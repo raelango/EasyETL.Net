@@ -285,23 +285,24 @@ filter policyID &gt; 950000</afterload>
     </client>
     <client id="6" name="Demonstration of Action">
       <actions>
-        <action id="6_action_1" name="Set to CA" libraryname="EasyDemoActions" classname="Set Field Value">
+        <action id="6_action_1" name="Set to CA" libraryname="EasyETL.Actions.DemoActions" classname="Set Field Value">
           <field name="FieldName" value="statecode" />
           <field name="FieldValue" value="CA" />
         </action>
-        <action id="6_action_2" name="Delete Record" libraryname="EasyDemoActions" classname="Delete Record">
+        <action id="6_action_2" name="Delete Record" libraryname="EasyETL.Actions.DemoActions" classname="Delete Record">
+          <field name="ConfirmationRequired" value="False" />
         </action>
-        <action id="6_action_3" name="Move to CA" libraryname="EasyDemoActions" classname="Conditional Set Field Value">
+        <action id="6_action_3" name="Move to CA" libraryname="EasyETL.Actions.DemoActions" classname="Conditional Set Field Value">
           <field name="FieldName" value="statecode" />
-          <field name="CurrentFieldValue" value="FL" />
+          <field name="CurrentFieldValue" value="^((?!CA).)*$" />
           <field name="NewFieldValue" value="CA" />
         </action>
-        <action id="Copy of Move to CA" name="Move to FL" libraryname="EasyDemoActions" classname="Conditional Set Field Value">
+        <action id="Copy of Move to CA" name="Move to FL" libraryname="EasyETL.Actions.DemoActions" classname="Conditional Set Field Value">
           <field name="FieldName" value="statecode" />
-          <field name="CurrentFieldValue" value="CA" />
+          <field name="CurrentFieldValue" value="^((?!FL).)*$" />
           <field name="NewFieldValue" value="FL" />
         </action>
-        <action id="Copy of Set to CA" name="Set to FL" libraryname="EasyDemoActions" classname="Set Field Value">
+        <action id="Copy of Set to CA" name="Set to FL" libraryname="EasyETL.Actions.DemoActions" classname="Set Field Value">
           <field name="FieldName" value="statecode" />
           <field name="FieldValue" value="FL" />
         </action>
