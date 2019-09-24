@@ -23,6 +23,7 @@ namespace EasyETL
         public Type Class;
         public string DisplayName;
         public string Description;
+        public Dictionary<string, string> Fields;
     }
 
     
@@ -65,6 +66,7 @@ namespace EasyETL
                     cMapping.DisplayName = displayName;
                     cMapping.Description = ((DescriptionAttribute)type.GetCustomAttribute(typeof(DescriptionAttribute), true)).Description;
                     cMapping.Class = type;
+                    cMapping.Fields = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
                     lstClasses.Add(cMapping);
                 }
             }
