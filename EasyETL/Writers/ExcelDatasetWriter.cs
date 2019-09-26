@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -7,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace EasyETL.Writers
 {
+    [DisplayName("Excel Writer")]
     public class ExcelDatasetWriter : FileDatasetWriter
     {
         public Dictionary<string, string> DocProperties = new Dictionary<string, string>();

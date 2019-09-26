@@ -1,5 +1,7 @@
-﻿using System;
+﻿using EasyETL.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -7,6 +9,8 @@ using System.Threading.Tasks;
 
 namespace EasyETL.Writers
 {
+    [DisplayName("Delimited Data Writer")]
+    [EasyField("Delimiter","Specify the delimiter to be used",",",".")]
     public class DelimitedDatasetWriter : FileDatasetWriter
     {
         public bool IncludeHeaders = true;

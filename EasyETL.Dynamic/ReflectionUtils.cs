@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using EasyETL;
 using System.ComponentModel;
+using EasyETL.Attributes;
 
 namespace EasyETL
 {
@@ -23,6 +24,7 @@ namespace EasyETL
         public Type Class;
         public string DisplayName;
         public string Description;
+        public Assembly Assembly;
         public Dictionary<string, string> Fields;
     }
 
@@ -30,47 +32,78 @@ namespace EasyETL
     public class ReflectionUtils
     {
 
-        public static string[] LoadAllLibrariesWithClass(string libraryPath, Type baseClassType)
+        public static string[] LoadAllLibrariesWithClass(Type baseClassType, string libraryPath, bool includeSubFolders = false)
         {
             List<string> lstLibraries = new List<string>();
-            if (!Directory.Exists(libraryPath)) return lstLibraries.ToArray();
-            CompileClassFilesToLibrary(libraryPath);
-            foreach (string dllFileName in Directory.GetFiles(libraryPath, "*.dll"))
+            if (String.IsNullOrWhiteSpace(libraryPath))
             {
-                Assembly asm = Assembly.LoadFile(dllFileName);
-                foreach (Type type in asm.GetTypes())
+                //libraryPath = Environment.CurrentDirectory;
+
+            }
+            else
+            {
+                if (!Directory.Exists(libraryPath)) return lstLibraries.ToArray();
+                CompileClassFilesToLibrary(libraryPath, includeSubFolders);
+                foreach (string dllFileName in Directory.GetFiles(libraryPath, "*.dll", includeSubFolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
                 {
-                    if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract))
+                    Assembly asm = Assembly.LoadFile(dllFileName);
+                    foreach (Type type in asm.GetTypes())
                     {
-                        lstLibraries.Add(Path.GetFileNameWithoutExtension(dllFileName));
-                        break;
+                        if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract))
+                        {
+                            lstLibraries.Add(Path.GetFileNameWithoutExtension(dllFileName));
+                            break;
+                        }
                     }
                 }
             }
             return lstLibraries.ToArray() ;
         }
 
-        public static ClassMapping[] LoadClassesFromLibrary(string dllFileName, Type baseClassType)
+        public static ClassMapping[] LoadClassesFromLibrary(Type baseClassType, string dllFileName = "")
         {
             List<ClassMapping> lstClasses = new List<ClassMapping>();
-            if (!File.Exists(dllFileName)) return lstClasses.ToArray();
-            Assembly asm = Assembly.LoadFile(dllFileName);
-            foreach (Type type in asm.GetTypes())
+
+            if (String.IsNullOrWhiteSpace(dllFileName))
             {
-                if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract))
+                //libraryPath = Environment.CurrentDirectory;
+                foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    string displayName = type.Name;
-                    DisplayNameAttribute displayAttr = (DisplayNameAttribute)type.GetCustomAttribute(typeof(DisplayNameAttribute),true);
-                    if (displayAttr !=null) displayName = displayAttr.DisplayName;
-                    ClassMapping cMapping = new ClassMapping();
-                    cMapping.DisplayName = displayName;
-                    cMapping.Description = ((DescriptionAttribute)type.GetCustomAttribute(typeof(DescriptionAttribute), true)).Description;
-                    cMapping.Class = type;
-                    cMapping.Fields = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
-                    lstClasses.Add(cMapping);
+                    foreach (Type type in asm.GetTypes())
+                    {
+                        if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract)) AddClassToList(lstClasses, type);
+                    }
+                }
+                foreach (string dllFile in Directory.GetFiles(Environment.CurrentDirectory, "*.dll", SearchOption.AllDirectories))
+                {
+                    if (!AppDomain.CurrentDomain.GetAssemblies().Select(f=>f.FullName).Contains(Assembly.LoadFile(dllFile).FullName))
+                        lstClasses.AddRange(LoadClassesFromLibrary(baseClassType, dllFile));
                 }
             }
+            else
+            {
+                if (File.Exists(dllFileName))
+                {
+                    Assembly asm = Assembly.LoadFile(dllFileName);
+                    foreach (Type type in asm.GetTypes())
+                    {
+                        if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract)) AddClassToList(lstClasses, type);
+                    }
+                }
+            }
+
             return lstClasses.ToArray();
+        }
+
+        private static void AddClassToList(List<ClassMapping> lstClasses, Type type)
+        {
+            ClassMapping cMapping = new ClassMapping();
+            cMapping.Class = type;
+            cMapping.DisplayName = type.GetDisplayName();
+            cMapping.Description = type.GetDescription();
+            cMapping.Fields = type.GetEasyProperties();
+            cMapping.Assembly = type.Assembly;
+            lstClasses.Add(cMapping);
         }
 
         public static ClassMapping LoadClassFromLibrary(string dllFileName, Type baseClassType, string typeName)
@@ -82,15 +115,13 @@ namespace EasyETL
             {
                 if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract))
                 {
-                    string displayName = type.Name;
-                    DisplayNameAttribute displayAttr = (DisplayNameAttribute)type.GetCustomAttribute(typeof(DisplayNameAttribute), true);
-                    if (displayAttr != null) displayName = displayAttr.DisplayName;
-                    if (displayName == typeName)
+                    if (typeName == type.GetDisplayName())
                     {
                         classMapping = new ClassMapping();
-                        classMapping.DisplayName = displayName;
-                        classMapping.Description = ((DescriptionAttribute)type.GetCustomAttribute(typeof(DescriptionAttribute), true)).Description;
                         classMapping.Class = type;
+                        classMapping.DisplayName = type.GetDisplayName();
+                        classMapping.Description = type.GetDescription();
+                        classMapping.Fields = type.GetEasyProperties();
                         return classMapping;
                     }
                 }
@@ -128,9 +159,9 @@ namespace EasyETL
             return Methods;
         }
 
-        private static void CompileClassFilesToLibrary(string dllPath)
+        private static void CompileClassFilesToLibrary(string dllPath, bool includeSubFolders = false)
         {
-            foreach (string csFileName in Directory.GetFiles(dllPath, "*.cs"))
+            foreach (string csFileName in Directory.GetFiles(dllPath, "*.cs",includeSubFolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
             {
                 CompileCSSource(csFileName, Path.ChangeExtension(csFileName, "dll"));
             }

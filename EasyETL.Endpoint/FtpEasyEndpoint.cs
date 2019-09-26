@@ -11,9 +11,18 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.VisualBasic;
 using System.IO;
+using System.ComponentModel;
+using EasyETL.Attributes;
 
 namespace EasyETL.Endpoint
 {
+    [DisplayName("FTP Server")]
+    [EasyProperty("HasFiles", "True")]
+    [EasyProperty("CanStream", "True")]
+    [EasyProperty("CanRead", "True")]
+    [EasyProperty("CanWrite", "True")]
+    [EasyProperty("CanList", "True")]
+    [EasyProperty("CanListen", "False")]
     public class FtpEasyEndpoint : AbstractFileEasyEndpoint, IDisposable
     {
         public FtpClient FTPControl = null;
@@ -32,14 +41,6 @@ namespace EasyETL.Endpoint
             }
             Certificates = new X509CertificateCollection(certificates);
             EstablishFTPConnection();
-        }
-
-        public override bool CanListen
-        {
-            get
-            {
-                return false;
-            }
         }
 
         #region public properties

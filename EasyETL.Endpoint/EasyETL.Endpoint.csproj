@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="AbstractEasyEndpoint.cs" />
     <Compile Include="AbstractFileEasyEndpoint.cs" />
+    <Compile Include="EndpointExtensions.cs" />
     <Compile Include="FileEasyEndpoint.cs" />
     <Compile Include="FtpEasyEndpoint.cs" />
     <Compile Include="IEasyEndpoint.cs" />
@@ -55,6 +56,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">
+      <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
+      <Name>EasyETL.Attributes</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

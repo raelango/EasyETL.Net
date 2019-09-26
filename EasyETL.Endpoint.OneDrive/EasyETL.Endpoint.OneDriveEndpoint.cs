@@ -1,5 +1,7 @@
-﻿using System;
+﻿using EasyETL.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,18 +9,12 @@ using System.Threading.Tasks;
 
 namespace EasyETL.Endpoint.OneDrive
 {
+    [DisplayName("OneDrive")]
+    [EasyProperty("CanListen", "False")]
     public class OneDriveEndpoint : AbstractFileEasyEndpoint
     {
         string ApplicationName = String.Empty;
         //DriveService GoogleDriveService = null;
-
-        public override bool CanListen
-        {
-            get
-            {
-                return true;
-            }
-        }
 
         public OneDriveEndpoint(string applicationName)
         {

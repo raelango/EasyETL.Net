@@ -1,5 +1,7 @@
-﻿using System;
+﻿using EasyETL.Attributes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,17 +9,16 @@ using System.Threading.Tasks;
 
 namespace EasyETL.Endpoint
 {
+    [DisplayName("Local Network")]
+    [EasyProperty("HasFiles","True")]
+    [EasyProperty("CanStream", "True")]
+    [EasyProperty("CanRead", "True")]
+    [EasyProperty("CanWrite", "True")]
+    [EasyProperty("CanList", "True")]
+    [EasyProperty("CanListen", "True")]
     public class FileEasyEndpoint : AbstractFileEasyEndpoint
     {
         string FolderName = String.Empty;
-
-        public override bool CanListen
-        {
-            get
-            {
-                return true;
-            }
-        }
 
         public FileEasyEndpoint(string folderName, bool overwriteFiles = true)
         {

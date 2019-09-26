@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Xml.Xsl;
 
 namespace EasyETL.Writers
 {
+    [DisplayName("XML Writer")]
     public class XmlDatasetWriter : FileDatasetWriter
     {
         private string xsltFileName;

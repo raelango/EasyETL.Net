@@ -40,11 +40,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractEasyAction.cs" />
-    <Compile Include="EasyFieldAttribute.cs" />
     <Compile Include="IEasyAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">
+      <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
+      <Name>EasyETL.Attributes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
       <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
       <Name>EasyETL.Dynamic</Name>

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Dynamic;
 using System.ComponentModel;
 using System.Xml;
+using EasyETL.Attributes;
 
 namespace EasyDemoActions
 {

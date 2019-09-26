@@ -10,13 +10,7 @@ namespace EasyETL.Endpoint
     public interface IEasyEndpoint
     {
         #region Properties
-        bool HasFiles { get; } //Ports, Databases are not files
-        bool CanStream { get; } //Ports -- NetworkStream, files -- FileStream, Database -- No
-        bool CanRead { get; }
-        bool CanWrite { get; }
-        bool CanList { get; }
         bool Overwrite { get; }
-        bool CanListen { get; }
         #endregion
 
         #region Methods

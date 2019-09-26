@@ -52,6 +52,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">
+      <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
+      <Name>EasyETL.Attributes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyETL.Endpoint\EasyETL.Endpoint.csproj">
       <Project>{51925788-a8e5-4d41-a192-d206cdefee35}</Project>
       <Name>EasyETL.Endpoint</Name>

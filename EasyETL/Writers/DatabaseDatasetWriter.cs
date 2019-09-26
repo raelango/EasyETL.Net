@@ -8,9 +8,11 @@ using EasyETL.DataSets;
 using System.Data.Odbc;
 using System.Data.OleDb;
 using System.Data.SqlClient;
+using System.ComponentModel;
 
 namespace EasyETL.Writers
 {
+    [DisplayName("Database Writer")]
     public class DatabaseDatasetWriter : DatasetWriter,IDisposable 
     {
         IDbConnection _connection = null;

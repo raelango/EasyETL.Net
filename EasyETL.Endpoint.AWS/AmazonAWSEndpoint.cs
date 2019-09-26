@@ -8,22 +8,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Amazon.S3.Transfer;
+using System.ComponentModel;
+using EasyETL.Attributes;
 
 namespace EasyETL.Endpoint
 {
+    [DisplayName("Amazon S3 Bucket")]
+    [EasyProperty("CanListen","False")]
     public class AmazonAWSEndpoint : AbstractFileEasyEndpoint
     {
         string BucketName = String.Empty;
         string AccessKey = String.Empty;
         string SecretKey = String.Empty;
-
-        public override bool CanListen
-        {
-            get
-            {
-                return false;
-            }
-        }
 
         AmazonS3Client AWSClient = null;
 

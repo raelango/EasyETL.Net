@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.ComponentModel;
 
 namespace EasyETL.Writers
 {
+    [DisplayName("HTML Writer")]
     public class HtmlDatasetWriter : FileDatasetWriter
     {
         public string TemplateFileName = String.Empty;

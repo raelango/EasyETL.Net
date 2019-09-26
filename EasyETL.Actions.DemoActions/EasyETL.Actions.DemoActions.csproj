@@ -50,6 +50,10 @@
       <Project>{0da7a5a0-e2ee-4af9-9089-478a12369f88}</Project>
       <Name>EasyETL.Actions</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">
+      <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
+      <Name>EasyETL.Attributes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
       <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
       <Name>EasyETL.Dynamic</Name>

@@ -1,5 +1,6 @@
 ﻿using EasyETL;
 using EasyETL.Actions;
+using EasyETL.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

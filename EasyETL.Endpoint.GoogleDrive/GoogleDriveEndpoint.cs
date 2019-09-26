@@ -10,22 +10,18 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using System.IO;
 using System.Threading;
+using System.ComponentModel;
+using EasyETL.Attributes;
 
 
 namespace EasyETL.Endpoint.GoogleDrive
 {
+    [DisplayName("Google Drive")]
+    [EasyProperty("CanListen", "True")]
     public class GoogleDriveEndpoint : AbstractFileEasyEndpoint
     {
         string ApplicationName = String.Empty;
         DriveService GoogleDriveService = null;
-
-        public override bool CanListen
-        {
-            get
-            {
-                return true;
-            }
-        }
 
         public GoogleDriveEndpoint(string applicationName)
         {

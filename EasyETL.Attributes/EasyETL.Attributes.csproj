@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8F022A03-E313-4C1D-B7D8-93085C010223}</ProjectGuid>
+    <ProjectGuid>{B0708C3A-1339-4852-B529-7747352133B8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EasyETL.Endpoint.OneDrive</RootNamespace>
-    <AssemblyName>EasyETL.Endpoint.OneDrive</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>EasyETL.Attributes</RootNamespace>
+    <AssemblyName>EasyETL.Attributes</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -40,18 +39,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EasyETL.Endpoint.OneDriveEndpoint.cs" />
+    <Compile Include="AttributeExtensions.cs" />
+    <Compile Include="EasyFieldAttribute.cs" />
+    <Compile Include="EasyPropertyAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">
-      <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
-      <Name>EasyETL.Attributes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EasyETL.Endpoint\EasyETL.Endpoint.csproj">
-      <Project>{51925788-a8e5-4d41-a192-d206cdefee35}</Project>
-      <Name>EasyETL.Endpoint</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
