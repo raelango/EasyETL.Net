@@ -25,6 +25,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint.Sharepoint
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint.AWS", "EasyETL.Endpoint.AWS\EasyETL.Endpoint.AWS.csproj", "{BF7C6A12-B16D-4A9A-ABF8-E519A31BD34C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint.GoogleDrive", "EasyETL.Endpoint.GoogleDrive\EasyETL.Endpoint.GoogleDrive.csproj", "{66DDD60D-C805-4F41-8E1D-A2E1E89014F3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint.OneDrive", "EasyETL.Endpoint.OneDrive\EasyETL.Endpoint.OneDrive.csproj", "{8F022A03-E313-4C1D-B7D8-93085C010223}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Attributes", "EasyETL.Attributes\EasyETL.Attributes.csproj", "{B0708C3A-1339-4852-B529-7747352133B8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -101,6 +107,24 @@ Global
 		{BF7C6A12-B16D-4A9A-ABF8-E519A31BD34C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BF7C6A12-B16D-4A9A-ABF8-E519A31BD34C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BF7C6A12-B16D-4A9A-ABF8-E519A31BD34C}.Release|x86.ActiveCfg = Release|Any CPU
+		{66DDD60D-C805-4F41-8E1D-A2E1E89014F3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66DDD60D-C805-4F41-8E1D-A2E1E89014F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66DDD60D-C805-4F41-8E1D-A2E1E89014F3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66DDD60D-C805-4F41-8E1D-A2E1E89014F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66DDD60D-C805-4F41-8E1D-A2E1E89014F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66DDD60D-C805-4F41-8E1D-A2E1E89014F3}.Release|x86.ActiveCfg = Release|Any CPU
+		{8F022A03-E313-4C1D-B7D8-93085C010223}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F022A03-E313-4C1D-B7D8-93085C010223}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F022A03-E313-4C1D-B7D8-93085C010223}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8F022A03-E313-4C1D-B7D8-93085C010223}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F022A03-E313-4C1D-B7D8-93085C010223}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F022A03-E313-4C1D-B7D8-93085C010223}.Release|x86.ActiveCfg = Release|Any CPU
+		{B0708C3A-1339-4852-B529-7747352133B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0708C3A-1339-4852-B529-7747352133B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0708C3A-1339-4852-B529-7747352133B8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B0708C3A-1339-4852-B529-7747352133B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0708C3A-1339-4852-B529-7747352133B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0708C3A-1339-4852-B529-7747352133B8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
