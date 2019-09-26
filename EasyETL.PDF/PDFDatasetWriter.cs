@@ -2,9 +2,11 @@
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
+using System.ComponentModel;
 
 namespace EasyETL.Writers
 {
+    [DisplayName("PDF Writer")]
     public class PDFDatasetWriter : FileDatasetWriter
     {
         public PDFDatasetWriter()

@@ -338,6 +338,24 @@ filter policyID &gt; 950000</afterload>
         </etl>
       </etls>
     </client>
+    <client id="7" name="Demo for Exports">
+      <actions>
+        <action id="7_action_1" name="Conditional Action" classname="Conditional Set Field Value">
+        </action>
+      </actions>
+      <datasources />
+      <exports>
+        <export id="7_export_1" name="7_export_1" />
+      </exports>
+      <endpoints>
+        <endpoint id="7_endpoint_1" name="Local Network" classname="Local Network">
+        </endpoint>
+      </endpoints>
+      <filestores />
+      <messagequeues />
+      <transfers />
+      <etls />
+    </client>
   </clients>
   <profiles>
     <profile parsertype="Template" profilename="TemplateFolderNameOnly">

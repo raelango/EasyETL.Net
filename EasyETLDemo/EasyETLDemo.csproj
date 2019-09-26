@@ -46,11 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionForm.cs">
+    <Compile Include="ClassConfigurationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ActionForm.Designer.cs">
-      <DependentUpon>ActionForm.cs</DependentUpon>
+    <Compile Include="ClassConfigurationForm.Designer.cs">
+      <DependentUpon>ClassConfigurationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="EasyETLDemoApplication.cs">
       <SubType>Form</SubType>
@@ -72,8 +72,8 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="ActionForm.resx">
-      <DependentUpon>ActionForm.cs</DependentUpon>
+    <EmbeddedResource Include="ClassConfigurationForm.resx">
+      <DependentUpon>ClassConfigurationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EasyETLDemoApplication.resx">
       <DependentUpon>EasyETLDemoApplication.cs</DependentUpon>
@@ -108,6 +108,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">
+      <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
+      <Name>EasyETL.Attributes</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyETL.Endpoint\EasyETL.Endpoint.csproj">
       <Project>{51925788-a8e5-4d41-a192-d206cdefee35}</Project>
       <Name>EasyETL.Endpoint</Name>

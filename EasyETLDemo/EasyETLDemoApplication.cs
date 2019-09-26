@@ -1,4 +1,7 @@
-﻿using System;
+﻿using EasyETL.Actions;
+using EasyETL.Endpoint;
+using EasyETL.Writers;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -15,7 +18,7 @@ namespace EasyXmlSample
     public partial class EasyETLDemoApplication : Form
     {
         private string xmlFileName;
-        private string clientCategories = "actions;endpoints;datasources;filestores;messagequeues;transfers;etls";
+        private string clientCategories = "actions;datasources;exports;endpoints;filestores;messagequeues;transfers;etls";
         public EasyETLDemoApplication()
         {
             InitializeComponent();
@@ -194,7 +197,7 @@ namespace EasyXmlSample
         {
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(xmlFileName);
-            XmlNode xNode = xDoc.SelectSingleNode("//clients/client[@id='" + node.Text + "']");
+            XmlNode xNode = xDoc.SelectSingleNode("//clients/client[@name='" + node.Text + "']");
             if (xNode != null)
             {
                 xNode.Attributes["name"].Value = newLabel;
@@ -207,7 +210,7 @@ namespace EasyXmlSample
                     string nodeCategory = node.FullPath.Split('\\')[1];
                     string nodeName = node.FullPath.Split('\\')[2];
                     string nodeLabel = newLabel;
-                    xNode = xDoc.SelectSingleNode("//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@id='" + node.Name + "']");
+                    xNode = xDoc.SelectSingleNode("//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + node.Name + "']");
                     if (xNode != null)
                     {
                         xNode.Attributes["name"].Value = newLabel;
@@ -278,7 +281,7 @@ namespace EasyXmlSample
                         return;
                     }
                 }
-                if ("actions;etls".Split(';').Contains(tvClients.SelectedNode.Parent.Text))
+                if ("actions;exports;endpoints;etls".Split(';').Contains(tvClients.SelectedNode.Parent.Text))
                 {
                     MainTablControl.TabPages.Add(tvClients.SelectedNode.FullPath);
                     TabPage newTabPage = MainTablControl.TabPages[MainTablControl.TabCount - 1];
@@ -293,7 +296,24 @@ namespace EasyXmlSample
                             currentForm = mForm;
                             break;
                         case "actions":
-                            ActionForm aForm = new ActionForm();
+                        case "exports":
+                        case "endpoints":
+                            ClassConfigurationForm aForm = new ClassConfigurationForm();
+                            aForm.ClassType = tvClients.SelectedNode.Parent.Text.TrimEnd('s');
+                            switch (tvClients.SelectedNode.Parent.Text)
+                            {
+                                case "actions":
+                                    aForm.BaseClassType = typeof(AbstractEasyAction);
+                                    break;
+                                case "exports":
+                                    aForm.BaseClassType = typeof(DatasetWriter);
+                                    break;
+                                case "endpoints":
+                                    aForm.BaseClassType = typeof(AbstractEasyEndpoint);
+                                    break;
+                                default:
+                                    break;
+                            }
                             aForm.SettingsFileName = xmlFileName;
                             aForm.LoadFormControls();
                             aForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);

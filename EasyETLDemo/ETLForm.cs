@@ -53,9 +53,6 @@ namespace EasyXmlSample
             }
             #endregion
 
-
-
-
             string clientName = settingsPath.Split('\\')[0];
             string etlName = settingsPath.Split('\\')[2];
             SettingsPath = "//clients/client[@name='" + clientName + "']/etls/etl[@name='" + etlName + "']";
@@ -91,7 +88,6 @@ namespace EasyXmlSample
                     }
 
                 }
-
 
             }
 
@@ -313,8 +309,19 @@ namespace EasyXmlSample
                 {
                     dataRows.Add(((DataRowView)dgvRow.DataBoundItem).Row);
                 }
-                if ((dataRows.Count ==0) && (dataGrid.CurrentCell !=null)) {
-                    dataRows.Add(((DataRowView)dataGrid.Rows[dataGrid.CurrentCell.RowIndex].DataBoundItem).Row);
+                if (dataRows.Count == 0) {
+                    if (dataGrid.SelectedCells.Count > 0)
+                    {
+                        List<int> lstRowIndex = new List<int>();
+                        foreach (DataGridViewCell cell in dataGrid.SelectedCells)
+                        {
+                            if (!lstRowIndex.Contains(cell.RowIndex)) lstRowIndex.Add(cell.RowIndex);
+                        }
+                        foreach (int rowIndex in lstRowIndex)
+                        {
+                            dataRows.Add(((DataRowView)dataGrid.Rows[rowIndex].DataBoundItem).Row);
+                        }
+                    }
                 }
                 pbProgress.Maximum = dataRows.Count;
                 aea.OnProgress += aea_OnProgress;
@@ -649,6 +656,8 @@ namespace EasyXmlSample
             cmbDatabaseConnectionType.SelectedIndex = 0;
             btnRefreshOnLoadProfiles_Click(this, null);
             btnTransformProfilesLoad_Click(this, null);
+            List<ClassMapping> lstExports = new List<ClassMapping>(ReflectionUtils.LoadClassesFromLibrary(typeof(DatasetWriter)));
+
         }
 
         private void cmbFileType_SelectedIndexChanged(object sender, EventArgs e)
@@ -1347,6 +1356,21 @@ namespace EasyXmlSample
                                 {
                                     dataRows.Add(((DataRowView)dRow.DataBoundItem).Row);
                                 }
+                                if (dataRows.Count == 0)
+                                {
+                                    if (dataGrid.SelectedCells.Count > 0)
+                                    {
+                                        List<int> lstRowIndex = new List<int>();
+                                        foreach (DataGridViewCell cell in dataGrid.SelectedCells)
+                                        {
+                                            if (!lstRowIndex.Contains(cell.RowIndex)) lstRowIndex.Add(cell.RowIndex);
+                                        }
+                                        foreach (int rowIndex in lstRowIndex)
+                                        {
+                                            dataRows.Add(((DataRowView)dataGrid.Rows[rowIndex].DataBoundItem).Row);
+                                        }
+                                    }
+                                }
                             }
                             else
                             {
@@ -1367,11 +1391,7 @@ namespace EasyXmlSample
         private void dataGrid_SelectionChanged(object sender, EventArgs e)
         {
             fpActions.Visible = false;
-            if ((dataGrid.SelectedRows.Count == 0) && (dataGrid.CurrentCell !=null))
-            {
-                EnableActionButtonsAsNeeded(((DataRowView)dataGrid.Rows[dataGrid.CurrentCell.RowIndex].DataBoundItem).Row);
-            }
-            if (dataGrid.SelectedRows.Count == 0) return;
+            if ((dataGrid.SelectedRows.Count == 0) && (dataGrid.SelectedCells.Count ==0)) return;
             EnableActionButtonsAsNeeded();
         }
 

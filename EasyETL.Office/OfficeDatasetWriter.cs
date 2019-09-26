@@ -12,6 +12,7 @@ using DocumentFormat.OpenXml.CustomProperties;
 using System.IO;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System.ComponentModel;
 
 namespace EasyETL.Writers
 {
@@ -22,6 +23,7 @@ namespace EasyETL.Writers
         //PowerpointPresentation
     }
 
+    [DisplayName("Office Writer")]
     public class OfficeDatasetWriter : FileDatasetWriter
     {
         public string TemplateFileName = String.Empty;
