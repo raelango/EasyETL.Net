@@ -32,6 +32,8 @@ namespace EasyXmlSample
         List<ExportSettings> AllExportSettings = new List<ExportSettings>();
         public Dictionary<string, ClassMapping> dctClassMapping = new Dictionary<string, ClassMapping>();
         public Dictionary<string, Dictionary<string, string>> dctActionFieldSettings = new Dictionary<string, Dictionary<string, string>>();
+        public Dictionary<string, XmlNode> dctDatasources = new Dictionary<string, XmlNode>();
+
 
         public int intAutoNumber = 0;
         public string SettingsPath = "";
@@ -57,12 +59,19 @@ namespace EasyXmlSample
             string etlName = settingsPath.Split('\\')[2];
             SettingsPath = "//clients/client[@name='" + clientName + "']/etls/etl[@name='" + etlName + "']";
 
+            #region load all available actions
             chkAvailableActions.Items.Clear();
             fpActions.Controls.Clear();
             XmlNodeList actionNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/actions/action");
             dctClassMapping.Clear();
             dctActionFieldSettings.Clear();
             string actionFolderName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Actions");
+            ClassMapping[] actionClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractEasyAction));
+            Dictionary<string, ClassMapping> dctAllActions = new Dictionary<string, ClassMapping>();
+            foreach (ClassMapping actionClass in actionClasses)
+            {
+                dctAllActions.Add(actionClass.Class.Name, actionClass);
+            }
             foreach (XmlNode actionNode in actionNodes)
             {
                 string actionName = actionNode.Attributes.GetNamedItem("name").Value;
@@ -72,9 +81,12 @@ namespace EasyXmlSample
                 btnControl.Click += btnControl_Click;
                 fpActions.Controls.Add(btnControl);
 
-                string libraryName = actionNode.Attributes.GetNamedItem("libraryname").Value;
+                //string libraryName = actionNode.Attributes.GetNamedItem("libraryname").Value;
                 string className = actionNode.Attributes.GetNamedItem("classname").Value;
-                ClassMapping cMapping = ReflectionUtils.LoadClassFromLibrary(Path.Combine(actionFolderName, libraryName + ".dll"), typeof(AbstractEasyAction), className);
+
+                ClassMapping cMapping = null;
+                if (dctAllActions.ContainsKey(className)) cMapping = dctAllActions[className];
+                    //ReflectionUtils.LoadClassFromLibrary(Path.Combine(actionFolderName, libraryName + ".dll"), typeof(AbstractEasyAction), className);
 
                 if (cMapping != null)
                 {
@@ -90,6 +102,20 @@ namespace EasyXmlSample
                 }
 
             }
+            #endregion
+
+            #region load all available data sources 
+            dctDatasources.Clear();
+            cmbDatasource.Items.Clear();
+
+            XmlNodeList datasourceNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/datasources/datasource");
+            foreach (XmlNode datasourceNode in datasourceNodes)
+            {
+                string datasourceName = datasourceNode.Attributes.GetNamedItem("name").Value;
+                cmbDatasource.Items.Add(datasourceName);
+                dctDatasources.Add(datasourceName, datasourceNode);
+            }
+            #endregion
 
 
             XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
@@ -252,10 +278,8 @@ namespace EasyXmlSample
                                 chkHasMaxRows.Checked = Convert.ToBoolean(xAttr.Value); break;
                             case "maxrows":
                                 nudMaxRows.Value = Convert.ToInt64(xAttr.Value); break;
-                            case "connectionstring":
-                                txtDatabaseConnectionString.Text = xAttr.Value; break;
-                            case "connectiontype":
-                                cmbDatabaseConnectionType.Text = xAttr.Value; break;
+                            case "datasource":
+                                cmbDatasource.Text = xAttr.Value; break;
                         }
                     }
                     if (datasourceNode.SelectSingleNode("textcontents") != null)
@@ -420,7 +444,7 @@ namespace EasyXmlSample
             if ((tabDataSource.SelectedTab == tabDatasourceText) && (txtTextContents.TextLength == 0)) return;
             if ((tabDataSource.SelectedTab == tabDatasourceFile) && (txtFileName.TextLength == 0)) return;
             if ((tabDataSource.SelectedTab == tabDatasourceFile) && !File.Exists(txtFileName.Text)) return;
-            if ((tabDataSource.SelectedTab == tabDatasourceDatabase) && (String.IsNullOrWhiteSpace(txtDatabaseConnectionString.Text) || String.IsNullOrWhiteSpace(txtDatabaseQuery.Text))) return;
+            if ((tabDataSource.SelectedTab == tabDatasourceDatabase) && (String.IsNullOrWhiteSpace(cmbDatasource.Text))) return;
             stopWatch.Restart();
             intAutoNumber = 0;
             this.UseWaitCursor = true;
@@ -451,19 +475,17 @@ namespace EasyXmlSample
                 if (tabDataSource.SelectedTab == tabDatasourceDatabase)
                 {
                     DatabaseEasyParser dbep = null;
-                    switch (cmbDatabaseConnectionType.Text)
+                    if ((cmbDatasource.SelectedItem != null) && (dctDatasources.ContainsKey(cmbDatasource.SelectedItem.ToString())))
                     {
-                        case "Sql":
-                            dbep = new DatabaseEasyParser(EasyDatabaseConnectionType.edctSQL, txtDatabaseConnectionString.Text);
-                            break;
-                        case "Oledb":
-                            dbep = new DatabaseEasyParser(EasyDatabaseConnectionType.edctOledb, txtDatabaseConnectionString.Text);
-                            break;
-                        case "Odbc":
-                            dbep = new DatabaseEasyParser(EasyDatabaseConnectionType.edctODBC, txtDatabaseConnectionString.Text);
-                            break;
+                        XmlNode datasourceNode = dctDatasources[cmbDatasource.SelectedItem.ToString()];
+                        ClassMapping[] databaseClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(DatabaseEasyParser));
+                        Type classType = databaseClasses.First(f => f.DisplayName == datasourceNode.Attributes.GetNamedItem("classname").Value).Class;
+                        dbep = (DatabaseEasyParser)Activator.CreateInstance(classType);
+                        foreach (XmlNode childNode in datasourceNode.SelectNodes("field")) {
+                            dbep.LoadSetting(childNode.Attributes.GetNamedItem("name").Value,childNode.Attributes.GetNamedItem("value").Value);
+                        }
+                        xDoc.LoadXml(dbep.Load(txtDatabaseQuery.Text).OuterXml);
                     }
-                    xDoc.LoadXml(dbep.LoadFromQuery(txtDatabaseQuery.Text).OuterXml);
                 }
                 else
                 {
@@ -653,7 +675,7 @@ namespace EasyXmlSample
         public void LoadControls()
         {
             cmbFileType.SelectedIndex = 0;
-            cmbDatabaseConnectionType.SelectedIndex = 0;
+            cmbDatasource.SelectedItem = 0;
             btnRefreshOnLoadProfiles_Click(this, null);
             btnTransformProfilesLoad_Click(this, null);
             List<ClassMapping> lstExports = new List<ClassMapping>(ReflectionUtils.LoadClassesFromLibrary(typeof(DatasetWriter)));
@@ -946,8 +968,7 @@ namespace EasyXmlSample
                     datasourceNode.AppendChild(textContents);
                     break;
                 case "Database":
-                    datasourceNode.SetAttribute("connectionstring", txtDatabaseConnectionString.Text);
-                    datasourceNode.SetAttribute("connectiontype", cmbDatabaseConnectionType.Text);
+                    datasourceNode.SetAttribute("datasource", cmbDatasource.Text);
                     XmlElement queryNode = xDoc.CreateElement("query");
                     queryNode.InnerText = txtDatabaseQuery.Text;
                     datasourceNode.AppendChild(queryNode);
@@ -1302,6 +1323,7 @@ namespace EasyXmlSample
         {
             chkAutoRefresh.Visible = chkCanEditConfiguration.Checked;
             if (!chkAutoRefresh.Visible) chkAutoRefresh.Checked = true;
+            if (chkCanEditConfiguration.Checked) btnSaveSettings.Visible = true;
         }
 
         private void cmbExport_SelectedIndexChanged(object sender, EventArgs e)

@@ -10,6 +10,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -100,16 +101,31 @@ namespace EasyXmlSample
             classAttr.Value = cmbClassName.SelectedItem.ToString();
             xNode.Attributes.Append(classAttr);
 
+
             if (SelectedClassSettings != null)
             {
-                foreach (KeyValuePair<string, string> kvPair in SelectedClassSettings)
+                if (typeof(IEasyFieldInterface).IsAssignableFrom(SelectedClassMapping.Class))
                 {
-                    if (!String.IsNullOrWhiteSpace(kvPair.Value))
+                    IEasyFieldInterface efiObject = (IEasyFieldInterface)Activator.CreateInstance(SelectedClassMapping.Class);
+                    efiObject.LoadFieldSettings(SelectedClassSettings);
+                    if (!efiObject.IsFieldSettingsComplete())
                     {
-                        XmlElement fieldNode = xDoc.CreateElement("field");
-                        fieldNode.SetAttribute("name",kvPair.Key);
-                        fieldNode.SetAttribute("value",kvPair.Value);
-                        xNode.AppendChild(fieldNode);
+                        MessageBox.Show(this, "The field settings are incomplete.  Please correct before saving.", "ERROR", MessageBoxButtons.OK);
+                        return;
+                    }
+                    efiObject.SaveFieldSettingsToXmlNode(xNode);
+                }
+                else
+                {
+                    foreach (KeyValuePair<string, string> kvPair in SelectedClassSettings)
+                    {
+                        if (!String.IsNullOrWhiteSpace(kvPair.Value))
+                        {
+                            XmlElement fieldNode = xDoc.CreateElement("field");
+                            fieldNode.SetAttribute("name", kvPair.Key);
+                            fieldNode.SetAttribute("value", kvPair.Value);
+                            xNode.AppendChild(fieldNode);
+                        }
                     }
                 }
             }
@@ -181,6 +197,11 @@ namespace EasyXmlSample
         {
             if ((cmbField.Items.Count > 1) && (cmbField.SelectedItem == null)) {
                 MessageBox.Show("Please select a valid value");
+                return;
+            }
+            if ((SelectedFieldAttribute != null) && (!String.IsNullOrWhiteSpace(SelectedFieldAttribute.RegexMatch)) && (!Regex.IsMatch(cmbField.Text, "^(" + SelectedFieldAttribute.RegexMatch + ")$")))
+            {
+                MessageBox.Show("The input data does not match the expected format.  The expected format is " + SelectedFieldAttribute.RegexMatch);
                 return;
             }
             SelectedClassSettings[lstFields.SelectedItem.ToString()] = cmbField.Text;

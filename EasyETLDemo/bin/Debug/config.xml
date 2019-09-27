@@ -343,18 +343,82 @@ filter policyID &gt; 950000</afterload>
         <action id="7_action_1" name="Conditional Action" classname="Conditional Set Field Value">
         </action>
       </actions>
-      <datasources />
+      <datasources>
+        <datasource id="7_datasource_1" name="Database Source" classname="Database Source">
+          <field name="connectionstring" value="adassd" />
+          <field name="connectiontype" value="ODBC" />
+          <field name="query" value="sdfsdasf" />
+        </datasource>
+        <datasource id="7_datasource_2" name="Odbc Source" classname="ODBC Database">
+          <field name="connectionstring" value="asfddsfasf" />
+          <field name="connectiontype" value="ODBC" />
+          <field name="query" value="asfdsdfsdf" />
+        </datasource>
+        <datasource id="7_datasource_3" name="Oledb Source" classname="Oledb Database">
+          <field name="connectionstring" value="asfdsdfsafsdf" />
+          <field name="connectiontype" value="Oledb" />
+          <field name="query" value="asfddsfdsf" />
+        </datasource>
+        <datasource id="7_datasource_4" name="SQL Source" classname="SQL Server Database">
+          <field name="connectionstring" value="Server=BEDSQLLC02;Database=HRMS;Trusted_Connection=True;" />
+          <field name="connectiontype" value="SQL" />
+          <field name="query" value="select * from dbo.tblAction" />
+          <field name="servername" value="BEDSQLLC02" />
+          <field name="databasename" value="HRMS" />
+          <field name="sqlusername" value="" />
+          <field name="sqlpassword" value="" />
+        </datasource>
+        <datasource id="HRMS Database" name="HRMS Database" />
+        <datasource id="7_datasource_6" name="BEDDEVSQLLP01 MRSI" classname="SQL Server Database">
+          <field name="connectionstring" value="Server=BEDDEVSQLLP01;Database=MRSI;Trusted_Connection=True;" />
+          <field name="connectiontype" value="SQL" />
+          <field name="query" value="select * from users" />
+          <field name="servername" value="BEDDEVSQLLP01" />
+          <field name="databasename" value="MRSI" />
+          <field name="sqlusername" value="" />
+          <field name="sqlpassword" value="" />
+        </datasource>
+        <datasource id="7_datasource_7" name="7_datasource_7" />
+      </datasources>
       <exports>
         <export id="7_export_1" name="7_export_1" />
       </exports>
       <endpoints>
         <endpoint id="7_endpoint_1" name="Local Network" classname="Local Network">
+          <field name="overwrite" value="True" />
+          <field name="foldername" value="\\asd\dsa\d\" />
+        </endpoint>
+        <endpoint id="7_endpoint_2" name="FTP Server" classname="FTP Server">
+          <field name="overwrite" value="False" />
+          <field name="FTP Address" value="sftp.logixhealth.com" />
+          <field name="Port Number" value="33" />
+          <field name="User ID" value="aelango" />
+          <field name="User Password" value="" />
         </endpoint>
       </endpoints>
       <filestores />
       <messagequeues />
       <transfers />
-      <etls />
+      <etls>
+        <etl id="7_etl_1" name="Load From HRMS" autorefresh="False">
+          <datasource sourcetype="Database" datasource="BEDDEVSQLLP01 MRSI">
+            <query>
+            </query>
+          </datasource>
+          <actions />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">
+            </afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="AutoDetect" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <permissions role="owner" canviewsettings="True" caneditsettings="True" canadddata="False" caneditdata="False" candeletedata="False" canexportdata="False" />
+        </etl>
+      </etls>
     </client>
   </clients>
   <profiles>

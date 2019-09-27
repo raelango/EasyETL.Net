@@ -93,10 +93,6 @@
             this.tabDatasourceDatabase = new System.Windows.Forms.TabPage();
             this.txtDatabaseQuery = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.txtDatabaseConnectionString = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.cmbDatabaseConnectionType = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
@@ -167,6 +163,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnHideSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
+            this.cmbDatasource = new System.Windows.Forms.ComboBox();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -871,12 +869,10 @@
             // 
             // tabDatasourceDatabase
             // 
+            this.tabDatasourceDatabase.Controls.Add(this.cmbDatasource);
+            this.tabDatasourceDatabase.Controls.Add(this.label1);
             this.tabDatasourceDatabase.Controls.Add(this.txtDatabaseQuery);
             this.tabDatasourceDatabase.Controls.Add(this.label6);
-            this.tabDatasourceDatabase.Controls.Add(this.txtDatabaseConnectionString);
-            this.tabDatasourceDatabase.Controls.Add(this.label5);
-            this.tabDatasourceDatabase.Controls.Add(this.cmbDatabaseConnectionType);
-            this.tabDatasourceDatabase.Controls.Add(this.label1);
             this.tabDatasourceDatabase.Location = new System.Drawing.Point(4, 22);
             this.tabDatasourceDatabase.Name = "tabDatasourceDatabase";
             this.tabDatasourceDatabase.Size = new System.Drawing.Size(1047, 167);
@@ -901,48 +897,6 @@
             this.label6.Size = new System.Drawing.Size(62, 13);
             this.label6.TabIndex = 18;
             this.label6.Text = "SQL Query:";
-            // 
-            // txtDatabaseConnectionString
-            // 
-            this.txtDatabaseConnectionString.Location = new System.Drawing.Point(113, 3);
-            this.txtDatabaseConnectionString.Multiline = true;
-            this.txtDatabaseConnectionString.Name = "txtDatabaseConnectionString";
-            this.txtDatabaseConnectionString.Size = new System.Drawing.Size(362, 43);
-            this.txtDatabaseConnectionString.TabIndex = 17;
-            this.txtDatabaseConnectionString.Leave += new System.EventHandler(this.txtTextContents_Leave);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(11, 3);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(94, 13);
-            this.label5.TabIndex = 16;
-            this.label5.Text = "Connection String:";
-            // 
-            // cmbDatabaseConnectionType
-            // 
-            this.cmbDatabaseConnectionType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDatabaseConnectionType.FormattingEnabled = true;
-            this.cmbDatabaseConnectionType.Items.AddRange(new object[] {
-            "Odbc",
-            "Oledb",
-            "Sql"});
-            this.cmbDatabaseConnectionType.Location = new System.Drawing.Point(592, 3);
-            this.cmbDatabaseConnectionType.Name = "cmbDatabaseConnectionType";
-            this.cmbDatabaseConnectionType.Size = new System.Drawing.Size(158, 21);
-            this.cmbDatabaseConnectionType.Sorted = true;
-            this.cmbDatabaseConnectionType.TabIndex = 15;
-            this.cmbDatabaseConnectionType.SelectedIndexChanged += new System.EventHandler(this.txtTextContents_Leave);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(490, 6);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(91, 13);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "Connection Type:";
             // 
             // tabControl1
             // 
@@ -1711,6 +1665,23 @@
             this.btnSaveSettings.Visible = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "Data Source:";
+            // 
+            // cmbDatasource
+            // 
+            this.cmbDatasource.FormattingEnabled = true;
+            this.cmbDatasource.Location = new System.Drawing.Point(113, 14);
+            this.cmbDatasource.Name = "cmbDatasource";
+            this.cmbDatasource.Size = new System.Drawing.Size(362, 21);
+            this.cmbDatasource.TabIndex = 21;
+            // 
             // ETLForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1811,10 +1782,6 @@
         private System.Windows.Forms.TabPage tabDatasourceDatabase;
         private System.Windows.Forms.TextBox txtDatabaseQuery;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtDatabaseConnectionString;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox cmbDatabaseConnectionType;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer ProgressTimer;
         private System.Windows.Forms.ComboBox cmbExportDestination;
         private System.Windows.Forms.Label label9;
@@ -1926,6 +1893,8 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Button btnHideSettings;
         private System.Windows.Forms.Button btnShowSettings;
+        private System.Windows.Forms.ComboBox cmbDatasource;
+        private System.Windows.Forms.Label label1;
     }
 }
 
