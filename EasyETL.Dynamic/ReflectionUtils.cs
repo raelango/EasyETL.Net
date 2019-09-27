@@ -69,9 +69,16 @@ namespace EasyETL
                 //libraryPath = Environment.CurrentDirectory;
                 foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())
                 {
-                    foreach (Type type in asm.GetTypes())
+                    try
                     {
-                        if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract)) AddClassToList(lstClasses, type);
+                        foreach (Type type in asm.GetTypes())
+                        {
+                            if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract)) AddClassToList(lstClasses, type);
+                        }
+                    }
+                    catch
+                    {
+
                     }
                 }
                 foreach (string dllFile in Directory.GetFiles(Environment.CurrentDirectory, "*.dll", SearchOption.AllDirectories))
@@ -110,21 +117,28 @@ namespace EasyETL
         {
             ClassMapping classMapping = null;
             if (!File.Exists(dllFileName)) return classMapping;
-            Assembly asm = Assembly.LoadFile(dllFileName);
-            foreach (Type type in asm.GetTypes())
+            try
             {
-                if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract))
+                Assembly asm = Assembly.ReflectionOnlyLoad(dllFileName);
+                foreach (Type type in asm.GetTypes())
                 {
-                    if (typeName == type.GetDisplayName())
+                    if ((baseClassType.IsAssignableFrom(type)) && (!type.IsAbstract))
                     {
-                        classMapping = new ClassMapping();
-                        classMapping.Class = type;
-                        classMapping.DisplayName = type.GetDisplayName();
-                        classMapping.Description = type.GetDescription();
-                        classMapping.Fields = type.GetEasyProperties();
-                        return classMapping;
+                        if (typeName == type.GetDisplayName())
+                        {
+                            classMapping = new ClassMapping();
+                            classMapping.Class = type;
+                            classMapping.DisplayName = type.GetDisplayName();
+                            classMapping.Description = type.GetDescription();
+                            classMapping.Fields = type.GetEasyProperties();
+                            return classMapping;
+                        }
                     }
                 }
+            }
+            catch
+            {
+
             }
             return classMapping;
         }

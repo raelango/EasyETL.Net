@@ -23,14 +23,24 @@ namespace EasyETL.Endpoint
     [EasyProperty("CanWrite", "True")]
     [EasyProperty("CanList", "True")]
     [EasyProperty("CanListen", "False")]
-    public class FtpEasyEndpoint : AbstractFileEasyEndpoint, IDisposable
+    [EasyField("FTP Address","FTP Server Address (DNS or IP)")]
+    [EasyField("Port Number","Port Number to connect","21","[0-9]+")]
+    [EasyField("User ID","Login User Name")]
+    [EasyField("User Password","Login Password")]
+     public class FtpEasyEndpoint : AbstractFileEasyEndpoint, IDisposable
     {
         public FtpClient FTPControl = null;
         public int PortNumber = 21;
         public NetworkCredential Credentials = null;
         public X509CertificateCollection Certificates = null;
         public string FTPAddress = String.Empty;
+        public string UserID = String.Empty;
+        public string Password = String.Empty;
 
+        public FtpEasyEndpoint()
+        {
+
+        }
         public FtpEasyEndpoint(string ftpAddress, string userID, string password, int port = 21, params X509Certificate[] certificates)
         {
             FTPAddress = ftpAddress;
@@ -143,6 +153,37 @@ namespace EasyETL.Endpoint
             catch
             {
                 return false;
+            }
+        }
+
+        public override bool IsFieldSettingsComplete()
+        {
+            return !String.IsNullOrWhiteSpace(FTPAddress);
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> settingDict = base.GetSettingsAsDictionary();
+            settingDict.Add("FTP Address", FTPAddress);
+            settingDict.Add("Port Number", PortNumber.ToString());
+            settingDict.Add("User ID", UserID);
+            settingDict.Add("User Password", Password);
+            return settingDict;
+        }
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "ftp address":
+                    FTPAddress = fieldValue; break;
+                case "port number":
+                    PortNumber = Convert.ToInt16(fieldValue); break;
+                case "user id":
+                    UserID = fieldValue; break;
+                case "user password":
+                    Password = fieldValue; break;
             }
         }
 

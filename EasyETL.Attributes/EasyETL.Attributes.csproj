@@ -42,6 +42,7 @@
     <Compile Include="AttributeExtensions.cs" />
     <Compile Include="EasyFieldAttribute.cs" />
     <Compile Include="EasyPropertyAttribute.cs" />
+    <Compile Include="IEasyFieldInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

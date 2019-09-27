@@ -16,9 +16,16 @@ namespace EasyETL.Endpoint
     [EasyProperty("CanWrite", "True")]
     [EasyProperty("CanList", "True")]
     [EasyProperty("CanListen", "True")]
+    [EasyField("FolderName","Name of the Folder")]
+    [EasyField("Overwrite", "Can Overwrite files if already present ?","False","True|False","True;False")]
     public class FileEasyEndpoint : AbstractFileEasyEndpoint
     {
         string FolderName = String.Empty;
+
+        public FileEasyEndpoint()
+        {
+            Overwrite = true;
+        }
 
         public FileEasyEndpoint(string folderName, bool overwriteFiles = true)
         {
@@ -73,6 +80,31 @@ namespace EasyETL.Endpoint
                 return false;
             }
             return true;
+        }
+
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "foldername":
+                    FolderName = fieldValue; break;
+                case "overwrite":
+                    Overwrite = Convert.ToBoolean(fieldValue);break;
+            }
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> settingsDict = base.GetSettingsAsDictionary();
+            settingsDict.Add("foldername", FolderName);
+            return settingsDict;
+        }
+
+        public override bool IsFieldSettingsComplete()
+        {
+            return (!String.IsNullOrWhiteSpace(FolderName));
         }
 
         #endregion
