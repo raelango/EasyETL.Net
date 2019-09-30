@@ -22,5 +22,14 @@ namespace EasyXmlSample.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("config.xml")]
+        public string ConfigurationFilePath {
+            get {
+                return ((string)(this["ConfigurationFilePath"]));
+            }
+        }
     }
 }

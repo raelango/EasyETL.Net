@@ -51,9 +51,11 @@
   <ItemGroup>
     <Compile Include="EasyXmlDocument.cs" />
     <Compile Include="Parsers\AbstractEasyParser.cs" />
+    <Compile Include="Parsers\AccessDatabaseEasyParser.cs" />
     <Compile Include="Parsers\DatabaseEasyParser.cs" />
     <Compile Include="Parsers\DelimitedEasyParser.cs" />
     <Compile Include="Parsers\EasyParser.cs" />
+    <Compile Include="Parsers\ExcelDatabaseEasyParser.cs" />
     <Compile Include="Parsers\FixedWidthEasyParser.cs" />
     <Compile Include="Parsers\HL7EasyParser.cs" />
     <Compile Include="Parsers\HtmlEasyParser.cs" />
@@ -62,6 +64,7 @@
     <Compile Include="Parsers\JsonEasyParser.cs" />
     <Compile Include="Parsers\OdbcDatabaseEasyParser.cs" />
     <Compile Include="Parsers\OledbDatabaseEasyParser.cs" />
+    <Compile Include="Parsers\SharepointDatabaseEasyParser.cs" />
     <Compile Include="Parsers\SingleLineEasyParser.cs" />
     <Compile Include="Parsers\SqlDatabaseEasyParser.cs" />
     <Compile Include="Parsers\TemplateEasyParser.cs" />

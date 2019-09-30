@@ -24,7 +24,7 @@ namespace EasyETL.Writers
     }
 
     [DisplayName("Office Writer")]
-    public class OfficeDatasetWriter : FileDatasetWriter
+    public abstract class OfficeDatasetWriter : FileDatasetWriter
     {
         public string TemplateFileName = String.Empty;
         public Dictionary<string, string> DocProperties = new Dictionary<string, string>();
@@ -182,7 +182,7 @@ namespace EasyETL.Writers
                                 {
                                     columns.Add(column.ColumnName);
                                 }
-                                if (PrintHeader)
+                                if (PrintTableHeader)
                                 {
 
                                     excel.Row headerRow = new excel.Row();
@@ -311,7 +311,7 @@ namespace EasyETL.Writers
 
             word.TableGrid tableGrid = new word.TableGrid();
             table.Append(tableGrid);
-            if (PrintHeader)
+            if (PrintTableHeader)
             {
 
                 word.TableRow headerRow = new word.TableRow();

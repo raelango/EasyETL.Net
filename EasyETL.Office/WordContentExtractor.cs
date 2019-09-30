@@ -5,11 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging; 
+using DocumentFormat.OpenXml.Packaging;
+using System.ComponentModel; 
 
 namespace EasyETL.Extractors
 {
-    public class WordContentExtractor: AbstractContentExtractor
+    [DisplayName("Word Extractor")]
+    public class WordContentExtractor : AbstractContentExtractor
     {
         public override Stream GetStream(Stream inStream)
         {

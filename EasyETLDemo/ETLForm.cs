@@ -33,6 +33,7 @@ namespace EasyXmlSample
         public Dictionary<string, ClassMapping> dctClassMapping = new Dictionary<string, ClassMapping>();
         public Dictionary<string, Dictionary<string, string>> dctActionFieldSettings = new Dictionary<string, Dictionary<string, string>>();
         public Dictionary<string, XmlNode> dctDatasources = new Dictionary<string, XmlNode>();
+        public Dictionary<string, ClassMapping> dctContentExtractors = new Dictionary<string, ClassMapping>();
 
 
         public int intAutoNumber = 0;
@@ -206,7 +207,7 @@ namespace EasyXmlSample
                 AllExportSettings.Clear();
                 foreach (XmlNode dataNode in outputNodes)
                 {
-                    ExportSettings eSettings = new ExportSettings() { SettingName = "" };
+                    ExportSettings eSettings = new ExportSettings();
                     foreach (XmlAttribute xAttr in dataNode.Attributes)
                     {
                         switch (xAttr.Name.ToLower())
@@ -367,7 +368,6 @@ namespace EasyXmlSample
             Application.DoEvents();
         }
 
-
         private void LoadParseOptionsFromNode(XmlNode optionsNode)
         {
             string delimiter = "";
@@ -453,17 +453,8 @@ namespace EasyXmlSample
             txtRegexContents.Text = "";
             cmbTableName.Items.Clear();
             IContentExtractor extractor = null;
-            if (chkUseTextExtractor.Checked)
-            {
-                switch (cbTextExtractor.Text)
-                {
-                    case "PDF":
-                        extractor = new PDFContentExtractor();
-                        break;
-                    case "Word":
-                        extractor = new WordContentExtractor();
-                        break;
-                }
+            if ((chkUseTextExtractor.Checked) && (dctContentExtractors.ContainsKey(cbTextExtractor.Text))) {
+                extractor = (AbstractContentExtractor)Activator.CreateInstance(dctContentExtractors[cbTextExtractor.Text].Class);
             }
             try
             {
@@ -679,7 +670,13 @@ namespace EasyXmlSample
             btnRefreshOnLoadProfiles_Click(this, null);
             btnTransformProfilesLoad_Click(this, null);
             List<ClassMapping> lstExports = new List<ClassMapping>(ReflectionUtils.LoadClassesFromLibrary(typeof(DatasetWriter)));
-
+            dctContentExtractors.Clear();
+            cbTextExtractor.Items.Clear();
+            foreach (ClassMapping cmapping in ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractContentExtractor)))
+            {
+                dctContentExtractors.Add(cmapping.DisplayName, cmapping);
+                cbTextExtractor.Items.Add(cmapping.DisplayName);
+            }
         }
 
         private void cmbFileType_SelectedIndexChanged(object sender, EventArgs e)
@@ -756,7 +753,6 @@ namespace EasyXmlSample
             lstFixedColumnWidths.Items.RemoveAt(lstFixedColumnWidths.SelectedIndex);
         }
 
-
         private void txtTextContents_Leave(object sender, EventArgs e)
         {
             if (chkAutoRefresh.Checked) LoadDataToGridView();
@@ -798,19 +794,19 @@ namespace EasyXmlSample
             switch (eSettings.ExportFormat.ToUpper())
             {
                 case "CSV":
-                    dsw = new DelimitedDatasetWriter(rds, eSettings.ExportFileName) { Delimiter = ',', IncludeHeaders = true, IncludeQuotes = true };
+                    dsw = new DelimitedDatasetWriter(rds, eSettings.ExportFileName) { Delimiter = ',', PrintTableHeader = true, IncludeQuotes = true };
                     break;
                 case "TAB":
-                    dsw = new DelimitedDatasetWriter(rds, eSettings.ExportFileName) { Delimiter = '\t', IncludeHeaders = true, IncludeQuotes = true };
+                    dsw = new DelimitedDatasetWriter(rds, eSettings.ExportFileName) { Delimiter = '\t', PrintTableHeader = true, IncludeQuotes = true };
                     break;
                 case "HTML":
                     dsw = new HtmlDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
                     break;
                 case "WORD":
-                    dsw = new OfficeDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
+                    dsw = new WordDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
                     break;
                 case "EXCEL":
-                    dsw = new OfficeDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName) { DestinationType = OfficeFileType.ExcelWorkbook };
+                    dsw = new OpenXMLExcelDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
                     break;
                 case "MAILMERGE-WORD":
                     dsw = new OfficeMailMergeDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
@@ -825,7 +821,7 @@ namespace EasyXmlSample
                     dsw = new JsonDatasetWriter(rds, eSettings.ExportFileName);
                     break;
             }
-            dsw.PrintHeader = eSettings.IncludeTableHeader;
+            dsw.PrintTableHeader = eSettings.IncludeTableHeader;
             dsw.Write();
             MessageBox.Show("Saved file in " + Path.GetDirectoryName(eSettings.ExportFileName));
             Process.Start(Path.GetDirectoryName(eSettings.ExportFileName));

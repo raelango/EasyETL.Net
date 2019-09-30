@@ -91,6 +91,8 @@
             this.tabDatasourceText = new System.Windows.Forms.TabPage();
             this.txtTextContents = new System.Windows.Forms.TextBox();
             this.tabDatasourceDatabase = new System.Windows.Forms.TabPage();
+            this.cmbDatasource = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.txtDatabaseQuery = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
@@ -163,8 +165,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnHideSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
-            this.cmbDatasource = new System.Windows.Forms.ComboBox();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -804,9 +804,6 @@
             // 
             this.cbTextExtractor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTextExtractor.FormattingEnabled = true;
-            this.cbTextExtractor.Items.AddRange(new object[] {
-            "PDF",
-            "Word"});
             this.cbTextExtractor.Location = new System.Drawing.Point(126, 70);
             this.cbTextExtractor.Name = "cbTextExtractor";
             this.cbTextExtractor.Size = new System.Drawing.Size(242, 21);
@@ -879,6 +876,23 @@
             this.tabDatasourceDatabase.TabIndex = 2;
             this.tabDatasourceDatabase.Text = "Database";
             this.tabDatasourceDatabase.UseVisualStyleBackColor = true;
+            // 
+            // cmbDatasource
+            // 
+            this.cmbDatasource.FormattingEnabled = true;
+            this.cmbDatasource.Location = new System.Drawing.Point(113, 14);
+            this.cmbDatasource.Name = "cmbDatasource";
+            this.cmbDatasource.Size = new System.Drawing.Size(362, 21);
+            this.cmbDatasource.TabIndex = 21;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "Data Source:";
             // 
             // txtDatabaseQuery
             // 
@@ -1664,23 +1678,6 @@
             this.btnSaveSettings.UseVisualStyleBackColor = true;
             this.btnSaveSettings.Visible = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(10, 14);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 13);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "Data Source:";
-            // 
-            // cmbDatasource
-            // 
-            this.cmbDatasource.FormattingEnabled = true;
-            this.cmbDatasource.Location = new System.Drawing.Point(113, 14);
-            this.cmbDatasource.Name = "cmbDatasource";
-            this.cmbDatasource.Size = new System.Drawing.Size(362, 21);
-            this.cmbDatasource.TabIndex = 21;
             // 
             // ETLForm
             // 

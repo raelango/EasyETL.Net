@@ -29,12 +29,12 @@ namespace EasyXmlSample
         private void LoadConfiguration(string visibleNodeFullpath = "")
         {
             tvClients.Nodes.Clear();
-            xmlFileName = Path.Combine(Environment.CurrentDirectory, "config.xml");
+            xmlFileName = Path.Combine(Environment.CurrentDirectory, Properties.Settings.Default.ConfigurationFilePath);
             if (!File.Exists(xmlFileName))
             {
                 using (StreamWriter sw = File.CreateText(xmlFileName))
                 {
-                    sw.WriteLine("<config><clients></clients><transforms></transforms><profiles></profiles><config>");
+                    sw.WriteLine("<config><clients></clients><transforms></transforms><profiles></profiles></config>");
                 }
 
             }

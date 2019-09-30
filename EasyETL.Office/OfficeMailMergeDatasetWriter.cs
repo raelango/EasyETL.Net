@@ -1,4 +1,5 @@
-﻿using EasyETL.Writers;
+﻿using EasyETL.Attributes;
+using EasyETL.Writers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -10,10 +11,13 @@ using System.Threading.Tasks;
 namespace EasyETL.Writers
 {
     [DisplayName("Office MailMerge Writer")]
+    [EasyField("ExportFileName", "Name of output file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
+    [EasyField("TemplateFileName", "Name of template file to use. You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
     public class OfficeMailMergeDatasetWriter : OfficeDatasetWriter
     {
+        public OfficeMailMergeDatasetWriter() : base(OfficeFileType.WordDocument) {}
 
-        public OfficeMailMergeDatasetWriter(OfficeFileType fileType = OfficeFileType.WordDocument)
+        public OfficeMailMergeDatasetWriter(OfficeFileType fileType)
             : base(fileType)
         {
             PopulatePropertiesOnly = true;
