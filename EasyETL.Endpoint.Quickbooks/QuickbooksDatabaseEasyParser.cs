@@ -1,5 +1,6 @@
 ﻿using EasyETL.Attributes;
 using EasyETL.Xml.Parsers;
+using QBXMLRP2Lib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
