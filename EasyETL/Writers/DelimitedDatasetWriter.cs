@@ -10,10 +10,12 @@ using System.Threading.Tasks;
 namespace EasyETL.Writers
 {
     [DisplayName("Delimited Data Writer")]
-    [EasyField("Delimiter","Specify the delimiter to be used",",",".")]
+    [EasyField("ExportFileName", "Name of output file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
+    [EasyField("Delimiter", "Specify the delimiter to be used", ",", ".")]
+    [EasyField("IncludeHeaders","Include the table names in the output?","True","","True;False")]
+    [EasyField("IncludeQuotes", "Surround the Field Name and Values by quotes?", "True", "", "True;False")]
     public class DelimitedDatasetWriter : FileDatasetWriter
     {
-        public bool IncludeHeaders = true;
         public char Delimiter = ',';
         public bool IncludeQuotes = true;
 
@@ -40,7 +42,7 @@ namespace EasyETL.Writers
         public override string BuildTableHeaderString(DataTable dt)
         {
             string returnStr = String.Empty;
-            if (IncludeHeaders)
+            if (PrintTableHeader)
             {
                 foreach (DataColumn dc in dt.Columns)
                 {

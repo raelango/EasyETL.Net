@@ -12,6 +12,9 @@ namespace EasyETL.Writers
 
     [DisplayName("CSV Writer")]
     [EasyProperty("Delimiter", "Comma")]
+    [EasyField("ExportFileName", "Name of output file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
+    [EasyField("IncludeHeader", "Include the table name in the output?", "True", "", "True;False")]
+    [EasyField("IncludeQuotes", "Surround the Field Name and Values by quotes?", "True", "", "True;False")]
     public class CSVDelimitedDatasetWriter : DelimitedDatasetWriter
     {
         public CSVDelimitedDatasetWriter()

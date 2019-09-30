@@ -16,6 +16,7 @@ namespace EasyETL.Writers
         public string TableName;
 
     }
+
     public abstract class DatasetWriter
     {
         protected DataSet _dataSet = null;

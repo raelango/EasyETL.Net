@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EasyETL.Extractors
 {
-    public class AbstractContentExtractor : IContentExtractor
+    public abstract class AbstractContentExtractor : IContentExtractor
     {
         public virtual Stream GetStream(Stream inStream)
         {

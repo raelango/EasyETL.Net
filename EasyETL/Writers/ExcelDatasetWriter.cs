@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasyETL.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,6 +10,8 @@ using System.Threading.Tasks;
 namespace EasyETL.Writers
 {
     [DisplayName("Excel Writer")]
+    [EasyField("ExportFileName", "Name of output file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
+    [EasyField("IncludeHeader", "Include the table name in the output?", "True", "", "True;False")]
     public class ExcelDatasetWriter : FileDatasetWriter
     {
         public Dictionary<string, string> DocProperties = new Dictionary<string, string>();
@@ -47,12 +50,15 @@ namespace EasyETL.Writers
             string returnStr = "<Worksheet ss:Name=\""  + dt.TableName + "\" xmlns:ss=\"urn:schemas-microsoft-com:office:spreadsheet\">" + Environment.NewLine;
             returnStr += "<Table>" + Environment.NewLine;
 
-            returnStr += "<Row>" + Environment.NewLine;
-            foreach (DataColumn dc in dt.Columns)
+            if (PrintTableHeader)
             {
-                returnStr += "<Cell><Data ss:Type=\"String\">" + GetColumnName(dc) + "</Data></Cell>" + Environment.NewLine;
+                returnStr += "<Row>" + Environment.NewLine;
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    returnStr += "<Cell><Data ss:Type=\"String\">" + GetColumnName(dc) + "</Data></Cell>" + Environment.NewLine;
+                }
+                returnStr += "</Row>" + Environment.NewLine;
             }
-            returnStr += "</Row>" + Environment.NewLine;
             return returnStr;
         }
 

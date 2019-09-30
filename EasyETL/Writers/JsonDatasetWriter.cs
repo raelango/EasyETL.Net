@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasyETL.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace EasyETL.Writers
 {
     [DisplayName("JSON Writer")]
+    [EasyField("ExportFileName", "Name of output file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
     public class JsonDatasetWriter : FileDatasetWriter
     {
 
