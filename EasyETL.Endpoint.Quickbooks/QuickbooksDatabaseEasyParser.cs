@@ -38,7 +38,7 @@ namespace EasyETL.Endpoint.Quickbooks
             resultDict.Add("applicationid", ApplicationID);
             resultDict.Add("applicationname", ApplicationName);
             resultDict.Add("quickbookfilename", QuickbookFileName);
-            resultDict.Add("quickbookitemtype", ItemType.ToString());
+            resultDict.Add("itemtype", ItemType.ToString());
             return resultDict;
         }
 
@@ -53,8 +53,8 @@ namespace EasyETL.Endpoint.Quickbooks
                     ApplicationName = fieldValue; break;
                 case "quickbookfilename":
                     QuickbookFileName = fieldValue; break;
-                case "quickbookitemtype":
-                    ItemType = (QuickbooksItemType)Enum.Parse(typeof(QuickbooksItemType),fieldValue)); break;
+                case "itemtype":
+                    ItemType = (QuickbooksItemType)Enum.Parse(typeof(QuickbooksItemType),fieldValue); break;
             }
         }
 
