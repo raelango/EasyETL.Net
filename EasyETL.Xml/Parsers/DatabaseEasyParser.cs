@@ -19,7 +19,8 @@ namespace EasyETL.Xml.Parsers
     {
         edctOledb,
         edctODBC,
-        edctSQL
+        edctSQL,
+        edctQuickbooks
     }
 
     [DisplayName("Database Source")]

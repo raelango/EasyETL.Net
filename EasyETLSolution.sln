@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint.OneDrive",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Attributes", "EasyETL.Attributes\EasyETL.Attributes.csproj", "{B0708C3A-1339-4852-B529-7747352133B8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint.Quickbooks", "EasyETL.Endpoint.Quickbooks\EasyETL.Endpoint.Quickbooks.csproj", "{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +127,12 @@ Global
 		{B0708C3A-1339-4852-B529-7747352133B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B0708C3A-1339-4852-B529-7747352133B8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B0708C3A-1339-4852-B529-7747352133B8}.Release|x86.ActiveCfg = Release|Any CPU
+		{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
