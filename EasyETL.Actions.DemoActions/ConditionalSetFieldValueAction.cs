@@ -43,13 +43,6 @@ namespace EasyDemoActions
             return (dataDictionary.ContainsKey(fieldName) && CanExecute(dataDictionary[fieldName], currentFieldValue));
         }
 
-        public override bool CanExecute(EasyDynamicObject dataObject)
-        {
-            string fieldName = SettingsDictionary["FieldName"];
-            string currentFieldValue = SettingsDictionary["CurrentFieldValue"];
-            return (dataObject.Properties.ContainsKey(fieldName) && CanExecute(dataObject.Properties[fieldName].ToString(), currentFieldValue));
-        }
-
         public override bool CanExecute(XmlNode dataNode)
         {
             string fieldName = SettingsDictionary["FieldName"];

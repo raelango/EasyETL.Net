@@ -110,7 +110,7 @@ namespace EasyETL.Actions
         #endregion 
 
         #region Implemented Execute Methods
-        public void Execute(params Dictionary<string, string>[] dataDictionaries)
+        public virtual void Execute(params Dictionary<string, string>[] dataDictionaries)
         {
             MaximumItems = dataDictionaries.Length;
             int currentIndex = 0;
@@ -121,7 +121,7 @@ namespace EasyETL.Actions
             }
         }
 
-        public void Execute(params XmlNode[] dataNodes)
+        public virtual void Execute(params XmlNode[] dataNodes)
         {
             MaximumItems = dataNodes.Length;
             int currentIndex = 0;
@@ -132,7 +132,7 @@ namespace EasyETL.Actions
             }
         }
 
-        public void Execute(params EasyDynamicObject[] dataObjects)
+        public virtual void Execute(params EasyDynamicObject[] dataObjects)
         {
             MaximumItems = dataObjects.Length;
             int currentIndex = 0;
@@ -143,7 +143,7 @@ namespace EasyETL.Actions
             }
         }
 
-        public void Execute(params DataRow[] dataRows)
+        public virtual void Execute(params DataRow[] dataRows)
         {
             MaximumItems = dataRows.Length;
             int currentIndex = 0;
@@ -159,7 +159,7 @@ namespace EasyETL.Actions
             Execute(GetPropertiesFromNode(dataNode));
         }
 
-        public void Execute(XmlNodeList dataNodes)
+        public virtual void Execute(XmlNodeList dataNodes)
         {
             Execute(dataNodes.Cast<XmlNode>().ToArray());
         }
