@@ -113,8 +113,6 @@
             this.txtRegexContents = new System.Windows.Forms.TextBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.txtExceptions = new System.Windows.Forms.TextBox();
-            this.cmbExportDestination = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
             this.tabSource = new System.Windows.Forms.TabControl();
             this.tabDataSourceOptions = new System.Windows.Forms.TabPage();
@@ -133,21 +131,8 @@
             this.label22 = new System.Windows.Forms.Label();
             this.chkAvailableActions = new System.Windows.Forms.CheckedListBox();
             this.tabExportOptions = new System.Windows.Forms.TabPage();
+            this.chkAvailableExports = new System.Windows.Forms.CheckedListBox();
             this.label20 = new System.Windows.Forms.Label();
-            this.cmbExportSettings = new System.Windows.Forms.ComboBox();
-            this.grpExportSettings = new System.Windows.Forms.GroupBox();
-            this.chkIncludeTableHeader = new System.Windows.Forms.CheckBox();
-            this.btnExportDeleteSetting = new System.Windows.Forms.Button();
-            this.btnSaveExportSettings = new System.Windows.Forms.Button();
-            this.txtExportSettingName = new System.Windows.Forms.TextBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.txtExportFileName = new System.Windows.Forms.TextBox();
-            this.pnlExportXsltDetails = new System.Windows.Forms.Panel();
-            this.btnExportXsltFileName = new System.Windows.Forms.Button();
-            this.txtExportTemplateFileName = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.btnExportFileName = new System.Windows.Forms.Button();
-            this.label17 = new System.Windows.Forms.Label();
             this.tabPermissionOptions = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.chkCanExportData = new System.Windows.Forms.CheckBox();
@@ -197,8 +182,6 @@
             this.tabTransformationOptions.SuspendLayout();
             this.tabActionOptions.SuspendLayout();
             this.tabExportOptions.SuspendLayout();
-            this.grpExportSettings.SuspendLayout();
-            this.pnlExportXsltDetails.SuspendLayout();
             this.tabPermissionOptions.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -1116,35 +1099,6 @@
             this.txtExceptions.Size = new System.Drawing.Size(1298, 552);
             this.txtExceptions.TabIndex = 0;
             // 
-            // cmbExportDestination
-            // 
-            this.cmbExportDestination.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbExportDestination.FormattingEnabled = true;
-            this.cmbExportDestination.Items.AddRange(new object[] {
-            "CSV",
-            "TAB",
-            "HTML",
-            "WORD",
-            "EXCEL",
-            "XML",
-            "PDF",
-            "JSON",
-            "MAILMERGE-WORD"});
-            this.cmbExportDestination.Location = new System.Drawing.Point(97, 58);
-            this.cmbExportDestination.Name = "cmbExportDestination";
-            this.cmbExportDestination.Size = new System.Drawing.Size(127, 21);
-            this.cmbExportDestination.TabIndex = 13;
-            this.cmbExportDestination.SelectedIndexChanged += new System.EventHandler(this.cmbDestination_SelectedIndexChanged);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(15, 61);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(75, 13);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "Export Format:";
-            // 
             // tabSource
             // 
             this.tabSource.Controls.Add(this.tabDataSourceOptions);
@@ -1320,9 +1274,8 @@
             // 
             // tabExportOptions
             // 
+            this.tabExportOptions.Controls.Add(this.chkAvailableExports);
             this.tabExportOptions.Controls.Add(this.label20);
-            this.tabExportOptions.Controls.Add(this.cmbExportSettings);
-            this.tabExportOptions.Controls.Add(this.grpExportSettings);
             this.tabExportOptions.Location = new System.Drawing.Point(4, 22);
             this.tabExportOptions.Name = "tabExportOptions";
             this.tabExportOptions.Size = new System.Drawing.Size(1061, 199);
@@ -1330,153 +1283,23 @@
             this.tabExportOptions.Text = "Export";
             this.tabExportOptions.UseVisualStyleBackColor = true;
             // 
+            // chkAvailableExports
+            // 
+            this.chkAvailableExports.FormattingEnabled = true;
+            this.chkAvailableExports.Location = new System.Drawing.Point(9, 49);
+            this.chkAvailableExports.Name = "chkAvailableExports";
+            this.chkAvailableExports.Size = new System.Drawing.Size(260, 139);
+            this.chkAvailableExports.TabIndex = 22;
+            this.chkAvailableExports.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkAvailableExports_ItemCheck);
+            // 
             // label20
             // 
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(6, 15);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(81, 13);
+            this.label20.Size = new System.Drawing.Size(91, 13);
             this.label20.TabIndex = 21;
-            this.label20.Text = "Export Settings:";
-            // 
-            // cmbExportSettings
-            // 
-            this.cmbExportSettings.FormattingEnabled = true;
-            this.cmbExportSettings.Location = new System.Drawing.Point(148, 15);
-            this.cmbExportSettings.Name = "cmbExportSettings";
-            this.cmbExportSettings.Size = new System.Drawing.Size(121, 21);
-            this.cmbExportSettings.TabIndex = 20;
-            this.cmbExportSettings.SelectedIndexChanged += new System.EventHandler(this.cmbExportSettings_SelectedIndexChanged);
-            // 
-            // grpExportSettings
-            // 
-            this.grpExportSettings.Controls.Add(this.chkIncludeTableHeader);
-            this.grpExportSettings.Controls.Add(this.btnExportDeleteSetting);
-            this.grpExportSettings.Controls.Add(this.btnSaveExportSettings);
-            this.grpExportSettings.Controls.Add(this.txtExportSettingName);
-            this.grpExportSettings.Controls.Add(this.label21);
-            this.grpExportSettings.Controls.Add(this.txtExportFileName);
-            this.grpExportSettings.Controls.Add(this.pnlExportXsltDetails);
-            this.grpExportSettings.Controls.Add(this.label9);
-            this.grpExportSettings.Controls.Add(this.btnExportFileName);
-            this.grpExportSettings.Controls.Add(this.cmbExportDestination);
-            this.grpExportSettings.Controls.Add(this.label17);
-            this.grpExportSettings.Location = new System.Drawing.Point(6, 42);
-            this.grpExportSettings.Name = "grpExportSettings";
-            this.grpExportSettings.Size = new System.Drawing.Size(975, 154);
-            this.grpExportSettings.TabIndex = 19;
-            this.grpExportSettings.TabStop = false;
-            this.grpExportSettings.Text = "Export Settings:";
-            // 
-            // chkIncludeTableHeader
-            // 
-            this.chkIncludeTableHeader.AutoSize = true;
-            this.chkIncludeTableHeader.Location = new System.Drawing.Point(13, 131);
-            this.chkIncludeTableHeader.Name = "chkIncludeTableHeader";
-            this.chkIncludeTableHeader.Size = new System.Drawing.Size(129, 17);
-            this.chkIncludeTableHeader.TabIndex = 23;
-            this.chkIncludeTableHeader.Text = "Include Table Header";
-            this.chkIncludeTableHeader.UseVisualStyleBackColor = true;
-            // 
-            // btnExportDeleteSetting
-            // 
-            this.btnExportDeleteSetting.Location = new System.Drawing.Point(819, 58);
-            this.btnExportDeleteSetting.Name = "btnExportDeleteSetting";
-            this.btnExportDeleteSetting.Size = new System.Drawing.Size(150, 38);
-            this.btnExportDeleteSetting.TabIndex = 22;
-            this.btnExportDeleteSetting.Text = "Delete this Setting";
-            this.btnExportDeleteSetting.UseVisualStyleBackColor = true;
-            this.btnExportDeleteSetting.Click += new System.EventHandler(this.btnExportDeleteSetting_Click);
-            // 
-            // btnSaveExportSettings
-            // 
-            this.btnSaveExportSettings.Location = new System.Drawing.Point(819, 110);
-            this.btnSaveExportSettings.Name = "btnSaveExportSettings";
-            this.btnSaveExportSettings.Size = new System.Drawing.Size(150, 38);
-            this.btnSaveExportSettings.TabIndex = 21;
-            this.btnSaveExportSettings.Text = "Save Export Settings";
-            this.btnSaveExportSettings.UseVisualStyleBackColor = true;
-            this.btnSaveExportSettings.Click += new System.EventHandler(this.btnSaveExportSettings_Click);
-            // 
-            // txtExportSettingName
-            // 
-            this.txtExportSettingName.Location = new System.Drawing.Point(97, 12);
-            this.txtExportSettingName.Name = "txtExportSettingName";
-            this.txtExportSettingName.Size = new System.Drawing.Size(127, 20);
-            this.txtExportSettingName.TabIndex = 20;
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(13, 20);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(79, 13);
-            this.label21.TabIndex = 19;
-            this.label21.Text = "Settings Name:";
-            // 
-            // txtExportFileName
-            // 
-            this.txtExportFileName.Enabled = false;
-            this.txtExportFileName.Location = new System.Drawing.Point(342, 61);
-            this.txtExportFileName.Name = "txtExportFileName";
-            this.txtExportFileName.Size = new System.Drawing.Size(346, 20);
-            this.txtExportFileName.TabIndex = 15;
-            // 
-            // pnlExportXsltDetails
-            // 
-            this.pnlExportXsltDetails.Controls.Add(this.btnExportXsltFileName);
-            this.pnlExportXsltDetails.Controls.Add(this.txtExportTemplateFileName);
-            this.pnlExportXsltDetails.Controls.Add(this.label19);
-            this.pnlExportXsltDetails.Location = new System.Drawing.Point(13, 87);
-            this.pnlExportXsltDetails.Name = "pnlExportXsltDetails";
-            this.pnlExportXsltDetails.Size = new System.Drawing.Size(776, 34);
-            this.pnlExportXsltDetails.TabIndex = 18;
-            this.pnlExportXsltDetails.Visible = false;
-            // 
-            // btnExportXsltFileName
-            // 
-            this.btnExportXsltFileName.Location = new System.Drawing.Point(691, 9);
-            this.btnExportXsltFileName.Name = "btnExportXsltFileName";
-            this.btnExportXsltFileName.Size = new System.Drawing.Size(75, 23);
-            this.btnExportXsltFileName.TabIndex = 19;
-            this.btnExportXsltFileName.Text = "Browse File";
-            this.btnExportXsltFileName.UseVisualStyleBackColor = true;
-            this.btnExportXsltFileName.Click += new System.EventHandler(this.btnExportXsltFileName_Click);
-            // 
-            // txtExportTemplateFileName
-            // 
-            this.txtExportTemplateFileName.Location = new System.Drawing.Point(149, 6);
-            this.txtExportTemplateFileName.Name = "txtExportTemplateFileName";
-            this.txtExportTemplateFileName.Size = new System.Drawing.Size(526, 20);
-            this.txtExportTemplateFileName.TabIndex = 18;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(9, 9);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(104, 13);
-            this.label19.TabIndex = 17;
-            this.label19.Text = "Template File Name:";
-            // 
-            // btnExportFileName
-            // 
-            this.btnExportFileName.Location = new System.Drawing.Point(704, 58);
-            this.btnExportFileName.Name = "btnExportFileName";
-            this.btnExportFileName.Size = new System.Drawing.Size(75, 23);
-            this.btnExportFileName.TabIndex = 16;
-            this.btnExportFileName.Text = "Browse File";
-            this.btnExportFileName.UseVisualStyleBackColor = true;
-            this.btnExportFileName.Click += new System.EventHandler(this.btnExportFileName_Click);
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(245, 65);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(90, 13);
-            this.label17.TabIndex = 14;
-            this.label17.Text = "Export File Name:";
+            this.label20.Text = "Available Exports:";
             // 
             // tabPermissionOptions
             // 
@@ -1738,10 +1561,6 @@
             this.tabActionOptions.PerformLayout();
             this.tabExportOptions.ResumeLayout(false);
             this.tabExportOptions.PerformLayout();
-            this.grpExportSettings.ResumeLayout(false);
-            this.grpExportSettings.PerformLayout();
-            this.pnlExportXsltDetails.ResumeLayout(false);
-            this.pnlExportXsltDetails.PerformLayout();
             this.tabPermissionOptions.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -1780,8 +1599,6 @@
         private System.Windows.Forms.TextBox txtDatabaseQuery;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Timer ProgressTimer;
-        private System.Windows.Forms.ComboBox cmbExportDestination;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label lblRecordCount;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TextBox txtXPathContents;
@@ -1850,13 +1667,6 @@
         private System.Windows.Forms.TextBox txtParserProfileSaveFileName;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Button btnExportFileName;
-        private System.Windows.Forms.TextBox txtExportFileName;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Panel pnlExportXsltDetails;
-        private System.Windows.Forms.Button btnExportXsltFileName;
-        private System.Windows.Forms.TextBox txtExportTemplateFileName;
-        private System.Windows.Forms.Label label19;
         private System.Windows.Forms.CheckBox chkAutoRefresh;
         private System.Windows.Forms.TabPage tabActionOptions;
         private System.Windows.Forms.TabPage tabPermissionOptions;
@@ -1872,13 +1682,6 @@
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.ComboBox cmbExport;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.ComboBox cmbExportSettings;
-        private System.Windows.Forms.GroupBox grpExportSettings;
-        private System.Windows.Forms.TextBox txtExportSettingName;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Button btnExportDeleteSetting;
-        private System.Windows.Forms.Button btnSaveExportSettings;
-        private System.Windows.Forms.CheckBox chkIncludeTableHeader;
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.CheckedListBox chkAvailableActions;
         private System.Windows.Forms.FlowLayoutPanel fpActions;
@@ -1892,6 +1695,7 @@
         private System.Windows.Forms.Button btnShowSettings;
         private System.Windows.Forms.ComboBox cmbDatasource;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckedListBox chkAvailableExports;
     }
 }
 

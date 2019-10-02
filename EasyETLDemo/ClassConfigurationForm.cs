@@ -117,6 +117,7 @@ namespace EasyXmlSample
                 }
                 else
                 {
+                    MessageBox.Show(this, "This control has not implemented the EasyFieldInterface.", "Information", MessageBoxButtons.OK);
                     foreach (KeyValuePair<string, string> kvPair in SelectedClassSettings)
                     {
                         if (!String.IsNullOrWhiteSpace(kvPair.Value))

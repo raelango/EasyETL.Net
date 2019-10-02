@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="ConfigurationFilePath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">config.xml</Value>
+      <Value Profile="(Default)">c:\temp\config.xml</Value>
     </Setting>
   </Settings>
 </SettingsFile>

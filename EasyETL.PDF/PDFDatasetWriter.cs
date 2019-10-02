@@ -29,8 +29,9 @@ namespace EasyETL.Writers
 
         public override void Write()
         {
+            ExportFileName = PopulatedName(ExportFileName);
             Document document = new Document();
-            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(_fileName, FileMode.Create));
+            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(ExportFileName, FileMode.Create));
             document.Open();
 
             foreach (DataTable dataTable in _dataSet.Tables)

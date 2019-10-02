@@ -29,11 +29,12 @@ namespace EasyXmlSample
         EasyXmlDocument ezDoc = null;
         XslCompiledTransform xsl = null;
         Stopwatch stopWatch = new Stopwatch();
-        List<ExportSettings> AllExportSettings = new List<ExportSettings>();
-        public Dictionary<string, ClassMapping> dctClassMapping = new Dictionary<string, ClassMapping>();
-        public Dictionary<string, Dictionary<string, string>> dctActionFieldSettings = new Dictionary<string, Dictionary<string, string>>();
-        public Dictionary<string, XmlNode> dctDatasources = new Dictionary<string, XmlNode>();
+        public Dictionary<string, ClassMapping> dctActionClassMapping = new Dictionary<string, ClassMapping>();
         public Dictionary<string, ClassMapping> dctContentExtractors = new Dictionary<string, ClassMapping>();
+        public Dictionary<string, ClassMapping> dctExporters = new Dictionary<string, ClassMapping>();
+        public Dictionary<string, Dictionary<string, string>> dctActionFieldSettings = new Dictionary<string, Dictionary<string, string>>();
+        public Dictionary<string, Dictionary<string, string>> dctExportFieldSettings = new Dictionary<string, Dictionary<string, string>>();
+        public Dictionary<string, XmlNode> dctDatasources = new Dictionary<string, XmlNode>();
 
 
         public int intAutoNumber = 0;
@@ -64,20 +65,21 @@ namespace EasyXmlSample
             chkAvailableActions.Items.Clear();
             fpActions.Controls.Clear();
             XmlNodeList actionNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/actions/action");
-            dctClassMapping.Clear();
+            dctActionClassMapping.Clear();
             dctActionFieldSettings.Clear();
             string actionFolderName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Actions");
             ClassMapping[] actionClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractEasyAction));
             Dictionary<string, ClassMapping> dctAllActions = new Dictionary<string, ClassMapping>();
             foreach (ClassMapping actionClass in actionClasses)
             {
-                dctAllActions.Add(actionClass.Class.Name, actionClass);
+                dctAllActions.Add(actionClass.DisplayName, actionClass);
             }
             foreach (XmlNode actionNode in actionNodes)
             {
                 string actionName = actionNode.Attributes.GetNamedItem("name").Value;
                 chkAvailableActions.Items.Add(actionName);
                 Button btnControl = new Button();
+                btnControl.AutoSize = true;
                 btnControl.Text = actionName;
                 btnControl.Click += btnControl_Click;
                 fpActions.Controls.Add(btnControl);
@@ -87,11 +89,11 @@ namespace EasyXmlSample
 
                 ClassMapping cMapping = null;
                 if (dctAllActions.ContainsKey(className)) cMapping = dctAllActions[className];
-                    //ReflectionUtils.LoadClassFromLibrary(Path.Combine(actionFolderName, libraryName + ".dll"), typeof(AbstractEasyAction), className);
+                //ReflectionUtils.LoadClassFromLibrary(Path.Combine(actionFolderName, libraryName + ".dll"), typeof(AbstractEasyAction), className);
 
                 if (cMapping != null)
                 {
-                    dctClassMapping.Add(actionName, cMapping);
+                    dctActionClassMapping.Add(actionName, cMapping);
                     Dictionary<string, string> actionDictionary = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
                     dctActionFieldSettings.Add(actionName, actionDictionary);
                     XmlNodeList actionFieldNodeList = actionNode.SelectNodes("field");
@@ -105,7 +107,7 @@ namespace EasyXmlSample
             }
             #endregion
 
-            #region load all available data sources 
+            #region load all available data sources
             dctDatasources.Clear();
             cmbDatasource.Items.Clear();
 
@@ -143,7 +145,7 @@ namespace EasyXmlSample
                         }
                     }
                     XmlNode defaultActionNode = actionsNode.SelectSingleNode("defaultaction");
-                    if ((defaultActionNode !=null) && (defaultActionNode.Attributes.GetNamedItem("name") != null))
+                    if ((defaultActionNode != null) && (defaultActionNode.Attributes.GetNamedItem("name") != null))
                     {
                         cmbDefaultAction.Text = defaultActionNode.Attributes.GetNamedItem("name").Value;
                     }
@@ -203,33 +205,58 @@ namespace EasyXmlSample
                 #endregion
 
                 #region Output Settings Load
-                XmlNodeList outputNodes = xNode.SelectNodes("output");
-                AllExportSettings.Clear();
-                foreach (XmlNode dataNode in outputNodes)
+                chkAvailableExports.Items.Clear();
+                dctExportFieldSettings.Clear();
+                cmbExport.Items.Clear();
+                XmlNodeList exportNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/exports/export");
+                dctExporters.Clear();
+                #region load all dataset writers
+                ClassMapping[] exportClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(DatasetWriter));
+                Dictionary<string, ClassMapping> dctAllExports = new Dictionary<string, ClassMapping>();
+                foreach (ClassMapping actionClass in exportClasses)
                 {
-                    ExportSettings eSettings = new ExportSettings();
-                    foreach (XmlAttribute xAttr in dataNode.Attributes)
-                    {
-                        switch (xAttr.Name.ToLower())
-                        {
-                            case "name":
-                                eSettings.SettingName = xAttr.Value; break;
-                            case "exportformat":
-                                eSettings.ExportFormat = xAttr.Value; break;
-                            case "exportfilename":
-                                eSettings.ExportFileName = xAttr.Value; break;
-                            case "templatefilename":
-                                eSettings.TemplateFileName = xAttr.Value; break;
-                            case "includeheader":
-                                eSettings.IncludeTableHeader = Convert.ToBoolean(xAttr.Value); break;
-                        }
-                    }
-                    AllExportSettings.Add(eSettings);
+                    dctAllExports.Add(actionClass.DisplayName, actionClass);
                 }
-                RefreshExportSettingsCombo();
-                //if ((dataNode != null) && (dataNode.Attributes["exportformat"] != null)) cmbDestination.SelectedItem = dataNode.Attributes["exportformat"].Value;
                 #endregion
 
+                foreach (XmlNode exportNode in exportNodes)
+                {
+                    string exportName = exportNode.Attributes.GetNamedItem("name").Value;
+                    string className = "";
+                    if (exportNode.Attributes.GetNamedItem("classname") !=null) className= exportNode.Attributes.GetNamedItem("classname").Value;
+                    ClassMapping eMapping = null;
+                    if (dctAllExports.ContainsKey(className)) eMapping = dctAllExports[className];
+                    if (eMapping != null)
+                    {
+                        chkAvailableExports.Items.Add(exportName);
+                        dctExporters.Add(exportName, eMapping);
+                        Dictionary<string, string> exportDictionary = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+                        dctExportFieldSettings.Add(exportName, exportDictionary);
+                        XmlNodeList exportFieldNodeList = exportNode.SelectNodes("field");
+                        foreach (XmlNode exportFieldNode in exportFieldNodeList)
+                        {
+                            exportDictionary.Add(exportFieldNode.Attributes.GetNamedItem("name").Value, exportFieldNode.Attributes.GetNamedItem("value").Value);
+                        }
+                    }
+                }
+
+                XmlNode exportsNode = xNode.SelectSingleNode("exports");
+                exportNodes = null;
+                if (exportsNode != null) exportNodes = exportsNode.SelectNodes("export");
+                if (exportNodes != null)
+                {
+
+                    foreach (XmlNode exportNode in exportNodes)
+                    {
+                        if (exportNode.Attributes.GetNamedItem("name") != null)
+                        {
+                            int loadIndex = chkAvailableExports.Items.IndexOf(exportNode.Attributes.GetNamedItem("name").Value);
+                            bool toCheck = !((exportNode.Attributes.GetNamedItem("enabled") != null) && (!Convert.ToBoolean(exportNode.Attributes.GetNamedItem("enabled").Value)));
+                            if (loadIndex >= 0) chkAvailableExports.SetItemChecked(loadIndex, toCheck);
+                        }
+                    }
+                }
+                #endregion
                 #region Permissions Settings
                 btnSaveSettings.Visible = false;
                 XmlNode permissionsNode = xNode.SelectSingleNode("permissions");
@@ -322,9 +349,9 @@ namespace EasyXmlSample
         {
             actionInProgress = true;
             string actionName = ((Button)sender).Text;
-            if (dctClassMapping.ContainsKey(actionName))
+            if (dctActionClassMapping.ContainsKey(actionName))
             {
-                AbstractEasyAction aea = (AbstractEasyAction)Activator.CreateInstance(dctClassMapping[actionName].Class);
+                AbstractEasyAction aea = (AbstractEasyAction)Activator.CreateInstance(dctActionClassMapping[actionName].Class);
                 foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[actionName])
                 {
                     aea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
@@ -334,7 +361,8 @@ namespace EasyXmlSample
                 {
                     dataRows.Add(((DataRowView)dgvRow.DataBoundItem).Row);
                 }
-                if (dataRows.Count == 0) {
+                if (dataRows.Count == 0)
+                {
                     if (dataGrid.SelectedCells.Count > 0)
                     {
                         List<int> lstRowIndex = new List<int>();
@@ -433,7 +461,6 @@ namespace EasyXmlSample
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 txtFileName.Text = ofd.FileName;
-                txtExportFileName.Text = Path.ChangeExtension(txtFileName.Text, GetExportPathExtension());
                 //LoadDataToGridView();
             }
         }
@@ -453,7 +480,8 @@ namespace EasyXmlSample
             txtRegexContents.Text = "";
             cmbTableName.Items.Clear();
             IContentExtractor extractor = null;
-            if ((chkUseTextExtractor.Checked) && (dctContentExtractors.ContainsKey(cbTextExtractor.Text))) {
+            if ((chkUseTextExtractor.Checked) && (dctContentExtractors.ContainsKey(cbTextExtractor.Text)))
+            {
                 extractor = (AbstractContentExtractor)Activator.CreateInstance(dctContentExtractors[cbTextExtractor.Text].Class);
             }
             try
@@ -472,8 +500,9 @@ namespace EasyXmlSample
                         ClassMapping[] databaseClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(DatabaseEasyParser));
                         Type classType = databaseClasses.First(f => f.DisplayName == datasourceNode.Attributes.GetNamedItem("classname").Value).Class;
                         dbep = (DatabaseEasyParser)Activator.CreateInstance(classType);
-                        foreach (XmlNode childNode in datasourceNode.SelectNodes("field")) {
-                            dbep.LoadSetting(childNode.Attributes.GetNamedItem("name").Value,childNode.Attributes.GetNamedItem("value").Value);
+                        foreach (XmlNode childNode in datasourceNode.SelectNodes("field"))
+                        {
+                            dbep.LoadSetting(childNode.Attributes.GetNamedItem("name").Value, childNode.Attributes.GetNamedItem("value").Value);
                         }
                         xDoc.LoadXml(dbep.Load(txtDatabaseQuery.Text).OuterXml);
                     }
@@ -782,50 +811,24 @@ namespace EasyXmlSample
         private void btnExport_Click(object sender, EventArgs e)
         {
             if (cmbExport.SelectedItem == null) return;
-            if (String.IsNullOrWhiteSpace(cmbExport.SelectedItem.ToString())) return;
+            string exportName = cmbExport.SelectedItem.ToString();
+            if ((String.IsNullOrWhiteSpace(exportName)) || (!dctExporters.ContainsKey(exportName))) return;
             DataSet rds = (DataSet)dataGrid.DataSource;
-            DatasetWriter dsw = null;
-            ExportSettings eSettings = AllExportSettings.Find(m => m.SettingName == cmbExport.SelectedItem.ToString());
-            if (eSettings == null)
+            DatasetWriter dsw = (DatasetWriter)Activator.CreateInstance(dctExporters[exportName].Class);
+            dsw.LoadFieldSettings(dctExportFieldSettings[exportName]);
+            if (!dsw.IsFieldSettingsComplete())
             {
-                MessageBox.Show("Please select a valid export type");
+                MessageBox.Show("The configuration of this export setting is incomplete.");
                 return;
             }
-            switch (eSettings.ExportFormat.ToUpper())
+
+            dsw.Write(rds);
+            if (dsw is FileDatasetWriter)
             {
-                case "CSV":
-                    dsw = new DelimitedDatasetWriter(rds, eSettings.ExportFileName) { Delimiter = ',', PrintTableHeader = true, IncludeQuotes = true };
-                    break;
-                case "TAB":
-                    dsw = new DelimitedDatasetWriter(rds, eSettings.ExportFileName) { Delimiter = '\t', PrintTableHeader = true, IncludeQuotes = true };
-                    break;
-                case "HTML":
-                    dsw = new HtmlDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
-                    break;
-                case "WORD":
-                    dsw = new WordDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
-                    break;
-                case "EXCEL":
-                    dsw = new OpenXMLExcelDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
-                    break;
-                case "MAILMERGE-WORD":
-                    dsw = new OfficeMailMergeDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
-                    break;
-                case "XML":
-                    dsw = new XmlDatasetWriter(rds, eSettings.ExportFileName, eSettings.TemplateFileName);
-                    break;
-                case "PDF":
-                    dsw = new PDFDatasetWriter(rds, eSettings.ExportFileName);
-                    break;
-                case "JSON":
-                    dsw = new JsonDatasetWriter(rds, eSettings.ExportFileName);
-                    break;
+                string exportFileName = ((FileDatasetWriter)dsw).ExportFileName;
+                MessageBox.Show("Saved file as " + exportFileName);
+                Process.Start(exportFileName);
             }
-            dsw.PrintTableHeader = eSettings.IncludeTableHeader;
-            dsw.Write();
-            MessageBox.Show("Saved file in " + Path.GetDirectoryName(eSettings.ExportFileName));
-            Process.Start(Path.GetDirectoryName(eSettings.ExportFileName));
-            //Process.Start(txtExportFileName.Text);
         }
 
         private void btnTransformSave_Click(object sender, EventArgs e)
@@ -937,11 +940,11 @@ namespace EasyXmlSample
                 etlName = System.Text.RegularExpressions.Regex.Match(etlName, "name='(?<ETLName>.*?)'").Groups["ETLName"].Value;
                 XmlElement xElement = xDoc.CreateElement("etl");
                 xElement.SetAttribute("name", etlName);
-                string parentPath = SettingsPath.Remove(SettingsPath.IndexOf("/etls/etl")+5);
+                string parentPath = SettingsPath.Remove(SettingsPath.IndexOf("/etls/etl") + 5);
                 xDoc.SelectSingleNode(parentPath).AppendChild(xElement);
                 xNode = xDoc.SelectSingleNode(SettingsPath);
             }
-            
+
             xNode.InnerText = "";
             XmlAttribute autoRefresh = xDoc.CreateAttribute("autorefresh");
             autoRefresh.Value = chkAutoRefresh.Checked.ToString();
@@ -1019,16 +1022,16 @@ namespace EasyXmlSample
             #endregion
 
             #region Export Settings
-            foreach (ExportSettings eSettings in AllExportSettings)
+            //#region Actions section
+            XmlElement exportsNode = xDoc.CreateElement("exports");
+            foreach (var cic in chkAvailableExports.CheckedItems)
             {
-                XmlElement dataNode = xDoc.CreateElement("output");
-                dataNode.SetAttribute("name", eSettings.SettingName);
-                dataNode.SetAttribute("exportformat", eSettings.ExportFormat);
-                dataNode.SetAttribute("exportfilename", eSettings.ExportFileName);
-                dataNode.SetAttribute("templatefilename", eSettings.TemplateFileName);
-                dataNode.SetAttribute("includeheader", eSettings.IncludeTableHeader.ToString());
-                xNode.AppendChild(dataNode);
+                XmlElement exportNode = xDoc.CreateElement("export");
+                exportNode.SetAttribute("name", cic.ToString());
+                exportNode.SetAttribute("enabled", "True");
+                exportsNode.AppendChild(exportNode);
             }
+            xNode.AppendChild(exportsNode);
             #endregion
 
             #region Permissions Settings
@@ -1155,46 +1158,6 @@ namespace EasyXmlSample
             }
         }
 
-        private void btnExportFileName_Click(object sender, EventArgs e)
-        {
-            ofd.CheckFileExists = false;
-            ofd.AddExtension = true;
-            ofd.DefaultExt = GetExportPathExtension();
-            ofd.FileName = txtExportFileName.Text;
-            if (ofd.ShowDialog() == DialogResult.OK) txtExportFileName.Text = ofd.FileName;
-        }
-
-        private string GetExportPathExtension()
-        {
-            switch (cmbExportDestination.Text.ToUpper())
-            {
-                case "WORD":
-                case "MAILMERGE-WORD":
-                    return "docx";
-                case "EXCEL":
-                    return "xlsx";
-                case "TAB":
-                    return "txt";
-                default:
-                    return cmbExportDestination.Text.ToLower();
-            }
-        }
-
-        private void cmbDestination_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (String.IsNullOrWhiteSpace(txtExportFileName.Text)) txtExportFileName.Text = txtFileName.Text;
-            txtExportFileName.Text = Path.ChangeExtension(txtExportFileName.Text, GetExportPathExtension());
-            pnlExportXsltDetails.Visible = ((cmbExportDestination.Text == "XML") || (cmbExportDestination.Text == "EXCEL") || (cmbExportDestination.Text == "WORD") || (cmbExportDestination.Text == "HTML") || (cmbExportDestination.Text == "MAILMERGE-WORD"));
-            if (!File.Exists(txtExportTemplateFileName.Text)) txtExportTemplateFileName.Text = "";
-        }
-
-        private void btnExportXsltFileName_Click(object sender, EventArgs e)
-        {
-            ofd.CheckFileExists = true;
-            ofd.DefaultExt = "xslt";
-            if (ofd.ShowDialog() == DialogResult.OK) txtExportTemplateFileName.Text = ofd.FileName;
-        }
-
         private void txtFileName_TextChanged(object sender, EventArgs e)
         {
             if (chkAutoRefresh.Checked) LoadDataToGridView();
@@ -1250,71 +1213,6 @@ namespace EasyXmlSample
             pnlExport.Visible = chkCanExportData.Checked;
         }
 
-        private void btnSaveExportSettings_Click(object sender, EventArgs e)
-        {
-            if (!String.IsNullOrWhiteSpace(txtExportSettingName.Text))
-            {
-                ExportSettings eSettings = AllExportSettings.Find(m => m.SettingName == txtExportSettingName.Text);
-                if (eSettings == null)
-                {
-                    eSettings = new ExportSettings() { SettingName = txtExportSettingName.Text };
-                    AllExportSettings.Add(eSettings);
-                }
-                eSettings.ExportFormat = cmbExportDestination.SelectedItem.ToString();
-                eSettings.ExportFileName = txtExportFileName.Text;
-                eSettings.TemplateFileName = txtExportTemplateFileName.Text;
-                eSettings.IncludeTableHeader = chkIncludeTableHeader.Checked;
-            }
-            RefreshExportSettingsCombo();
-        }
-
-        private void RefreshExportSettingsCombo()
-        {
-            cmbExportSettings.Items.Clear();
-            cmbExport.Items.Clear();
-            foreach (ExportSettings eSetting in AllExportSettings)
-            {
-                cmbExportSettings.Items.Add(eSetting.SettingName);
-                cmbExport.Items.Add(eSetting.SettingName);
-            }
-        }
-
-        private void cmbExportSettings_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cmbExportSettings.SelectedItem != null)
-            {
-                ExportSettings eSettings = AllExportSettings.Find(m => m.SettingName == cmbExportSettings.SelectedItem.ToString());
-                if (eSettings != null)
-                {
-                    grpExportSettings.Text = eSettings.SettingName;
-                    txtExportSettingName.Text = eSettings.SettingName;
-                    txtExportFileName.Text = eSettings.ExportFileName;
-                    txtExportTemplateFileName.Text = eSettings.TemplateFileName;
-                    cmbExportDestination.Text = eSettings.ExportFormat;
-                    chkIncludeTableHeader.Checked = eSettings.IncludeTableHeader;
-                }
-                else
-                {
-                    txtExportSettingName.Text = "";
-                    txtExportFileName.Text = "";
-                    txtExportTemplateFileName.Text = "";
-                    cmbExportDestination.Text = "";
-                    chkIncludeTableHeader.Checked = true;
-                }
-            }
-        }
-
-        private void btnExportDeleteSetting_Click(object sender, EventArgs e)
-        {
-            ExportSettings eSettings = AllExportSettings.Find(m => m.SettingName == txtExportSettingName.Text);
-            if (eSettings != null) AllExportSettings.Remove(eSettings);
-            txtExportSettingName.Text = "";
-            txtExportFileName.Text = "";
-            txtExportTemplateFileName.Text = "";
-            cmbExportDestination.Text = "";
-            RefreshExportSettingsCombo();
-        }
-
         private void chkCanEditConfiguration_CheckedChanged(object sender, EventArgs e)
         {
             chkAutoRefresh.Visible = chkCanEditConfiguration.Checked;
@@ -1346,7 +1244,7 @@ namespace EasyXmlSample
             {
                 cmbDefaultAction.Items.Add(chkAvailableActions.Items[e.Index].ToString());
             }
-            else 
+            else
             {
                 cmbDefaultAction.Items.Remove(chkAvailableActions.Items[e.Index].ToString());
             }
@@ -1363,9 +1261,9 @@ namespace EasyXmlSample
                     Button b = (Button)c;
                     fpActions.Visible = true;
                     b.Enabled = false;
-                    if (dctClassMapping.ContainsKey(b.Text) && (dctClassMapping[b.Text] != null))
+                    if ((b.Visible) && dctActionClassMapping.ContainsKey(b.Text) && (dctActionClassMapping[b.Text] != null))
                     {
-                        if (dataRows == null) 
+                        if (dataRows == null)
                         {
                             dataRows = new List<DataRow>();
                             if (dataRow == null)
@@ -1395,7 +1293,7 @@ namespace EasyXmlSample
                                 dataRows.Add(dataRow);
                             }
                         }
-                        AbstractEasyAction ea = (AbstractEasyAction)Activator.CreateInstance(dctClassMapping[b.Text].Class);
+                        AbstractEasyAction ea = (AbstractEasyAction)Activator.CreateInstance(dctActionClassMapping[b.Text].Class);
                         foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[b.Text])
                         {
                             ea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
@@ -1409,7 +1307,7 @@ namespace EasyXmlSample
         private void dataGrid_SelectionChanged(object sender, EventArgs e)
         {
             fpActions.Visible = false;
-            if ((dataGrid.SelectedRows.Count == 0) && (dataGrid.SelectedCells.Count ==0)) return;
+            if ((dataGrid.SelectedRows.Count == 0) && (dataGrid.SelectedCells.Count == 0)) return;
             EnableActionButtonsAsNeeded();
         }
 
@@ -1418,7 +1316,8 @@ namespace EasyXmlSample
             if (String.IsNullOrWhiteSpace(cmbDefaultAction.Text)) return;
             foreach (Control c in fpActions.Controls)
             {
-                if ( (c.Visible) && (c.Enabled) && (c is Button) && (c.Text == cmbDefaultAction.Text)) {
+                if ((c.Visible) && (c.Enabled) && (c is Button) && (c.Text == cmbDefaultAction.Text))
+                {
                     btnControl_Click(c, null);
                 }
             }
@@ -1454,16 +1353,20 @@ namespace EasyXmlSample
             dataGrid_DoubleClick(this, null);
         }
 
-    }
+        private void chkAvailableExports_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Checked)
+            {
+                cmbExport.Items.Add(chkAvailableExports.Items[e.Index].ToString());
+            }
+            else
+            {
+                cmbExport.Items.Remove(chkAvailableExports.Items[e.Index].ToString());
+            }
+        }
 
 
-    public class ExportSettings
-    {
-        public string SettingName;
-        public string ExportFormat;
-        public string ExportFileName;
-        public string TemplateFileName;
-        public bool IncludeTableHeader;
     }
+
 
 }

@@ -35,6 +35,8 @@
             this.txtActionName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lblProperties = new System.Windows.Forms.Label();
+            this.lblLibraryName = new System.Windows.Forms.Label();
             this.pnlField = new System.Windows.Forms.Panel();
             this.btnSaveField = new System.Windows.Forms.Button();
             this.cmbField = new System.Windows.Forms.ComboBox();
@@ -46,8 +48,6 @@
             this.cmbClassName = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.lblLibraryName = new System.Windows.Forms.Label();
-            this.lblProperties = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -138,6 +138,22 @@
             this.panel2.Size = new System.Drawing.Size(588, 439);
             this.panel2.TabIndex = 1;
             // 
+            // lblProperties
+            // 
+            this.lblProperties.Location = new System.Drawing.Point(367, 294);
+            this.lblProperties.Name = "lblProperties";
+            this.lblProperties.Size = new System.Drawing.Size(218, 83);
+            this.lblProperties.TabIndex = 10;
+            // 
+            // lblLibraryName
+            // 
+            this.lblLibraryName.AutoSize = true;
+            this.lblLibraryName.Location = new System.Drawing.Point(105, 88);
+            this.lblLibraryName.Name = "lblLibraryName";
+            this.lblLibraryName.Size = new System.Drawing.Size(38, 13);
+            this.lblLibraryName.TabIndex = 9;
+            this.lblLibraryName.Text = "Library";
+            // 
             // pnlField
             // 
             this.pnlField.Controls.Add(this.btnSaveField);
@@ -188,6 +204,7 @@
             this.lstFields.Location = new System.Drawing.Point(108, 131);
             this.lstFields.Name = "lstFields";
             this.lstFields.Size = new System.Drawing.Size(246, 160);
+            this.lstFields.Sorted = true;
             this.lstFields.TabIndex = 6;
             this.lstFields.SelectedIndexChanged += new System.EventHandler(this.lstFields_SelectedIndexChanged);
             // 
@@ -215,6 +232,7 @@
             this.cmbClassName.Location = new System.Drawing.Point(108, 21);
             this.cmbClassName.Name = "cmbClassName";
             this.cmbClassName.Size = new System.Drawing.Size(246, 21);
+            this.cmbClassName.Sorted = true;
             this.cmbClassName.TabIndex = 3;
             this.cmbClassName.SelectedIndexChanged += new System.EventHandler(this.cmbClassName_SelectedIndexChanged);
             // 
@@ -235,22 +253,6 @@
             this.label2.Size = new System.Drawing.Size(72, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "Library Name:";
-            // 
-            // lblLibraryName
-            // 
-            this.lblLibraryName.AutoSize = true;
-            this.lblLibraryName.Location = new System.Drawing.Point(105, 88);
-            this.lblLibraryName.Name = "lblLibraryName";
-            this.lblLibraryName.Size = new System.Drawing.Size(38, 13);
-            this.lblLibraryName.TabIndex = 9;
-            this.lblLibraryName.Text = "Library";
-            // 
-            // lblProperties
-            // 
-            this.lblProperties.Location = new System.Drawing.Point(367, 294);
-            this.lblProperties.Name = "lblProperties";
-            this.lblProperties.Size = new System.Drawing.Size(218, 83);
-            this.lblProperties.TabIndex = 10;
             // 
             // ClassConfigurationForm
             // 

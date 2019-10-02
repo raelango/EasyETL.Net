@@ -40,7 +40,7 @@ namespace EasyETL.Writers
             DataSet fullDataSet = _dataSet;
             if (_dataSet == null) return;
             string originalTemplateFileName = TemplateFileName;
-            string originalFileName = _fileName;
+            string originalFileName = ExportFileName;
             foreach (DataTable dTable in fullDataSet.Tables)
             {
                 DataSet tempDataSet = new DataSet(fullDataSet.DataSetName);
@@ -54,12 +54,12 @@ namespace EasyETL.Writers
                     string tempTemplateFileName =  PopulatedName(originalTemplateFileName);
                     string tempFileName = PopulatedName(originalFileName);
 
-                    _fileName = tempFileName;
+                    ExportFileName = tempFileName;
                     TemplateFileName = tempTemplateFileName;
                     base.Write();
                 }
             }
-            _fileName = originalFileName;
+            ExportFileName = originalFileName;
             TemplateFileName = originalTemplateFileName;
             _dataSet = fullDataSet;
         }

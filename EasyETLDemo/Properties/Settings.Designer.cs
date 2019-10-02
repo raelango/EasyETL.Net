@@ -25,7 +25,7 @@ namespace EasyXmlSample.Properties {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("config.xml")]
+        [global::System.Configuration.DefaultSettingValueAttribute("c:\\temp\\config.xml")]
         public string ConfigurationFilePath {
             get {
                 return ((string)(this["ConfigurationFilePath"]));
