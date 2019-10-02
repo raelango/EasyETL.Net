@@ -1,4 +1,4 @@
-﻿using EasyEndpoint;
+﻿using EasyETL.Endpoint;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,28 +12,28 @@ namespace EasyETL.Writers
 {
     public abstract class FileDatasetWriter : DatasetWriter
     {
-        protected string _fileName = String.Empty;
+        public string ExportFileName = String.Empty;
         protected IEasyEndpoint endpoint = null;
         public FileDatasetWriter()
             : base()
         {
-            _fileName = String.Empty;
+            ExportFileName = String.Empty;
         }
 
         public FileDatasetWriter(DataSet dataSet)
             : base(dataSet)
         {
-            _fileName = String.Empty;
+            ExportFileName = String.Empty;
         }
 
         public FileDatasetWriter(DataSet dataSet, string fileName) : base(dataSet) {
-            _fileName = fileName;
+            ExportFileName = fileName;
         }
 
         public override void Write()
         {
-            _fileName = PopulatedName(_fileName);
-            if (!String.IsNullOrWhiteSpace(_fileName))
+            ExportFileName = PopulatedName(ExportFileName);
+            if (!String.IsNullOrWhiteSpace(ExportFileName))
             {
                 SaveContentToFile(BuildOutputString());
             }
@@ -41,7 +41,7 @@ namespace EasyETL.Writers
 
         public virtual void Write(string fileName, IEasyEndpoint epoint = null)
         {
-            _fileName = fileName;
+            ExportFileName = fileName;
             endpoint = epoint;
             Write();
         }
@@ -76,15 +76,33 @@ namespace EasyETL.Writers
             if (endpoint == null)
             {
 
-                using (StreamWriter outputFile = new StreamWriter(_fileName, false))
+                using (StreamWriter outputFile = new StreamWriter(ExportFileName, false))
                 {
                     outputFile.Write(contentToWrite);
                 }
             }
             else
             {
-                endpoint.Write(_fileName, ASCIIEncoding.ASCII.GetBytes(contentToWrite));
+                endpoint.Write(ExportFileName, ASCIIEncoding.ASCII.GetBytes(contentToWrite));
             }
-        }    
+        }
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "exportfilename":
+                    ExportFileName = fieldValue; break;
+            }
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> settingDict = base.GetSettingsAsDictionary();
+            settingDict.Add("exportfilename", ExportFileName);
+            return settingDict;
+        }
+
     }
 }

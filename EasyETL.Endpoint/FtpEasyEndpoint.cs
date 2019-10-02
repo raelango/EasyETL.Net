@@ -11,17 +11,36 @@ using System.Security.Cryptography.X509Certificates;
 using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.VisualBasic;
 using System.IO;
+using System.ComponentModel;
+using EasyETL.Attributes;
 
-namespace EasyEndpoint
+namespace EasyETL.Endpoint
 {
-    public class FtpEasyEndpoint : AbstractFileEasyEndpoint, IDisposable
+    [DisplayName("FTP Server")]
+    [EasyProperty("HasFiles", "True")]
+    [EasyProperty("CanStream", "True")]
+    [EasyProperty("CanRead", "True")]
+    [EasyProperty("CanWrite", "True")]
+    [EasyProperty("CanList", "True")]
+    [EasyProperty("CanListen", "False")]
+    [EasyField("FTP Address","FTP Server Address (DNS or IP)")]
+    [EasyField("Port Number","Port Number to connect","21","[0-9]+")]
+    [EasyField("User ID","Login User Name")]
+    [EasyField("User Password","Login Password")]
+     public class FtpEasyEndpoint : AbstractFileEasyEndpoint, IDisposable
     {
         public FtpClient FTPControl = null;
         public int PortNumber = 21;
         public NetworkCredential Credentials = null;
         public X509CertificateCollection Certificates = null;
         public string FTPAddress = String.Empty;
+        public string UserID = String.Empty;
+        public string Password = String.Empty;
 
+        public FtpEasyEndpoint()
+        {
+
+        }
         public FtpEasyEndpoint(string ftpAddress, string userID, string password, int port = 21, params X509Certificate[] certificates)
         {
             FTPAddress = ftpAddress;
@@ -32,14 +51,6 @@ namespace EasyEndpoint
             }
             Certificates = new X509CertificateCollection(certificates);
             EstablishFTPConnection();
-        }
-
-        public override bool CanListen
-        {
-            get
-            {
-                return false;
-            }
         }
 
         #region public properties
@@ -145,6 +156,37 @@ namespace EasyEndpoint
             }
         }
 
+        public override bool IsFieldSettingsComplete()
+        {
+            return !String.IsNullOrWhiteSpace(FTPAddress);
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> settingDict = base.GetSettingsAsDictionary();
+            settingDict.Add("FTP Address", FTPAddress);
+            settingDict.Add("Port Number", PortNumber.ToString());
+            settingDict.Add("User ID", UserID);
+            settingDict.Add("User Password", Password);
+            return settingDict;
+        }
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "ftp address":
+                    FTPAddress = fieldValue; break;
+                case "port number":
+                    PortNumber = Convert.ToInt16(fieldValue); break;
+                case "user id":
+                    UserID = fieldValue; break;
+                case "user password":
+                    Password = fieldValue; break;
+            }
+        }
+
         #endregion
 
         #region Private methods
@@ -159,7 +201,7 @@ namespace EasyEndpoint
         }
         #endregion
 
-
+        
         public void Dispose()
         {
             if (FTPControl != null) { FTPControl.Disconnect(); }

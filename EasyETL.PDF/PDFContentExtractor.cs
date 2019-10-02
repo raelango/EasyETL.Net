@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
+using System.ComponentModel;
 
 namespace EasyETL.Extractors
 {
+    [DisplayName("PDF Extractor")]
     public class PDFContentExtractor : AbstractContentExtractor
     {
         public override Stream GetStream(Stream inStream)

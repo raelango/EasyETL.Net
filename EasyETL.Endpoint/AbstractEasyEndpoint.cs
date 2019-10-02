@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EasyETL.Attributes;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,39 +8,10 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EasyEndpoint
+namespace EasyETL.Endpoint
 {
     public abstract class AbstractEasyEndpoint : IEasyEndpoint
     {
-        public virtual bool HasFiles
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual bool CanStream
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual bool CanRead
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual bool CanWrite
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual bool CanList
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public virtual bool CanListen
-        {
-            get { throw new NotImplementedException();  }
-        }
 
         public virtual bool Overwrite
         {
@@ -70,8 +42,8 @@ namespace EasyEndpoint
 
         public virtual void CopyTo(IEasyEndpoint destEasyEndPoint, params string[] fileNames)
         {
-            if (!destEasyEndPoint.CanWrite) return;
-            if (!HasFiles) return;
+            if (!destEasyEndPoint.CanWrite()) return;
+            if (!this.HasFiles()) return;
             foreach (string strFileName in fileNames)
             {
                 byte[] fileBytes = Read(strFileName);

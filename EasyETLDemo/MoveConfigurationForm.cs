@@ -16,6 +16,7 @@ namespace EasyXmlSample
     {
         public string SettingsFileName;
         public string OriginalPath;
+        public string NewPath;
 
         public MoveConfigurationForm()
         {
@@ -60,6 +61,7 @@ namespace EasyXmlSample
                     XmlNode newParentNode = xDoc.SelectSingleNode("//clients/client[@name='" + lstClients.SelectedItem.ToString() + "']/" + OriginalPath.Split('\\')[1]);
                     if (newParentNode != null) newParentNode.AppendChild(xNode);
                 }
+                NewPath = lstClients.SelectedItem.ToString() + '\\' + OriginalPath.Split('\\')[1] + '\\' + OriginalPath.Split('\\')[2];
                 xDoc.Save(SettingsFileName);
                 this.Close();
             }

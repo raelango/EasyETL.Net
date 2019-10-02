@@ -12,6 +12,7 @@ using DocumentFormat.OpenXml.CustomProperties;
 using System.IO;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Wordprocessing;
+using System.ComponentModel;
 
 namespace EasyETL.Writers
 {
@@ -22,7 +23,8 @@ namespace EasyETL.Writers
         //PowerpointPresentation
     }
 
-    public class OfficeDatasetWriter : FileDatasetWriter
+    [DisplayName("Office Writer")]
+    public abstract class OfficeDatasetWriter : FileDatasetWriter
     {
         public string TemplateFileName = String.Empty;
         public Dictionary<string, string> DocProperties = new Dictionary<string, string>();
@@ -50,9 +52,10 @@ namespace EasyETL.Writers
 
         public override void Write()
         {
-            if (!String.IsNullOrWhiteSpace(_fileName))
+            ExportFileName = PopulatedName(ExportFileName);
+            if (!String.IsNullOrWhiteSpace(ExportFileName))
             {
-                DocProperties["FileName"] = _fileName;
+                DocProperties["FileName"] = ExportFileName;
                 DocProperties["TableCount"] = _dataSet.Tables.Count.ToString();
                 if (PopulatePropertiesOnly)
                 {
@@ -77,11 +80,11 @@ namespace EasyETL.Writers
                         if (File.Exists(TemplateFileName))
                         {
                             doc = WordprocessingDocument.CreateFromTemplate(TemplateFileName);
-                            doc = (WordprocessingDocument)doc.SaveAs(_fileName);
+                            doc = (WordprocessingDocument)doc.SaveAs(ExportFileName);
                         }
                         else
                         {
-                            doc = WordprocessingDocument.Create(_fileName, WordprocessingDocumentType.Document);
+                            doc = WordprocessingDocument.Create(ExportFileName, WordprocessingDocumentType.Document);
                         }
                         CustomFilePropertiesPart customProp = doc.CustomFilePropertiesPart;
                         if (customProp == null) customProp = doc.AddCustomFilePropertiesPart();
@@ -125,11 +128,11 @@ namespace EasyETL.Writers
                         if (File.Exists(TemplateFileName))
                         {
                             spreadSheet = SpreadsheetDocument.CreateFromTemplate(TemplateFileName);
-                            spreadSheet = (SpreadsheetDocument)spreadSheet.SaveAs(_fileName);
+                            spreadSheet = (SpreadsheetDocument)spreadSheet.SaveAs(ExportFileName);
                         }
                         else
                         {
-                            spreadSheet = SpreadsheetDocument.Create(_fileName, SpreadsheetDocumentType.Workbook);
+                            spreadSheet = SpreadsheetDocument.Create(ExportFileName, SpreadsheetDocumentType.Workbook);
                             spreadSheet.Save();
                         }
                         using (SpreadsheetDocument workbook = spreadSheet)
@@ -180,7 +183,7 @@ namespace EasyETL.Writers
                                 {
                                     columns.Add(column.ColumnName);
                                 }
-                                if (PrintHeader)
+                                if (PrintTableHeader)
                                 {
 
                                     excel.Row headerRow = new excel.Row();
@@ -309,7 +312,7 @@ namespace EasyETL.Writers
 
             word.TableGrid tableGrid = new word.TableGrid();
             table.Append(tableGrid);
-            if (PrintHeader)
+            if (PrintTableHeader)
             {
 
                 word.TableRow headerRow = new word.TableRow();
@@ -369,6 +372,21 @@ namespace EasyETL.Writers
             }
         }
 
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "templatefilename":
+                    TemplateFileName = fieldValue; break;
+            }
+        }
 
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string, string> settingsDict = base.GetSettingsAsDictionary();
+            settingsDict.Add("templatefilename", TemplateFileName);
+            return settingsDict;
+        }
     }
 }

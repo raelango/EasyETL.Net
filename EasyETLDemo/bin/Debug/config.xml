@@ -265,8 +265,9 @@ filter construction='Masonry' and county='CLAY COUNTY'</afterload>
           </parseoptions>
           <output exportformat="PDF" exportfilename="C:\temp\FL_insurance_export.PDF" templatefilename="" />
         </etl>
-        <etl id="5_etl_8" name="Export in XML Format">
+        <etl id="5_etl_8" name="Export in XML Format" autorefresh="False">
           <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <actions />
           <transformations>
             <duringload profilename="" savefilename="">
             </duringload>
@@ -277,7 +278,145 @@ filter policyID &gt; 950000</afterload>
             <comments>
             </comments>
           </parseoptions>
-          <output exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" />
+          <output name="To XML" exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" includeheader="False" />
+          <permissions role="owner" canviewsettings="True" caneditsettings="True" canadddata="False" caneditdata="False" candeletedata="False" canexportdata="True" />
+        </etl>
+      </etls>
+    </client>
+    <client id="6" name="Demonstration of Action">
+      <actions>
+        <action id="6_action_1" name="Set to CA" libraryname="EasyETL.Actions.DemoActions" classname="Set Field Value">
+          <field name="FieldName" value="statecode" />
+          <field name="FieldValue" value="CA" />
+        </action>
+        <action id="6_action_2" name="Delete Record" libraryname="EasyETL.Actions.DemoActions" classname="Delete Record">
+          <field name="ConfirmationRequired" value="False" />
+        </action>
+        <action id="6_action_3" name="Move to CA" libraryname="EasyETL.Actions.DemoActions" classname="Conditional Set Field Value">
+          <field name="FieldName" value="statecode" />
+          <field name="CurrentFieldValue" value="^((?!CA).)*$" />
+          <field name="NewFieldValue" value="CA" />
+        </action>
+        <action id="Copy of Move to CA" name="Move to FL" libraryname="EasyETL.Actions.DemoActions" classname="Conditional Set Field Value">
+          <field name="FieldName" value="statecode" />
+          <field name="CurrentFieldValue" value="^((?!FL).)*$" />
+          <field name="NewFieldValue" value="FL" />
+        </action>
+        <action id="Copy of Set to CA" name="Set to FL" libraryname="EasyETL.Actions.DemoActions" classname="Set Field Value">
+          <field name="FieldName" value="statecode" />
+          <field name="FieldValue" value="FL" />
+        </action>
+      </actions>
+      <endpoints />
+      <datasources />
+      <filestores />
+      <messagequeues />
+      <transfers />
+      <etls>
+        <etl id="Copy of Export in XML Format" name="Copy of Export in XML Format" autorefresh="True">
+          <datasource sourcetype="File" usetextextractor="False" textextractor="" hasmaxrows="False" maxrows="20" filename="C:\temp\FL_insurance_sample.csv" />
+          <actions>
+            <action name="Set to CA" enabled="True" />
+            <action name="Delete Record" enabled="True" />
+            <action name="Move to CA" enabled="True" />
+            <action name="Move to FL" enabled="True" />
+            <action name="Set to FL" enabled="True" />
+            <defaultaction name="Move to FL" />
+          </actions>
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">[row=&gt;log]
+filter policyID &gt; 950000</afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="Comma" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <output name="To XML" exportformat="XML" exportfilename="C:\temp\FL_insurance_export_xml.html" templatefilename="C:\temp\FL_insurance_template.xslt" includeheader="False" />
+          <permissions role="owner" canviewsettings="True" caneditsettings="True" canadddata="False" caneditdata="True" candeletedata="False" canexportdata="True" />
+        </etl>
+      </etls>
+    </client>
+    <client id="7" name="Demo for Exports">
+      <actions>
+        <action id="7_action_1" name="Conditional Action" classname="Conditional Set Field Value">
+        </action>
+      </actions>
+      <datasources>
+        <datasource id="7_datasource_1" name="Database Source" classname="Database Source">
+          <field name="connectionstring" value="adassd" />
+          <field name="connectiontype" value="ODBC" />
+          <field name="query" value="sdfsdasf" />
+        </datasource>
+        <datasource id="7_datasource_2" name="Odbc Source" classname="ODBC Database">
+          <field name="connectionstring" value="asfddsfasf" />
+          <field name="connectiontype" value="ODBC" />
+          <field name="query" value="asfdsdfsdf" />
+        </datasource>
+        <datasource id="7_datasource_3" name="Oledb Source" classname="Oledb Database">
+          <field name="connectionstring" value="asfdsdfsafsdf" />
+          <field name="connectiontype" value="Oledb" />
+          <field name="query" value="asfddsfdsf" />
+        </datasource>
+        <datasource id="7_datasource_4" name="SQL Source" classname="SQL Server Database">
+          <field name="connectionstring" value="Server=BEDSQLLC02;Database=HRMS;Trusted_Connection=True;" />
+          <field name="connectiontype" value="SQL" />
+          <field name="query" value="select * from dbo.tblAction" />
+          <field name="servername" value="BEDSQLLC02" />
+          <field name="databasename" value="HRMS" />
+          <field name="sqlusername" value="" />
+          <field name="sqlpassword" value="" />
+        </datasource>
+        <datasource id="HRMS Database" name="HRMS Database" />
+        <datasource id="7_datasource_6" name="BEDDEVSQLLP01 MRSI" classname="SQL Server Database">
+          <field name="connectionstring" value="Server=BEDDEVSQLLP01;Database=MRSI;Trusted_Connection=True;" />
+          <field name="connectiontype" value="SQL" />
+          <field name="query" value="select * from users" />
+          <field name="servername" value="BEDDEVSQLLP01" />
+          <field name="databasename" value="MRSI" />
+          <field name="sqlusername" value="" />
+          <field name="sqlpassword" value="" />
+        </datasource>
+        <datasource id="7_datasource_7" name="7_datasource_7" />
+      </datasources>
+      <exports>
+        <export id="7_export_1" name="7_export_1" />
+      </exports>
+      <endpoints>
+        <endpoint id="7_endpoint_1" name="Local Network" classname="Local Network">
+          <field name="overwrite" value="True" />
+          <field name="foldername" value="\\asd\dsa\d\" />
+        </endpoint>
+        <endpoint id="7_endpoint_2" name="FTP Server" classname="FTP Server">
+          <field name="overwrite" value="False" />
+          <field name="FTP Address" value="sftp.logixhealth.com" />
+          <field name="Port Number" value="33" />
+          <field name="User ID" value="aelango" />
+          <field name="User Password" value="" />
+        </endpoint>
+      </endpoints>
+      <filestores />
+      <messagequeues />
+      <transfers />
+      <etls>
+        <etl id="7_etl_1" name="Load From HRMS" autorefresh="False">
+          <datasource sourcetype="Database" datasource="BEDDEVSQLLP01 MRSI">
+            <query>
+            </query>
+          </datasource>
+          <actions />
+          <transformations>
+            <duringload profilename="" savefilename="">
+            </duringload>
+            <afterload profilename="" savefilename="">
+            </afterload>
+          </transformations>
+          <parseoptions parsertype="Delimited" delimiter="AutoDetect" separator="" hasheader="True">
+            <comments>
+            </comments>
+          </parseoptions>
+          <permissions role="owner" canviewsettings="True" caneditsettings="True" canadddata="False" caneditdata="False" candeletedata="False" canexportdata="False" />
         </etl>
       </etls>
     </client>

@@ -18,7 +18,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\Build\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ClassConfigurationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ClassConfigurationForm.Designer.cs">
+      <DependentUpon>ClassConfigurationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="EasyETLDemoApplication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -66,6 +72,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="ClassConfigurationForm.resx">
+      <DependentUpon>ClassConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EasyETLDemoApplication.resx">
       <DependentUpon>EasyETLDemoApplication.cs</DependentUpon>
     </EmbeddedResource>
@@ -99,13 +108,21 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EasyETL.Office\EasyETL.Office.csproj">
-      <Project>{ea54969b-76ba-4423-972e-9a1c037324a5}</Project>
-      <Name>EasyETL.Office</Name>
+    <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">
+      <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
+      <Name>EasyETL.Attributes</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EasyETL.PDF\EasyETL.PDF.csproj">
-      <Project>{54c36131-b44a-4435-802f-7a0e6a3c34ec}</Project>
-      <Name>EasyETL.PDF</Name>
+    <ProjectReference Include="..\EasyETL.Endpoint\EasyETL.Endpoint.csproj">
+      <Project>{51925788-a8e5-4d41-a192-d206cdefee35}</Project>
+      <Name>EasyETL.Endpoint</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Actions\EasyETL.Actions.csproj">
+      <Project>{0da7a5a0-e2ee-4af9-9089-478a12369f88}</Project>
+      <Name>EasyETL.Actions</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
+      <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
+      <Name>EasyETL.Dynamic</Name>
     </ProjectReference>
     <ProjectReference Include="..\EasyETL\EasyETL.csproj">
       <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>

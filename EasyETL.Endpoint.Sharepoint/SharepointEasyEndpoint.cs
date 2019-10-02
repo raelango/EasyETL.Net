@@ -9,13 +9,18 @@ using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using System.Security;
 using System.Net;
+using EasyETL.Endpoint;
+using System.ComponentModel;
+using EasyETL.Attributes;
 
 namespace EasyEndpoint
 {
+    [DisplayName("Sharepoint")]
+    [EasyProperty("CanListen", "False")]
     public class SharepointEasyEndpoint : AbstractFileEasyEndpoint, IDisposable
     {
 
-        string SiteName = String.Empty;
+        string SiteName = "";
         ICredentials Credentials = null;
         string LibraryName = String.Empty;
         SP.ClientContext _clientContext = null;
@@ -38,13 +43,6 @@ namespace EasyEndpoint
             Overwrite = overwriteFiles;
         }
 
-        public override bool CanListen
-        {
-            get
-            {
-                return false;
-            }
-        }
 
         #region Public overriden methods
         public override string[] GetList(string filter = "*.*")

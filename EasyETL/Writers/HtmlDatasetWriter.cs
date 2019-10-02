@@ -6,9 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net;
 using System.IO;
+using System.ComponentModel;
+using EasyETL.Attributes;
 
 namespace EasyETL.Writers
 {
+    [DisplayName("HTML Writer")]
+    [EasyField("IncludeHeader", "Include Table Header", "True", "", "True;False")]
+    [EasyField("ExportFileName", "Name of output file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
+    [EasyField("TemplateFileName", "Name of template file to use. Leave Empty for no template file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
     public class HtmlDatasetWriter : FileDatasetWriter
     {
         public string TemplateFileName = String.Empty;
@@ -98,12 +104,15 @@ namespace EasyETL.Writers
         {
             string returnStr = "<Table width='100%' ID='" + dt.TableName +"'>" + Environment.NewLine;
 
-            returnStr += "<THEAD>" + Environment.NewLine;
-            foreach (DataColumn dc in dt.Columns)
+            if (PrintTableHeader)
             {
-                returnStr += "<TH>" + GetColumnName(dc) + "</TH>" + Environment.NewLine;
+                returnStr += "<THEAD>" + Environment.NewLine;
+                foreach (DataColumn dc in dt.Columns)
+                {
+                    returnStr += "<TH>" + GetColumnName(dc) + "</TH>" + Environment.NewLine;
+                }
+                returnStr += "</THEAD>" + Environment.NewLine;
             }
-            returnStr += "</THEAD>" + Environment.NewLine;
             return returnStr;
         }
 
@@ -126,6 +135,23 @@ namespace EasyETL.Writers
         public override string BuildFooterString()
         {
             return "</BODY>" + Environment.NewLine + "</HTML>" + Environment.NewLine;
+        }
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "templatefilename":
+                    TemplateFileName = fieldValue; break;
+            }
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> settingsDict = base.GetSettingsAsDictionary();
+            settingsDict.Add("templatefilename", TemplateFileName);
+            return settingsDict;
         }
 
     }

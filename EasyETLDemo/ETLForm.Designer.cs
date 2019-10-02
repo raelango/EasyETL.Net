@@ -91,15 +91,16 @@
             this.tabDatasourceText = new System.Windows.Forms.TabPage();
             this.txtTextContents = new System.Windows.Forms.TextBox();
             this.tabDatasourceDatabase = new System.Windows.Forms.TabPage();
+            this.cmbDatasource = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.txtDatabaseQuery = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.txtDatabaseConnectionString = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.cmbDatabaseConnectionType = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.btnShowSettings = new System.Windows.Forms.Button();
+            this.lblProgress = new System.Windows.Forms.Label();
+            this.pbProgress = new System.Windows.Forms.ProgressBar();
             this.cmbTableName = new System.Windows.Forms.ComboBox();
             this.lblRecordCount = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -112,8 +113,6 @@
             this.txtRegexContents = new System.Windows.Forms.TextBox();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.txtExceptions = new System.Windows.Forms.TextBox();
-            this.cmbExportDestination = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
             this.tabSource = new System.Windows.Forms.TabControl();
             this.tabDataSourceOptions = new System.Windows.Forms.TabPage();
@@ -126,22 +125,14 @@
             this.label15 = new System.Windows.Forms.Label();
             this.tabTransformationOptions = new System.Windows.Forms.TabPage();
             this.tabActionOptions = new System.Windows.Forms.TabPage();
+            this.label24 = new System.Windows.Forms.Label();
+            this.cmbDefaultAction = new System.Windows.Forms.ComboBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.chkAvailableActions = new System.Windows.Forms.CheckedListBox();
             this.tabExportOptions = new System.Windows.Forms.TabPage();
+            this.chkAvailableExports = new System.Windows.Forms.CheckedListBox();
             this.label20 = new System.Windows.Forms.Label();
-            this.cmbExportSettings = new System.Windows.Forms.ComboBox();
-            this.grpExportSettings = new System.Windows.Forms.GroupBox();
-            this.chkIncludeTableHeader = new System.Windows.Forms.CheckBox();
-            this.btnExportDeleteSetting = new System.Windows.Forms.Button();
-            this.btnSaveExportSettings = new System.Windows.Forms.Button();
-            this.txtExportSettingName = new System.Windows.Forms.TextBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.txtExportFileName = new System.Windows.Forms.TextBox();
-            this.pnlExportXsltDetails = new System.Windows.Forms.Panel();
-            this.btnExportXsltFileName = new System.Windows.Forms.Button();
-            this.txtExportTemplateFileName = new System.Windows.Forms.TextBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.btnExportFileName = new System.Windows.Forms.Button();
-            this.label17 = new System.Windows.Forms.Label();
             this.tabPermissionOptions = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.chkCanExportData = new System.Windows.Forms.CheckBox();
@@ -150,13 +141,15 @@
             this.chkCanEditData = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chkCanEditConfiguration = new System.Windows.Forms.CheckBox();
+            this.chkAutoRefresh = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnSaveSettings = new System.Windows.Forms.Button();
+            this.fpActions = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlExport = new System.Windows.Forms.Panel();
             this.btnExport = new System.Windows.Forms.Button();
             this.cmbExport = new System.Windows.Forms.ComboBox();
-            this.chkAutoRefresh = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnHideSettings = new System.Windows.Forms.Button();
+            this.btnSaveSettings = new System.Windows.Forms.Button();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -187,23 +180,22 @@
             this.tabParseOptions.SuspendLayout();
             this.panelParserProfileSave.SuspendLayout();
             this.tabTransformationOptions.SuspendLayout();
+            this.tabActionOptions.SuspendLayout();
             this.tabExportOptions.SuspendLayout();
-            this.grpExportSettings.SuspendLayout();
-            this.pnlExportXsltDetails.SuspendLayout();
             this.tabPermissionOptions.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.flowLayoutPanel1.SuspendLayout();
             this.pnlExport.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCloseWindow
             // 
             this.btnCloseWindow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCloseWindow.Location = new System.Drawing.Point(1226, 3);
+            this.btnCloseWindow.Location = new System.Drawing.Point(1216, 234);
             this.btnCloseWindow.Name = "btnCloseWindow";
-            this.btnCloseWindow.Size = new System.Drawing.Size(96, 23);
+            this.btnCloseWindow.Size = new System.Drawing.Size(93, 49);
             this.btnCloseWindow.TabIndex = 15;
             this.btnCloseWindow.Text = "Close Window";
             this.btnCloseWindow.UseVisualStyleBackColor = true;
@@ -212,11 +204,11 @@
             // btnRefreshData
             // 
             this.btnRefreshData.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRefreshData.Location = new System.Drawing.Point(1202, 6);
+            this.btnRefreshData.Location = new System.Drawing.Point(1189, 4);
             this.btnRefreshData.Name = "btnRefreshData";
             this.btnRefreshData.Size = new System.Drawing.Size(100, 23);
             this.btnRefreshData.TabIndex = 13;
-            this.btnRefreshData.Text = "Refresh Data";
+            this.btnRefreshData.Text = "Load Data";
             this.btnRefreshData.UseVisualStyleBackColor = true;
             this.btnRefreshData.Click += new System.EventHandler(this.btnRefreshData_Click);
             // 
@@ -475,7 +467,7 @@
             // 
             this.grpHtmlOptions.Controls.Add(this.txtXPathQuery);
             this.grpHtmlOptions.Controls.Add(this.label7);
-            this.grpHtmlOptions.Location = new System.Drawing.Point(1030, 10);
+            this.grpHtmlOptions.Location = new System.Drawing.Point(361, 3);
             this.grpHtmlOptions.Name = "grpHtmlOptions";
             this.grpHtmlOptions.Size = new System.Drawing.Size(449, 99);
             this.grpHtmlOptions.TabIndex = 7;
@@ -503,7 +495,7 @@
             // 
             this.grpTemplate.Controls.Add(this.txtTemplateString);
             this.grpTemplate.Controls.Add(this.label10);
-            this.grpTemplate.Location = new System.Drawing.Point(1040, 16);
+            this.grpTemplate.Location = new System.Drawing.Point(361, 6);
             this.grpTemplate.Name = "grpTemplate";
             this.grpTemplate.Size = new System.Drawing.Size(449, 169);
             this.grpTemplate.TabIndex = 10;
@@ -536,7 +528,7 @@
             this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
             this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(1311, 199);
+            this.tabControl2.Size = new System.Drawing.Size(1061, 199);
             this.tabControl2.TabIndex = 6;
             // 
             // tabDuringLoad
@@ -550,7 +542,7 @@
             this.tabDuringLoad.Location = new System.Drawing.Point(4, 22);
             this.tabDuringLoad.Name = "tabDuringLoad";
             this.tabDuringLoad.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDuringLoad.Size = new System.Drawing.Size(1303, 173);
+            this.tabDuringLoad.Size = new System.Drawing.Size(1053, 173);
             this.tabDuringLoad.TabIndex = 0;
             this.tabDuringLoad.Text = "During Load";
             this.tabDuringLoad.UseVisualStyleBackColor = true;
@@ -621,7 +613,7 @@
             this.tabAfterLoad.Location = new System.Drawing.Point(4, 22);
             this.tabAfterLoad.Name = "tabAfterLoad";
             this.tabAfterLoad.Padding = new System.Windows.Forms.Padding(3);
-            this.tabAfterLoad.Size = new System.Drawing.Size(1303, 173);
+            this.tabAfterLoad.Size = new System.Drawing.Size(1053, 173);
             this.tabAfterLoad.TabIndex = 1;
             this.tabAfterLoad.Text = "After Load";
             this.tabAfterLoad.UseVisualStyleBackColor = true;
@@ -720,7 +712,7 @@
             this.tabDataSource.Location = new System.Drawing.Point(3, 3);
             this.tabDataSource.Name = "tabDataSource";
             this.tabDataSource.SelectedIndex = 0;
-            this.tabDataSource.Size = new System.Drawing.Size(1305, 193);
+            this.tabDataSource.Size = new System.Drawing.Size(1055, 193);
             this.tabDataSource.TabIndex = 9;
             // 
             // tabDatasourceFile
@@ -736,7 +728,7 @@
             this.tabDatasourceFile.Location = new System.Drawing.Point(4, 22);
             this.tabDatasourceFile.Name = "tabDatasourceFile";
             this.tabDatasourceFile.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDatasourceFile.Size = new System.Drawing.Size(1297, 167);
+            this.tabDatasourceFile.Size = new System.Drawing.Size(1047, 167);
             this.tabDatasourceFile.TabIndex = 0;
             this.tabDatasourceFile.Text = "File";
             this.tabDatasourceFile.UseVisualStyleBackColor = true;
@@ -795,9 +787,6 @@
             // 
             this.cbTextExtractor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTextExtractor.FormattingEnabled = true;
-            this.cbTextExtractor.Items.AddRange(new object[] {
-            "PDF",
-            "Word"});
             this.cbTextExtractor.Location = new System.Drawing.Point(126, 70);
             this.cbTextExtractor.Name = "cbTextExtractor";
             this.cbTextExtractor.Size = new System.Drawing.Size(242, 21);
@@ -842,7 +831,7 @@
             this.tabDatasourceText.Location = new System.Drawing.Point(4, 22);
             this.tabDatasourceText.Name = "tabDatasourceText";
             this.tabDatasourceText.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDatasourceText.Size = new System.Drawing.Size(1297, 167);
+            this.tabDatasourceText.Size = new System.Drawing.Size(1047, 167);
             this.tabDatasourceText.TabIndex = 1;
             this.tabDatasourceText.Text = "Text";
             this.tabDatasourceText.UseVisualStyleBackColor = true;
@@ -853,25 +842,40 @@
             this.txtTextContents.Location = new System.Drawing.Point(3, 3);
             this.txtTextContents.Multiline = true;
             this.txtTextContents.Name = "txtTextContents";
-            this.txtTextContents.Size = new System.Drawing.Size(1291, 161);
+            this.txtTextContents.Size = new System.Drawing.Size(1041, 161);
             this.txtTextContents.TabIndex = 10;
             this.txtTextContents.TextChanged += new System.EventHandler(this.txtTextContents_TextChanged);
             this.txtTextContents.Leave += new System.EventHandler(this.txtTextContents_Leave);
             // 
             // tabDatasourceDatabase
             // 
+            this.tabDatasourceDatabase.Controls.Add(this.cmbDatasource);
+            this.tabDatasourceDatabase.Controls.Add(this.label1);
             this.tabDatasourceDatabase.Controls.Add(this.txtDatabaseQuery);
             this.tabDatasourceDatabase.Controls.Add(this.label6);
-            this.tabDatasourceDatabase.Controls.Add(this.txtDatabaseConnectionString);
-            this.tabDatasourceDatabase.Controls.Add(this.label5);
-            this.tabDatasourceDatabase.Controls.Add(this.cmbDatabaseConnectionType);
-            this.tabDatasourceDatabase.Controls.Add(this.label1);
             this.tabDatasourceDatabase.Location = new System.Drawing.Point(4, 22);
             this.tabDatasourceDatabase.Name = "tabDatasourceDatabase";
-            this.tabDatasourceDatabase.Size = new System.Drawing.Size(1297, 167);
+            this.tabDatasourceDatabase.Size = new System.Drawing.Size(1047, 167);
             this.tabDatasourceDatabase.TabIndex = 2;
             this.tabDatasourceDatabase.Text = "Database";
             this.tabDatasourceDatabase.UseVisualStyleBackColor = true;
+            // 
+            // cmbDatasource
+            // 
+            this.cmbDatasource.FormattingEnabled = true;
+            this.cmbDatasource.Location = new System.Drawing.Point(113, 14);
+            this.cmbDatasource.Name = "cmbDatasource";
+            this.cmbDatasource.Size = new System.Drawing.Size(362, 21);
+            this.cmbDatasource.TabIndex = 21;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 14);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "Data Source:";
             // 
             // txtDatabaseQuery
             // 
@@ -891,60 +895,19 @@
             this.label6.TabIndex = 18;
             this.label6.Text = "SQL Query:";
             // 
-            // txtDatabaseConnectionString
-            // 
-            this.txtDatabaseConnectionString.Location = new System.Drawing.Point(113, 3);
-            this.txtDatabaseConnectionString.Multiline = true;
-            this.txtDatabaseConnectionString.Name = "txtDatabaseConnectionString";
-            this.txtDatabaseConnectionString.Size = new System.Drawing.Size(362, 43);
-            this.txtDatabaseConnectionString.TabIndex = 17;
-            this.txtDatabaseConnectionString.Leave += new System.EventHandler(this.txtTextContents_Leave);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(11, 3);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(94, 13);
-            this.label5.TabIndex = 16;
-            this.label5.Text = "Connection String:";
-            // 
-            // cmbDatabaseConnectionType
-            // 
-            this.cmbDatabaseConnectionType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDatabaseConnectionType.FormattingEnabled = true;
-            this.cmbDatabaseConnectionType.Items.AddRange(new object[] {
-            "Odbc",
-            "Oledb",
-            "Sql"});
-            this.cmbDatabaseConnectionType.Location = new System.Drawing.Point(592, 3);
-            this.cmbDatabaseConnectionType.Name = "cmbDatabaseConnectionType";
-            this.cmbDatabaseConnectionType.Size = new System.Drawing.Size(158, 21);
-            this.cmbDatabaseConnectionType.Sorted = true;
-            this.cmbDatabaseConnectionType.TabIndex = 15;
-            this.cmbDatabaseConnectionType.SelectedIndexChanged += new System.EventHandler(this.txtTextContents_Leave);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(490, 6);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(91, 13);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "Connection Type:";
-            // 
             // tabControl1
             // 
+            this.tableLayoutPanel1.SetColumnSpan(this.tabControl1, 3);
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Controls.Add(this.tabPage5);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(3, 264);
+            this.tabControl1.Location = new System.Drawing.Point(3, 289);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1319, 603);
+            this.tabControl1.Size = new System.Drawing.Size(1306, 578);
             this.tabControl1.TabIndex = 8;
             // 
             // tabPage1
@@ -953,7 +916,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1311, 577);
+            this.tabPage1.Size = new System.Drawing.Size(1298, 552);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Dataset";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -967,6 +930,9 @@
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.btnShowSettings);
+            this.splitContainer2.Panel1.Controls.Add(this.lblProgress);
+            this.splitContainer2.Panel1.Controls.Add(this.pbProgress);
             this.splitContainer2.Panel1.Controls.Add(this.cmbTableName);
             this.splitContainer2.Panel1.Controls.Add(this.lblRecordCount);
             this.splitContainer2.Panel1.Controls.Add(this.btnRefreshData);
@@ -975,15 +941,48 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.dataGrid);
-            this.splitContainer2.Size = new System.Drawing.Size(1305, 571);
-            this.splitContainer2.SplitterDistance = 34;
+            this.splitContainer2.Size = new System.Drawing.Size(1292, 546);
+            this.splitContainer2.SplitterDistance = 32;
             this.splitContainer2.TabIndex = 15;
+            // 
+            // btnShowSettings
+            // 
+            this.btnShowSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnShowSettings.Location = new System.Drawing.Point(1068, 4);
+            this.btnShowSettings.Name = "btnShowSettings";
+            this.btnShowSettings.Size = new System.Drawing.Size(115, 23);
+            this.btnShowSettings.TabIndex = 17;
+            this.btnShowSettings.Text = "Show Configuration";
+            this.btnShowSettings.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+            this.btnShowSettings.UseVisualStyleBackColor = true;
+            this.btnShowSettings.Visible = false;
+            this.btnShowSettings.Click += new System.EventHandler(this.btnShowSettings_Click);
+            // 
+            // lblProgress
+            // 
+            this.lblProgress.AutoSize = true;
+            this.lblProgress.Location = new System.Drawing.Point(968, 10);
+            this.lblProgress.Name = "lblProgress";
+            this.lblProgress.Size = new System.Drawing.Size(33, 13);
+            this.lblProgress.TabIndex = 16;
+            this.lblProgress.Text = "100%";
+            this.lblProgress.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblProgress.Visible = false;
+            // 
+            // pbProgress
+            // 
+            this.pbProgress.Location = new System.Drawing.Point(862, 4);
+            this.pbProgress.Name = "pbProgress";
+            this.pbProgress.Size = new System.Drawing.Size(100, 23);
+            this.pbProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbProgress.TabIndex = 15;
+            this.pbProgress.Visible = false;
             // 
             // cmbTableName
             // 
             this.cmbTableName.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbTableName.FormattingEnabled = true;
-            this.cmbTableName.Location = new System.Drawing.Point(93, 11);
+            this.cmbTableName.Location = new System.Drawing.Point(94, 6);
             this.cmbTableName.Name = "cmbTableName";
             this.cmbTableName.Size = new System.Drawing.Size(246, 21);
             this.cmbTableName.TabIndex = 7;
@@ -991,7 +990,7 @@
             // 
             // lblRecordCount
             // 
-            this.lblRecordCount.Location = new System.Drawing.Point(369, 11);
+            this.lblRecordCount.Location = new System.Drawing.Point(369, 4);
             this.lblRecordCount.Name = "lblRecordCount";
             this.lblRecordCount.Size = new System.Drawing.Size(265, 25);
             this.lblRecordCount.TabIndex = 14;
@@ -1000,7 +999,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(11, 14);
+            this.label3.Location = new System.Drawing.Point(11, 9);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(68, 13);
             this.label3.TabIndex = 8;
@@ -1017,8 +1016,11 @@
             this.dataGrid.Name = "dataGrid";
             this.dataGrid.ReadOnly = true;
             this.dataGrid.RowHeadersVisible = false;
-            this.dataGrid.Size = new System.Drawing.Size(1305, 533);
+            this.dataGrid.Size = new System.Drawing.Size(1292, 510);
             this.dataGrid.TabIndex = 10;
+            this.dataGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGrid_CellContentClick);
+            this.dataGrid.SelectionChanged += new System.EventHandler(this.dataGrid_SelectionChanged);
+            this.dataGrid.DoubleClick += new System.EventHandler(this.dataGrid_DoubleClick);
             // 
             // tabPage2
             // 
@@ -1026,7 +1028,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1311, 577);
+            this.tabPage2.Size = new System.Drawing.Size(1298, 552);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Xml";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -1037,7 +1039,7 @@
             this.txtXmlContents.Location = new System.Drawing.Point(3, 3);
             this.txtXmlContents.Multiline = true;
             this.txtXmlContents.Name = "txtXmlContents";
-            this.txtXmlContents.Size = new System.Drawing.Size(1305, 571);
+            this.txtXmlContents.Size = new System.Drawing.Size(1292, 546);
             this.txtXmlContents.TabIndex = 0;
             // 
             // tabPage3
@@ -1045,7 +1047,7 @@
             this.tabPage3.Controls.Add(this.txtXPathContents);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(1311, 577);
+            this.tabPage3.Size = new System.Drawing.Size(1298, 552);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "XPath";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -1056,7 +1058,7 @@
             this.txtXPathContents.Location = new System.Drawing.Point(0, 0);
             this.txtXPathContents.Multiline = true;
             this.txtXPathContents.Name = "txtXPathContents";
-            this.txtXPathContents.Size = new System.Drawing.Size(1311, 577);
+            this.txtXPathContents.Size = new System.Drawing.Size(1298, 552);
             this.txtXPathContents.TabIndex = 0;
             // 
             // tabPage4
@@ -1064,7 +1066,7 @@
             this.tabPage4.Controls.Add(this.txtRegexContents);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Size = new System.Drawing.Size(1311, 577);
+            this.tabPage4.Size = new System.Drawing.Size(1298, 552);
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "Regex";
             this.tabPage4.UseVisualStyleBackColor = true;
@@ -1075,7 +1077,7 @@
             this.txtRegexContents.Location = new System.Drawing.Point(0, 0);
             this.txtRegexContents.Multiline = true;
             this.txtRegexContents.Name = "txtRegexContents";
-            this.txtRegexContents.Size = new System.Drawing.Size(1311, 577);
+            this.txtRegexContents.Size = new System.Drawing.Size(1298, 552);
             this.txtRegexContents.TabIndex = 1;
             // 
             // tabPage5
@@ -1083,7 +1085,7 @@
             this.tabPage5.Controls.Add(this.txtExceptions);
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Size = new System.Drawing.Size(1311, 577);
+            this.tabPage5.Size = new System.Drawing.Size(1298, 552);
             this.tabPage5.TabIndex = 4;
             this.tabPage5.Text = "Exceptions";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -1094,37 +1096,8 @@
             this.txtExceptions.Location = new System.Drawing.Point(0, 0);
             this.txtExceptions.Multiline = true;
             this.txtExceptions.Name = "txtExceptions";
-            this.txtExceptions.Size = new System.Drawing.Size(1311, 577);
+            this.txtExceptions.Size = new System.Drawing.Size(1298, 552);
             this.txtExceptions.TabIndex = 0;
-            // 
-            // cmbExportDestination
-            // 
-            this.cmbExportDestination.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbExportDestination.FormattingEnabled = true;
-            this.cmbExportDestination.Items.AddRange(new object[] {
-            "CSV",
-            "TAB",
-            "HTML",
-            "WORD",
-            "EXCEL",
-            "XML",
-            "PDF",
-            "JSON",
-            "MAILMERGE-WORD"});
-            this.cmbExportDestination.Location = new System.Drawing.Point(97, 58);
-            this.cmbExportDestination.Name = "cmbExportDestination";
-            this.cmbExportDestination.Size = new System.Drawing.Size(127, 21);
-            this.cmbExportDestination.TabIndex = 13;
-            this.cmbExportDestination.SelectedIndexChanged += new System.EventHandler(this.cmbDestination_SelectedIndexChanged);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(15, 61);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(75, 13);
-            this.label9.TabIndex = 12;
-            this.label9.Text = "Export Format:";
             // 
             // tabSource
             // 
@@ -1138,7 +1111,7 @@
             this.tabSource.Location = new System.Drawing.Point(3, 3);
             this.tabSource.Name = "tabSource";
             this.tabSource.SelectedIndex = 0;
-            this.tabSource.Size = new System.Drawing.Size(1319, 225);
+            this.tabSource.Size = new System.Drawing.Size(1069, 225);
             this.tabSource.TabIndex = 8;
             this.tabSource.SelectedIndexChanged += new System.EventHandler(this.tabSource_SelectedIndexChanged);
             // 
@@ -1148,7 +1121,7 @@
             this.tabDataSourceOptions.Location = new System.Drawing.Point(4, 22);
             this.tabDataSourceOptions.Name = "tabDataSourceOptions";
             this.tabDataSourceOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDataSourceOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabDataSourceOptions.Size = new System.Drawing.Size(1061, 199);
             this.tabDataSourceOptions.TabIndex = 0;
             this.tabDataSourceOptions.Text = "Data Source";
             this.tabDataSourceOptions.UseVisualStyleBackColor = true;
@@ -1167,7 +1140,7 @@
             this.tabParseOptions.Location = new System.Drawing.Point(4, 22);
             this.tabParseOptions.Name = "tabParseOptions";
             this.tabParseOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.tabParseOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabParseOptions.Size = new System.Drawing.Size(1061, 199);
             this.tabParseOptions.TabIndex = 1;
             this.tabParseOptions.Text = "Parser";
             this.tabParseOptions.UseVisualStyleBackColor = true;
@@ -1236,179 +1209,97 @@
             this.tabTransformationOptions.Controls.Add(this.tabControl2);
             this.tabTransformationOptions.Location = new System.Drawing.Point(4, 22);
             this.tabTransformationOptions.Name = "tabTransformationOptions";
-            this.tabTransformationOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabTransformationOptions.Size = new System.Drawing.Size(1061, 199);
             this.tabTransformationOptions.TabIndex = 2;
             this.tabTransformationOptions.Text = "Transformations";
             this.tabTransformationOptions.UseVisualStyleBackColor = true;
             // 
             // tabActionOptions
             // 
+            this.tabActionOptions.Controls.Add(this.label24);
+            this.tabActionOptions.Controls.Add(this.cmbDefaultAction);
+            this.tabActionOptions.Controls.Add(this.label23);
+            this.tabActionOptions.Controls.Add(this.label22);
+            this.tabActionOptions.Controls.Add(this.chkAvailableActions);
             this.tabActionOptions.Location = new System.Drawing.Point(4, 22);
             this.tabActionOptions.Name = "tabActionOptions";
-            this.tabActionOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabActionOptions.Size = new System.Drawing.Size(1061, 199);
             this.tabActionOptions.TabIndex = 5;
             this.tabActionOptions.Text = "Actions";
             this.tabActionOptions.UseVisualStyleBackColor = true;
             // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(349, 74);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(367, 13);
+            this.label24.TabIndex = 4;
+            this.label24.Text = "This action would be triggered when the user does a double click on the grid";
+            // 
+            // cmbDefaultAction
+            // 
+            this.cmbDefaultAction.FormattingEnabled = true;
+            this.cmbDefaultAction.Location = new System.Drawing.Point(352, 34);
+            this.cmbDefaultAction.Name = "cmbDefaultAction";
+            this.cmbDefaultAction.Size = new System.Drawing.Size(229, 21);
+            this.cmbDefaultAction.TabIndex = 3;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(349, 15);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(77, 13);
+            this.label23.TabIndex = 2;
+            this.label23.Text = "Default Action:";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(6, 15);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(91, 13);
+            this.label22.TabIndex = 1;
+            this.label22.Text = "Available Actions:";
+            // 
+            // chkAvailableActions
+            // 
+            this.chkAvailableActions.FormattingEnabled = true;
+            this.chkAvailableActions.Location = new System.Drawing.Point(6, 34);
+            this.chkAvailableActions.Name = "chkAvailableActions";
+            this.chkAvailableActions.Size = new System.Drawing.Size(314, 154);
+            this.chkAvailableActions.TabIndex = 0;
+            this.chkAvailableActions.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkAvailableActions_ItemCheck);
+            // 
             // tabExportOptions
             // 
+            this.tabExportOptions.Controls.Add(this.chkAvailableExports);
             this.tabExportOptions.Controls.Add(this.label20);
-            this.tabExportOptions.Controls.Add(this.cmbExportSettings);
-            this.tabExportOptions.Controls.Add(this.grpExportSettings);
             this.tabExportOptions.Location = new System.Drawing.Point(4, 22);
             this.tabExportOptions.Name = "tabExportOptions";
-            this.tabExportOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabExportOptions.Size = new System.Drawing.Size(1061, 199);
             this.tabExportOptions.TabIndex = 3;
             this.tabExportOptions.Text = "Export";
             this.tabExportOptions.UseVisualStyleBackColor = true;
+            // 
+            // chkAvailableExports
+            // 
+            this.chkAvailableExports.FormattingEnabled = true;
+            this.chkAvailableExports.Location = new System.Drawing.Point(9, 49);
+            this.chkAvailableExports.Name = "chkAvailableExports";
+            this.chkAvailableExports.Size = new System.Drawing.Size(260, 139);
+            this.chkAvailableExports.TabIndex = 22;
+            this.chkAvailableExports.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.chkAvailableExports_ItemCheck);
             // 
             // label20
             // 
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(6, 15);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(81, 13);
+            this.label20.Size = new System.Drawing.Size(91, 13);
             this.label20.TabIndex = 21;
-            this.label20.Text = "Export Settings:";
-            // 
-            // cmbExportSettings
-            // 
-            this.cmbExportSettings.FormattingEnabled = true;
-            this.cmbExportSettings.Location = new System.Drawing.Point(148, 15);
-            this.cmbExportSettings.Name = "cmbExportSettings";
-            this.cmbExportSettings.Size = new System.Drawing.Size(121, 21);
-            this.cmbExportSettings.TabIndex = 20;
-            this.cmbExportSettings.SelectedIndexChanged += new System.EventHandler(this.cmbExportSettings_SelectedIndexChanged);
-            // 
-            // grpExportSettings
-            // 
-            this.grpExportSettings.Controls.Add(this.chkIncludeTableHeader);
-            this.grpExportSettings.Controls.Add(this.btnExportDeleteSetting);
-            this.grpExportSettings.Controls.Add(this.btnSaveExportSettings);
-            this.grpExportSettings.Controls.Add(this.txtExportSettingName);
-            this.grpExportSettings.Controls.Add(this.label21);
-            this.grpExportSettings.Controls.Add(this.txtExportFileName);
-            this.grpExportSettings.Controls.Add(this.pnlExportXsltDetails);
-            this.grpExportSettings.Controls.Add(this.label9);
-            this.grpExportSettings.Controls.Add(this.btnExportFileName);
-            this.grpExportSettings.Controls.Add(this.cmbExportDestination);
-            this.grpExportSettings.Controls.Add(this.label17);
-            this.grpExportSettings.Location = new System.Drawing.Point(6, 42);
-            this.grpExportSettings.Name = "grpExportSettings";
-            this.grpExportSettings.Size = new System.Drawing.Size(928, 154);
-            this.grpExportSettings.TabIndex = 19;
-            this.grpExportSettings.TabStop = false;
-            this.grpExportSettings.Text = "Export Settings:";
-            // 
-            // chkIncludeTableHeader
-            // 
-            this.chkIncludeTableHeader.AutoSize = true;
-            this.chkIncludeTableHeader.Location = new System.Drawing.Point(13, 131);
-            this.chkIncludeTableHeader.Name = "chkIncludeTableHeader";
-            this.chkIncludeTableHeader.Size = new System.Drawing.Size(129, 17);
-            this.chkIncludeTableHeader.TabIndex = 23;
-            this.chkIncludeTableHeader.Text = "Include Table Header";
-            this.chkIncludeTableHeader.UseVisualStyleBackColor = true;
-            // 
-            // btnExportDeleteSetting
-            // 
-            this.btnExportDeleteSetting.Location = new System.Drawing.Point(819, 48);
-            this.btnExportDeleteSetting.Name = "btnExportDeleteSetting";
-            this.btnExportDeleteSetting.Size = new System.Drawing.Size(103, 38);
-            this.btnExportDeleteSetting.TabIndex = 22;
-            this.btnExportDeleteSetting.Text = "Delete Setting";
-            this.btnExportDeleteSetting.UseVisualStyleBackColor = true;
-            this.btnExportDeleteSetting.Click += new System.EventHandler(this.btnExportDeleteSetting_Click);
-            // 
-            // btnSaveExportSettings
-            // 
-            this.btnSaveExportSettings.Location = new System.Drawing.Point(819, 93);
-            this.btnSaveExportSettings.Name = "btnSaveExportSettings";
-            this.btnSaveExportSettings.Size = new System.Drawing.Size(103, 38);
-            this.btnSaveExportSettings.TabIndex = 21;
-            this.btnSaveExportSettings.Text = "Save Settings";
-            this.btnSaveExportSettings.UseVisualStyleBackColor = true;
-            this.btnSaveExportSettings.Click += new System.EventHandler(this.btnSaveExportSettings_Click);
-            // 
-            // txtExportSettingName
-            // 
-            this.txtExportSettingName.Location = new System.Drawing.Point(97, 12);
-            this.txtExportSettingName.Name = "txtExportSettingName";
-            this.txtExportSettingName.Size = new System.Drawing.Size(127, 20);
-            this.txtExportSettingName.TabIndex = 20;
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(13, 20);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(79, 13);
-            this.label21.TabIndex = 19;
-            this.label21.Text = "Settings Name:";
-            // 
-            // txtExportFileName
-            // 
-            this.txtExportFileName.Enabled = false;
-            this.txtExportFileName.Location = new System.Drawing.Point(342, 61);
-            this.txtExportFileName.Name = "txtExportFileName";
-            this.txtExportFileName.Size = new System.Drawing.Size(346, 20);
-            this.txtExportFileName.TabIndex = 15;
-            // 
-            // pnlExportXsltDetails
-            // 
-            this.pnlExportXsltDetails.Controls.Add(this.btnExportXsltFileName);
-            this.pnlExportXsltDetails.Controls.Add(this.txtExportTemplateFileName);
-            this.pnlExportXsltDetails.Controls.Add(this.label19);
-            this.pnlExportXsltDetails.Location = new System.Drawing.Point(13, 87);
-            this.pnlExportXsltDetails.Name = "pnlExportXsltDetails";
-            this.pnlExportXsltDetails.Size = new System.Drawing.Size(776, 34);
-            this.pnlExportXsltDetails.TabIndex = 18;
-            this.pnlExportXsltDetails.Visible = false;
-            // 
-            // btnExportXsltFileName
-            // 
-            this.btnExportXsltFileName.Location = new System.Drawing.Point(691, 9);
-            this.btnExportXsltFileName.Name = "btnExportXsltFileName";
-            this.btnExportXsltFileName.Size = new System.Drawing.Size(75, 23);
-            this.btnExportXsltFileName.TabIndex = 19;
-            this.btnExportXsltFileName.Text = "Browse File";
-            this.btnExportXsltFileName.UseVisualStyleBackColor = true;
-            this.btnExportXsltFileName.Click += new System.EventHandler(this.btnExportXsltFileName_Click);
-            // 
-            // txtExportTemplateFileName
-            // 
-            this.txtExportTemplateFileName.Location = new System.Drawing.Point(149, 6);
-            this.txtExportTemplateFileName.Name = "txtExportTemplateFileName";
-            this.txtExportTemplateFileName.Size = new System.Drawing.Size(526, 20);
-            this.txtExportTemplateFileName.TabIndex = 18;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(9, 9);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(104, 13);
-            this.label19.TabIndex = 17;
-            this.label19.Text = "Template File Name:";
-            // 
-            // btnExportFileName
-            // 
-            this.btnExportFileName.Location = new System.Drawing.Point(704, 58);
-            this.btnExportFileName.Name = "btnExportFileName";
-            this.btnExportFileName.Size = new System.Drawing.Size(75, 23);
-            this.btnExportFileName.TabIndex = 16;
-            this.btnExportFileName.Text = "Browse File";
-            this.btnExportFileName.UseVisualStyleBackColor = true;
-            this.btnExportFileName.Click += new System.EventHandler(this.btnExportFileName_Click);
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(245, 65);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(90, 13);
-            this.label17.TabIndex = 14;
-            this.label17.Text = "Export File Name:";
+            this.label20.Text = "Available Exports:";
             // 
             // tabPermissionOptions
             // 
@@ -1416,7 +1307,7 @@
             this.tabPermissionOptions.Controls.Add(this.groupBox1);
             this.tabPermissionOptions.Location = new System.Drawing.Point(4, 22);
             this.tabPermissionOptions.Name = "tabPermissionOptions";
-            this.tabPermissionOptions.Size = new System.Drawing.Size(1311, 199);
+            this.tabPermissionOptions.Size = new System.Drawing.Size(1061, 199);
             this.tabPermissionOptions.TabIndex = 4;
             this.tabPermissionOptions.Text = "Permissions";
             this.tabPermissionOptions.UseVisualStyleBackColor = true;
@@ -1427,7 +1318,7 @@
             this.groupBox2.Controls.Add(this.chkCanDeleteData);
             this.groupBox2.Controls.Add(this.chkCanAddData);
             this.groupBox2.Controls.Add(this.chkCanEditData);
-            this.groupBox2.Location = new System.Drawing.Point(539, 14);
+            this.groupBox2.Location = new System.Drawing.Point(492, 14);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(495, 166);
             this.groupBox2.TabIndex = 1;
@@ -1483,7 +1374,7 @@
             this.groupBox1.Controls.Add(this.chkCanEditConfiguration);
             this.groupBox1.Location = new System.Drawing.Point(18, 14);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(495, 166);
+            this.groupBox1.Size = new System.Drawing.Size(456, 166);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Configuration Access:";
@@ -1497,65 +1388,70 @@
             this.chkCanEditConfiguration.TabIndex = 0;
             this.chkCanEditConfiguration.Text = "Can Edit Configuration";
             this.chkCanEditConfiguration.UseVisualStyleBackColor = true;
+            this.chkCanEditConfiguration.CheckedChanged += new System.EventHandler(this.chkCanEditConfiguration_CheckedChanged);
+            // 
+            // chkAutoRefresh
+            // 
+            this.chkAutoRefresh.AutoSize = true;
+            this.chkAutoRefresh.Location = new System.Drawing.Point(13, 22);
+            this.chkAutoRefresh.Name = "chkAutoRefresh";
+            this.chkAutoRefresh.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.chkAutoRefresh.Size = new System.Drawing.Size(207, 17);
+            this.chkAutoRefresh.TabIndex = 16;
+            this.chkAutoRefresh.Text = "Refresh Data on configuration change";
+            this.chkAutoRefresh.UseVisualStyleBackColor = true;
+            this.chkAutoRefresh.Visible = false;
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 138F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 99F));
+            this.tableLayoutPanel1.Controls.Add(this.fpActions, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.pnlExport, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.btnCloseWindow, 2, 1);
             this.tableLayoutPanel1.Controls.Add(this.tabControl1, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.tabSource, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.flowLayoutPanel1, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.panel1, 1, 0);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 231F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 30F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 55F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(1325, 870);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(1312, 870);
             this.tableLayoutPanel1.TabIndex = 11;
             // 
-            // flowLayoutPanel1
+            // fpActions
             // 
-            this.flowLayoutPanel1.Controls.Add(this.btnCloseWindow);
-            this.flowLayoutPanel1.Controls.Add(this.btnSaveSettings);
-            this.flowLayoutPanel1.Controls.Add(this.pnlExport);
-            this.flowLayoutPanel1.Controls.Add(this.chkAutoRefresh);
-            this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 231);
-            this.flowLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(1325, 30);
-            this.flowLayoutPanel1.TabIndex = 9;
-            // 
-            // btnSaveSettings
-            // 
-            this.btnSaveSettings.Location = new System.Drawing.Point(1129, 3);
-            this.btnSaveSettings.Name = "btnSaveSettings";
-            this.btnSaveSettings.Size = new System.Drawing.Size(91, 21);
-            this.btnSaveSettings.TabIndex = 18;
-            this.btnSaveSettings.Text = "Save";
-            this.btnSaveSettings.UseVisualStyleBackColor = true;
-            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
+            this.fpActions.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.fpActions.Location = new System.Drawing.Point(3, 234);
+            this.fpActions.Name = "fpActions";
+            this.fpActions.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.fpActions.Size = new System.Drawing.Size(1069, 49);
+            this.fpActions.TabIndex = 19;
+            this.fpActions.Visible = false;
             // 
             // pnlExport
             // 
             this.pnlExport.Controls.Add(this.btnExport);
             this.pnlExport.Controls.Add(this.cmbExport);
-            this.pnlExport.Location = new System.Drawing.Point(923, 3);
+            this.pnlExport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlExport.Location = new System.Drawing.Point(1078, 234);
             this.pnlExport.Name = "pnlExport";
-            this.pnlExport.Size = new System.Drawing.Size(200, 23);
+            this.pnlExport.Size = new System.Drawing.Size(132, 49);
             this.pnlExport.TabIndex = 17;
             this.pnlExport.Visible = false;
             // 
             // btnExport
             // 
-            this.btnExport.Dock = System.Windows.Forms.DockStyle.Right;
+            this.btnExport.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.btnExport.Enabled = false;
-            this.btnExport.Location = new System.Drawing.Point(125, 0);
+            this.btnExport.Location = new System.Drawing.Point(0, 26);
             this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(75, 23);
+            this.btnExport.Size = new System.Drawing.Size(132, 23);
             this.btnExport.TabIndex = 16;
             this.btnExport.Text = "Export";
             this.btnExport.UseVisualStyleBackColor = true;
@@ -1563,31 +1459,54 @@
             // 
             // cmbExport
             // 
-            this.cmbExport.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmbExport.Dock = System.Windows.Forms.DockStyle.Top;
             this.cmbExport.FormattingEnabled = true;
             this.cmbExport.Location = new System.Drawing.Point(0, 0);
             this.cmbExport.Name = "cmbExport";
             this.cmbExport.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.cmbExport.Size = new System.Drawing.Size(121, 21);
+            this.cmbExport.Size = new System.Drawing.Size(132, 21);
             this.cmbExport.TabIndex = 15;
+            this.cmbExport.SelectedIndexChanged += new System.EventHandler(this.cmbExport_SelectedIndexChanged);
+            this.cmbExport.TextChanged += new System.EventHandler(this.cmbExport_TextChanged);
             // 
-            // chkAutoRefresh
+            // panel1
             // 
-            this.chkAutoRefresh.AutoSize = true;
-            this.chkAutoRefresh.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkAutoRefresh.Location = new System.Drawing.Point(610, 3);
-            this.chkAutoRefresh.Name = "chkAutoRefresh";
-            this.chkAutoRefresh.Padding = new System.Windows.Forms.Padding(0, 0, 100, 0);
-            this.chkAutoRefresh.Size = new System.Drawing.Size(307, 23);
-            this.chkAutoRefresh.TabIndex = 16;
-            this.chkAutoRefresh.Text = "Refresh Data on configuration change";
-            this.chkAutoRefresh.UseVisualStyleBackColor = true;
+            this.tableLayoutPanel1.SetColumnSpan(this.panel1, 2);
+            this.panel1.Controls.Add(this.btnHideSettings);
+            this.panel1.Controls.Add(this.btnSaveSettings);
+            this.panel1.Controls.Add(this.chkAutoRefresh);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(1078, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(231, 225);
+            this.panel1.TabIndex = 19;
+            // 
+            // btnHideSettings
+            // 
+            this.btnHideSettings.Location = new System.Drawing.Point(13, 195);
+            this.btnHideSettings.Name = "btnHideSettings";
+            this.btnHideSettings.Size = new System.Drawing.Size(209, 23);
+            this.btnHideSettings.TabIndex = 19;
+            this.btnHideSettings.Text = "Hide Configuration Section";
+            this.btnHideSettings.UseVisualStyleBackColor = true;
+            this.btnHideSettings.Click += new System.EventHandler(this.btnHideSettings_Click);
+            // 
+            // btnSaveSettings
+            // 
+            this.btnSaveSettings.Location = new System.Drawing.Point(13, 167);
+            this.btnSaveSettings.Name = "btnSaveSettings";
+            this.btnSaveSettings.Size = new System.Drawing.Size(209, 23);
+            this.btnSaveSettings.TabIndex = 18;
+            this.btnSaveSettings.Text = "Save Configuration";
+            this.btnSaveSettings.UseVisualStyleBackColor = true;
+            this.btnSaveSettings.Visible = false;
+            this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
             // ETLForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1325, 870);
+            this.ClientSize = new System.Drawing.Size(1312, 870);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "ETLForm";
             this.Text = "Easy Controls Demo Application";
@@ -1638,21 +1557,19 @@
             this.panelParserProfileSave.ResumeLayout(false);
             this.panelParserProfileSave.PerformLayout();
             this.tabTransformationOptions.ResumeLayout(false);
+            this.tabActionOptions.ResumeLayout(false);
+            this.tabActionOptions.PerformLayout();
             this.tabExportOptions.ResumeLayout(false);
             this.tabExportOptions.PerformLayout();
-            this.grpExportSettings.ResumeLayout(false);
-            this.grpExportSettings.PerformLayout();
-            this.pnlExportXsltDetails.ResumeLayout(false);
-            this.pnlExportXsltDetails.PerformLayout();
             this.tabPermissionOptions.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.ResumeLayout(false);
-            this.flowLayoutPanel1.PerformLayout();
             this.pnlExport.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1681,13 +1598,7 @@
         private System.Windows.Forms.TabPage tabDatasourceDatabase;
         private System.Windows.Forms.TextBox txtDatabaseQuery;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox txtDatabaseConnectionString;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox cmbDatabaseConnectionType;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Timer ProgressTimer;
-        private System.Windows.Forms.ComboBox cmbExportDestination;
-        private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label lblRecordCount;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TextBox txtXPathContents;
@@ -1751,19 +1662,11 @@
         private System.Windows.Forms.ComboBox cmbParserProfile;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.Panel panelParserProfileSave;
         private System.Windows.Forms.Button btnSaveParserProfile;
         private System.Windows.Forms.TextBox txtParserProfileSaveFileName;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label18;
-        private System.Windows.Forms.Button btnExportFileName;
-        private System.Windows.Forms.TextBox txtExportFileName;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Panel pnlExportXsltDetails;
-        private System.Windows.Forms.Button btnExportXsltFileName;
-        private System.Windows.Forms.TextBox txtExportTemplateFileName;
-        private System.Windows.Forms.Label label19;
         private System.Windows.Forms.CheckBox chkAutoRefresh;
         private System.Windows.Forms.TabPage tabActionOptions;
         private System.Windows.Forms.TabPage tabPermissionOptions;
@@ -1779,13 +1682,20 @@
         private System.Windows.Forms.Button btnExport;
         private System.Windows.Forms.ComboBox cmbExport;
         private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.ComboBox cmbExportSettings;
-        private System.Windows.Forms.GroupBox grpExportSettings;
-        private System.Windows.Forms.TextBox txtExportSettingName;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Button btnExportDeleteSetting;
-        private System.Windows.Forms.Button btnSaveExportSettings;
-        private System.Windows.Forms.CheckBox chkIncludeTableHeader;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.CheckedListBox chkAvailableActions;
+        private System.Windows.Forms.FlowLayoutPanel fpActions;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ProgressBar pbProgress;
+        private System.Windows.Forms.Label lblProgress;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.ComboBox cmbDefaultAction;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Button btnHideSettings;
+        private System.Windows.Forms.Button btnShowSettings;
+        private System.Windows.Forms.ComboBox cmbDatasource;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckedListBox chkAvailableExports;
     }
 }
 

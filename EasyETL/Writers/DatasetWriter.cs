@@ -1,10 +1,12 @@
-﻿using EasyEndpoint;
+﻿using EasyETL.Attributes;
+using EasyETL.Endpoint;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace EasyETL.Writers
 {
@@ -16,7 +18,8 @@ namespace EasyETL.Writers
         public string TableName;
 
     }
-    public abstract class DatasetWriter
+
+    public abstract class DatasetWriter : IEasyFieldInterface
     {
         protected DataSet _dataSet = null;
         protected string outputString = String.Empty;
@@ -128,6 +131,49 @@ namespace EasyETL.Writers
         {
             return String.IsNullOrWhiteSpace(dColumn.Caption) ? dColumn.ColumnName : dColumn.Caption;
         }
+
+
+        public bool IsFieldSettingsComplete()
+        {
+            return true;
+        }
+
+        public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
+        {
+            foreach (KeyValuePair<string, string> kvPair in settingsDictionary)
+            {
+                LoadSetting(kvPair.Key, kvPair.Value);
+            }
+        }
+
+        public void SaveFieldSettingsToXmlNode(System.Xml.XmlNode parentNode)
+        {
+            Dictionary<string, string> settingsDict = GetSettingsAsDictionary();
+            foreach (KeyValuePair<string, string> kvPair in settingsDict)
+            {
+                XmlElement xNode = parentNode.OwnerDocument.CreateElement("field");
+                xNode.SetAttribute("name", kvPair.Key);
+                xNode.SetAttribute("value", kvPair.Value);
+                parentNode.AppendChild(xNode);
+            }
+        }
+
+        public virtual void LoadSetting(string fieldName, string fieldValue)
+        {
+            switch (fieldName.ToLower())
+            {
+                case "includeheader":
+                    PrintTableHeader = Convert.ToBoolean(fieldValue); break;
+            }
+        }
+
+        public virtual Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string, string> resultDict = new Dictionary<string, string>();
+            resultDict.Add("includeheader", PrintTableHeader.ToString());
+            return resultDict;
+        }
+
 
     }
 }
