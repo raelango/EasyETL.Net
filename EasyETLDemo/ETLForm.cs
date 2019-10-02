@@ -67,7 +67,6 @@ namespace EasyXmlSample
             XmlNodeList actionNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/actions/action");
             dctActionClassMapping.Clear();
             dctActionFieldSettings.Clear();
-            string actionFolderName = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Actions");
             ClassMapping[] actionClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractEasyAction));
             Dictionary<string, ClassMapping> dctAllActions = new Dictionary<string, ClassMapping>();
             foreach (ClassMapping actionClass in actionClasses)
@@ -84,12 +83,10 @@ namespace EasyXmlSample
                 btnControl.Click += btnControl_Click;
                 fpActions.Controls.Add(btnControl);
 
-                //string libraryName = actionNode.Attributes.GetNamedItem("libraryname").Value;
-                string className = actionNode.Attributes.GetNamedItem("classname").Value;
+                string className =  (actionNode.Attributes.GetNamedItem("classname") == null) ? "":actionNode.Attributes.GetNamedItem("classname").Value;
 
                 ClassMapping cMapping = null;
                 if (dctAllActions.ContainsKey(className)) cMapping = dctAllActions[className];
-                //ReflectionUtils.LoadClassFromLibrary(Path.Combine(actionFolderName, libraryName + ".dll"), typeof(AbstractEasyAction), className);
 
                 if (cMapping != null)
                 {
@@ -698,7 +695,6 @@ namespace EasyXmlSample
             cmbDatasource.SelectedItem = 0;
             btnRefreshOnLoadProfiles_Click(this, null);
             btnTransformProfilesLoad_Click(this, null);
-            List<ClassMapping> lstExports = new List<ClassMapping>(ReflectionUtils.LoadClassesFromLibrary(typeof(DatasetWriter)));
             dctContentExtractors.Clear();
             cbTextExtractor.Items.Clear();
             foreach (ClassMapping cmapping in ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractContentExtractor)))
@@ -1348,11 +1344,6 @@ namespace EasyXmlSample
             ToggleDisplayConfigurationSection(false);
         }
 
-        private void dataGrid_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            dataGrid_DoubleClick(this, null);
-        }
-
         private void chkAvailableExports_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             if (e.NewValue == CheckState.Checked)
@@ -1363,6 +1354,11 @@ namespace EasyXmlSample
             {
                 cmbExport.Items.Remove(chkAvailableExports.Items[e.Index].ToString());
             }
+        }
+
+        private void dataGrid_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            dataGrid_DoubleClick(this, null);
         }
 
 
