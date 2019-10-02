@@ -14,6 +14,7 @@ namespace EasyETL.Writers
 {
     [DisplayName("XML Writer")]
     [EasyField("ExportFileName", "Name of output file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
+    [EasyField("TemplateFileName", "Name of template file (XSLT File) to use. Leave Empty for no template file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
     public class XmlDatasetWriter : FileDatasetWriter
     {
         private string xsltFileName;
@@ -53,5 +54,23 @@ namespace EasyETL.Writers
             }
             return outputString;
         }
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "templatefilename":
+                    xsltFileName = fieldValue; break;
+            }
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string, string> settingsDict = base.GetSettingsAsDictionary();
+            settingsDict.Add("templatefilename", xsltFileName);
+            return settingsDict;
+        }
+
     }
 }

@@ -10,7 +10,7 @@ using System.Xml;
 
 namespace EasyETL.Actions
 {
-    public abstract class AbstractEasyAction : IEasyAction
+    public abstract class AbstractEasyAction : IEasyAction, IEasyFieldInterface
     {
 
         public event EventHandler<EasyActionProgressEventArgs> OnProgress;
@@ -207,6 +207,27 @@ namespace EasyETL.Actions
         public virtual void Execute(Dictionary<string, string> dataDictionary)
         {
             throw new NotImplementedException();
+        }
+
+        public bool IsFieldSettingsComplete()
+        {
+            return true;
+        }
+
+        public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
+        {
+            SettingsDictionary =  new Dictionary<string,string>(settingsDictionary);
+        }
+
+        public void SaveFieldSettingsToXmlNode(XmlNode parentNode)
+        {
+            foreach (KeyValuePair<string, string> kvPair in SettingsDictionary)
+            {
+                XmlElement xNode = parentNode.OwnerDocument.CreateElement("field");
+                xNode.SetAttribute("name", kvPair.Key);
+                xNode.SetAttribute("value", kvPair.Value);
+                parentNode.AppendChild(xNode);
+            }
         }
     }
 

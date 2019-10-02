@@ -24,7 +24,8 @@ namespace EasyDemoActions
         {
             string fieldName = SettingsDictionary["FieldName"];
             string currentFieldValue = SettingsDictionary["CurrentFieldValue"];
-            return CanExecute(dataRow[fieldName].ToString(), currentFieldValue);
+
+            return (dataRow.Table.Columns.Contains(fieldName) && CanExecute(dataRow[fieldName].ToString(), currentFieldValue));
         }
 
         private bool CanExecute(string input, string pattern)
@@ -39,21 +40,21 @@ namespace EasyDemoActions
         {
             string fieldName = SettingsDictionary["FieldName"];
             string currentFieldValue = SettingsDictionary["CurrentFieldValue"];
-            return CanExecute(dataDictionary[fieldName], currentFieldValue);
+            return (dataDictionary.ContainsKey(fieldName) && CanExecute(dataDictionary[fieldName], currentFieldValue));
         }
 
         public override bool CanExecute(EasyDynamicObject dataObject)
         {
             string fieldName = SettingsDictionary["FieldName"];
             string currentFieldValue = SettingsDictionary["CurrentFieldValue"];
-            return CanExecute(dataObject.Properties[fieldName].ToString(), currentFieldValue);
+            return (dataObject.Properties.ContainsKey(fieldName) && CanExecute(dataObject.Properties[fieldName].ToString(), currentFieldValue));
         }
 
         public override bool CanExecute(XmlNode dataNode)
         {
             string fieldName = SettingsDictionary["FieldName"];
             string currentFieldValue = SettingsDictionary["CurrentFieldValue"];
-            return CanExecute(dataNode.SelectSingleNode(fieldName).InnerText, currentFieldValue);
+            return ((dataNode.SelectSingleNode(fieldName) != null) && CanExecute(dataNode.SelectSingleNode(fieldName).InnerText, currentFieldValue));
         }
 
 

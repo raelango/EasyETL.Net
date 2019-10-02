@@ -137,5 +137,22 @@ namespace EasyETL.Writers
             return "</BODY>" + Environment.NewLine + "</HTML>" + Environment.NewLine;
         }
 
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "templatefilename":
+                    TemplateFileName = fieldValue; break;
+            }
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> settingsDict = base.GetSettingsAsDictionary();
+            settingsDict.Add("templatefilename", TemplateFileName);
+            return settingsDict;
+        }
+
     }
 }

@@ -11,7 +11,7 @@ namespace EasyETL.Writers
 {
     [DisplayName("Excel Writer")]
     [EasyField("ExportFileName", "Name of output file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
-    [EasyField("IncludeHeader", "Include the table name in the output?", "True", "", "True;False")]
+    [EasyField("IncludeHeader", "Include Table Header", "True", "", "True;False")]
     public class ExcelDatasetWriter : FileDatasetWriter
     {
         public Dictionary<string, string> DocProperties = new Dictionary<string, string>();

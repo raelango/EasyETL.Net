@@ -12,7 +12,7 @@ namespace EasyETL.Writers
     [DisplayName("Delimited Data Writer")]
     [EasyField("ExportFileName", "Name of output file.  You can use variables with [varname].. date and time can be specified [dd],[hh] etc.,")]
     [EasyField("Delimiter", "Specify the delimiter to be used", ",", ".")]
-    [EasyField("IncludeHeaders","Include the table names in the output?","True","","True;False")]
+    [EasyField("IncludeHeader", "Include Table Header", "True", "", "True;False")]
     [EasyField("IncludeQuotes", "Surround the Field Name and Values by quotes?", "True", "", "True;False")]
     public class DelimitedDatasetWriter : FileDatasetWriter
     {
@@ -46,7 +46,7 @@ namespace EasyETL.Writers
             {
                 foreach (DataColumn dc in dt.Columns)
                 {
-                    returnStr += (IncludeQuotes ? "\"":"") + GetColumnName(dc) + (IncludeQuotes ? "\"":"");
+                    returnStr += (IncludeQuotes ? "\"" : "") + GetColumnName(dc) + (IncludeQuotes ? "\"" : "");
                     if (dc.Ordinal < (dt.Columns.Count - 1))
                     {
                         returnStr += Delimiter;
@@ -78,6 +78,25 @@ namespace EasyETL.Writers
             return returnStr;
         }
 
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "delimiter":
+                    Delimiter = fieldValue[0]; break;
+                case "includequotes":
+                    IncludeQuotes = Convert.ToBoolean(fieldValue); break;
+            }
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> settingDict =  base.GetSettingsAsDictionary();
+            settingDict.Add("delimiter", Delimiter.ToString());
+            settingDict.Add("includequotes", IncludeQuotes.ToString());
+            return settingDict;
+        }
 
     }
 }
