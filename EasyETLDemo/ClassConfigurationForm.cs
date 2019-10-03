@@ -40,7 +40,7 @@ namespace EasyXmlSample
             foreach (ClassMapping cMapping in lstClasses) {
                 cmbClassName.Items.Add(cMapping.DisplayName);
             }
-
+            lblSettingsComplete.Width = panel2.Width;
         }
 
         public void LoadSettingsFromXml(string settingsPath)
@@ -73,7 +73,7 @@ namespace EasyXmlSample
                 {
                     SelectedClassSettings.Add(fieldNode.Attributes["name"].Value, fieldNode.Attributes["value"].Value);
                 }
-
+                UpdateColorOfLabel();
             }
 
         }
@@ -132,6 +132,7 @@ namespace EasyXmlSample
             }
 
             xDoc.Save(SettingsFileName);
+            btnCloseWindow_Click(this, null);
         }
 
         private void btnCloseWindow_Click(object sender, EventArgs e)
@@ -140,7 +141,9 @@ namespace EasyXmlSample
             {
                 TabPage tpage = (TabPage)this.Parent;
                 TabControl tcontrol = (TabControl)tpage.Parent;
+                EasyETLDemoApplication app = ((EasyETLDemoApplication)(tcontrol.FindForm()));
                 tcontrol.TabPages.Remove(tpage);
+                app.FocusClientsTreeView();
             }
         }
 
@@ -173,6 +176,22 @@ namespace EasyXmlSample
                 }
 
             }
+            UpdateColorOfLabel();
+        }
+
+        private void UpdateColorOfLabel()
+        {
+            lblSettingsComplete.BackColor = Color.Transparent;
+            if (SelectedClassMapping != null)
+            {
+                if (typeof(IEasyFieldInterface).IsAssignableFrom(SelectedClassMapping.Class))
+                {
+                    IEasyFieldInterface efiObject = (IEasyFieldInterface)Activator.CreateInstance(SelectedClassMapping.Class);
+                    efiObject.LoadFieldSettings(SelectedClassSettings);
+                    lblSettingsComplete.BackColor = efiObject.CanFunction() ? Color.Green : Color.Red;
+                    efiObject = null;
+                }
+            }
         }
 
         private void lstFields_SelectedIndexChanged(object sender, EventArgs e)
@@ -196,7 +215,9 @@ namespace EasyXmlSample
 
         private void btnSaveField_Click(object sender, EventArgs e)
         {
-            if ((cmbField.Items.Count > 1) && (cmbField.SelectedItem == null)) {
+            UpdateColorOfLabel();
+            if ((cmbField.Items.Count > 1) && (cmbField.SelectedItem == null))
+            {
                 MessageBox.Show("Please select a valid value");
                 return;
             }
@@ -206,6 +227,12 @@ namespace EasyXmlSample
                 return;
             }
             SelectedClassSettings[lstFields.SelectedItem.ToString()] = cmbField.Text;
+            UpdateColorOfLabel();
+        }
+
+        private void ClassConfigurationForm_ResizeEnd(object sender, EventArgs e)
+        {
+            lblSettingsComplete.Width = panel2.Width;
         }
 
 

@@ -35,7 +35,13 @@
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -44,6 +50,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClassConfigurationForm.cs">
@@ -123,6 +130,10 @@
     <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
       <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
       <Name>EasyETL.Dynamic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Xml.Configuration\EasyETL.Xml.Configuration.csproj">
+      <Project>{54babc0b-08b0-45e8-9de6-2fbc14b4dc3c}</Project>
+      <Name>EasyETL.Xml.Configuration</Name>
     </ProjectReference>
     <ProjectReference Include="..\EasyETL\EasyETL.csproj">
       <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>

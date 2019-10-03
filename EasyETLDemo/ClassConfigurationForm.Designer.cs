@@ -48,6 +48,7 @@
             this.cmbClassName = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.lblSettingsComplete = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -122,6 +123,7 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.lblSettingsComplete);
             this.panel2.Controls.Add(this.lblProperties);
             this.panel2.Controls.Add(this.lblLibraryName);
             this.panel2.Controls.Add(this.pnlField);
@@ -254,6 +256,16 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "Library Name:";
             // 
+            // lblSettingsComplete
+            // 
+            this.lblSettingsComplete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSettingsComplete.Location = new System.Drawing.Point(1, 423);
+            this.lblSettingsComplete.Name = "lblSettingsComplete";
+            this.lblSettingsComplete.Size = new System.Drawing.Size(584, 16);
+            this.lblSettingsComplete.TabIndex = 11;
+            this.lblSettingsComplete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // ClassConfigurationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -262,6 +274,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "ClassConfigurationForm";
             this.Text = "ActionForm";
+            this.ResizeEnd += new System.EventHandler(this.ClassConfigurationForm_ResizeEnd);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -295,5 +308,6 @@
         private System.Windows.Forms.Label lblField;
         private System.Windows.Forms.Label lblLibraryName;
         private System.Windows.Forms.Label lblProperties;
+        private System.Windows.Forms.Label lblSettingsComplete;
     }
 }

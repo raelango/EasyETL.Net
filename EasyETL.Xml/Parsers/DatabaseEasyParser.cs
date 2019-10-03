@@ -90,6 +90,12 @@ namespace EasyETL.Xml.Parsers
             return !(String.IsNullOrWhiteSpace(ConnectionString) || String.IsNullOrWhiteSpace(Query));
         }
 
+        public virtual bool CanFunction()
+        {
+            if (!IsFieldSettingsComplete()) return false;
+            return false;
+        }
+
         public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
         {
             foreach (KeyValuePair<string, string> kvPair in settingsDictionary)

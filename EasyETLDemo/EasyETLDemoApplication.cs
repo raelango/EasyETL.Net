@@ -1,6 +1,7 @@
 ﻿using EasyETL.Actions;
 using EasyETL.Endpoint;
 using EasyETL.Writers;
+using EasyETL.Xml.Configuration;
 using EasyETL.Xml.Parsers;
 using System;
 using System.Collections.Generic;
@@ -19,11 +20,17 @@ namespace EasyXmlSample
     public partial class EasyETLDemoApplication : Form
     {
         private string xmlFileName;
-        private string clientCategories = "actions;datasources;exports;endpoints;filestores;messagequeues;transfers;etls";
+        private EasyETLXmlDocument configXmlDocument = null;
+        private string clientCategories = "actions;datasources;exports;endpoints;transfers;etls";
         public EasyETLDemoApplication()
         {
             InitializeComponent();
             LoadConfiguration();
+        }
+
+        public void FocusClientsTreeView()
+        {
+            tvClients.Focus();
         }
 
         private void LoadConfiguration(string visibleNodeFullpath = "")
@@ -38,6 +45,8 @@ namespace EasyXmlSample
                 }
 
             }
+            configXmlDocument = new EasyETLXmlDocument();
+            configXmlDocument.Load(xmlFileName);
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(xmlFileName);
             AddTreeViewChildNodes(tvClients.Nodes, xDoc.SelectSingleNode("//clients"));
@@ -425,7 +434,11 @@ namespace EasyXmlSample
 
         private void CloseToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MainTablControl.SelectedTab != null) MainTablControl.TabPages.Remove(MainTablControl.SelectedTab);
+            if (MainTablControl.SelectedTab != null)
+            {
+                MainTablControl.TabPages.Remove(MainTablControl.SelectedTab);
+                FocusClientsTreeView();
+            }
         }
 
         private void ExitToolStripButton_Click(object sender, EventArgs e)

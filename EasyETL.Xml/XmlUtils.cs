@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.Xml;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -210,9 +212,6 @@ namespace EasyETL.Xml
             return GetCompiledTransform(xslSB);
         }
 
-
-
-
         public static XslCompiledTransform GetCompiledTransform(StringBuilder xslSB)
         {
             StringBuilder rootSB = new StringBuilder();
@@ -234,7 +233,6 @@ namespace EasyETL.Xml
             xsl.Load(XmlReader.Create(new StringReader(rootSB.ToString())));
             return xsl;
         }
-
 
         public static void BuildXsltString(this XmlNode xmlNode, string rowElementName, Dictionary<string, string> dctAdditions, List<string> lstRemoveCommands, List<string> lstFilters, Dictionary<string, string> dctRenames, List<string> lstRowElements, StringBuilder xslSB)
         {
@@ -302,5 +300,74 @@ namespace EasyETL.Xml
             dctRenames.Clear();
         }
 
+        public static void Encrypt(this XmlDocument Doc, string ElementToEncrypt, SymmetricAlgorithm Alg, string KeyName)
+        {
+            // Check the arguments.  
+            if (Doc == null)
+                throw new ArgumentNullException("Doc");
+            if (ElementToEncrypt == null)
+                throw new ArgumentNullException("ElementToEncrypt");
+            if (Alg == null)
+                throw new ArgumentNullException("Alg");
+
+            ////////////////////////////////////////////////
+            // Find the specified element in the XmlDocument
+            // object and create a new XmlElemnt object.
+            ////////////////////////////////////////////////
+
+            XmlElement elementToEncrypt = Doc.GetElementsByTagName(ElementToEncrypt)[0] as XmlElement;
+
+            // Throw an XmlException if the element was not found.
+            if (elementToEncrypt == null)
+            {
+                throw new XmlException("The specified element was not found");
+
+            }
+
+            //////////////////////////////////////////////////
+            // Create a new instance of the EncryptedXml class 
+            // and use it to encrypt the XmlElement with the 
+            // symmetric key.
+            //////////////////////////////////////////////////
+
+            EncryptedXml eXml = new EncryptedXml();
+
+            // Add the key mapping.
+            eXml.AddKeyNameMapping(KeyName, Alg);
+
+            // Encrypt the element.
+            EncryptedData edElement = eXml.Encrypt(elementToEncrypt, KeyName);
+
+
+            ////////////////////////////////////////////////////
+            // Replace the element from the original XmlDocument
+            // object with the EncryptedData element.
+            ////////////////////////////////////////////////////
+
+            EncryptedXml.ReplaceElement(elementToEncrypt, edElement, false);
+
+        }
+
+        public static void Decrypt(this XmlDocument Doc, SymmetricAlgorithm Alg, string KeyName)
+        {
+            // Check the arguments.  
+            if (Doc == null)
+                throw new ArgumentNullException("Doc");
+            if (Alg == null)
+                throw new ArgumentNullException("Alg");
+            if (KeyName == null)
+                throw new ArgumentNullException("KeyName");
+
+            // Create a new EncryptedXml object.
+            EncryptedXml exml = new EncryptedXml(Doc);
+
+            // Add the key name mapping.
+            exml.AddKeyNameMapping(KeyName, Alg);
+
+            // Decrypt the XML document.
+            exml.DecryptDocument();
+
+        }
+    
     }
 }

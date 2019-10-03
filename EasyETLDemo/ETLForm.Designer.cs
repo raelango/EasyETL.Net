@@ -302,6 +302,7 @@
             this.rbDelimiterCustom.TabStop = true;
             this.rbDelimiterCustom.Text = "Custom Separator";
             this.rbDelimiterCustom.UseVisualStyleBackColor = true;
+            this.rbDelimiterCustom.CheckedChanged += new System.EventHandler(this.rbDelimiterCustom_CheckedChanged);
             // 
             // rbDelimiterSemicolon
             // 
