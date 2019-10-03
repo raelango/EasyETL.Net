@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Attributes", "EasyE
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint.Quickbooks", "EasyETL.Endpoint.Quickbooks\EasyETL.Endpoint.Quickbooks.csproj", "{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Xml.Configuration", "EasyETL.Xml.Configuration\EasyETL.Xml.Configuration.csproj", "{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,12 @@ Global
 		{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C23984B1-AD11-4571-9ED6-CAC2CBBAD4EF}.Release|x86.ActiveCfg = Release|Any CPU
+		{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
