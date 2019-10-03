@@ -54,6 +54,11 @@ namespace EasyETL.Endpoint
             resultDict.Add("overwrite", Overwrite.ToString());
             return resultDict;
         }
+
+        public virtual bool CanFunction()
+        {
+            return false;
+        }
         
     }
 }

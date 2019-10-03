@@ -114,5 +114,9 @@ namespace EasyETL.Endpoint
             return Path.Combine(FolderName, fileName);
         }
 
+        public override bool CanFunction()
+        {
+            return IsFieldSettingsComplete() && Directory.Exists(FolderName);
+        }
     }
 }

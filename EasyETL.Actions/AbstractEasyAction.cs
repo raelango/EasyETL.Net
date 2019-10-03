@@ -209,9 +209,14 @@ namespace EasyETL.Actions
             throw new NotImplementedException();
         }
 
-        public bool IsFieldSettingsComplete()
+        public virtual bool IsFieldSettingsComplete()
         {
             return true;
+        }
+
+        public virtual bool CanFunction()
+        {
+            return false;
         }
 
         public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)

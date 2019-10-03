@@ -12,5 +12,6 @@ namespace EasyETL.Attributes
         bool IsFieldSettingsComplete();
         void LoadFieldSettings(Dictionary<string, string> settingsDictionary);
         void SaveFieldSettingsToXmlNode(XmlNode parentNode);
+        bool CanFunction();
     }
 }

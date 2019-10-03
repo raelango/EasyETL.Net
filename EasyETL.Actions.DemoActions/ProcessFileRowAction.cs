@@ -26,6 +26,12 @@ namespace EasyETL.Actions.DemoActions
         public string ActionName;
         public string WorkingFileName;
 
+        public override bool IsFieldSettingsComplete()
+        {
+            LoadSettings();
+            return (!String.IsNullOrWhiteSpace(FileNameField) && !String.IsNullOrWhiteSpace(ActionName));
+        }
+
         private void LoadSettings()
         {
             FileNameField = (SettingsDictionary.ContainsKey("FileNameField") ? SettingsDictionary["FileNameField"] : "");

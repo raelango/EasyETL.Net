@@ -187,15 +187,32 @@ namespace EasyETL.Endpoint
             }
         }
 
+        public override bool CanFunction()
+        {
+            if (!IsFieldSettingsComplete()) return false;
+            try
+            {
+                EstablishFTPConnection();
+                return FTPControl.IsConnected;
+            }
+            catch {
+                return false;
+            }
+        }
+
         #endregion
 
         #region Private methods
         private void EstablishFTPConnection()
         {
-            if (FTPControl == null)
+            if ((FTPControl == null) || (!FTPControl.IsConnected))
             {
+                if (String.IsNullOrWhiteSpace(UserID) && String.IsNullOrWhiteSpace(Password))
+                    Credentials = CredentialCache.DefaultNetworkCredentials;
+                else
+                    Credentials = GetCredential(UserID, Password);
                 FTPControl = new FtpClient(FTPAddress, PortNumber, Credentials);
-                FTPControl.ClientCertificates.AddRange(Certificates);
+                if (Certificates !=null) FTPControl.ClientCertificates.AddRange(Certificates);
                 FTPControl.Connect();
             }
         }
@@ -204,7 +221,7 @@ namespace EasyETL.Endpoint
         
         public void Dispose()
         {
-            if (FTPControl != null) { FTPControl.Disconnect(); }
+            if (FTPControl != null) { FTPControl.Dispose(); }
             FTPControl = null;
             Credentials = null;
             Certificates = null;

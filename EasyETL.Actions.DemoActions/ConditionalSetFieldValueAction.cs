@@ -20,6 +20,11 @@ namespace EasyDemoActions
     [EasyField("NewFieldValue", "This is the new value to be set in the <<FieldName>> column.")]
     public class ConditionalSetFieldValueAction : AbstractEasyAction
     {
+        public override bool IsFieldSettingsComplete()
+        {
+            return SettingsDictionary.ContainsKey("FieldName") && SettingsDictionary.ContainsKey("CurrentFieldValue") && SettingsDictionary.ContainsKey("NewFieldValue") && !String.IsNullOrWhiteSpace(SettingsDictionary["FieldName"]) && (SettingsDictionary["CurrentFieldValue"] != SettingsDictionary["NewFieldValue"]);
+        }
+
         public override bool CanExecute(DataRow dataRow)
         {
             string fieldName = SettingsDictionary["FieldName"];
