@@ -40,8 +40,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AbstractEasyAction.cs" />
+    <Compile Include="ConditionalSetFieldValueAction.cs" />
+    <Compile Include="CreditCardValidator.cs" />
+    <Compile Include="DeidentifyDataAction.cs" />
+    <Compile Include="EmailAction.cs" />
+    <Compile Include="ExecAction.cs" />
+    <Compile Include="SmtpSendEmailAction.cs" />
     <Compile Include="IEasyAction.cs" />
+    <Compile Include="ProcessFileAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SetFieldValueAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">

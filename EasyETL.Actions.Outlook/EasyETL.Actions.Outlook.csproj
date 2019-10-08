@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4DA52AAD-3E76-430F-B08A-B32BA7EE7CDE}</ProjectGuid>
+    <ProjectGuid>{A831C08C-837C-4D49-A0E4-6FCB1B5B7EBC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EasyETL.Actions.DemoActions</RootNamespace>
-    <AssemblyName>EasyETL.Actions.DemoActions</AssemblyName>
+    <RootNamespace>EasyETL.Actions.Outlook</RootNamespace>
+    <AssemblyName>EasyETL.Actions.Outlook</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Build\Debug\</OutputPath>
+    <OutputPath>..\build\debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -31,9 +31,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Office.Interop.Outlook, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DeleteRowAction.cs" />
+    <Compile Include="OutlookSendEmailAction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -52,10 +54,6 @@
     <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">
       <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
       <Name>EasyETL.Attributes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
-      <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
-      <Name>EasyETL.Dynamic</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

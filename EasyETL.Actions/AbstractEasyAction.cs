@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 
@@ -176,8 +177,8 @@ namespace EasyETL.Actions
 
         #endregion
 
-        #region private methods
-        private Dictionary<string, string> GetPropertiesFromNode(XmlNode dataNode)
+        #region protected methods
+        protected Dictionary<string, string> GetPropertiesFromNode(XmlNode dataNode)
         {
             Dictionary<string, string> props = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
             foreach (XmlNode childNode in dataNode.ChildNodes)
@@ -191,7 +192,7 @@ namespace EasyETL.Actions
             return props;
         }
 
-        private Dictionary<string, string> GetPropertiesFromDataRow(DataRow dataRow)
+        protected Dictionary<string, string> GetPropertiesFromDataRow(DataRow dataRow)
         {
             Dictionary<string, string> props = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
             foreach (DataColumn dColumn in dataRow.Table.Columns)
@@ -205,7 +206,7 @@ namespace EasyETL.Actions
         #endregion 
 
         public virtual void Execute(Dictionary<string, string> dataDictionary)
-        {
+        {            
             throw new NotImplementedException();
         }
 
@@ -216,7 +217,7 @@ namespace EasyETL.Actions
 
         public virtual bool CanFunction()
         {
-            return false;
+            return IsFieldSettingsComplete();
         }
 
         public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
@@ -233,6 +234,20 @@ namespace EasyETL.Actions
                 xNode.SetAttribute("value", kvPair.Value);
                 parentNode.AppendChild(xNode);
             }
+        }
+
+        public string PopulatedName(string fileName, Dictionary<string,string> dataDictionary = null)
+        {
+            MatchCollection matches = Regex.Matches(fileName, @"\[(?<Var>.*?)\]");
+            foreach (Match match in matches)
+            {
+                string fieldName = match.Groups["Var"].Value;
+                string fieldValue = DateTime.Now.ToString(fieldName);
+                if (SettingsDictionary.ContainsKey(fieldName)) fieldValue = SettingsDictionary[fieldName];
+                if ((dataDictionary !=null) && (dataDictionary.ContainsKey(fieldName))) fieldValue = SettingsDictionary[fieldName];
+                fileName = fileName.Replace('[' + fieldName + ']', fieldValue);
+            }
+            return fileName;
         }
     }
 

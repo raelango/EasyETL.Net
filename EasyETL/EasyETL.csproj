@@ -145,6 +145,7 @@
     <Compile Include="Extractors\XmlDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Writers\SQLDatabaseDatasetWriter.cs" />
     <Compile Include="Writers\TabDelimitedDatasetWriter.cs" />
     <Compile Include="Writers\XmlDatasetWriter.cs" />
   </ItemGroup>

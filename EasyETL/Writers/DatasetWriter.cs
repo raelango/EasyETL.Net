@@ -140,7 +140,7 @@ namespace EasyETL.Writers
 
         public virtual bool CanFunction()
         {
-            return false;
+            return IsFieldSettingsComplete();
         }
 
         public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
