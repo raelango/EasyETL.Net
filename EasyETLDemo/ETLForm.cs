@@ -48,6 +48,7 @@ namespace EasyXmlSample
             if (!File.Exists(SettingsFileName)) return;
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(SettingsFileName);
+
             #region load profiles
             cmbParserProfile.Items.Clear();
             XmlNodeList profileNodes = xDoc.SelectNodes("//profiles/profile");
@@ -116,7 +117,6 @@ namespace EasyXmlSample
                 dctDatasources.Add(datasourceName, datasourceNode);
             }
             #endregion
-
 
             XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
             if (xNode != null)
@@ -254,6 +254,7 @@ namespace EasyXmlSample
                     }
                 }
                 #endregion
+
                 #region Permissions Settings
                 btnSaveSettings.Visible = false;
                 XmlNode permissionsNode = xNode.SelectSingleNode("permissions");
@@ -356,7 +357,7 @@ namespace EasyXmlSample
                 List<DataRow> dataRows = new List<DataRow>();
                 foreach (DataGridViewRow dgvRow in dataGrid.SelectedRows)
                 {
-                    dataRows.Add(((DataRowView)dgvRow.DataBoundItem).Row);
+                    if (dgvRow.DataBoundItem != null) dataRows.Add(((DataRowView)dgvRow.DataBoundItem).Row);
                 }
                 if (dataRows.Count == 0)
                 {
@@ -369,7 +370,7 @@ namespace EasyXmlSample
                         }
                         foreach (int rowIndex in lstRowIndex)
                         {
-                            dataRows.Add(((DataRowView)dataGrid.Rows[rowIndex].DataBoundItem).Row);
+                            if (dataGrid.Rows[rowIndex].DataBoundItem !=null) dataRows.Add(((DataRowView)dataGrid.Rows[rowIndex].DataBoundItem).Row);
                         }
                     }
                 }
@@ -1266,7 +1267,7 @@ namespace EasyXmlSample
                             {
                                 foreach (DataGridViewRow dRow in dataGrid.SelectedRows)
                                 {
-                                    dataRows.Add(((DataRowView)dRow.DataBoundItem).Row);
+                                    if (dRow.DataBoundItem !=null) dataRows.Add(((DataRowView)dRow.DataBoundItem).Row);
                                 }
                                 if (dataRows.Count == 0)
                                 {
@@ -1279,7 +1280,7 @@ namespace EasyXmlSample
                                         }
                                         foreach (int rowIndex in lstRowIndex)
                                         {
-                                            dataRows.Add(((DataRowView)dataGrid.Rows[rowIndex].DataBoundItem).Row);
+                                            if (dataGrid.Rows[rowIndex].DataBoundItem != null) dataRows.Add(((DataRowView)dataGrid.Rows[rowIndex].DataBoundItem).Row);
                                         }
                                     }
                                 }
@@ -1360,7 +1361,6 @@ namespace EasyXmlSample
         {
             dataGrid_DoubleClick(this, null);
         }
-
 
     }
 

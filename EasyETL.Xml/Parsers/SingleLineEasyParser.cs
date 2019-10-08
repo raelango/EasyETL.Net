@@ -9,7 +9,7 @@ using System.Xml;
 
 namespace EasyETL.Xml.Parsers
 {
-    public abstract class SingleLineEasyParser : AbstractEasyParser
+    public abstract class SingleLineEasyParser : ContentEasyParser
     {
         public bool FirstRowHasFieldNames = true;
         public TextFieldParser txtFieldParser;
@@ -98,6 +98,25 @@ namespace EasyETL.Xml.Parsers
             RowNodeName = "row";
             FieldPrefix = "Field_";
         }
-        
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> resultDict =  base.GetSettingsAsDictionary();
+            if ((CommentTokens != null) && (CommentTokens.Length > 0 )) resultDict.Add("comments", String.Join(Environment.NewLine, CommentTokens));
+            resultDict.Add("hasheader", FirstRowHasFieldNames.ToString());
+            resultDict["parsertype"] = "SingleLine";
+            return resultDict;
+        }
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "hasheader":
+                    FirstRowHasFieldNames = Convert.ToBoolean(fieldValue); break;
+            }
+        }
+
     }
 }

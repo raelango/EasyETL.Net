@@ -1,5 +1,6 @@
 ﻿using EasyETL.Actions;
 using EasyETL.Endpoint;
+using EasyETL.Extractors;
 using EasyETL.Writers;
 using EasyETL.Xml.Parsers;
 using System;
@@ -17,6 +18,7 @@ namespace EasyETL.Xml.Configuration
         private static List<ClassMapping> AvailableEndpoints = null;
         private static List<ClassMapping> AvailableParsers = null;
         private static List<ClassMapping> AvailableDatasources = null;
+        private static List<ClassMapping> AvailableExtractors = null;
 
         public static List<ClassMapping> Actions { 
             get {
@@ -33,6 +35,7 @@ namespace EasyETL.Xml.Configuration
                 return AvailableWriters;
             }
         }
+        
         public static List<ClassMapping> Endpoints
         {
             get
@@ -41,6 +44,7 @@ namespace EasyETL.Xml.Configuration
                 return AvailableEndpoints;
             }
         }
+        
         public static List<ClassMapping> Parsers
         {
             get
@@ -49,6 +53,7 @@ namespace EasyETL.Xml.Configuration
                 return AvailableParsers;
             }
         }
+
         public static List<ClassMapping> Datasources
         {
             get
@@ -57,5 +62,16 @@ namespace EasyETL.Xml.Configuration
                 return AvailableDatasources;
             }
         }
+
+        public static List<ClassMapping> Extractors
+        {
+            get
+            {
+                if (AvailableExtractors == null) AvailableExtractors = ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractContentExtractor)).ToList();
+                return AvailableExtractors;
+            }
+        }
+
+
     }
 }

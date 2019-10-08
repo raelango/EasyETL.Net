@@ -10,8 +10,7 @@ using System.Xml;
 namespace EasyETL.Xml.Configuration
 {
     public abstract class EasyETLEasyField : EasyETLConfiguration
-    {
-        
+    {        
         public string ActionID;
         public string ActionName;
         public string ClassName;

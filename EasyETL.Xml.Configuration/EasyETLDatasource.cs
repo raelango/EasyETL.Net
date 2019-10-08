@@ -11,7 +11,8 @@ namespace EasyETL.Xml.Configuration
     {
         public override Type GetClassOf(string className)
         {
-            return EasyETLEnvironment.Datasources.Find(m => m.DisplayName == className).Class;
+            if (EasyETLEnvironment.Datasources.Find(m => m.DisplayName == className) != null) return EasyETLEnvironment.Datasources.Find(m => m.DisplayName == className).Class;
+            return null;
         }
 
         public DatabaseEasyParser CreateDatasource()

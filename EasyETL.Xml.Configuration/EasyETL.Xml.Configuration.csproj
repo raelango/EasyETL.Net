@@ -47,6 +47,9 @@
     <Compile Include="EasyETLConfiguration.cs" />
     <Compile Include="EasyETLEndpoint.cs" />
     <Compile Include="EasyETLEnvironment.cs" />
+    <Compile Include="EasyETLJob.cs" />
+    <Compile Include="EasyETLJobDatasource.cs" />
+    <Compile Include="EasyETLJobParseOptions.cs" />
     <Compile Include="EasyETLPermission.cs" />
     <Compile Include="EasyETLUser.cs" />
     <Compile Include="EasyETLWriter.cs" />

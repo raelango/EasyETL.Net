@@ -76,6 +76,7 @@
     <Compile Include="EasyXmlDocument.cs" />
     <Compile Include="Parsers\AbstractEasyParser.cs" />
     <Compile Include="Parsers\AccessDatabaseEasyParser.cs" />
+    <Compile Include="Parsers\ContentEasyParser.cs" />
     <Compile Include="Parsers\DatabaseEasyParser.cs" />
     <Compile Include="Parsers\DelimitedEasyParser.cs" />
     <Compile Include="Parsers\EasyParser.cs" />
@@ -86,6 +87,7 @@
     <Compile Include="Parsers\HtmlTableEasyParser.cs" />
     <Compile Include="Parsers\IEasyParser.cs" />
     <Compile Include="Parsers\JsonEasyParser.cs" />
+    <Compile Include="Parsers\MultipleLineEasyParser.cs" />
     <Compile Include="Parsers\OdbcDatabaseEasyParser.cs" />
     <Compile Include="Parsers\OledbDatabaseEasyParser.cs" />
     <Compile Include="Parsers\SharepointDatabaseEasyParser.cs" />

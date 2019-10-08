@@ -27,11 +27,13 @@ namespace EasyETL.Xml.Parsers
     [EasyField("ConnectionType", "Database Connection Type","ODBC","","ODBC;OleDb;SQL")]
     [EasyField("ConnectionString", "Connection String")]
     [EasyField("Query", "Query to Execute")]
-    public class DatabaseEasyParser : AbstractEasyParser, IEasyFieldInterface
+    public class DatabaseEasyParser : AbstractEasyParser
     {
         public string ConnectionString;
         public string Query;
         public EasyDatabaseConnectionType ConnectionType;
+        public IDbConnection Connection;
+        public bool IsConnected;
 
         public DatabaseEasyParser()
         {
@@ -85,39 +87,42 @@ namespace EasyETL.Xml.Parsers
             return xDoc;
         }
 
-        public virtual bool IsFieldSettingsComplete()
+        public override bool IsFieldSettingsComplete()
         {
-            return !(String.IsNullOrWhiteSpace(ConnectionString) || String.IsNullOrWhiteSpace(Query));
+            return (!String.IsNullOrWhiteSpace(ConnectionString) && !String.IsNullOrWhiteSpace(Query));
         }
 
-        public virtual bool CanFunction()
+        public override bool CanFunction()
         {
             if (!IsFieldSettingsComplete()) return false;
-            return false;
+            EstablishConnection();
+            return IsConnected;
         }
 
-        public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
+        private void EstablishConnection()
         {
-            foreach (KeyValuePair<string, string> kvPair in settingsDictionary)
+            if (Connection == null)
             {
-                LoadSetting(kvPair.Key, kvPair.Value);
+                switch (ConnectionType)
+                {
+                    case EasyDatabaseConnectionType.edctODBC:
+                        Connection = new OdbcConnection(ConnectionString);
+                        break;
+                    case EasyDatabaseConnectionType.edctOledb:
+                        Connection = new OleDbConnection(ConnectionString);
+                        break;
+                    case EasyDatabaseConnectionType.edctSQL:
+                        Connection = new SqlConnection(ConnectionString);
+                        break;
+                }
             }
+            if ((Connection != null) && (Connection.State != ConnectionState.Open)) {
+                Connection.Open();
+            }
+            IsConnected = (Connection != null) && (Connection.State == ConnectionState.Open);
         }
 
-        public void SaveFieldSettingsToXmlNode(XmlNode parentNode)
-        {
-            Dictionary<string, string> settingsDict = GetSettingsAsDictionary();
-            foreach (KeyValuePair<string, string> kvPair in settingsDict)
-            {
-                XmlElement xNode = parentNode.OwnerDocument.CreateElement("field");
-                xNode.SetAttribute("name",kvPair.Key);
-                xNode.SetAttribute("value", kvPair.Value);
-                parentNode.AppendChild(xNode);
-            }
-        }
-
-
-        public virtual void LoadSetting(string fieldName, string fieldValue)
+        public override void LoadSetting(string fieldName, string fieldValue)
         {
             switch (fieldName.ToLower())
             {
@@ -130,7 +135,7 @@ namespace EasyETL.Xml.Parsers
             }
         }
 
-        public virtual Dictionary<string, string> GetSettingsAsDictionary()
+        public override Dictionary<string, string> GetSettingsAsDictionary()
         {
             Dictionary<string, string> resultDict = new Dictionary<string, string>();
             resultDict.Add("connectionstring", ConnectionString);

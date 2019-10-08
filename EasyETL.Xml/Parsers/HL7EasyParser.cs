@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,7 @@ using System.Xml.Xsl;
 
 namespace EasyETL.Xml.Parsers
 {
+    [DisplayName("HL7")]
     public class HL7EasyParser : DelimitedEasyParser
     {
         public HL7EasyParser() : base(false, "|")

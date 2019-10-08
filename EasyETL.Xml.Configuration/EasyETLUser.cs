@@ -10,14 +10,12 @@ namespace EasyETL.Xml.Configuration
     {
         public string UserName;
         public string DisplayName;
-        public string Role;
         public EasyETLPermission Permissions;
 
         public override void ReadSettingsFromDictionary()
         {
             UserName = GetSetting("UserName");
             DisplayName = GetSetting("DisplayName");
-            Role = GetSetting("Role", "No Role");
 
             Permissions = new EasyETLPermission();
             Permissions.AttributesDictionary = new Dictionary<string, string>(AttributesDictionary);
@@ -30,7 +28,6 @@ namespace EasyETL.Xml.Configuration
             AttributesDictionary = new Dictionary<string, string>(Permissions.AttributesDictionary);
             SetSetting("UserName", UserName);
             SetSetting("DisplayName", DisplayName);
-            SetSetting("Role", Role);
         }
     }
 }

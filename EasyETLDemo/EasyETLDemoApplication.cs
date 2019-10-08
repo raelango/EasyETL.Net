@@ -21,7 +21,7 @@ namespace EasyXmlSample
     {
         private string xmlFileName;
         private EasyETLXmlDocument configXmlDocument = null;
-        private string clientCategories = "actions;datasources;exports;endpoints;transfers;etls";
+        private string clientCategories = "actions;datasources;exports;endpoints;parsers;transfers;etls";
         public EasyETLDemoApplication()
         {
             InitializeComponent();
@@ -291,7 +291,7 @@ namespace EasyXmlSample
                         return;
                     }
                 }
-                if ("actions;exports;datasources;endpoints;etls".Split(';').Contains(tvClients.SelectedNode.Parent.Text))
+                if ("actions;exports;datasources;endpoints;parsers;etls".Split(';').Contains(tvClients.SelectedNode.Parent.Text))
                 {
                     MainTablControl.TabPages.Add(tvClients.SelectedNode.FullPath);
                     TabPage newTabPage = MainTablControl.TabPages[MainTablControl.TabCount - 1];
@@ -309,6 +309,7 @@ namespace EasyXmlSample
                         case "exports":
                         case "endpoints":
                         case "datasources":
+                        case "parsers":
                             ClassConfigurationForm aForm = new ClassConfigurationForm();
                             aForm.ClassType = tvClients.SelectedNode.Parent.Text.TrimEnd('s');
                             switch (tvClients.SelectedNode.Parent.Text)
@@ -324,6 +325,9 @@ namespace EasyXmlSample
                                     break;
                                 case "datasources":
                                     aForm.BaseClassType = typeof(DatabaseEasyParser);
+                                    break;
+                                case "parsers":
+                                    aForm.BaseClassType = typeof(ContentEasyParser);
                                     break;
                                 default:
                                     break;

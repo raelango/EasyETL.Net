@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Endpoint.Quickbooks
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Xml.Configuration", "EasyETL.Xml.Configuration\EasyETL.Xml.Configuration.csproj", "{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.Actions.Outlook", "EasyETL.Actions.Outlook\EasyETL.Actions.Outlook.csproj", "{A831C08C-837C-4D49-A0E4-6FCB1B5B7EBC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +143,12 @@ Global
 		{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{54BABC0B-08B0-45E8-9DE6-2FBC14B4DC3C}.Release|x86.ActiveCfg = Release|Any CPU
+		{A831C08C-837C-4D49-A0E4-6FCB1B5B7EBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A831C08C-837C-4D49-A0E4-6FCB1B5B7EBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A831C08C-837C-4D49-A0E4-6FCB1B5B7EBC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A831C08C-837C-4D49-A0E4-6FCB1B5B7EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A831C08C-837C-4D49-A0E4-6FCB1B5B7EBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A831C08C-837C-4D49-A0E4-6FCB1B5B7EBC}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

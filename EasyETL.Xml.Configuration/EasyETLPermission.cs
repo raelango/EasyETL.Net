@@ -8,6 +8,7 @@ namespace EasyETL.Xml.Configuration
 {
     public class EasyETLPermission : EasyETLConfiguration
     {
+        public string Role;
         public bool CanViewSettings;
         public bool CanEditSettings;
         public bool CanAddData;
@@ -17,6 +18,7 @@ namespace EasyETL.Xml.Configuration
 
         public override void ReadSettingsFromDictionary()
         {
+            Role = GetSetting("Role", "No Role");
             CanViewSettings = Convert.ToBoolean(GetSetting("CanViewSettings", CanViewSettings.ToString()));
             CanEditSettings = Convert.ToBoolean(GetSetting("CanEditSettings", CanEditSettings.ToString()));
             CanAddData = Convert.ToBoolean(GetSetting("CanAddData", CanAddData.ToString()));
@@ -27,7 +29,7 @@ namespace EasyETL.Xml.Configuration
 
         public override void WriteSettingsToDictionary()
         {
-            AttributesDictionary = new Dictionary<string, string>();
+            SetSetting("Role", Role);
             SetSetting("CanViewSettings", CanViewSettings.ToString());
             SetSetting("CanEditSettings", CanEditSettings.ToString());
             SetSetting("CanAddData", CanAddData.ToString());

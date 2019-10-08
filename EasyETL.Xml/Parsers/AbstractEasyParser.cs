@@ -8,6 +8,7 @@ using System.Xml;
 using System.Security;
 using System.Xml.Xsl;
 using Microsoft.VisualBasic.FileIO;
+using EasyETL.Attributes;
 
 namespace EasyETL.Xml.Parsers
 {
@@ -31,7 +32,7 @@ namespace EasyETL.Xml.Parsers
         public long LineNumber;
     }
 
-    public abstract class AbstractEasyParser : IEasyParser
+    public abstract class AbstractEasyParser : IEasyParser, IEasyFieldInterface
     {
         public string[] FieldNames = null;
         public string RootNodeName = "data";
@@ -139,5 +140,50 @@ namespace EasyETL.Xml.Parsers
             throw new NotImplementedException();
         }
 
+
+        public virtual bool IsFieldSettingsComplete()
+        {
+            return false;
+        }
+
+        public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
+        {
+            foreach (KeyValuePair<string, string> kvPair in settingsDictionary)
+            {
+                LoadSetting(kvPair.Key, kvPair.Value);
+            }
+        }
+
+        public void SaveFieldSettingsToXmlNode(XmlNode parentNode)
+        {
+            Dictionary<string, string> settingsDict = GetSettingsAsDictionary();
+            foreach (KeyValuePair<string, string> kvPair in settingsDict)
+            {
+                XmlElement xNode = parentNode.OwnerDocument.CreateElement("field");
+                xNode.SetAttribute("name", kvPair.Key);
+                xNode.SetAttribute("value", kvPair.Value);
+                parentNode.AppendChild(xNode);
+            }
+        }
+
+
+        public virtual void LoadSetting(string fieldName, string fieldValue)
+        {
+
+        }
+
+        public virtual bool CanFunction()
+        {
+            return IsFieldSettingsComplete();
+        }
+
+        public virtual Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> resultDict = new Dictionary<string, string>();
+            resultDict.Add("parsertype","abstract");
+            return resultDict;
+        }
+    
+    
     }
 }

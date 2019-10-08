@@ -18,6 +18,8 @@ namespace EasyETL.Xml.Configuration
         public List<EasyETLWriter> Writers = new List<EasyETLWriter>();
         public List<EasyETLEndpoint> Endpoints = new List<EasyETLEndpoint>();
 
+        public List<EasyETLJob> ETLs = new List<EasyETLJob>();
+
         public override void ReadSettings(XmlNode xNode)
         {
             base.ReadSettings(xNode);
@@ -51,6 +53,14 @@ namespace EasyETL.Xml.Configuration
                 EasyETLEndpoint etlEndpoint = new EasyETLEndpoint();
                 etlEndpoint.ReadSettings(childNode);
                 Endpoints.Add(etlEndpoint);
+            }
+
+            ETLs = new List<EasyETLJob>();
+            foreach (XmlNode childNode in xNode.SelectNodes("etls/etl"))
+            {
+                EasyETLJob etlJob = new EasyETLJob();
+                etlJob.ReadSettings(childNode);
+                ETLs.Add(etlJob);
             }
 
         }

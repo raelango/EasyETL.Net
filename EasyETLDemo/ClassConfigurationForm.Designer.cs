@@ -35,6 +35,7 @@
             this.txtActionName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lblSettingsComplete = new System.Windows.Forms.Label();
             this.lblProperties = new System.Windows.Forms.Label();
             this.lblLibraryName = new System.Windows.Forms.Label();
             this.pnlField = new System.Windows.Forms.Panel();
@@ -48,7 +49,6 @@
             this.cmbClassName = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.lblSettingsComplete = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -140,6 +140,16 @@
             this.panel2.Size = new System.Drawing.Size(588, 439);
             this.panel2.TabIndex = 1;
             // 
+            // lblSettingsComplete
+            // 
+            this.lblSettingsComplete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSettingsComplete.Location = new System.Drawing.Point(1, 423);
+            this.lblSettingsComplete.Name = "lblSettingsComplete";
+            this.lblSettingsComplete.Size = new System.Drawing.Size(584, 16);
+            this.lblSettingsComplete.TabIndex = 11;
+            this.lblSettingsComplete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // lblProperties
             // 
             this.lblProperties.Location = new System.Drawing.Point(367, 294);
@@ -168,7 +178,7 @@
             // 
             // btnSaveField
             // 
-            this.btnSaveField.Location = new System.Drawing.Point(81, 86);
+            this.btnSaveField.Location = new System.Drawing.Point(81, 117);
             this.btnSaveField.Name = "btnSaveField";
             this.btnSaveField.Size = new System.Drawing.Size(75, 23);
             this.btnSaveField.TabIndex = 2;
@@ -255,16 +265,6 @@
             this.label2.Size = new System.Drawing.Size(72, 13);
             this.label2.TabIndex = 0;
             this.label2.Text = "Library Name:";
-            // 
-            // lblSettingsComplete
-            // 
-            this.lblSettingsComplete.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSettingsComplete.Location = new System.Drawing.Point(1, 423);
-            this.lblSettingsComplete.Name = "lblSettingsComplete";
-            this.lblSettingsComplete.Size = new System.Drawing.Size(584, 16);
-            this.lblSettingsComplete.TabIndex = 11;
-            this.lblSettingsComplete.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // ClassConfigurationForm
             // 

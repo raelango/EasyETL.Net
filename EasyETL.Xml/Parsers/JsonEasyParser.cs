@@ -9,16 +9,25 @@ using Newtonsoft.Json.Converters;
 using System.Xml.Linq;
 using System.Xml;
 using System.Xml.Xsl;
+using System.ComponentModel;
 
 namespace EasyETL.Xml.Parsers
 {
-    public class JsonEasyParser : AbstractEasyParser
+    [DisplayName("Json")]
+    public class JsonEasyParser : MultipleLineEasyParser
     {
         public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
         {
             string s = txtReader.ReadToEnd();
             xDoc.LoadXml(((XmlDocument)JsonConvert.DeserializeXmlNode(s,RootNodeName)).OuterXml);
             return xDoc;
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string, string> resultDict = base.GetSettingsAsDictionary();
+            resultDict["parsertype"] = "Json";
+            return resultDict;
         }
     }
 }

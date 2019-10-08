@@ -2,10 +2,13 @@
 using System.Xml;
 using Sgml;
 using System.Xml.Xsl;
+using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace EasyETL.Xml.Parsers
 {
-    public class HtmlEasyParser : AbstractEasyParser
+    [DisplayName("Html")]
+    public class HtmlEasyParser : MultipleLineEasyParser
     {
         public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
         {
@@ -24,5 +27,13 @@ namespace EasyETL.Xml.Parsers
             xDoc.Load(sgmlReader);
             return xDoc;        
         }
+    
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string, string> resultDict = base.GetSettingsAsDictionary();
+            resultDict["parsertype"] = "Html";
+            return resultDict;
+        }
+
     }
 }

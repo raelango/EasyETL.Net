@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,8 @@ using System.Xml;
 
 namespace EasyETL.Xml.Parsers
 {
-    public class HtmlTableEasyParser : AbstractEasyParser
+    [DisplayName("HtmlTable")]
+    public class HtmlTableEasyParser : MultipleLineEasyParser
     {
         public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
         {
@@ -157,6 +159,11 @@ namespace EasyETL.Xml.Parsers
             }
         }
 
-
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string, string> resultDict = base.GetSettingsAsDictionary();
+            resultDict["parsertype"] = "HtmlTable";
+            return resultDict;
+        }
     }
 }

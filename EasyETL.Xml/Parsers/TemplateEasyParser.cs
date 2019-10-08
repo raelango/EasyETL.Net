@@ -9,11 +9,17 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Xsl;
 using EasyETL.DataSets;
+using System.ComponentModel;
+using EasyETL.Attributes;
+using System.Globalization;
 
 
 namespace EasyETL.Xml.Parsers
 {
-    public class TemplateEasyParser : AbstractEasyParser
+    [DisplayName("Template")]
+    [EasyField("RowSeparator","Default is the New Line.")]
+    [EasyField("Templates","Enter multiple templates in separate lines")]
+    public class TemplateEasyParser : SingleLineEasyParser
     {
         public string RowSeparator = String.Empty;
         public Dictionary<string,string> lstRegex = new Dictionary<string,string>();
@@ -195,6 +201,34 @@ namespace EasyETL.Xml.Parsers
 
             return lstRegex.Keys.ToArray();
         }
-  
+
+        public override bool IsFieldSettingsComplete()
+        {
+            return (Templates.Length > 0);
+        }
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            if (String.IsNullOrWhiteSpace(fieldValue)) return;
+            switch (fieldName.ToLower())
+            {
+                case "templates":
+                    Templates = fieldValue.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    break;
+                case "rowseparator":
+                    RowSeparator = Convert.ToChar(Int16.Parse(fieldValue, NumberStyles.AllowHexSpecifier)).ToString();
+                    break;
+            }
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string, string> resultDict = base.GetSettingsAsDictionary();
+            resultDict["parsertype"] = "Template";
+            resultDict.Add("templates", String.Join(Environment.NewLine, Templates));
+            resultDict.Add("rowseparator", String.Format("{0:X}",RowSeparator));
+            return resultDict;
+        }
     }
 }
