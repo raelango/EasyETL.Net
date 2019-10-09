@@ -12,7 +12,7 @@ namespace EasyETL.Writers
     [EasyField("ServerName", "SQL Server Name")]
     [EasyField("DatabaseName", "Database Name")]
     [EasyField("SQLUserName", "SQL User Name (Leave Empty to use Integrated Security)")]
-    [EasyField("SQLPassword", "SQL User Password (Leave Empty to use Integrated Security)")]
+    [EasyField("SQLPassword", "SQL User Password (Leave Empty to use Integrated Security)","","","",true)]
     [EasyField("TableName", "Name of database Table")]
     [EasyField("UniqueKeyColumns","Provide all columns that form a unique key (separate using semicolon)")]
     [EasyField("InsertCommand", "Insert Command")]

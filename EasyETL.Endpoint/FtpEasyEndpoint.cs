@@ -26,7 +26,7 @@ namespace EasyETL.Endpoint
     [EasyField("FTP Address","FTP Server Address (DNS or IP)")]
     [EasyField("Port Number","Port Number to connect","21","[0-9]+")]
     [EasyField("User ID","Login User Name")]
-    [EasyField("User Password","Login Password")]
+    [EasyField("User Password","Login Password","","","",true)]
      public class FtpEasyEndpoint : AbstractFileEasyEndpoint, IDisposable
     {
         public FtpClient FTPControl = null;

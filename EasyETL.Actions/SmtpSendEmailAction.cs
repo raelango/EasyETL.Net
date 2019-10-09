@@ -16,7 +16,7 @@ namespace EasyETL.Actions
     [EasyField("SmtpServer", "SMTP Host Name","smtp.live.com","","smtp.live.com;smtp.gmail.com")]
     [EasyField("SmtpPort", "SMTP Port Number", "587","\\d+")]
     [EasyField("SenderAccount", "Sender email address.")]
-    [EasyField("SenderAccountPassword", "Sender Password to authenticate.")]
+    [EasyField("SenderAccountPassword", "Sender Password to authenticate.","","","",true)]
     [EasyField("Recipient", "Email Addresses of the recipient(s).  Separate multiple email adddresses with ';'")]
     [EasyField("CC", "Email Addresses to be copied.  Separate multiple email adddresses with ';'")]
     [EasyField("BCC", "Email Addresses to be blind copied.  Separate multiple email adddresses with ';'")]
