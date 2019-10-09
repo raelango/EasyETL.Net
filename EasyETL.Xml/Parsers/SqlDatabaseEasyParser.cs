@@ -13,7 +13,7 @@ namespace EasyETL.Xml.Parsers
     [EasyField("DatabaseName", "Database Name")]
     [EasyField("Query", "Query to Execute")]
     [EasyField("SQLUserName", "SQL User Name (Leave Empty to use Integrated Security)")]
-    [EasyField("SQLPassword", "SQL User Password (Leave Empty to use Integrated Security)")]
+    [EasyField("SQLPassword", "SQL User Password (Leave Empty to use Integrated Security)","","","",true)]
     public class SqlDatabaseEasyParser : DatabaseEasyParser
     {
         public string ServerName;

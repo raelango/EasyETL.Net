@@ -11,7 +11,7 @@ namespace EasyETL.Xml.Parsers
 {
     [DisplayName("Access Database File")]
     [EasyField("FileName", "Access Full File Name (Including Path)")]
-    [EasyField("Password", "Database Password (Leave Empty for no password)")]
+    [EasyField("Password", "Database Password (Leave Empty for no password)","","","",true)]
     [EasyField("Query", "Query to Execute")]
     public class AccessDatabaseEasyParser : DatabaseEasyParser
     {
