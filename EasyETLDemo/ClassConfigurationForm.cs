@@ -30,6 +30,8 @@ namespace EasyXmlSample
         public ClassMapping SelectedClassMapping = null;
         public EasyFieldAttribute SelectedFieldAttribute = null;
         public Dictionary<string, string> SelectedClassSettings = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+        public string SelectedDescription;
+        public string SelectedProperties;
 
         public void LoadFormControls()
         {
@@ -63,16 +65,21 @@ namespace EasyXmlSample
                         case "name":
                             txtActionName.Text = xAttr.Value; break;
                         case "classname":
-                            cmbClassName.SelectedItem = xAttr.Value; break;
+                            cmbClassName.SelectedItem = xAttr.Value; 
+                            break;
                     }
                 }
 
                 SelectedClassSettings.Clear();
                 XmlNodeList fieldNodeList = xNode.SelectNodes("field");
-                foreach (XmlNode fieldNode in fieldNodeList)
+                if (SelectedClassMapping != null)
                 {
-                    SelectedClassSettings.Add(fieldNode.Attributes["name"].Value, fieldNode.Attributes["value"].Value);
+                    foreach (XmlNode fieldNode in fieldNodeList)
+                    {
+                        if (SelectedClassMapping.Class.GetEasyFields().ContainsKey(fieldNode.Attributes["name"].Value)) SelectedClassSettings.Add(fieldNode.Attributes["name"].Value, fieldNode.Attributes["value"].Value);
+                    }
                 }
+                RefreshGridView();
                 UpdateColorOfLabel();
             }
 
@@ -163,11 +170,11 @@ namespace EasyXmlSample
             if (SelectedClassMapping != null)
             {
                 lblLibraryName.Text = SelectedClassMapping.Assembly.Location;
+
                 lblClassDescription.Text = lstClasses.Find(cm => cm.DisplayName == cmbClassName.SelectedItem.ToString()).Description;
-                lstFields.Items.Clear();
+                
                 foreach (EasyFieldAttribute efAttribute in SelectedClassMapping.Class.GetEasyFields().Values)
                 {
-                    lstFields.Items.Add(efAttribute.FieldName);
                     SelectedClassSettings.Add(efAttribute.FieldName, efAttribute.DefaultValue);
                 }
                 foreach (KeyValuePair<string, string> kvPair in SelectedClassMapping.Class.GetEasyProperties())
@@ -176,7 +183,26 @@ namespace EasyXmlSample
                 }
 
             }
+            RefreshGridView();
             UpdateColorOfLabel();
+        }
+
+        private void RefreshGridView()
+        {
+            if ((SelectedClassMapping == null) || (SelectedClassSettings == null) || (SelectedClassSettings.Keys.Count == 0)) return;
+            Dictionary<string,EasyFieldAttribute> easyFields = SelectedClassMapping.Class.GetEasyFields();
+            DataTable gridDataTable = new DataTable();
+            gridDataTable.Columns.Add("Field Name");
+            gridDataTable.Columns.Add("Field Value");
+
+            foreach (KeyValuePair<string, EasyFieldAttribute> kvEasyField in easyFields)
+            {
+                DataRow gridRow = gridDataTable.NewRow();
+                gridRow["Field Name"] = kvEasyField.Key;
+                if (SelectedClassSettings.ContainsKey(kvEasyField.Key)) gridRow["Field Value"] = (kvEasyField.Value.IsPassword) ? "<<<****Password****>>>" : SelectedClassSettings[kvEasyField.Key];
+                gridDataTable.Rows.Add(gridRow);
+            }
+            gvFieldValues.DataSource = gridDataTable;
         }
 
         private void UpdateColorOfLabel()
@@ -194,45 +220,35 @@ namespace EasyXmlSample
             }
         }
 
-        private void lstFields_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            lblFieldDescription.Text = "";
-            pnlField.Visible = false;
-            if (lstFields.SelectedItem == null) return;
-            if (String.IsNullOrWhiteSpace(lstFields.SelectedItem.ToString())) return;
-            SelectedFieldAttribute = SelectedClassMapping.Class.GetEasyField(lstFields.SelectedItem.ToString());
-            if (SelectedFieldAttribute != null)
-            {
-                pnlField.Visible = true;
-                lblFieldDescription.Text = SelectedFieldAttribute.FieldDescription;
-                lblField.Text = "Value of [" + SelectedFieldAttribute.FieldName + "]";
-                cmbField.Items.Clear();
-                cmbField.Items.AddRange(SelectedFieldAttribute.PossibleValues.ToArray());
-                cmbField.Text = "";
-                if (SelectedClassSettings.ContainsKey(lstFields.SelectedItem.ToString())) cmbField.Text = SelectedClassSettings[lstFields.SelectedItem.ToString()];
-            }
-        }
-
-        private void btnSaveField_Click(object sender, EventArgs e)
-        {
-            UpdateColorOfLabel();
-            if ((cmbField.Items.Count > 1) && (cmbField.SelectedItem == null))
-            {
-                MessageBox.Show("Please select a valid value");
-                return;
-            }
-            if ((SelectedFieldAttribute != null) && (!String.IsNullOrWhiteSpace(SelectedFieldAttribute.RegexMatch)) && (!Regex.IsMatch(cmbField.Text, "^(" + SelectedFieldAttribute.RegexMatch + ")$")))
-            {
-                MessageBox.Show("The input data does not match the expected format.  The expected format is " + SelectedFieldAttribute.RegexMatch);
-                return;
-            }
-            SelectedClassSettings[lstFields.SelectedItem.ToString()] = cmbField.Text;
-            UpdateColorOfLabel();
-        }
-
         private void ClassConfigurationForm_ResizeEnd(object sender, EventArgs e)
         {
             lblSettingsComplete.Width = panel2.Width;
+        }
+
+        private void gvFieldValues_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if ((gvFieldValues.Rows.Count > e.RowIndex) && (gvFieldValues.Rows[e.RowIndex] != null))
+            {
+                string fieldName = gvFieldValues[0, e.RowIndex].Value.ToString();
+                string fieldValue = SelectedClassSettings[fieldName];
+                SelectedFieldAttribute = SelectedClassMapping.Class.GetEasyField(fieldName);
+                if (SelectedFieldAttribute != null)
+                {
+                    string fieldProperties = "";
+                    foreach (KeyValuePair<string, string> kvPair in SelectedClassMapping.Class.GetEasyProperties())
+                    {
+                        fieldProperties += kvPair.Key + "=" + kvPair.Value + Environment.NewLine;
+                    }
+
+                    SelectedFieldAttribute = SelectedClassMapping.Class.GetEasyField(fieldName);
+                    FieldSettingModificationForm fsmForm = new FieldSettingModificationForm();
+                    fsmForm.SetFields(txtActionName.Text, fieldValue, SelectedFieldAttribute);
+                    fsmForm.ShowDialog(this);
+                    SelectedClassSettings[fieldName] = fsmForm.FieldValue;
+                    RefreshGridView();
+                    UpdateColorOfLabel();
+                }
+            }
         }
 
 

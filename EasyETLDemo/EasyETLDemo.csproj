@@ -71,6 +71,12 @@
     <Compile Include="ETLForm.Designer.cs">
       <DependentUpon>ETLForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FieldSettingModificationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FieldSettingModificationForm.Designer.cs">
+      <DependentUpon>FieldSettingModificationForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MoveConfigurationForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -87,6 +93,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ETLForm.resx">
       <DependentUpon>ETLForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FieldSettingModificationForm.resx">
+      <DependentUpon>FieldSettingModificationForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MoveConfigurationForm.resx">
       <DependentUpon>MoveConfigurationForm.cs</DependentUpon>
