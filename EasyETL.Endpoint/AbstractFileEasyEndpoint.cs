@@ -15,7 +15,7 @@ namespace EasyETL.Endpoint
 
         public virtual bool IsFieldSettingsComplete()
         {
-             throw new NotImplementedException();
+            return true;
         }
 
         public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)

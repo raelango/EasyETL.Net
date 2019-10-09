@@ -15,13 +15,16 @@ namespace EasyETL.Attributes
         public string DefaultValue;
         public string RegexMatch;
         public List<string> PossibleValues;
-        public EasyFieldAttribute(string fieldName, string fieldDescription = "", string defaultValue = "", string regexMatch = "", string possibleValues = "")
+        public bool IsPassword = false;
+        public EasyFieldAttribute(string fieldName, string fieldDescription = "", string defaultValue = "", string regexMatch = "", string possibleValues = "", bool isPassword = false)
         {
             FieldName = fieldName;
             FieldDescription = String.IsNullOrWhiteSpace(fieldDescription) ? fieldName:fieldDescription;
             DefaultValue = defaultValue;
             RegexMatch = regexMatch;
-            PossibleValues = possibleValues.Split(';').ToList();
+            PossibleValues = new List<string>();
+            if (!String.IsNullOrWhiteSpace(possibleValues)) PossibleValues = possibleValues.Split(';').ToList();
+            IsPassword = isPassword;
         }
 
     }

@@ -15,6 +15,10 @@ namespace EasyETL.Endpoint
 {
     [DisplayName("Amazon S3 Bucket")]
     [EasyProperty("CanListen","False")]
+    [EasyField("BucketName","Name of the Amazon S3 Bucket")]
+    [EasyField("AccessKey","Access Key to access the S3 Bucket")]
+    [EasyField("SecretKey", "Secret Key to access the S3 Bucket","","","",true)]
+    [EasyField("Overwrite", "Set to True if you would like to overwrite existing files when copying to this S3 Bucket","True","","True;False")]
     public class AmazonAWSEndpoint : AbstractFileEasyEndpoint
     {
         string BucketName = String.Empty;
@@ -22,6 +26,11 @@ namespace EasyETL.Endpoint
         string SecretKey = String.Empty;
 
         AmazonS3Client AWSClient = null;
+
+        public AmazonAWSEndpoint()
+        {
+
+        }
 
         public AmazonAWSEndpoint(string accessKey, string secretKey, string bucketName, bool overwrite = false)
         {
@@ -32,6 +41,43 @@ namespace EasyETL.Endpoint
         }
 
         #region public overriden methods
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "bucketname":
+                    BucketName = fieldValue; break;
+                case "accesskey":
+                    AccessKey = fieldValue; break;
+                case "secretkey":
+                    SecretKey = fieldValue; break;
+            }
+        }
+
+        public override bool IsFieldSettingsComplete()
+        {
+            return base.IsFieldSettingsComplete() && !String.IsNullOrWhiteSpace(BucketName) && !String.IsNullOrWhiteSpace(AccessKey) && !String.IsNullOrWhiteSpace(SecretKey);
+        }
+
+        public override bool CanFunction()
+        {
+            if (!IsFieldSettingsComplete()) return false;
+            GetS3Client();
+            return (AWSClient !=null);
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> resultDict = base.GetSettingsAsDictionary();
+            resultDict.Add("BucketName", BucketName);
+            resultDict.Add("AccessKey", AccessKey);
+            resultDict.Add("SecretKey", SecretKey);
+            return resultDict;
+        }
+
+
         public override string[] GetList(string filter = "*.*")
         {
             GetS3Client();
@@ -137,9 +183,9 @@ namespace EasyETL.Endpoint
 
         public AmazonS3Client GetS3Client()
         {
-            if (AWSClient == null)
+            if ((AWSClient == null) && IsFieldSettingsComplete())
             {
-                AWSClient = new AmazonS3Client(AccessKey, SecretKey);
+                AWSClient = new AmazonS3Client(AccessKey, SecretKey,Amazon.RegionEndpoint.USEast1);
             }
             return AWSClient;
         }

@@ -168,7 +168,7 @@ namespace EasyETL.Actions
 
                     resultData = "";
                     for (int charIndex =0; charIndex < fullData.Length; charIndex ++) {
-                        resultData += (((charIndex < yearPartIndex) || (charIndex > (yearPartIndex + yearPart.Length))) && (Char.IsDigit(fullData[charIndex]))) ? '*' : fullData[charIndex];
+                        resultData += (((charIndex < yearPartIndex) || (charIndex > (yearPartIndex + yearPart.Length))) && (Char.IsDigit(fullData[charIndex]))) ? '1' : fullData[charIndex];
                     }
                     return resultData;
                 }

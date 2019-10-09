@@ -72,7 +72,7 @@ namespace EasyETL.Attributes
 
         public static Dictionary<string, EasyFieldAttribute> GetEasyFields(this Type classType)
         {
-            Dictionary<string, EasyFieldAttribute> resultDict = new Dictionary<string, EasyFieldAttribute>();
+            Dictionary<string, EasyFieldAttribute> resultDict = new Dictionary<string, EasyFieldAttribute>(StringComparer.CurrentCultureIgnoreCase);
             foreach (object attr in classType.GetCustomAttributes(typeof(EasyFieldAttribute), false))
             {
                 resultDict.Add(((EasyFieldAttribute)attr).FieldName, (EasyFieldAttribute)attr);

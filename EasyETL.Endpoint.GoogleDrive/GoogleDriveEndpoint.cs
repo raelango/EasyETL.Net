@@ -18,10 +18,18 @@ namespace EasyETL.Endpoint.GoogleDrive
 {
     [DisplayName("Google Drive")]
     [EasyProperty("CanListen", "True")]
+    [EasyField("ApplicationName","Name of the application")]
+    [EasyField("Credentials","The JSON format credentials")]
     public class GoogleDriveEndpoint : AbstractFileEasyEndpoint
     {
-        string ApplicationName = String.Empty;
+        public string ApplicationName = String.Empty;
+        public string Credentials = String.Empty;
         DriveService GoogleDriveService = null;
+
+        public GoogleDriveEndpoint()
+        {
+
+        }
 
         public GoogleDriveEndpoint(string applicationName)
         {
@@ -34,7 +42,7 @@ namespace EasyETL.Endpoint.GoogleDrive
             if (GoogleDriveService != null) return;
             string[] Scopes = { DriveService.Scope.DriveReadonly };
             UserCredential credential;
-            using (var stream = new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+            using (Stream stream = new MemoryStream(ASCIIEncoding.ASCII.GetBytes(Credentials)))
             {
                 string credPath = "token.json";
                 credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
@@ -54,6 +62,40 @@ namespace EasyETL.Endpoint.GoogleDrive
         }
 
         #region public overriden methods
+
+        public override bool IsFieldSettingsComplete()
+        {
+            return base.IsFieldSettingsComplete() && (!String.IsNullOrWhiteSpace(ApplicationName)) && (!String.IsNullOrWhiteSpace(Credentials));
+        }
+
+        public override bool CanFunction()
+        {
+            if (!IsFieldSettingsComplete()) return false;
+            InitializeGoogleDriveService();
+            return (GoogleDriveService != null);
+        }
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "applicationname":
+                    ApplicationName = fieldValue; break;
+                case "credentials":
+                    Credentials = fieldValue; break;
+            }
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> resultDict = base.GetSettingsAsDictionary();
+            resultDict.Add("ApplicationName", ApplicationName);
+            resultDict.Add("Credentials", Credentials);
+            return resultDict;
+        }
+
+
         public override string[] GetList(string filter = "*.*")
         {
             InitializeGoogleDriveService();
