@@ -1,6 +1,7 @@
 ﻿using EasyETL;
 using EasyETL.Actions;
 using EasyETL.DataSets;
+using EasyETL.Endpoint;
 using EasyETL.Extractors;
 using EasyETL.Writers;
 using EasyETL.Xml;
@@ -35,6 +36,7 @@ namespace EasyXmlSample
         public Dictionary<string, Dictionary<string, string>> dctActionFieldSettings = new Dictionary<string, Dictionary<string, string>>();
         public Dictionary<string, Dictionary<string, string>> dctExportFieldSettings = new Dictionary<string, Dictionary<string, string>>();
         public Dictionary<string, XmlNode> dctDatasources = new Dictionary<string, XmlNode>();
+        public Dictionary<string, XmlNode> dctEndpoints = new Dictionary<string, XmlNode>();
 
 
         public int intAutoNumber = 0;
@@ -84,7 +86,7 @@ namespace EasyXmlSample
                 btnControl.Click += btnControl_Click;
                 fpActions.Controls.Add(btnControl);
 
-                string className =  (actionNode.Attributes.GetNamedItem("classname") == null) ? "":actionNode.Attributes.GetNamedItem("classname").Value;
+                string className = (actionNode.Attributes.GetNamedItem("classname") == null) ? "" : actionNode.Attributes.GetNamedItem("classname").Value;
 
                 ClassMapping cMapping = null;
                 if (dctAllActions.ContainsKey(className)) cMapping = dctAllActions[className];
@@ -117,6 +119,21 @@ namespace EasyXmlSample
                 dctDatasources.Add(datasourceName, datasourceNode);
             }
             #endregion
+
+            #region load all available endpoints
+            dctEndpoints.Clear();
+            cmbEndpoint.Items.Clear();
+
+            XmlNodeList endpointNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/endpoints/endpoint");
+            foreach (XmlNode endpointNode in endpointNodes)
+            {
+                string endpointName = endpointNode.Attributes.GetNamedItem("name").Value;
+                cmbEndpoint.Items.Add(endpointName);
+                dctEndpoints.Add(endpointName, endpointNode);
+            }
+
+            #endregion
+
 
             XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
             if (xNode != null)
@@ -220,7 +237,7 @@ namespace EasyXmlSample
                 {
                     string exportName = exportNode.Attributes.GetNamedItem("name").Value;
                     string className = "";
-                    if (exportNode.Attributes.GetNamedItem("classname") !=null) className= exportNode.Attributes.GetNamedItem("classname").Value;
+                    if (exportNode.Attributes.GetNamedItem("classname") != null) className = exportNode.Attributes.GetNamedItem("classname").Value;
                     ClassMapping eMapping = null;
                     if (dctAllExports.ContainsKey(className)) eMapping = dctAllExports[className];
                     if (eMapping != null)
@@ -294,6 +311,8 @@ namespace EasyXmlSample
                         {
                             case "sourcetype":
                                 tabDataSource.SelectTab("tabDatasource" + xAttr.Value); break;
+                            case "endpoint":
+                                cmbEndpoint.Text = xAttr.Value; break;
                             case "filename":
                                 txtFileName.Text = xAttr.Value; break;
                             case "usetextextractor":
@@ -370,7 +389,7 @@ namespace EasyXmlSample
                         }
                         foreach (int rowIndex in lstRowIndex)
                         {
-                            if (dataGrid.Rows[rowIndex].DataBoundItem !=null) dataRows.Add(((DataRowView)dataGrid.Rows[rowIndex].DataBoundItem).Row);
+                            if (dataGrid.Rows[rowIndex].DataBoundItem != null) dataRows.Add(((DataRowView)dataGrid.Rows[rowIndex].DataBoundItem).Row);
                         }
                     }
                 }
@@ -453,14 +472,44 @@ namespace EasyXmlSample
 
         private void btnLoad_Click(object sender, EventArgs e)
         {
-            ofd.CheckFileExists = true;
-            ofd.FileName = txtFileName.Text;
+            if (String.IsNullOrWhiteSpace(cmbEndpoint.Text)) return;
 
-            if (ofd.ShowDialog() == DialogResult.OK)
+            AbstractFileEasyEndpoint endpoint = GetEndpoint();
+            if (endpoint == null) return;
+            if (!endpoint.CanFunction()) return;
+            
+            EndpointFilesForm epfForm = new EndpointFilesForm();
+            epfForm.LoadEndPoint(endpoint, cmbEndpoint.Text);
+            if (epfForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                txtFileName.Text = ofd.FileName;
-                //LoadDataToGridView();
+                txtFileName.Text = epfForm.FileName;
             }
+            
+            //ofd.CheckFileExists = true;
+            //ofd.FileName = txtFileName.Text;
+
+            //if (ofd.ShowDialog() == DialogResult.OK)
+            //{
+            //    txtFileName.Text = ofd.FileName;
+            //    //LoadDataToGridView();
+            //}
+        }
+
+        private AbstractFileEasyEndpoint GetEndpoint()
+        {
+            AbstractFileEasyEndpoint endpoint = null;
+            if ((cmbEndpoint.SelectedItem != null) && (dctEndpoints.ContainsKey(cmbEndpoint.SelectedItem.ToString())))
+            {
+                XmlNode endpointNode = dctEndpoints[cmbEndpoint.SelectedItem.ToString()];
+                ClassMapping[] endpointClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractFileEasyEndpoint));
+                Type classType = endpointClasses.First(f => f.DisplayName == endpointNode.Attributes.GetNamedItem("classname").Value).Class;
+                endpoint = (AbstractFileEasyEndpoint)Activator.CreateInstance(classType);
+                foreach (XmlNode childNode in endpointNode.SelectNodes("field"))
+                {
+                    endpoint.LoadSetting(childNode.Attributes.GetNamedItem("name").Value, childNode.Attributes.GetNamedItem("value").Value);
+                }
+            }
+            return endpoint;
         }
 
         public void LoadDataToGridView()
@@ -468,8 +517,14 @@ namespace EasyXmlSample
             if (stopWatch.IsRunning) stopWatch.Stop();
             if ((tabDataSource.SelectedTab == tabDatasourceText) && (txtTextContents.TextLength == 0)) return;
             if ((tabDataSource.SelectedTab == tabDatasourceFile) && (txtFileName.TextLength == 0)) return;
-            if ((tabDataSource.SelectedTab == tabDatasourceFile) && !File.Exists(txtFileName.Text)) return;
             if ((tabDataSource.SelectedTab == tabDatasourceDatabase) && (String.IsNullOrWhiteSpace(cmbDatasource.Text))) return;
+            AbstractFileEasyEndpoint endpoint = null;
+            if (tabDataSource.SelectedTab == tabDatasourceFile)
+            {
+                endpoint = GetEndpoint();
+                if (endpoint == null) return;
+                if (endpoint.GetList(txtFileName.Text).Length == 0) return;
+            }
             stopWatch.Restart();
             intAutoNumber = 0;
             this.UseWaitCursor = true;
@@ -565,8 +620,10 @@ namespace EasyXmlSample
                     if (chkHasMaxRows.Checked) ep.MaxRecords = Convert.ToInt64(nudMaxRows.Value);
                     if (!String.IsNullOrWhiteSpace(txtOnLoadContents.Text))
                         ep.OnLoadSettings = txtOnLoadContents.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-                    if ((tabDataSource.SelectedTab == tabDatasourceFile))
-                        xDoc.Load(txtFileName.Text, ep, extractor);
+                    if ((tabDataSource.SelectedTab == tabDatasourceFile)) {
+                        Stream fileStream = endpoint.GetStream(txtFileName.Text);
+                        xDoc.Load(fileStream, ep, extractor);
+                    }
                     else
                         xDoc.LoadStr(txtTextContents.Text, ep, extractor);
                     txtExceptions.Text = "";
@@ -594,6 +651,7 @@ namespace EasyXmlSample
             {
                 MessageBox.Show("Error loading contents...");
             }
+            endpoint = null;
             this.UseWaitCursor = false;
         }
 
@@ -705,6 +763,7 @@ namespace EasyXmlSample
                 dctContentExtractors.Add(cmapping.DisplayName, cmapping);
                 cbTextExtractor.Items.Add(cmapping.DisplayName);
             }
+
         }
 
         private void cmbFileType_SelectedIndexChanged(object sender, EventArgs e)
@@ -954,6 +1013,7 @@ namespace EasyXmlSample
             switch (tabDataSource.SelectedTab.Text)
             {
                 case "File":
+                    datasourceNode.SetAttribute("endpoint", cmbEndpoint.Text);
                     datasourceNode.SetAttribute("usetextextractor", chkUseTextExtractor.Checked.ToString());
                     datasourceNode.SetAttribute("textextractor", cbTextExtractor.Text);
                     datasourceNode.SetAttribute("hasmaxrows", chkHasMaxRows.Checked.ToString());
@@ -1269,7 +1329,7 @@ namespace EasyXmlSample
                             {
                                 foreach (DataGridViewRow dRow in dataGrid.SelectedRows)
                                 {
-                                    if (dRow.DataBoundItem !=null) dataRows.Add(((DataRowView)dRow.DataBoundItem).Row);
+                                    if (dRow.DataBoundItem != null) dataRows.Add(((DataRowView)dRow.DataBoundItem).Row);
                                 }
                                 if (dataRows.Count == 0)
                                 {

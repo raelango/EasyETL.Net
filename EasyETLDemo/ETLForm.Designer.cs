@@ -150,6 +150,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnHideSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cmbEndpoint = new System.Windows.Forms.ComboBox();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -718,6 +720,8 @@
             // 
             // tabDatasourceFile
             // 
+            this.tabDatasourceFile.Controls.Add(this.cmbEndpoint);
+            this.tabDatasourceFile.Controls.Add(this.label5);
             this.tabDatasourceFile.Controls.Add(this.label18);
             this.tabDatasourceFile.Controls.Add(this.label13);
             this.tabDatasourceFile.Controls.Add(this.nudMaxRows);
@@ -737,7 +741,7 @@
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(7, 13);
+            this.label18.Location = new System.Drawing.Point(7, 51);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(57, 13);
             this.label18.TabIndex = 13;
@@ -746,7 +750,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(178, 93);
+            this.label13.Location = new System.Drawing.Point(178, 122);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(29, 13);
             this.label13.TabIndex = 12;
@@ -754,7 +758,7 @@
             // 
             // nudMaxRows
             // 
-            this.nudMaxRows.Location = new System.Drawing.Point(126, 94);
+            this.nudMaxRows.Location = new System.Drawing.Point(126, 123);
             this.nudMaxRows.Maximum = new decimal(new int[] {
             100000000,
             0,
@@ -776,7 +780,7 @@
             this.chkHasMaxRows.AutoSize = true;
             this.chkHasMaxRows.Checked = true;
             this.chkHasMaxRows.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkHasMaxRows.Location = new System.Drawing.Point(7, 94);
+            this.chkHasMaxRows.Location = new System.Drawing.Point(7, 123);
             this.chkHasMaxRows.Name = "chkHasMaxRows";
             this.chkHasMaxRows.Size = new System.Drawing.Size(112, 17);
             this.chkHasMaxRows.TabIndex = 10;
@@ -788,7 +792,7 @@
             // 
             this.cbTextExtractor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbTextExtractor.FormattingEnabled = true;
-            this.cbTextExtractor.Location = new System.Drawing.Point(126, 70);
+            this.cbTextExtractor.Location = new System.Drawing.Point(126, 96);
             this.cbTextExtractor.Name = "cbTextExtractor";
             this.cbTextExtractor.Size = new System.Drawing.Size(242, 21);
             this.cbTextExtractor.TabIndex = 9;
@@ -798,7 +802,7 @@
             // chkUseTextExtractor
             // 
             this.chkUseTextExtractor.AutoSize = true;
-            this.chkUseTextExtractor.Location = new System.Drawing.Point(7, 70);
+            this.chkUseTextExtractor.Location = new System.Drawing.Point(7, 96);
             this.chkUseTextExtractor.Name = "chkUseTextExtractor";
             this.chkUseTextExtractor.Size = new System.Drawing.Size(114, 17);
             this.chkUseTextExtractor.TabIndex = 8;
@@ -809,7 +813,7 @@
             // 
             // btnLoad
             // 
-            this.btnLoad.Location = new System.Drawing.Point(675, 30);
+            this.btnLoad.Location = new System.Drawing.Point(675, 68);
             this.btnLoad.Name = "btnLoad";
             this.btnLoad.Size = new System.Drawing.Size(75, 23);
             this.btnLoad.TabIndex = 7;
@@ -820,7 +824,7 @@
             // txtFileName
             // 
             this.txtFileName.Enabled = false;
-            this.txtFileName.Location = new System.Drawing.Point(6, 32);
+            this.txtFileName.Location = new System.Drawing.Point(6, 70);
             this.txtFileName.Name = "txtFileName";
             this.txtFileName.Size = new System.Drawing.Size(663, 20);
             this.txtFileName.TabIndex = 6;
@@ -1503,6 +1507,23 @@
             this.btnSaveSettings.Visible = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 18);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(55, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Endpoint :";
+            // 
+            // cmbEndpoint
+            // 
+            this.cmbEndpoint.FormattingEnabled = true;
+            this.cmbEndpoint.Location = new System.Drawing.Point(72, 18);
+            this.cmbEndpoint.Name = "cmbEndpoint";
+            this.cmbEndpoint.Size = new System.Drawing.Size(189, 21);
+            this.cmbEndpoint.TabIndex = 15;
+            // 
             // ETLForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1697,6 +1718,8 @@
         private System.Windows.Forms.ComboBox cmbDatasource;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckedListBox chkAvailableExports;
+        private System.Windows.Forms.ComboBox cmbEndpoint;
+        private System.Windows.Forms.Label label5;
     }
 }
 

@@ -65,6 +65,12 @@
     <Compile Include="EasyETLDemoApplication.Designer.cs">
       <DependentUpon>EasyETLDemoApplication.cs</DependentUpon>
     </Compile>
+    <Compile Include="EndpointFilesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EndpointFilesForm.Designer.cs">
+      <DependentUpon>EndpointFilesForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ETLForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -90,6 +96,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EasyETLDemoApplication.resx">
       <DependentUpon>EasyETLDemoApplication.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EndpointFilesForm.resx">
+      <DependentUpon>EndpointFilesForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ETLForm.resx">
       <DependentUpon>ETLForm.cs</DependentUpon>
