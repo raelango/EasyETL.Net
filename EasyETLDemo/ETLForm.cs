@@ -491,17 +491,19 @@ namespace EasyXmlSample
                 xDoc.OnError += xDoc_OnError;
                 if (tabDataSource.SelectedTab == tabDatasourceDatabase)
                 {
-                    DatabaseEasyParser dbep = null;
+                    DatasourceEasyParser dbep = null;
                     if ((cmbDatasource.SelectedItem != null) && (dctDatasources.ContainsKey(cmbDatasource.SelectedItem.ToString())))
                     {
                         XmlNode datasourceNode = dctDatasources[cmbDatasource.SelectedItem.ToString()];
-                        ClassMapping[] databaseClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(DatabaseEasyParser));
+                        ClassMapping[] databaseClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(DatasourceEasyParser));
                         Type classType = databaseClasses.First(f => f.DisplayName == datasourceNode.Attributes.GetNamedItem("classname").Value).Class;
-                        dbep = (DatabaseEasyParser)Activator.CreateInstance(classType);
+                        dbep = (DatasourceEasyParser)Activator.CreateInstance(classType);
                         foreach (XmlNode childNode in datasourceNode.SelectNodes("field"))
                         {
                             dbep.LoadSetting(childNode.Attributes.GetNamedItem("name").Value, childNode.Attributes.GetNamedItem("value").Value);
                         }
+                        if (chkHasMaxRows.Checked) dbep.MaxRecords = Convert.ToInt64(nudMaxRows.Value);
+
                         xDoc.LoadXml(dbep.Load(txtDatabaseQuery.Text).OuterXml);
                     }
                 }

@@ -11,7 +11,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Xml.Xsl;
 
 namespace EasyETL.Xml.Parsers
 {
@@ -24,10 +23,10 @@ namespace EasyETL.Xml.Parsers
     }
 
     [DisplayName("Database Source")]
-    [EasyField("ConnectionType", "Database Connection Type","ODBC","","ODBC;OleDb;SQL")]
+    [EasyField("ConnectionType", "Database Connection Type", "ODBC", "", "ODBC;OleDb;SQL")]
     [EasyField("ConnectionString", "Connection String")]
     [EasyField("Query", "Query to Execute")]
-    public class DatabaseEasyParser : AbstractEasyParser
+    public class DatabaseEasyParser : DatasourceEasyParser
     {
         public string ConnectionString;
         public string Query;
@@ -39,7 +38,8 @@ namespace EasyETL.Xml.Parsers
         {
             ConnectionType = EasyDatabaseConnectionType.edctODBC;
         }
-        public DatabaseEasyParser(EasyDatabaseConnectionType connType, string connString = "") {
+        public DatabaseEasyParser(EasyDatabaseConnectionType connType, string connString = "")
+        {
             ConnectionType = connType;
             ConnectionString = connString;
         }
@@ -116,7 +116,8 @@ namespace EasyETL.Xml.Parsers
                         break;
                 }
             }
-            if ((Connection != null) && (Connection.State != ConnectionState.Open)) {
+            if ((Connection != null) && (Connection.State != ConnectionState.Open))
+            {
                 Connection.Open();
             }
             IsConnected = (Connection != null) && (Connection.State == ConnectionState.Open);
@@ -143,6 +144,5 @@ namespace EasyETL.Xml.Parsers
             resultDict.Add("query", Query);
             return resultDict;
         }
-
     }
 }

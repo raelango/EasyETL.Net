@@ -15,9 +15,9 @@ namespace EasyETL.Xml.Configuration
             return null;
         }
 
-        public DatabaseEasyParser CreateDatasource()
+        public DatasourceEasyParser CreateDatasource()
         {
-            return (DatabaseEasyParser)CreateInstance();
+            return (DatasourceEasyParser)CreateInstance();
         }
     }
 }

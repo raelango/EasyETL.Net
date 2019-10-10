@@ -99,6 +99,7 @@ namespace EasyXmlSample
         {
             if (String.IsNullOrWhiteSpace(SettingsFileName)) return;
             if (!File.Exists(SettingsFileName)) return;
+            if (cmbClassName.SelectedItem == null) return;
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(SettingsFileName);
             XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);

@@ -324,7 +324,7 @@ namespace EasyXmlSample
                                     aForm.BaseClassType = typeof(AbstractEasyEndpoint);
                                     break;
                                 case "datasources":
-                                    aForm.BaseClassType = typeof(DatabaseEasyParser);
+                                    aForm.BaseClassType = typeof(DatasourceEasyParser);
                                     break;
                                 case "parsers":
                                     aForm.BaseClassType = typeof(ContentEasyParser);

@@ -58,7 +58,7 @@ namespace EasyETL.Xml.Configuration
         {
             get
             {
-                if (AvailableDatasources == null) AvailableDatasources = ReflectionUtils.LoadClassesFromLibrary(typeof(DatabaseEasyParser)).ToList();
+                if (AvailableDatasources == null) AvailableDatasources = ReflectionUtils.LoadClassesFromLibrary(typeof(DatasourceEasyParser)).ToList();
                 return AvailableDatasources;
             }
         }

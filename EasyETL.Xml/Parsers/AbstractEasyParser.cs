@@ -143,7 +143,7 @@ namespace EasyETL.Xml.Parsers
 
         public virtual bool IsFieldSettingsComplete()
         {
-            return false;
+            return true;
         }
 
         public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
