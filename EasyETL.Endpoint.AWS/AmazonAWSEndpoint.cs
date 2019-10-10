@@ -87,7 +87,7 @@ namespace EasyETL.Endpoint
                 request.BucketName = BucketName;
                 while (request != null) {
                     ListObjectsResponse loResponse = AWSClient.ListObjects(request);
-                    fileList.AddRange(loResponse.S3Objects.Select(s => s.BucketName).ToList());
+                    fileList.AddRange(loResponse.S3Objects.Select(s => s.Key).ToList());
                     if (loResponse.IsTruncated)
                         request.Marker = loResponse.NextMarker;
                     else
@@ -104,9 +104,13 @@ namespace EasyETL.Endpoint
             {
                 GetObjectRequest request = new GetObjectRequest();
                 request.BucketName = BucketName;
+                request.Key = fileName;
                 using (GetObjectResponse response = AWSClient.GetObject(request))
                 {
-                    return response.ResponseStream;
+                    MemoryStream ms = new MemoryStream();
+                    response.ResponseStream.CopyTo(ms);
+                    ms.Seek(0, SeekOrigin.Begin);
+                    return ms;
                 }
             }
             return null;
@@ -157,7 +161,7 @@ namespace EasyETL.Endpoint
             {
                 return false;
             }
-            return false;
+            return true;
         }
 
         public override bool Delete(string fileName)

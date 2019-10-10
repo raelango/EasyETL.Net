@@ -121,7 +121,7 @@ namespace EasyETL.Xml.EMail
 
 
             SearchQuery searchQuery = SearchQuery.All;
-            if (!String.IsNullOrWhiteSpace(Query)) searchQuery = SearchQuery.HasKeyword(strToLoad);
+            if (!String.IsNullOrWhiteSpace(Query)) searchQuery = SearchQuery.MessageContains(Query) ;
             IMailFolder mailFolder = mailStore.GetFolder(MailboxName);
             mailFolder.Open(FolderAccess.ReadOnly);
             IList<UniqueId> mailIDs = mailFolder.Search(searchQuery);
