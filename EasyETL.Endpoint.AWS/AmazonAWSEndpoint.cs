@@ -15,7 +15,13 @@ namespace EasyETL.Endpoint
 {
     [DisplayName("Amazon S3 Bucket")]
     [EasyProperty("CanListen","False")]
-    [EasyField("BucketName","Name of the Amazon S3 Bucket")]
+    [EasyProperty("HasFiles", "True")]
+    [EasyProperty("CanStream", "True")]
+    [EasyProperty("CanRead", "True")]
+    [EasyProperty("CanWrite", "True")]
+    [EasyProperty("CanList", "True")]
+
+    [EasyField("BucketName", "Name of the Amazon S3 Bucket")]
     [EasyField("AccessKey","Access Key to access the S3 Bucket")]
     [EasyField("SecretKey", "Secret Key to access the S3 Bucket","","","",true)]
     [EasyField("Overwrite", "Set to True if you would like to overwrite existing files when copying to this S3 Bucket","True","","True;False")]
