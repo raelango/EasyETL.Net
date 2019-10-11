@@ -21,6 +21,8 @@ namespace EasyXmlSample
             InitializeComponent();
         }
 
+
+
         public void LoadEndPoint(AbstractFileEasyEndpoint aep, string endpointName)
         {
             Endpoint = aep;

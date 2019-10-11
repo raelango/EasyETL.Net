@@ -30,7 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ETLForm));
-            this.ofd = new System.Windows.Forms.OpenFileDialog();
             this.btnCloseWindow = new System.Windows.Forms.Button();
             this.btnRefreshData = new System.Windows.Forms.Button();
             this.cmbDelimited = new System.Windows.Forms.GroupBox();
@@ -80,6 +79,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tabDataSource = new System.Windows.Forms.TabControl();
             this.tabDatasourceFile = new System.Windows.Forms.TabPage();
+            this.cmbEndpoint = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.nudMaxRows = new System.Windows.Forms.NumericUpDown();
@@ -150,8 +151,6 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnHideSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.cmbEndpoint = new System.Windows.Forms.ComboBox();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -737,6 +736,23 @@
             this.tabDatasourceFile.TabIndex = 0;
             this.tabDatasourceFile.Text = "File";
             this.tabDatasourceFile.UseVisualStyleBackColor = true;
+            // 
+            // cmbEndpoint
+            // 
+            this.cmbEndpoint.FormattingEnabled = true;
+            this.cmbEndpoint.Location = new System.Drawing.Point(72, 18);
+            this.cmbEndpoint.Name = "cmbEndpoint";
+            this.cmbEndpoint.Size = new System.Drawing.Size(189, 21);
+            this.cmbEndpoint.TabIndex = 15;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(10, 18);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(55, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Endpoint :";
             // 
             // label18
             // 
@@ -1507,23 +1523,6 @@
             this.btnSaveSettings.Visible = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 18);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(55, 13);
-            this.label5.TabIndex = 14;
-            this.label5.Text = "Endpoint :";
-            // 
-            // cmbEndpoint
-            // 
-            this.cmbEndpoint.FormattingEnabled = true;
-            this.cmbEndpoint.Location = new System.Drawing.Point(72, 18);
-            this.cmbEndpoint.Name = "cmbEndpoint";
-            this.cmbEndpoint.Size = new System.Drawing.Size(189, 21);
-            this.cmbEndpoint.TabIndex = 15;
-            // 
             // ETLForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1598,7 +1597,6 @@
 
         #endregion
 
-        private System.Windows.Forms.OpenFileDialog ofd;
         private System.Windows.Forms.ComboBox cmbFileType;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox grpHtmlOptions;

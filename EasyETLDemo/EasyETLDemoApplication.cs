@@ -250,6 +250,7 @@ namespace EasyXmlSample
                 }
             }
             xDoc.Save(xmlFileName);
+            configXmlDocument.Load(xmlFileName);
         }
 
         private void tvClients_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
@@ -291,7 +292,9 @@ namespace EasyXmlSample
                         return;
                     }
                 }
-                if ("actions;exports;datasources;endpoints;parsers;etls".Split(';').Contains(tvClients.SelectedNode.Parent.Text))
+                string clientName = tvClients.SelectedNode.Parent.Parent.Text;
+                string nodeName  = tvClients.SelectedNode.Text;
+                if ("actions;exports;datasources;endpoints;parsers;etls;transfers".Split(';').Contains(tvClients.SelectedNode.Parent.Text))
                 {
                     MainTablControl.TabPages.Add(tvClients.SelectedNode.FullPath);
                     TabPage newTabPage = MainTablControl.TabPages[MainTablControl.TabCount - 1];
@@ -304,6 +307,11 @@ namespace EasyXmlSample
                             mForm.LoadControls();
                             mForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
                             currentForm = mForm;
+                            break;
+                        case "transfers":
+                            TransferForm tForm = new TransferForm();
+                            tForm.LoadSettingsFromXml(configXmlDocument.SelectSingleNode("//clients/client[@name='" + clientName + "']/transfers/transfer[@name='" + nodeName + "']"));
+                            currentForm = tForm;
                             break;
                         case "actions":
                         case "exports":
