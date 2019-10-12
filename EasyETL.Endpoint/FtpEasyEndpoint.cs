@@ -87,7 +87,7 @@ namespace EasyETL.Endpoint
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
             }
             return resultList.ToArray();
@@ -214,6 +214,8 @@ namespace EasyETL.Endpoint
                 FTPControl = new FtpClient(FTPAddress, PortNumber, Credentials);
                 if (Certificates !=null) FTPControl.ClientCertificates.AddRange(Certificates);
                 FTPControl.Connect();
+                FTPControl.DownloadDataType = FtpDataType.Binary;
+                FTPControl.UploadDataType = FtpDataType.Binary;
             }
         }
         #endregion

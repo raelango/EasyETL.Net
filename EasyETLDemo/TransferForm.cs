@@ -21,6 +21,7 @@ namespace EasyXmlSample
         XmlNode configNode = null;
         public string XmlFileName;
         string clientName = "";
+        string transferName = "";
         List<string> lstEndpoints = new List<string>();
         public TransferForm()
         {
@@ -32,15 +33,18 @@ namespace EasyXmlSample
             configNode = xmlNode;
             configXmlDocument = xmlNode.OwnerDocument;
             clientName = xmlNode.ParentNode.ParentNode.Attributes.GetNamedItem("name").Value;
+            transferName = xmlNode.Attributes.GetNamedItem("name").Value;
             LoadAllEndPoints();
             foreach (XmlAttribute xAttr in xmlNode.Attributes) {
                 switch (xAttr.Name.ToLower())
                 {
                     case "sourceendpoint":
                         if (cmbSource.Items.Contains(xAttr.Value)) cmbSource.Text = xAttr.Value;
+                        SetSourceEndpoint();
                         break;
                     case "targetendpoint":
                         if (cmbDestination.Items.Contains(xAttr.Value)) cmbDestination.Text = xAttr.Value;
+                        SetDestinationEndpoint();
                         break;
                     case "sourcefilter":
                         txtSourceFilter.Text = xAttr.Value; break;
@@ -48,6 +52,8 @@ namespace EasyXmlSample
                         txtDestinationFilter.Text = xAttr.Value; break;
                 }
             }
+            PopulateSourceList();
+            PopulateTargetList();
         }
 
         public void LoadAllEndPoints()
@@ -62,20 +68,19 @@ namespace EasyXmlSample
                 if (endpointNode.Attributes.GetNamedItem("name") != null) lstEndpoints.Add(endpointNode.Attributes.GetNamedItem("name").Value);
             }
             PopulateSourceEndPoint();
-
             PopulateDestinationEndPoint();
         }
 
         public void PopulateSourceEndPoint() {
             foreach (string endpoint in lstEndpoints)
             {
-                if ((cmbDestination.SelectedItem != null) && (cmbDestination.SelectedItem.ToString().Equals(endpoint))) {
-                    cmbSource.Items.Remove(endpoint);
-                }
-                else
-                {
+                //if ((cmbDestination.SelectedItem != null) && (cmbDestination.SelectedItem.ToString().Equals(endpoint))) {
+                //    cmbSource.Items.Remove(endpoint);
+                //}
+                //else
+                //{
                     if (!cmbSource.Items.Contains(endpoint)) cmbSource.Items.Add(endpoint);
-                }
+                //}
             }
             if ((cmbSource.SelectedItem == null) && (cmbSource.Items.Count >0)) cmbSource.SelectedIndex = 0;
         }
@@ -173,12 +178,16 @@ namespace EasyXmlSample
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            if (String.IsNullOrWhiteSpace(XmlFileName)) return;
             if (configNode == null) return;
+            configXmlDocument = new XmlDocument();
+            configXmlDocument.Load(XmlFileName);
+            configNode = configXmlDocument.SelectSingleNode("//clients/client[@name='" + clientName + "']/transfers/transfer[@name='" + transferName + "']");
             SetConfiguration("sourceendpoint",cmbSource.Text);
             SetConfiguration("sourcefilter", txtSourceFilter.Text);
             SetConfiguration("targetendpoint", cmbDestination.Text);
             SetConfiguration("targetfilter", txtDestinationFilter.Text);
-            if (!String.IsNullOrWhiteSpace(XmlFileName)) configXmlDocument.Save(XmlFileName);
+            configXmlDocument.Save(XmlFileName);
             btnClose_Click(this, null);
         }
 
@@ -206,5 +215,14 @@ namespace EasyXmlSample
             }
         }
 
+        private void txtSourceFilter_Leave(object sender, EventArgs e)
+        {
+            PopulateSourceList();
+        }
+
+        private void txtDestinationFilter_Leave(object sender, EventArgs e)
+        {
+            PopulateTargetList();
+        }
     }
 }

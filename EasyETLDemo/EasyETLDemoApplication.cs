@@ -250,6 +250,7 @@ namespace EasyXmlSample
                 }
             }
             xDoc.Save(xmlFileName);
+            configXmlDocument = new EasyETLXmlDocument();
             configXmlDocument.Load(xmlFileName);
         }
 
@@ -310,6 +311,7 @@ namespace EasyXmlSample
                             break;
                         case "transfers":
                             TransferForm tForm = new TransferForm();
+                            tForm.XmlFileName = xmlFileName;
                             tForm.LoadSettingsFromXml(configXmlDocument.SelectSingleNode("//clients/client[@name='" + clientName + "']/transfers/transfer[@name='" + nodeName + "']"));
                             currentForm = tForm;
                             break;

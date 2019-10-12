@@ -89,9 +89,7 @@
     <Compile Include="Extractors\DelimitedDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Extractors\EasyDataSet.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Extractors\EasyDataSet.cs" />
     <Compile Include="Extractors\EventDataSet.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -116,9 +114,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Extractors\RegexColumnBuilder.cs" />
-    <Compile Include="Extractors\RegexDataset.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Extractors\RegexDataset.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Listeners\ConfigurationClasses.cs" />
     <Compile Include="Listeners\EventLogListener.cs" />
