@@ -17,15 +17,31 @@ namespace EasyEndpoint
 {
     [DisplayName("Sharepoint")]
     [EasyProperty("CanListen", "False")]
+    [EasyProperty("HasFiles", "True")]
+    [EasyProperty("CanStream", "True")]
+    [EasyProperty("CanRead", "True")]
+    [EasyProperty("CanWrite", "True")]
+    [EasyProperty("CanList", "True")]
+    [EasyField("SiteName", "Name of the Site")]
+    [EasyField("LibraryName", "Name of the Document Library")]
+    [EasyField("UserName", "UserName to access the site")]
+    [EasyField("UserPassword", "Password of the username to access the Site","","","",true)]
+    [EasyField("Overwrite", "Can Overwrite files if already present ?", "False", "True|False", "True;False")]
     public class SharepointEasyEndpoint : AbstractFileEasyEndpoint, IDisposable
     {
-
         string SiteName = "";
         ICredentials Credentials = null;
         string LibraryName = String.Empty;
+        string UserName = String.Empty;
+        String UserPassword = String.Empty;
         SP.ClientContext _clientContext = null;
         SP.Web _web = null;
         SP.Site _site = null;
+
+        public SharepointEasyEndpoint() : base()
+        {
+
+        }
 
         public SharepointEasyEndpoint(string siteName, string userName, string password, string libraryName, bool overwriteFiles = true)
         {
@@ -151,7 +167,45 @@ namespace EasyEndpoint
                 return false;
             }
         }
-        
+
+        public override void LoadSetting(string fieldName, string fieldValue)
+        {
+            base.LoadSetting(fieldName, fieldValue);
+            switch (fieldName.ToLower())
+            {
+                case "username":
+                    UserName = fieldValue; break;
+                case "userpassword":
+                    UserPassword = fieldValue; break;
+                case "libraryname":
+                    LibraryName = fieldValue; break;
+                case "sitename":
+                    SiteName = fieldValue; break;
+            }
+        }
+
+        public override Dictionary<string, string> GetSettingsAsDictionary()
+        {
+            Dictionary<string,string> resultDict = base.GetSettingsAsDictionary();
+            resultDict.Add("username", UserName);
+            resultDict.Add("userpassword", UserPassword);
+            resultDict.Add("libraryname", LibraryName);
+            resultDict.Add("sitename", SiteName);
+            return resultDict;
+        }
+
+        public override bool IsFieldSettingsComplete()
+        {
+            return base.IsFieldSettingsComplete()  && !String.IsNullOrWhiteSpace(UserName) && !String.IsNullOrWhiteSpace(UserPassword);
+        }
+
+        public override bool CanFunction()
+        {
+            if (!IsFieldSettingsComplete()) return false;
+            return (SharepointClientContext != null);
+        }
+
+
         #endregion
 
         #region Private Methods
@@ -184,6 +238,10 @@ namespace EasyEndpoint
                 {
                     //Initialize and load the Client Context...
                     _clientContext = new SP.ClientContext(SiteName);
+                    if (!String.IsNullOrWhiteSpace(UserName))
+                    {
+                        Credentials = GetCredential(UserName, UserPassword);
+                    }
                     _clientContext.Credentials = Credentials;
                     _clientContext.ExecuteQuery();
 
