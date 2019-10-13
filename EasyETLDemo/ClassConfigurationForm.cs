@@ -231,7 +231,7 @@ namespace EasyXmlSample
             if ((gvFieldValues.Rows.Count > e.RowIndex) && (gvFieldValues.Rows[e.RowIndex] != null))
             {
                 string fieldName = gvFieldValues[0, e.RowIndex].Value.ToString();
-                string fieldValue = SelectedClassSettings[fieldName];
+                string fieldValue = SelectedClassSettings.ContainsKey(fieldName) ? SelectedClassSettings[fieldName]  : String.Empty;
                 SelectedFieldAttribute = SelectedClassMapping.Class.GetEasyField(fieldName);
                 if (SelectedFieldAttribute != null)
                 {
@@ -240,8 +240,7 @@ namespace EasyXmlSample
                     {
                         fieldProperties += kvPair.Key + "=" + kvPair.Value + Environment.NewLine;
                     }
-
-                    SelectedFieldAttribute = SelectedClassMapping.Class.GetEasyField(fieldName);
+                    if (String.IsNullOrEmpty(fieldValue)) fieldValue = SelectedFieldAttribute.DefaultValue;
                     FieldSettingModificationForm fsmForm = new FieldSettingModificationForm();
                     fsmForm.SetFields(txtActionName.Text, fieldValue, SelectedFieldAttribute);
                     fsmForm.ShowDialog(this);
