@@ -32,7 +32,7 @@ namespace EasyETL.Xml.Parsers
             rootNode = xDoc.DocumentElement;
             #endregion
             
-            X12Parser parser = new X12Parser(); 
+            X12Parser parser = new X12Parser(false); 
             List<Interchange> interchanges = parser.ParseMultiple(txtReader.ReadToEnd());
             foreach (Interchange interchange in interchanges)
             {

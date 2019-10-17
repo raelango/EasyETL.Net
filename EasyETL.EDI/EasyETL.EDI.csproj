@@ -31,9 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="OopFactory.X12, Version=3.0.8.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\OopFactory.X12.3.0.8.1\lib\net40\OopFactory.X12.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="EdiFactory, Version=1.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EdiFactory.1.0.4\lib\netstandard2.0\EdiFactory.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -42,6 +42,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Serialization" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EDIEasyParser.cs" />

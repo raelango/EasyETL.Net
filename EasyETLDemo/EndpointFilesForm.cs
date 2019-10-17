@@ -39,7 +39,22 @@ namespace EasyXmlSample
         private void btnSelect_Click(object sender, EventArgs e)
         {
             FileName = lbFiles.Text;
+            DialogResult = DialogResult.OK;
         }
 
+        private void txtSearchFilter_Enter(object sender, EventArgs e)
+        {
+            btnLoadList.NotifyDefault(true);
+        }
+
+        private void lbFiles_Enter(object sender, EventArgs e)
+        {
+            btnSelect.NotifyDefault(true);
+        }
+
+        private void lbFiles_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            btnSelect_Click(null, null);
+        }
     }
 }

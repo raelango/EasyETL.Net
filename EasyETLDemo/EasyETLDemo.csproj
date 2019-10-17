@@ -146,6 +146,10 @@
       <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
       <Name>EasyETL.Attributes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EasyETL.EDI\EasyETL.EDI.csproj">
+      <Project>{ef3a7f64-2ea3-4ff8-8e0f-7ced34769ba2}</Project>
+      <Name>EasyETL.EDI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyETL.Endpoint\EasyETL.Endpoint.csproj">
       <Project>{51925788-a8e5-4d41-a192-d206cdefee35}</Project>
       <Name>EasyETL.Endpoint</Name>

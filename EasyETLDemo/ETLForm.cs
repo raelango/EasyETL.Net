@@ -644,15 +644,15 @@ namespace EasyXmlSample
                 {
                     TransformDataFromEzDoc();
                 }
-                catch
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Error Transforming document...");
+                    MessageBox.Show("Error Transforming document." + Environment.NewLine + ex.Message);
                 }
 
             }
-            catch
+            catch (Exception ex)
             {
-                MessageBox.Show("Error loading contents...");
+                MessageBox.Show("Error loading contents..." + Environment.NewLine + ex.Message);
             }
             endpoint = null;
             this.UseWaitCursor = false;

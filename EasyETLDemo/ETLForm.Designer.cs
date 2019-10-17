@@ -681,6 +681,7 @@
             this.cmbFileType.FormattingEnabled = true;
             this.cmbFileType.Items.AddRange(new object[] {
             "Delimited",
+            "EDI",
             "Fixed Width",
             "HL7",
             "Html",
