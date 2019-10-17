@@ -590,6 +590,9 @@ namespace EasyXmlSample
                         case "HL7":
                             ep = new HL7EasyParser();
                             break;
+                        case "EDI":
+                            ep = new EDIEasyParser();
+                            break;
                         case "Fixed Width":
                             ep = new FixedWidthEasyParser(false, lstFixedColumnWidths.Items.Cast<int>().ToArray());
                             if (txtFixedWidthComments.Text.Trim().Length > 0)
