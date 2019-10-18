@@ -50,6 +50,7 @@
     <Compile Include="OpenXMLExcelDatasetWriter.cs" />
     <Compile Include="OfficeDatasetWriter.cs" />
     <Compile Include="OfficeMailMergeDatasetWriter.cs" />
+    <Compile Include="PowerPointContentExtractor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WordContentExtractor.cs" />
     <Compile Include="WordDatasetWriter.cs" />
