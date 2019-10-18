@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL", "EasyETL\EasyETL.csproj", "{2647E6CE-2D5F-4524-9AB0-372CFB456841}"
 EndProject
@@ -40,6 +40,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.EMail", "EasyETL.EMail\EasyETL.EMail.csproj", "{68F826E5-1FD2-46CD-B446-CEB0F1415797}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.EDI", "EasyETL.EDI\EasyETL.EDI.csproj", "{EF3A7F64-2EA3-4FF8-8E0F-7CED34769BA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.OCR.Tesseract", "EasyETL.OCR.tesseract\EasyETL.OCR.Tesseract.csproj", "{EF5F6566-8516-4D6C-B842-724E7DAE1008}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -241,8 +243,23 @@ Global
 		{EF3A7F64-2EA3-4FF8-8E0F-7CED34769BA2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EF3A7F64-2EA3-4FF8-8E0F-7CED34769BA2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EF3A7F64-2EA3-4FF8-8E0F-7CED34769BA2}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Debug|x86.Build.0 = Debug|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Release|x86.ActiveCfg = Release|Any CPU
+		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {03FA0C44-7335-4980-909C-115B060BE91B}
 	EndGlobalSection
 EndGlobal

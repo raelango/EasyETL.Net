@@ -83,8 +83,16 @@ namespace EasyETL
                 }
                 foreach (string dllFile in Directory.GetFiles(Environment.CurrentDirectory, "*.dll", SearchOption.AllDirectories))
                 {
-                    if (!AppDomain.CurrentDomain.GetAssemblies().Select(f=>f.FullName).Contains(Assembly.LoadFile(dllFile).FullName))
-                        lstClasses.AddRange(LoadClassesFromLibrary(baseClassType, dllFile));
+                    try
+                    {
+                        string dllFullName = Assembly.LoadFile(dllFile).FullName;
+                        if (!AppDomain.CurrentDomain.GetAssemblies().Select(f => f.FullName).Contains(dllFullName))
+                            lstClasses.AddRange(LoadClassesFromLibrary(baseClassType, dllFile));
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
             else
