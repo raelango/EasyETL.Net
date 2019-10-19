@@ -9,6 +9,7 @@ namespace EasyETL.Extractors
 {
     public abstract class AbstractContentExtractor : IContentExtractor
     {
+        public string FileName = String.Empty;
         public virtual Stream GetStream(Stream inStream)
         {
             throw new NotImplementedException();
@@ -21,11 +22,13 @@ namespace EasyETL.Extractors
 
         public virtual Stream GetStream(string filename)
         {
+            FileName = filename;
             return GetStream(new FileStream(filename, FileMode.Open));
         }
 
         public virtual TextReader GetTextReader(string filename)
         {
+            FileName = filename;
             return GetTextReader(File.OpenText(filename));
         }
     }

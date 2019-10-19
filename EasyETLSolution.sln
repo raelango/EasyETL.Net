@@ -43,6 +43,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.EDI", "EasyETL.EDI\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.OCR.Tesseract", "EasyETL.OCR.tesseract\EasyETL.OCR.Tesseract.csproj", "{EF5F6566-8516-4D6C-B842-724E7DAE1008}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EasyETL.IFilter", "EasyETL.IFilter\EasyETL.IFilter.csproj", "{E91DB230-2FD0-495A-B0B7-72CEC81384ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -255,6 +257,18 @@ Global
 		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Release|x86.ActiveCfg = Release|Any CPU
 		{EF5F6566-8516-4D6C-B842-724E7DAE1008}.Release|x86.Build.0 = Release|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Debug|x86.Build.0 = Debug|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Release|x86.ActiveCfg = Release|Any CPU
+		{E91DB230-2FD0-495A-B0B7-72CEC81384ED}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

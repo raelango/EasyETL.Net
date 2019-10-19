@@ -1,6 +1,5 @@
 ﻿using EasyETL;
 using EasyETL.Actions;
-using EasyETL.DataSets;
 using EasyETL.Endpoint;
 using EasyETL.Extractors;
 using EasyETL.Writers;
@@ -9,14 +8,11 @@ using EasyETL.Xml.Parsers;
 using Microsoft.VisualBasic.FileIO;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
@@ -532,7 +528,7 @@ namespace EasyXmlSample
             lblRecordCount.Text = "";
             txtRegexContents.Text = "";
             cmbTableName.Items.Clear();
-            IContentExtractor extractor = null;
+            AbstractContentExtractor extractor = null;
             if ((chkUseTextExtractor.Checked) && (dctContentExtractors.ContainsKey(cbTextExtractor.Text)))
             {
                 extractor = (AbstractContentExtractor)Activator.CreateInstance(dctContentExtractors[cbTextExtractor.Text].Class);
@@ -625,6 +621,7 @@ namespace EasyXmlSample
                         ep.OnLoadSettings = txtOnLoadContents.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
                     if ((tabDataSource.SelectedTab == tabDatasourceFile)) {
                         Stream fileStream = endpoint.GetStream(txtFileName.Text);
+                        if (extractor != null) extractor.FileName = txtFileName.Text;
                         xDoc.Load(fileStream, ep, extractor);
                     }
                     else
