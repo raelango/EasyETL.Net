@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
@@ -11,9 +12,9 @@ using System.Xml;
 namespace EasyETL.Xml.Parsers
 {
     [DisplayName("File List")]
-    [EasyField("Directory","Full path of the folder")]
-    [EasyField("Filter", "Match Pattern to retrieve files","*.*")]
-    [EasyField("IncludeSubFolders", "True to include all files in subfolders, false to limit search to the root folder","False","","True;False")]
+    [EasyField("Directory", "Full path of the folder")]
+    [EasyField("Filter", "Match Pattern to retrieve files", "*.*")]
+    [EasyField("IncludeSubFolders", "True to include all files in subfolders, false to limit search to the root folder", "False", "", "True;False")]
     [EasyField("OutputFields", "Field Names to output.  Separate by semicolon.  Supported fields -- FolderName, FileName, FullPath, Size, LastAccessedTime, CreationTime, LastModifiedTime")]
     public class FileListEasyParser : DatasourceEasyParser
     {
@@ -31,28 +32,28 @@ namespace EasyETL.Xml.Parsers
             switch (fieldName.ToLower())
             {
                 case "directory":
-                    DirectoryName = fieldValue;break;
+                    DirectoryName = fieldValue; break;
                 case "filter":
                     Filter = fieldValue; break;
                 case "includesubfolders":
-                    IncludeSubFolders = Convert.ToBoolean(fieldValue);break;
+                    IncludeSubFolders = Convert.ToBoolean(fieldValue); break;
                 case "outputfields":
                     OutputFields.Clear();
-                    if (!String.IsNullOrWhiteSpace(fieldValue)) 
+                    if (!String.IsNullOrWhiteSpace(fieldValue))
                     {
                         foreach (string outputField in fieldValue.Split(';'))
                         {
-                            if ("FolderName;FileName;FullPath;Size;LastAccessedTime;CreationTime;LastModifiedTime".Split(';').Contains(outputField,StringComparer.CurrentCultureIgnoreCase)) 
-                                OutputFields.Add(outputField);
+                            //if ("FolderName;FileName;FullPath;Size;LastAccessedTime;CreationTime;LastModifiedTime".Split(';').Contains(outputField,StringComparer.CurrentCultureIgnoreCase)) 
+                            OutputFields.Add(outputField);
                         }
-                    } 
+                    }
                     break;
             }
         }
 
         public override bool IsFieldSettingsComplete()
         {
-            return base.IsFieldSettingsComplete() && !String.IsNullOrWhiteSpace(DirectoryName) && !String.IsNullOrWhiteSpace(Filter) && (OutputFields.Count >0);
+            return base.IsFieldSettingsComplete() && !String.IsNullOrWhiteSpace(DirectoryName) && !String.IsNullOrWhiteSpace(Filter) && (OutputFields.Count > 0);
         }
 
         public override bool CanFunction()
@@ -67,7 +68,7 @@ namespace EasyETL.Xml.Parsers
             resultDict.Add("directory", DirectoryName);
             resultDict.Add("filter", Filter);
             resultDict.Add("includesubfolders", IncludeSubFolders.ToString());
-            resultDict.Add("outputfields",String.Join(";",OutputFields));
+            resultDict.Add("outputfields", String.Join(";", OutputFields));
             return resultDict;
         }
 
@@ -78,7 +79,7 @@ namespace EasyETL.Xml.Parsers
 
         public override XmlDocument Load(string filename, XmlDocument xDoc = null)
         {
-            return LoadStr(filename,xDoc);
+            return LoadStr(filename, xDoc);
         }
 
         public override XmlDocument LoadStr(string strToLoad, XmlDocument xDoc = null)
@@ -106,9 +107,10 @@ namespace EasyETL.Xml.Parsers
             SearchOption searchOption = SearchOption.TopDirectoryOnly;
             if (IncludeSubFolders) searchOption = SearchOption.AllDirectories;
 
-            foreach (string file in Directory.EnumerateFiles(DirectoryName, Filter, searchOption)) 
+            foreach (string file in Directory.EnumerateFiles(DirectoryName, Filter, searchOption))
             {
                 FileInfo fileInfo = new FileInfo(file);
+                Dictionary<string, string> extendedProperties = null;
                 lineNumber++;
                 UpdateProgress(lineNumber);
                 XmlElement rowNode = xDoc.CreateElement(RowNodeName);
@@ -118,23 +120,31 @@ namespace EasyETL.Xml.Parsers
                     switch (outputField.ToLower())
                     {
                         case "foldername":
-                            colNode.InnerText = fileInfo.DirectoryName;break;
+                            colNode.InnerText = fileInfo.DirectoryName; break;
                         case "filename":
-                            colNode.InnerText = fileInfo.Name;break;
+                            colNode.InnerText = fileInfo.Name; break;
                         case "fullpath":
-                            colNode.InnerText = fileInfo.FullName;break;
+                            colNode.InnerText = fileInfo.FullName; break;
                         case "size":
-                            colNode.InnerText = fileInfo.Length.ToString();break;
+                            colNode.InnerText = fileInfo.Length.ToString(); break;
                         case "lastaccessedtime":
-                            colNode.InnerText = File.GetLastAccessTime(file).ToString();break;
+                            colNode.InnerText = File.GetLastAccessTime(file).ToString(); break;
                         case "creationtime":
-                            colNode.InnerText = File.GetCreationTime(file).ToString();break;
+                            colNode.InnerText = File.GetCreationTime(file).ToString(); break;
                         case "lastmodifiedtime":
-                            colNode.InnerText = File.GetLastWriteTime(file).ToString();break;
+                            colNode.InnerText = File.GetLastWriteTime(file).ToString(); break;
+                        default:
+                            if (extendedProperties == null)
+                            {
+                                extendedProperties = GetExtendedProperties(file);
+                            }
+                            if ((extendedProperties != null) && (extendedProperties.ContainsKey(outputField)))
+                                colNode.InnerText = extendedProperties[outputField];
+                            break;
                     }
                     rowNode.AppendChild(colNode);
                 }
-                
+
                 AddRow(xDoc, rowNode);
                 if ((rowNode != null) && (rowNode.HasChildNodes))
                 {
@@ -147,6 +157,28 @@ namespace EasyETL.Xml.Parsers
             UpdateProgress(lineNumber, true);
 
             return xDoc;
+        }
+
+        private Dictionary<string, string> GetExtendedProperties(string filePath)
+        {
+            var directory = Path.GetDirectoryName(filePath);
+            var shell = new Shell32.Shell();
+            var shellFolder = shell.NameSpace(directory);
+            var fileName = Path.GetFileName(filePath);
+            var folderitem = shellFolder.ParseName(fileName);
+            var dictionary = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+            var i = -1;
+            while (++i < 320)
+            {
+                var header = shellFolder.GetDetailsOf(null, i);
+                if (String.IsNullOrEmpty(header)) continue;
+                var value = shellFolder.GetDetailsOf(folderitem, i);
+                if (!dictionary.ContainsKey(header)) dictionary.Add(header, value);
+                Console.WriteLine(header + ": " + value);
+            }
+            Marshal.ReleaseComObject(shell);
+            Marshal.ReleaseComObject(shellFolder);
+            return dictionary;
         }
 
     }
