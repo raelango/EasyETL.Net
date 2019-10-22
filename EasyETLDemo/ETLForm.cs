@@ -90,12 +90,18 @@ namespace EasyXmlSample
                 if (cMapping != null)
                 {
                     dctActionClassMapping.Add(actionName, cMapping);
-                    Dictionary<string, string> actionDictionary = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+
+                    Dictionary<string, string> actionDictionary =  new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
                     dctActionFieldSettings.Add(actionName, actionDictionary);
+                    
                     XmlNodeList actionFieldNodeList = actionNode.SelectNodes("field");
                     foreach (XmlNode actionFieldNode in actionFieldNodeList)
                     {
-                        actionDictionary.Add(actionFieldNode.Attributes.GetNamedItem("name").Value, actionFieldNode.Attributes.GetNamedItem("value").Value);
+                        string fieldName = actionFieldNode.Attributes.GetNamedItem("name").Value;
+                        string fieldValue = Encoding.UTF8.GetString(Convert.FromBase64String(actionFieldNode.InnerText));
+                        if (actionFieldNode.Attributes.GetNamedItem("value") != null)
+                            fieldValue = actionFieldNode.Attributes.GetNamedItem("value").Value;
+                        actionDictionary.Add(fieldName,fieldValue);
                     }
 
                 }

@@ -1,15 +1,13 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
-using EasyETL.Endpoint;
+using Amazon.S3.Transfer;
+using EasyETL.Attributes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using Amazon.S3.Transfer;
-using System.ComponentModel;
-using EasyETL.Attributes;
 
 namespace EasyETL.Endpoint
 {

@@ -3,9 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml;
 
 
@@ -222,18 +220,12 @@ namespace EasyETL.Actions
 
         public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
         {
-            SettingsDictionary =  new Dictionary<string,string>(settingsDictionary);
+            SettingsDictionary =  settingsDictionary.DecryptPasswords(this.GetEasyFields());
         }
 
         public void SaveFieldSettingsToXmlNode(XmlNode parentNode)
         {
-            foreach (KeyValuePair<string, string> kvPair in SettingsDictionary)
-            {
-                XmlElement xNode = parentNode.OwnerDocument.CreateElement("field");
-                xNode.SetAttribute("name", kvPair.Key);
-                xNode.SetAttribute("value", kvPair.Value);
-                parentNode.AppendChild(xNode);
-            }
+            parentNode.SaveFieldSettingsToXmlNode(SettingsDictionary.EncryptPasswords(this.GetEasyFields()));
         }
 
         public string PopulatedName(string fileName, Dictionary<string,string> dataDictionary = null)

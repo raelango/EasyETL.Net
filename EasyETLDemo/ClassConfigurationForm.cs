@@ -36,10 +36,11 @@ namespace EasyXmlSample
         public void LoadFormControls()
         {
             ActionsFolder = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Actions");
-            lstLibraries =  new List<string>(ReflectionUtils.LoadAllLibrariesWithClass(BaseClassType, ActionsFolder));
+            lstLibraries = new List<string>(ReflectionUtils.LoadAllLibrariesWithClass(BaseClassType, ActionsFolder));
             cmbClassName.Items.Clear();
             lstClasses = new List<ClassMapping>(ReflectionUtils.LoadClassesFromLibrary(BaseClassType).AsEnumerable());
-            foreach (ClassMapping cMapping in lstClasses) {
+            foreach (ClassMapping cMapping in lstClasses)
+            {
                 cmbClassName.Items.Add(cMapping.DisplayName);
             }
             lblSettingsComplete.Width = panel2.Width;
@@ -65,26 +66,18 @@ namespace EasyXmlSample
                         case "name":
                             txtActionName.Text = xAttr.Value; break;
                         case "classname":
-                            cmbClassName.SelectedItem = xAttr.Value; 
+                            cmbClassName.SelectedItem = xAttr.Value;
                             break;
                     }
                 }
 
-                SelectedClassSettings.Clear();
-                XmlNodeList fieldNodeList = xNode.SelectNodes("field");
-                if (SelectedClassMapping != null)
-                {
-                    foreach (XmlNode fieldNode in fieldNodeList)
-                    {
-                        if (SelectedClassMapping.Class.GetEasyFields().ContainsKey(fieldNode.Attributes["name"].Value)) SelectedClassSettings.Add(fieldNode.Attributes["name"].Value, fieldNode.Attributes["value"].Value);
-                    }
-                }
+                if (SelectedClassMapping != null) SelectedClassSettings = SelectedClassMapping.Class.LoadFieldSettings(xNode);
                 RefreshGridView();
                 UpdateColorOfLabel();
             }
 
         }
-        
+
         public ClassConfigurationForm()
         {
             InitializeComponent();
@@ -160,7 +153,8 @@ namespace EasyXmlSample
         {
             SelectedClassSettings.Clear();
             lblProperties.Text = "";
-            if (cmbClassName.SelectedItem == null) {
+            if (cmbClassName.SelectedItem == null)
+            {
                 lblLibraryName.Text = "";
                 SelectedClassMapping = null;
             }
@@ -173,7 +167,7 @@ namespace EasyXmlSample
                 lblLibraryName.Text = SelectedClassMapping.Assembly.Location;
 
                 lblClassDescription.Text = lstClasses.Find(cm => cm.DisplayName == cmbClassName.SelectedItem.ToString()).Description;
-                
+
                 foreach (EasyFieldAttribute efAttribute in SelectedClassMapping.Class.GetEasyFields().Values)
                 {
                     SelectedClassSettings.Add(efAttribute.FieldName, efAttribute.DefaultValue);
@@ -191,7 +185,7 @@ namespace EasyXmlSample
         private void RefreshGridView()
         {
             if ((SelectedClassMapping == null) || (SelectedClassSettings == null) || (SelectedClassSettings.Keys.Count == 0)) return;
-            Dictionary<string,EasyFieldAttribute> easyFields = SelectedClassMapping.Class.GetEasyFields();
+            Dictionary<string, EasyFieldAttribute> easyFields = SelectedClassMapping.Class.GetEasyFields();
             DataTable gridDataTable = new DataTable();
             gridDataTable.Columns.Add("Field Name");
             gridDataTable.Columns.Add("Field Value");
@@ -209,16 +203,26 @@ namespace EasyXmlSample
         private void UpdateColorOfLabel()
         {
             lblSettingsComplete.BackColor = Color.Transparent;
+
             if (SelectedClassMapping != null)
             {
                 if (typeof(IEasyFieldInterface).IsAssignableFrom(SelectedClassMapping.Class))
                 {
-                    IEasyFieldInterface efiObject = (IEasyFieldInterface)Activator.CreateInstance(SelectedClassMapping.Class);
-                    efiObject.LoadFieldSettings(SelectedClassSettings);
-                    lblSettingsComplete.BackColor = efiObject.CanFunction() ? Color.Green : Color.Red;
-                    efiObject = null;
+                    try
+                    {
+                        IEasyFieldInterface efiObject = (IEasyFieldInterface)Activator.CreateInstance(SelectedClassMapping.Class);
+                        efiObject.LoadFieldSettings(SelectedClassSettings);
+                        lblSettingsComplete.BackColor = efiObject.CanFunction() ? Color.Green : Color.Red;
+                        efiObject = null;
+                        return;
+                    }
+                    catch
+                    {
+
+                    }
                 }
             }
+            lblSettingsComplete.BackColor = Color.Red;
         }
 
         private void ClassConfigurationForm_ResizeEnd(object sender, EventArgs e)
@@ -231,7 +235,7 @@ namespace EasyXmlSample
             if ((gvFieldValues.Rows.Count > e.RowIndex) && (gvFieldValues.Rows[e.RowIndex] != null))
             {
                 string fieldName = gvFieldValues[0, e.RowIndex].Value.ToString();
-                string fieldValue = SelectedClassSettings.ContainsKey(fieldName) ? SelectedClassSettings[fieldName]  : String.Empty;
+                string fieldValue = SelectedClassSettings.ContainsKey(fieldName) ? SelectedClassSettings[fieldName] : String.Empty;
                 SelectedFieldAttribute = SelectedClassMapping.Class.GetEasyField(fieldName);
                 if (SelectedFieldAttribute != null)
                 {

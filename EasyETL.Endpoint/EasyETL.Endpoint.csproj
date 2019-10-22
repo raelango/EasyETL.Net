@@ -58,6 +58,10 @@
       <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
       <Name>EasyETL.Attributes</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
+      <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
+      <Name>EasyETL.Dynamic</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

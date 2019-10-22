@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AttributeExtensions.cs" />
+    <Compile Include="EasyEncryption.cs" />
     <Compile Include="EasyFieldAttribute.cs" />
     <Compile Include="EasyPropertyAttribute.cs" />
     <Compile Include="IEasyFieldInterface.cs" />

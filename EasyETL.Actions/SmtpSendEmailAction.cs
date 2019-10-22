@@ -1,13 +1,8 @@
 ﻿using EasyETL.Attributes;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EasyETL.Actions
 {

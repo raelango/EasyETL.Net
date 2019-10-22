@@ -1,9 +1,6 @@
 ﻿using EasyETL.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace EasyETL.Endpoint
@@ -20,7 +17,7 @@ namespace EasyETL.Endpoint
 
         public void LoadFieldSettings(Dictionary<string, string> settingsDictionary)
         {
-            foreach (KeyValuePair<string, string> kvPair in settingsDictionary)
+            foreach (KeyValuePair<string, string> kvPair in settingsDictionary.DecryptPasswords(this.GetEasyFields()))
             {
                 LoadSetting(kvPair.Key, kvPair.Value);
             }
@@ -28,14 +25,7 @@ namespace EasyETL.Endpoint
 
         public void SaveFieldSettingsToXmlNode(XmlNode parentNode)
         {
-            Dictionary<string, string> settingsDict = GetSettingsAsDictionary();
-            foreach (KeyValuePair<string, string> kvPair in settingsDict)
-            {
-                XmlElement xNode = parentNode.OwnerDocument.CreateElement("field");
-                xNode.SetAttribute("name",kvPair.Key);
-                xNode.SetAttribute("value", kvPair.Value);
-                parentNode.AppendChild(xNode);
-            }
+            parentNode.SaveFieldSettingsToXmlNode(GetSettingsAsDictionary());
         }
 
 

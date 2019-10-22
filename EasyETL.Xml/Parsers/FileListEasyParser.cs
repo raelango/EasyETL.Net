@@ -113,7 +113,7 @@ namespace EasyETL.Xml.Parsers
                 Dictionary<string, string> extendedProperties = null;
                 lineNumber++;
                 UpdateProgress(lineNumber);
-                XmlElement rowNode = xDoc.CreateElement(RowNodeName);
+                XmlElement rowNode = xDoc.CreateElement(XmlConvert.EncodeName(RowNodeName));
                 foreach (string outputField in OutputFields)
                 {
                     XmlElement colNode = xDoc.CreateElement(outputField);

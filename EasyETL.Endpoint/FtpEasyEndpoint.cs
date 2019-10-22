@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using EasyETL.Attributes;
 using FluentFTP;
-using System.Security;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using Microsoft.VisualBasic.CompilerServices;
 using Microsoft.VisualBasic;
-using System.IO;
+using Microsoft.VisualBasic.CompilerServices;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using EasyETL.Attributes;
+using System.IO;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 
 namespace EasyETL.Endpoint
 {
