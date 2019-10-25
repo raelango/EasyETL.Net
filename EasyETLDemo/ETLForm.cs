@@ -190,6 +190,7 @@ namespace EasyXmlSample
                         txtOnLoadContents.Text = duringLoadNode.InnerText;
                     }
                     XmlNode afterLoadNode = transformationNode.SelectSingleNode("afterload");
+                    chkUseXsltTemplate.Checked = false;
                     if (afterLoadNode != null)
                     {
                         foreach (XmlAttribute xAttr in afterLoadNode.Attributes)
@@ -200,9 +201,29 @@ namespace EasyXmlSample
                                     cbTransformProfiles.Text = xAttr.Value; break;
                                 case "savefilename":
                                     txtTransformFileName.Text = xAttr.Value; break;
+                                case "usexslt":
+                                    chkUseXsltTemplate.Checked = Convert.ToBoolean(xAttr.Value); break;
+                                case "xsltfilename":
+                                    txtXsltFileName.Text = xAttr.Value;break;
                             }
                         }
                         txtTransformText.Text = afterLoadNode.InnerText;
+                    }
+                    XmlNode datasetConversionNode = transformationNode.SelectSingleNode("datasetconversion");
+                    rbUseDatasetLoad.Checked = true;
+                    if (datasetConversionNode !=null)
+                    {
+                        foreach (XmlAttribute xAttr in datasetConversionNode.Attributes)
+                        {
+                            switch (xAttr.Name.ToLower())
+                            {
+                                case "usedefault":
+                                    rbUseDatasetLoad.Checked = Convert.ToBoolean(xAttr.Value); break;
+                                case "usecustom":
+                                    rbUseCustomTableLoad.Checked = Convert.ToBoolean(xAttr.Value); break;
+                            }
+                        }
+                        txtNodeMapping.Text = datasetConversionNode.InnerText;
                     }
                 }
                 #endregion
@@ -288,6 +309,10 @@ namespace EasyXmlSample
                                 break;
                             case "caneditsettings":
                                 chkCanEditConfiguration.Checked = Convert.ToBoolean(xAttr.Value); break;
+                            case "displaysettingsonload":
+                                chkShowConfigurationOnLoad.Checked = Convert.ToBoolean(xAttr.Value);
+                                ToggleDisplayConfigurationSection(chkShowConfigurationOnLoad.Checked);
+                                break;
                             case "canadddata":
                                 chkCanAddData.Checked = Convert.ToBoolean(xAttr.Value); break;
                             case "caneditdata":
@@ -702,6 +727,11 @@ namespace EasyXmlSample
                     xDoc = xDoc.ApplyFilter(txtXPathQuery.Text);
                 }
                 txtXPathContents.Text = xDoc.LastTransformerTemplate;
+                if (chkUseXsltTemplate.Checked && File.Exists(txtXsltFileName.Text))
+                {
+                    //Transform the xml using the xslt file
+                    ezDoc.LoadXml(xDoc.Transform(txtXsltFileName.Text).OuterXml);
+                }
             }
             catch
             {
@@ -721,7 +751,41 @@ namespace EasyXmlSample
             fpActions.Visible = false;
             try
             {
-                ds = xDoc.ToDataSet();
+                if (rbUseDatasetLoad.Checked)
+                {
+                    ds = xDoc.ToDataSet();
+                }
+                else
+                {
+                    //we need to use custom load
+                    ds = new DataSet();
+                    foreach (string strNodeMapping in txtNodeMapping.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        string tableName = strNodeMapping;
+                        string nodePath = strNodeMapping;
+                        if (strNodeMapping.Contains('='))
+                        {
+                            tableName = strNodeMapping.Substring(0, strNodeMapping.IndexOf('='));
+                            nodePath = strNodeMapping.Substring(strNodeMapping.IndexOf('=')+1);
+                        }
+                        DataTable dataTable = ds.Tables.Add(tableName);
+                        XmlNodeList xmlNodeList = xDoc.SelectNodes(nodePath);
+                        if ((xmlNodeList != null) && (xmlNodeList.Count >0))
+                        {
+                            foreach (XmlNode columnNode in xmlNodeList[0])
+                                dataTable.Columns.Add(columnNode.Name);
+                            foreach (XmlNode xmlNode in xmlNodeList)
+                            {
+                                DataRow dataRow = dataTable.NewRow();
+                                foreach (XmlNode columnNode in xmlNode)
+                                {
+                                    dataRow[columnNode.Name] = columnNode.InnerText;
+                                }
+                                dataTable.Rows.Add(dataRow);
+                            }
+                        }
+                    }
+                }
                 if (ds != null)
                 {
                     fpActions.Visible = true;
@@ -1070,9 +1134,16 @@ namespace EasyXmlSample
             XmlElement afterLoadNode = xDoc.CreateElement("afterload");
             afterLoadNode.SetAttribute("profilename", cbTransformProfiles.Text);
             afterLoadNode.SetAttribute("savefilename", txtTransformFileName.Text);
+            afterLoadNode.SetAttribute("usexslt", chkUseXsltTemplate.Checked.ToString());
+            afterLoadNode.SetAttribute("xsltfilename", txtXsltFileName.Text);
             afterLoadNode.InnerText = txtTransformText.Text;
             transformationNode.AppendChild(duringLoadNode);
             transformationNode.AppendChild(afterLoadNode);
+            XmlElement datasetConversionNode = xDoc.CreateElement("datasetconversion");
+            datasetConversionNode.SetAttribute("usedefault", rbUseDatasetLoad.Checked.ToString());
+            datasetConversionNode.SetAttribute("usecustom", rbUseCustomTableLoad.Checked.ToString());
+            datasetConversionNode.InnerText = txtNodeMapping.Text;
+            transformationNode.AppendChild(datasetConversionNode);
             xNode.AppendChild(transformationNode);
             #endregion
 
@@ -1103,6 +1174,7 @@ namespace EasyXmlSample
             XmlElement permissionsNode = xDoc.CreateElement("permissions");
             permissionsNode.SetAttribute("role", "owner");
             permissionsNode.SetAttribute("canviewsettings", (tableLayoutPanel1.RowStyles[0].Height > 0).ToString());
+            permissionsNode.SetAttribute("displaysettingsonload", chkShowConfigurationOnLoad.Checked.ToString());
             permissionsNode.SetAttribute("caneditsettings", chkCanEditConfiguration.Checked.ToString());
             permissionsNode.SetAttribute("canadddata", chkCanAddData.Checked.ToString());
             permissionsNode.SetAttribute("caneditdata", chkCanEditData.Checked.ToString());
@@ -1430,6 +1502,22 @@ namespace EasyXmlSample
             dataGrid_DoubleClick(this, null);
         }
 
+        private void chkUseXsltTemplate_CheckedChanged(object sender, EventArgs e)
+        {
+            btnBrowseXsltFileName.Enabled = chkUseXsltTemplate.Checked;
+        }
+
+        private void btnBrowseXsltFileName_Click(object sender, EventArgs e)
+        {
+            ofd.FileName = txtXsltFileName.Text;
+            if (ofd.ShowDialog(this) == DialogResult.OK)
+                txtXsltFileName.Text = ofd.FileName;
+        }
+
+        private void rbUseCustomTableLoad_CheckedChanged(object sender, EventArgs e)
+        {
+            txtNodeMapping.Enabled = rbUseCustomTableLoad.Checked;
+        }
     }
 
 

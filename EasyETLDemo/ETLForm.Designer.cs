@@ -69,6 +69,9 @@
             this.btnRefreshOnLoadProfiles = new System.Windows.Forms.Button();
             this.cbOnLoadProfiles = new System.Windows.Forms.ComboBox();
             this.tabAfterLoad = new System.Windows.Forms.TabPage();
+            this.btnBrowseXsltFileName = new System.Windows.Forms.Button();
+            this.txtXsltFileName = new System.Windows.Forms.TextBox();
+            this.chkUseXsltTemplate = new System.Windows.Forms.CheckBox();
             this.label8 = new System.Windows.Forms.Label();
             this.txtTransformFileName = new System.Windows.Forms.TextBox();
             this.btnTransformSave = new System.Windows.Forms.Button();
@@ -151,6 +154,12 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.btnHideSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
+            this.ofd = new System.Windows.Forms.OpenFileDialog();
+            this.tabDataSetConversion = new System.Windows.Forms.TabPage();
+            this.rbUseDatasetLoad = new System.Windows.Forms.RadioButton();
+            this.rbUseCustomTableLoad = new System.Windows.Forms.RadioButton();
+            this.txtNodeMapping = new System.Windows.Forms.TextBox();
+            this.chkShowConfigurationOnLoad = new System.Windows.Forms.CheckBox();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -189,6 +198,7 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlExport.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.tabDataSetConversion.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCloseWindow
@@ -526,6 +536,7 @@
             // 
             this.tabControl2.Controls.Add(this.tabDuringLoad);
             this.tabControl2.Controls.Add(this.tabAfterLoad);
+            this.tabControl2.Controls.Add(this.tabDataSetConversion);
             this.tabControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl2.Location = new System.Drawing.Point(0, 0);
             this.tabControl2.Name = "tabControl2";
@@ -606,6 +617,9 @@
             // 
             // tabAfterLoad
             // 
+            this.tabAfterLoad.Controls.Add(this.btnBrowseXsltFileName);
+            this.tabAfterLoad.Controls.Add(this.txtXsltFileName);
+            this.tabAfterLoad.Controls.Add(this.chkUseXsltTemplate);
             this.tabAfterLoad.Controls.Add(this.label8);
             this.tabAfterLoad.Controls.Add(this.txtTransformFileName);
             this.tabAfterLoad.Controls.Add(this.btnTransformSave);
@@ -619,6 +633,36 @@
             this.tabAfterLoad.TabIndex = 1;
             this.tabAfterLoad.Text = "After Load";
             this.tabAfterLoad.UseVisualStyleBackColor = true;
+            // 
+            // btnBrowseXsltFileName
+            // 
+            this.btnBrowseXsltFileName.Enabled = false;
+            this.btnBrowseXsltFileName.Location = new System.Drawing.Point(555, 150);
+            this.btnBrowseXsltFileName.Name = "btnBrowseXsltFileName";
+            this.btnBrowseXsltFileName.Size = new System.Drawing.Size(75, 23);
+            this.btnBrowseXsltFileName.TabIndex = 20;
+            this.btnBrowseXsltFileName.Text = "Browse";
+            this.btnBrowseXsltFileName.UseVisualStyleBackColor = true;
+            this.btnBrowseXsltFileName.Click += new System.EventHandler(this.btnBrowseXsltFileName_Click);
+            // 
+            // txtXsltFileName
+            // 
+            this.txtXsltFileName.Location = new System.Drawing.Point(174, 150);
+            this.txtXsltFileName.Name = "txtXsltFileName";
+            this.txtXsltFileName.ReadOnly = true;
+            this.txtXsltFileName.Size = new System.Drawing.Size(374, 20);
+            this.txtXsltFileName.TabIndex = 19;
+            // 
+            // chkUseXsltTemplate
+            // 
+            this.chkUseXsltTemplate.AutoSize = true;
+            this.chkUseXsltTemplate.Location = new System.Drawing.Point(9, 150);
+            this.chkUseXsltTemplate.Name = "chkUseXsltTemplate";
+            this.chkUseXsltTemplate.Size = new System.Drawing.Size(158, 17);
+            this.chkUseXsltTemplate.TabIndex = 18;
+            this.chkUseXsltTemplate.Text = "Transform XML Using XSLT";
+            this.chkUseXsltTemplate.UseVisualStyleBackColor = true;
+            this.chkUseXsltTemplate.CheckedChanged += new System.EventHandler(this.chkUseXsltTemplate_CheckedChanged);
             // 
             // label8
             // 
@@ -651,7 +695,7 @@
             this.txtTransformText.Location = new System.Drawing.Point(9, 33);
             this.txtTransformText.Multiline = true;
             this.txtTransformText.Name = "txtTransformText";
-            this.txtTransformText.Size = new System.Drawing.Size(777, 116);
+            this.txtTransformText.Size = new System.Drawing.Size(777, 113);
             this.txtTransformText.TabIndex = 14;
             this.txtTransformText.Leave += new System.EventHandler(this.txtTransformText_Leave);
             // 
@@ -1393,6 +1437,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.chkShowConfigurationOnLoad);
             this.groupBox1.Controls.Add(this.chkCanEditConfiguration);
             this.groupBox1.Location = new System.Drawing.Point(18, 14);
             this.groupBox1.Name = "groupBox1";
@@ -1524,6 +1569,65 @@
             this.btnSaveSettings.Visible = false;
             this.btnSaveSettings.Click += new System.EventHandler(this.btnSaveSettings_Click);
             // 
+            // ofd
+            // 
+            this.ofd.FileName = "openFileDialog1";
+            // 
+            // tabDataSetConversion
+            // 
+            this.tabDataSetConversion.Controls.Add(this.txtNodeMapping);
+            this.tabDataSetConversion.Controls.Add(this.rbUseCustomTableLoad);
+            this.tabDataSetConversion.Controls.Add(this.rbUseDatasetLoad);
+            this.tabDataSetConversion.Location = new System.Drawing.Point(4, 22);
+            this.tabDataSetConversion.Name = "tabDataSetConversion";
+            this.tabDataSetConversion.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDataSetConversion.Size = new System.Drawing.Size(1053, 173);
+            this.tabDataSetConversion.TabIndex = 2;
+            this.tabDataSetConversion.Text = "XML to Dataset Conversion";
+            this.tabDataSetConversion.UseVisualStyleBackColor = true;
+            // 
+            // rbUseDatasetLoad
+            // 
+            this.rbUseDatasetLoad.AutoSize = true;
+            this.rbUseDatasetLoad.Checked = true;
+            this.rbUseDatasetLoad.Location = new System.Drawing.Point(7, 7);
+            this.rbUseDatasetLoad.Name = "rbUseDatasetLoad";
+            this.rbUseDatasetLoad.Size = new System.Drawing.Size(139, 17);
+            this.rbUseDatasetLoad.TabIndex = 0;
+            this.rbUseDatasetLoad.TabStop = true;
+            this.rbUseDatasetLoad.Text = "Convert XML to Dataset";
+            this.rbUseDatasetLoad.UseVisualStyleBackColor = true;
+            // 
+            // rbUseCustomTableLoad
+            // 
+            this.rbUseCustomTableLoad.AutoSize = true;
+            this.rbUseCustomTableLoad.Location = new System.Drawing.Point(7, 31);
+            this.rbUseCustomTableLoad.Name = "rbUseCustomTableLoad";
+            this.rbUseCustomTableLoad.Size = new System.Drawing.Size(117, 17);
+            this.rbUseCustomTableLoad.TabIndex = 1;
+            this.rbUseCustomTableLoad.Text = "Use Node Mapping";
+            this.rbUseCustomTableLoad.UseVisualStyleBackColor = true;
+            this.rbUseCustomTableLoad.CheckedChanged += new System.EventHandler(this.rbUseCustomTableLoad_CheckedChanged);
+            // 
+            // txtNodeMapping
+            // 
+            this.txtNodeMapping.Enabled = false;
+            this.txtNodeMapping.Location = new System.Drawing.Point(7, 55);
+            this.txtNodeMapping.Multiline = true;
+            this.txtNodeMapping.Name = "txtNodeMapping";
+            this.txtNodeMapping.Size = new System.Drawing.Size(429, 112);
+            this.txtNodeMapping.TabIndex = 2;
+            // 
+            // chkShowConfigurationOnLoad
+            // 
+            this.chkShowConfigurationOnLoad.AutoSize = true;
+            this.chkShowConfigurationOnLoad.Location = new System.Drawing.Point(7, 43);
+            this.chkShowConfigurationOnLoad.Name = "chkShowConfigurationOnLoad";
+            this.chkShowConfigurationOnLoad.Size = new System.Drawing.Size(169, 17);
+            this.chkShowConfigurationOnLoad.TabIndex = 1;
+            this.chkShowConfigurationOnLoad.Text = "Display Configuration On Load";
+            this.chkShowConfigurationOnLoad.UseVisualStyleBackColor = true;
+            // 
             // ETLForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1592,6 +1696,8 @@
             this.pnlExport.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.tabDataSetConversion.ResumeLayout(false);
+            this.tabDataSetConversion.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1719,6 +1825,15 @@
         private System.Windows.Forms.CheckedListBox chkAvailableExports;
         private System.Windows.Forms.ComboBox cmbEndpoint;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.CheckBox chkUseXsltTemplate;
+        private System.Windows.Forms.Button btnBrowseXsltFileName;
+        private System.Windows.Forms.TextBox txtXsltFileName;
+        private System.Windows.Forms.OpenFileDialog ofd;
+        private System.Windows.Forms.TabPage tabDataSetConversion;
+        private System.Windows.Forms.TextBox txtNodeMapping;
+        private System.Windows.Forms.RadioButton rbUseCustomTableLoad;
+        private System.Windows.Forms.RadioButton rbUseDatasetLoad;
+        private System.Windows.Forms.CheckBox chkShowConfigurationOnLoad;
     }
 }
 
