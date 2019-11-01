@@ -30,6 +30,9 @@ namespace EasyETL.Writers
         public string _updateCommand = String.Empty;
         public string _uniqueKeyColumns = String.Empty;
         public DatabaseType _dbType = DatabaseType.Odbc;
+        public Dictionary<string, string> dictionaryInsertCommands = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+        public Dictionary<string, string> dictionaryUpdateCommands = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+        public Dictionary<string, string> dictionaryUniqueColumns = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
 
         public event EventHandler<RowWrittenEventArgs> RowInserted;
         public event EventHandler<RowWrittenEventArgs> RowUpdated;
@@ -94,35 +97,95 @@ namespace EasyETL.Writers
 
             if (_dataSet.Tables.Count == 0) throw new EasyLoaderException("Dataset has no tables");
 
-            if (String.IsNullOrWhiteSpace(_tableName)) _tableName = _dataSet.Tables[0].TableName;
-
-            if (!_dataSet.Tables.Contains(_tableName)) throw new EasyLoaderException("Dataset does not contain table <<" + _tableName + ">>");
-
-            if (_dataSet.Tables[_tableName].Rows.Count == 0) throw new EasyLoaderException("The table <<" + _tableName + ">> in the dataset is empty");
-
             EstablishDatabaseConnection();
-            SetCommands(String.IsNullOrWhiteSpace(_insertCommand), String.IsNullOrWhiteSpace(_updateCommand));
 
-            int rowNumber = 0;
-            foreach (DataRow dataRow in _dataSet.Tables[_tableName].Rows)
+            if (!String.IsNullOrWhiteSpace(_tableName))
             {
-                try
+                if (!String.IsNullOrWhiteSpace(_uniqueKeyColumns))
                 {
-                    if ((dataRow.RowState == DataRowState.Added) || (dataRow.RowState == DataRowState.Modified))
-                    {
-                        WriteRowToDatabase(dataRow, rowNumber);
-                        dataRow.AcceptChanges();
-                    }
+                    if (dictionaryUniqueColumns.ContainsKey(_tableName))
+                        dictionaryUniqueColumns[_tableName] = _uniqueKeyColumns;
+                    else
+                        dictionaryUniqueColumns.Add(_tableName, _uniqueKeyColumns);
                 }
-                catch (Exception e)
+                if (!String.IsNullOrWhiteSpace(_insertCommand))
                 {
-                    dataRow.RowError = e.Message;
-                    OnRowErrored(new RowWrittenEventArgs() { Row = dataRow, RowNumber = rowNumber, TableName = _tableName });
+                    if (dictionaryInsertCommands.ContainsKey(_tableName))
+                        dictionaryInsertCommands[_tableName] = _insertCommand;
+                    else
+                        dictionaryInsertCommands.Add(_tableName, _insertCommand);
                 }
-                rowNumber++;
+                if (!String.IsNullOrWhiteSpace(_updateCommand))
+                {
+                    if (dictionaryUpdateCommands.ContainsKey(_tableName))
+                        dictionaryUpdateCommands[_tableName] = _updateCommand;
+                    else
+                        dictionaryUpdateCommands.Add(_tableName, _updateCommand);
+                }
             }
 
+            List<string> tablesToSync = new List<string>();
+            if (String.IsNullOrWhiteSpace(_tableName))
+            {
+                tablesToSync = GetTables();
+            }
+            else
+            {
+                tablesToSync = new List<string>(_tableName.Split(';'));
+            }
+
+            List<string> availableTables = new List<string>();
+            foreach (string tableToSync in tablesToSync)
+            {
+                if (_dataSet.Tables.Contains(tableToSync) && _dataSet.Tables[_tableName].Rows.Count >0)
+                {
+                    availableTables.Add(tableToSync);
+                }
+            }
+
+
+            foreach (string tableToSync in availableTables)
+            {
+                _tableName = tableToSync;
+                if (!dictionaryUniqueColumns.ContainsKey(_tableName))
+                {
+                    dictionaryUniqueColumns.Add(_tableName, GetUniqueColumns(_tableName))
+                }
+                _uniqueKeyColumns = dictionaryUniqueColumns[tableToSync];
+                SetCommands(!dictionaryInsertCommands.ContainsKey(tableToSync), !dictionaryUpdateCommands.ContainsKey(tableToSync));
+                if (!dictionaryUpdateCommands.ContainsKey(tableToSync)) dictionaryUpdateCommands.Add(tableToSync, "");
+                if (!dictionaryInsertCommands.ContainsKey(tableToSync)) dictionaryInsertCommands.Add(tableToSync, "");
+                dictionaryInsertCommands[tableToSync] = _insertCommand;
+                dictionaryUpdateCommands[tableToSync] = _updateCommand;
+
+                int rowNumber = 0;
+                foreach (DataRow dataRow in _dataSet.Tables[_tableName].Rows)
+                {
+                    try
+                    {
+                        if ((dataRow.RowState == DataRowState.Added) || (dataRow.RowState == DataRowState.Modified))
+                        {
+                            WriteRowToDatabase(dataRow, rowNumber);
+                            dataRow.AcceptChanges();
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        dataRow.RowError = e.Message;
+                        OnRowErrored(new RowWrittenEventArgs() { Row = dataRow, RowNumber = rowNumber, TableName = _tableName });
+                    }
+                    rowNumber++;
+                }
+
+            }
+
+
             CloseDatabaseConnection();
+        }
+
+        public virtual string GetUniqueColumns(string tableName)
+        {
+            return String.Empty;
         }
 
         public virtual void SetCommands(bool bIns, bool bUpd)
@@ -186,6 +249,19 @@ namespace EasyETL.Writers
             }
 
             return result;
+        }
+
+        public List<string> GetTables()
+        {
+            DbCommand command = _connection.CreateCommand();
+            DataTable schema = _connection.GetSchema("Tables");
+            List<string> TableNames = new List<string>();
+            foreach (DataRow row in schema.Rows)
+            {
+                TableNames.Add(row[2].ToString());
+            }
+            return TableNames;
+
         }
 
 
