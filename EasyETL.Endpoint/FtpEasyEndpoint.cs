@@ -82,7 +82,7 @@ namespace EasyETL.Endpoint
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
             }
             return resultList.ToArray();
