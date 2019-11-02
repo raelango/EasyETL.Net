@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using EasyETL.Utils;
 
 namespace EasyETL.Xml.XsltExtensions
 {
@@ -47,7 +49,7 @@ namespace EasyETL.Xml.XsltExtensions
             return (inputStr.IndexOf(searchStr, StringComparison.CurrentCultureIgnoreCase) >=0);
         }
 
-        public bool IsEmpty(string inputStr)
+        public  bool IsEmpty(string inputStr)
         {
             return String.IsNullOrWhiteSpace(inputStr);
         }
@@ -73,6 +75,11 @@ namespace EasyETL.Xml.XsltExtensions
         public string Replace(string inputStr, string searchStr, string replaceStr)
         {
             return inputStr.Replace(searchStr, replaceStr);
+        }
+
+        public string Deidentify(string inputStr, string inputType)
+        {
+            return inputStr.DeidentifyData(inputType);
         }
 
     }

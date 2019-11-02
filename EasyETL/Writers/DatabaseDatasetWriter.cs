@@ -149,7 +149,7 @@ namespace EasyETL.Writers
                 _tableName = tableToSync;
                 if (!dictionaryUniqueColumns.ContainsKey(_tableName))
                 {
-                    dictionaryUniqueColumns.Add(_tableName, GetUniqueColumns(_tableName))
+                    dictionaryUniqueColumns.Add(_tableName, GetUniqueColumns(_tableName));
                 }
                 _uniqueKeyColumns = dictionaryUniqueColumns[tableToSync];
                 SetCommands(!dictionaryInsertCommands.ContainsKey(tableToSync), !dictionaryUpdateCommands.ContainsKey(tableToSync));

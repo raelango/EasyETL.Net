@@ -18,6 +18,7 @@ namespace EasyETL.Xml
     {
         AbstractEasyParser Parser = null;
         public XslCompiledTransform LastTransformer = null;
+        public string XsltExtensionNamespace = "easy";
         public string LastTransformerTemplate = String.Empty;
         public event EventHandler<XmlNodeChangedEventArgs> OnRowAdd;
         public event EventHandler<EasyParserExceptionEventArgs> OnError;
@@ -196,7 +197,7 @@ namespace EasyETL.Xml
         {
             using (var ms = new MemoryStream())
             {
-                using (var x = new XmlTextWriter(ms, new UTF8Encoding(false)) { Formatting = Formatting.Indented, IndentChar = ' ' })
+                using (var x = new XmlTextWriter(ms, new UTF8Encoding(false)) { Formatting = Formatting.Indented, IndentChar = ' ', Namespaces=false })
                 {
                     this.Save(x);
                     StreamReader sr = new StreamReader(ms);
@@ -246,8 +247,9 @@ namespace EasyETL.Xml
         }
 
 
-        public XmlNode Transform(string[] settingsCommands)
+        public XmlNode Transform(string[] settingsCommands, string xsltExtensionNamespace = "easy")
         {
+            XsltExtensionNamespace = xsltExtensionNamespace;
             LastTransformerTemplate = String.Empty;
             if (this.DocumentElement.Name == null) return this;
             if (settingsCommands.Length == 0) return this;
@@ -359,6 +361,7 @@ namespace EasyETL.Xml
                 StringBuilder xmlSB = new StringBuilder();
                 XmlWriterSettings xwSettings = new XmlWriterSettings();
                 xwSettings.OmitXmlDeclaration = true;
+                xwSettings.Indent = true;
                 xwSettings.ConformanceLevel = ConformanceLevel.Auto;
                 XmlWriter xWriter = XmlWriter.Create(xmlSB, xwSettings);
                 xsl.Transform(this, xal, xWriter);
@@ -378,7 +381,7 @@ namespace EasyETL.Xml
             StringBuilder rootSB = new StringBuilder();
 
             rootSB.AppendLine("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>");
-            rootSB.AppendLine("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:easy=\"http://EasyXsltExtensions/1.0\">");
+            rootSB.AppendLine("<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\" xmlns:" + XsltExtensionNamespace + "=\"http://EasyXsltExtensions/1.0\">");
             rootSB.AppendLine("<xsl:output method=\"xml\" indent=\"yes\" omit-xml-declaration=\"yes\"/>");
             rootSB.AppendLine("<xsl:template match=\"@*|node()\">");
             rootSB.AppendLine("<xsl:copy>");

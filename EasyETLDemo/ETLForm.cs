@@ -720,7 +720,7 @@ namespace EasyXmlSample
                 xDoc = (EasyXmlDocument)ezDoc.Clone();
                 if (!String.IsNullOrWhiteSpace(txtTransformText.Text))
                 {
-                    xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None));
+                    xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None), Properties.Settings.Default.XsltExtensionNamespace);
                 }
                 if (!String.IsNullOrWhiteSpace(txtXPathQuery.Text))
                 {

@@ -126,8 +126,10 @@
     <Compile Include="Listeners\MultiFileListener.cs" />
     <Compile Include="Listeners\TimerListener.cs" />
     <Compile Include="Utils\Configuration.cs" />
+    <Compile Include="Utils\CreditCardValidator.cs" />
     <Compile Include="Utils\DynamicCode.cs" />
     <Compile Include="Utils\StreamExtensions.cs" />
+    <Compile Include="Utils\StringExtensions.cs" />
     <Compile Include="Writers\CSVDelimitedDatasetWriter.cs" />
     <Compile Include="Writers\DatabaseDatasetWriter.cs" />
     <Compile Include="Writers\DatasetWriter.cs" />

@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EasyETL.Actions</RootNamespace>
     <AssemblyName>EasyETL.Actions</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,7 +42,6 @@
   <ItemGroup>
     <Compile Include="AbstractEasyAction.cs" />
     <Compile Include="ConditionalSetFieldValueAction.cs" />
-    <Compile Include="CreditCardValidator.cs" />
     <Compile Include="DeidentifyDataAction.cs" />
     <Compile Include="EmailAction.cs" />
     <Compile Include="ExecAction.cs" />
@@ -59,6 +59,10 @@
     <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
       <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
       <Name>EasyETL.Dynamic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL\EasyETL.csproj">
+      <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>
+      <Name>EasyETL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
