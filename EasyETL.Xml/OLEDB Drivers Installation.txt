@@ -1,0 +1,29 @@
+﻿To download the 32 bit version of the Microsoft.ACE.OLEDB.12.0 Provider, go here ==> https://www.microsoft.com/en-us/download/details.aspx?id=13255
+
+If you would like both 32 and 64 bit installed, check this out:
+
+https://datasavvy.me/2017/07/20/installing-the-microsoft-ace-oledb-12-0-provider-for-both-64-bit-and-32-bit-processing/
+
+I recently got a new laptop and had to go through the ritual of reinstalling all my programs and drivers. I sometimes work with SSIS locally to import data from Excel and occasionally do demos with Power BI where I read from an Access database so I needed to install the ACE OLE DB provider.  If you try to do either of those things without the ACE OLE DB provider you will get a message like the one below.
+
+The ‘Microsoft.ACE.OLEDB.12.0’ provider is not registered on the local machine.
+
+I needed both the 32-bit and the 64-bit adapters to cover my various use cases. I started by installing the 64-bit Microsoft Access Database Engine 2010 Redistributable.  If you have ever attempted this, you know there is a secret. You cannot install the 2010 Access database engine with a different processing architecture (bittedness) from your Office install (or install both versions of the 2010 Access database engine) without a workaround.  If you try, you will get an error message.
+
+ACE engine bittedness error
+
+There are two options for getting the other version installed.
+
+Option A: Install the 2007 Office System Driver: Data Connectivity Components
+The 2007 Access database engine can read the same format, but didn’t have a 64-bit install. It doesn’t have the check to see what other products are on your machine and can co-exist peacefully with the 64-bit 2010 Access engine.
+
+Option B: Install from the Command Line and Use the Passive Switch
+Open the command prompt.
+Type the file path and file name for your Access Database Engine install file.
+Follow it with a space and then “/passive” and then hit Enter.
+Delete or rename the mso.dll registry value in the following registry key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Office\14.0\Common\FilesPaths
+Note: A helpful commenter has informed me that for Access 2016 the switch is /quiet rather than /passive.
+
+ACE install cmd
+
+I wrote up a document for this a while back for a client, but I can never remember where I put it. So I’m posting this on my blog to make this info easier to find for me as well as you.
