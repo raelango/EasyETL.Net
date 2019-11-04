@@ -46,7 +46,19 @@ namespace EasyETL.Xml.Parsers
 
         public override XmlDocument Load(string queryToExecute = "", XmlDocument xDoc = null)
         {
-            if (String.IsNullOrWhiteSpace(queryToExecute)) queryToExecute = Query;
+            if (String.IsNullOrWhiteSpace(queryToExecute))
+            {
+                if (String.IsNullOrWhiteSpace(Query))
+                {
+                    Query = "";
+                    foreach (string tableName in GetTables())
+                    {
+                        Query += "SELECT * FROM [" + tableName + "];";
+                    }
+                }
+                queryToExecute = Query;
+            }
+
             if (!IsFieldSettingsComplete()) return null;
             return LoadFromQuery(queryToExecute, xDoc);
         }
@@ -144,5 +156,20 @@ namespace EasyETL.Xml.Parsers
             resultDict.Add("query", Query);
             return resultDict;
         }
+
+        public List<string> GetTables()
+        {
+            EstablishConnection();
+            //DbCommand command = ((DBCommand)Connection).CreateCommand();
+            DataTable schema = ((DbConnection)Connection).GetSchema("Tables");
+            List<string> TableNames = new List<string>();
+            foreach (DataRow row in schema.Rows)
+            {
+                TableNames.Add(row["TABLE_NAME"].ToString());
+            }
+            return TableNames;
+
+        }
+
     }
 }

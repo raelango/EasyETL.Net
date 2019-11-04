@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace EasyETL.Xml.Parsers
 {
@@ -47,7 +48,6 @@ namespace EasyETL.Xml.Parsers
                     HasHeader = Convert.ToBoolean(fieldValue); break;
             }
         }
-
 
         public override Dictionary<string, string> GetSettingsAsDictionary()
         {
