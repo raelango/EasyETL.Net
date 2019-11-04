@@ -46,17 +46,14 @@ namespace EasyETL.Xml.Parsers
 
         public override XmlDocument Load(string queryToExecute = "", XmlDocument xDoc = null)
         {
+            if (String.IsNullOrWhiteSpace(queryToExecute)) queryToExecute = Query;
+
             if (String.IsNullOrWhiteSpace(queryToExecute))
             {
-                if (String.IsNullOrWhiteSpace(Query))
+                foreach (string tableName in GetTables())
                 {
-                    Query = "";
-                    foreach (string tableName in GetTables())
-                    {
-                        Query += "SELECT * FROM [" + tableName + "];";
-                    }
+                    queryToExecute += "SELECT * FROM [" + tableName + "];";
                 }
-                queryToExecute = Query;
             }
 
             if (!IsFieldSettingsComplete()) return null;
@@ -66,42 +63,68 @@ namespace EasyETL.Xml.Parsers
         public XmlDocument LoadFromQuery(string sqlToExecute, XmlDocument xDoc = null)
         {
             DataSet ds = new DataSet();
-            DataAdapter adapter = null;
+            IDbDataAdapter adapter = null;
             if (xDoc == null)
             {
                 xDoc = new XmlDocument();
             }
 
-            try
+            int tableIndex = 1;
+            foreach (string individualSQL in sqlToExecute.Split(';'))
             {
-                switch (ConnectionType)
+                try
                 {
-                    case EasyDatabaseConnectionType.edctODBC:
-                        adapter = new OdbcDataAdapter(sqlToExecute, new OdbcConnection(ConnectionString));
-                        break;
-                    case EasyDatabaseConnectionType.edctOledb:
-                        adapter = new OleDbDataAdapter(sqlToExecute, new OleDbConnection(ConnectionString));
-                        break;
-                    case EasyDatabaseConnectionType.edctSQL:
-                        adapter = new SqlDataAdapter(sqlToExecute, new SqlConnection(ConnectionString));
-                        break;
+
+                    if (!String.IsNullOrWhiteSpace(individualSQL))
+                    {
+                        switch (ConnectionType)
+                        {
+                            case EasyDatabaseConnectionType.edctODBC:
+                                adapter = new OdbcDataAdapter(individualSQL, new OdbcConnection(ConnectionString));
+                                break;
+                            case EasyDatabaseConnectionType.edctOledb:
+                                adapter = new OleDbDataAdapter(individualSQL, new OleDbConnection(ConnectionString));
+                                break;
+                            case EasyDatabaseConnectionType.edctSQL:
+                                adapter = new SqlDataAdapter(individualSQL, new SqlConnection(ConnectionString));
+                                break;
+                        }
+                        if (adapter != null)
+                        {
+                            string dataTableName = "Table_" + (char)(tableIndex + 64);
+                            //Let us attempt to parse the table name from the SQL 
+                            if (individualSQL.IndexOf(" from ", StringComparison.InvariantCultureIgnoreCase) > 0)
+                            {
+                                dataTableName = individualSQL.Substring(individualSQL.IndexOf(" from ", StringComparison.InvariantCultureIgnoreCase) + 6);
+                                dataTableName = dataTableName.TrimStart('[', '\'');
+                                dataTableName = dataTableName.TrimEnd(']', '\'', '$');
+                                if (dataTableName.Contains(']'))
+                                    dataTableName = dataTableName.Substring(dataTableName.IndexOf(']') + 1).Trim();
+                                dataTableName = dataTableName.Replace(' ', '_');
+                            }
+                            DataSet individualDataSet = new DataSet();
+                            adapter.Fill(individualDataSet);
+                            DataTable individualDataTable = individualDataSet.Tables[0].Copy();
+                            individualDataTable.TableName = dataTableName;
+                            ds.Tables.Add(individualDataTable);
+                            individualDataSet = null;
+                        }
+                        adapter = null;
+                    }
                 }
-                if (adapter != null)
+                catch
                 {
-                    adapter.Fill(ds);
+
                 }
-                adapter.Dispose();
-                xDoc.LoadXml(ds.GetXml());
+                tableIndex++;
             }
-            catch
-            {
-            }
+            xDoc.LoadXml(ds.GetXml());
             return xDoc;
         }
 
         public override bool IsFieldSettingsComplete()
         {
-            return (!String.IsNullOrWhiteSpace(ConnectionString) && !String.IsNullOrWhiteSpace(Query));
+            return !String.IsNullOrWhiteSpace(ConnectionString);
         }
 
         public override bool CanFunction()
@@ -165,7 +188,7 @@ namespace EasyETL.Xml.Parsers
             List<string> TableNames = new List<string>();
             foreach (DataRow row in schema.Rows)
             {
-                TableNames.Add(row["TABLE_NAME"].ToString());
+                if (row["TABLE_TYPE"].ToString().Equals("TABLE", StringComparison.InvariantCultureIgnoreCase)) TableNames.Add(row["TABLE_NAME"].ToString());
             }
             return TableNames;
 

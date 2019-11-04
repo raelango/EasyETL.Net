@@ -251,14 +251,15 @@ namespace EasyETL.Writers
             return result;
         }
 
+
+
         public List<string> GetTables()
         {
-            DbCommand command = _connection.CreateCommand();
-            DataTable schema = _connection.GetSchema("Tables");
+            DataTable schema = ((DbConnection)_connection).GetSchema("Tables");
             List<string> TableNames = new List<string>();
             foreach (DataRow row in schema.Rows)
             {
-                TableNames.Add(row[2].ToString());
+                if (row["TABLE_TYPE"].ToString().Equals("TABLE", StringComparison.InvariantCultureIgnoreCase)) TableNames.Add(row["TABLE_NAME"].ToString());
             }
             return TableNames;
 

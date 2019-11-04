@@ -31,12 +31,6 @@ namespace EasyETL.Xml.Parsers
             {
                 ExcelVersion = (Path.GetExtension(ExcelFileName).Length == 4) ? "8.0" : "12.0";
                 ConnectionString = "Provider=" + ProviderName + "; Data Source=" + ExcelFileName + ";Extended Properties=\"Excel " + ExcelVersion + ";HDR=" + (HasHeader ? "YES" : "NO") + "\"";
-                if (String.IsNullOrWhiteSpace(Query))
-                {
-                    Query = "";
-                    foreach (string tableName in GetTables())
-                        Query += "SELECT * FROM [" + tableName + "];";
-                }
             }
             return base.IsFieldSettingsComplete();
         }
