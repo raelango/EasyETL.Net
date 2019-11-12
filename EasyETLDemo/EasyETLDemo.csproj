@@ -59,6 +59,12 @@
     <Compile Include="ClassConfigurationForm.Designer.cs">
       <DependentUpon>ClassConfigurationForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ClientSettingsConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ClientSettingsConfiguration.Designer.cs">
+      <DependentUpon>ClientSettingsConfiguration.cs</DependentUpon>
+    </Compile>
     <Compile Include="EasyETLDemoApplication.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,6 +99,9 @@
     </Compile>
     <EmbeddedResource Include="ClassConfigurationForm.resx">
       <DependentUpon>ClassConfigurationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ClientSettingsConfiguration.resx">
+      <DependentUpon>ClientSettingsConfiguration.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EasyETLDemoApplication.resx">
       <DependentUpon>EasyETLDemoApplication.cs</DependentUpon>

@@ -13,7 +13,7 @@ namespace EasyETL.Xml.Configuration
         public virtual void ReadSettings(XmlNode xNode)
         {
             LoadAttributesToDictionary(xNode);
-            if (!AttributesDictionary.ContainsKey(xNode.Name)) AttributesDictionary.Add(xNode.Name, xNode.InnerXml);
+            if ((!xNode.HasChildNodes) && (!AttributesDictionary.ContainsKey(xNode.Name))) AttributesDictionary.Add(xNode.Name, xNode.InnerXml);
             ReadSettingsFromDictionary();
         }
 

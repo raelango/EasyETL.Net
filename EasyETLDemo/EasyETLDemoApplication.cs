@@ -45,8 +45,7 @@ namespace EasyXmlSample
                 }
 
             }
-            configXmlDocument = new EasyETLXmlDocument();
-            configXmlDocument.Load(xmlFileName);
+            LoadConfigurationDocument();
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(xmlFileName);
             AddTreeViewChildNodes(tvClients.Nodes, xDoc.SelectSingleNode("//clients"));
@@ -119,17 +118,6 @@ namespace EasyXmlSample
         {
             this.Close();
         }
-
-        private void ToolBarToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            toolStrip.Visible = toolBarToolStripMenuItem.Checked;
-        }
-
-        private void StatusBarToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            statusStrip.Visible = statusBarToolStripMenuItem.Checked;
-        }
-
         private void tvClients_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
             if (e.CancelEdit) return;
@@ -187,8 +175,7 @@ namespace EasyXmlSample
                 }
             }
             xDoc.Save(xmlFileName);
-            configXmlDocument = new EasyETLXmlDocument();
-            configXmlDocument.Load(xmlFileName);
+            LoadConfigurationDocument();
         }
 
         private void tvClients_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
@@ -219,23 +206,37 @@ namespace EasyXmlSample
 
         private void tvClients_DoubleClick(object sender, EventArgs e)
         {
-            if ((tvClients.SelectedNode != null) && (tvClients.SelectedNode.Parent != null) && (tvClients.SelectedNode.Parent.Parent != null))
+            if (tvClients.SelectedNode == null) return;
+            foreach (TabPage p in MainTablControl.TabPages)
             {
-                foreach (TabPage p in MainTablControl.TabPages)
+                if (p.Text == tvClients.SelectedNode.FullPath)
                 {
-                    if (p.Text == tvClients.SelectedNode.FullPath)
-                    {
-                        MainTablControl.SelectedTab = p;
-                        return;
-                    }
+                    MainTablControl.SelectedTab = p;
+                    return;
                 }
+            }
+
+            Form currentForm = null;
+            if (tvClients.SelectedNode.Parent == null)
+            {
+                //this is the top level node...
+                EasyETLClient selectClientConfiguration = configXmlDocument.GetClientConfiguration(tvClients.SelectedNode.Text);
+                if (selectClientConfiguration !=null)
+                {
+                    ClientSettingsConfiguration cForm = new ClientSettingsConfiguration();
+                    cForm.clientConfiguration = selectClientConfiguration;
+                    cForm.configDocument = configXmlDocument;
+                    cForm.LoadConfiguration();
+                    currentForm = cForm;
+                }
+            }
+
+            if ((tvClients.SelectedNode.Parent != null) && (tvClients.SelectedNode.Parent.Parent != null))
+            {
                 string clientName = tvClients.SelectedNode.Parent.Parent.Text;
                 string nodeName = tvClients.SelectedNode.Text;
                 if ("actions;exports;datasources;endpoints;parsers;etls;transfers".Split(';').Contains(tvClients.SelectedNode.Parent.Text))
                 {
-                    MainTablControl.TabPages.Add(tvClients.SelectedNode.FullPath);
-                    TabPage newTabPage = MainTablControl.TabPages[MainTablControl.TabCount - 1];
-                    Form currentForm = null;
                     switch (tvClients.SelectedNode.Parent.Text)
                     {
                         case "etls":
@@ -285,17 +286,19 @@ namespace EasyXmlSample
                             break;
 
                     }
-                    if (currentForm != null)
-                    {
-                        currentForm.TopLevel = false;
-                        currentForm.MdiParent = this;
-                        newTabPage.Controls.Add(currentForm);
-                        currentForm.Dock = DockStyle.Fill;
-                        currentForm.Show();
-                        currentForm.FormBorderStyle = FormBorderStyle.None;
-                        MainTablControl.SelectedTab = newTabPage;
-                    }
                 }
+            }
+            if (currentForm != null)
+            {
+                currentForm.TopLevel = false;
+                currentForm.MdiParent = this;
+                MainTablControl.TabPages.Add(tvClients.SelectedNode.FullPath);
+                TabPage newTabPage = MainTablControl.TabPages[MainTablControl.TabCount - 1];
+                newTabPage.Controls.Add(currentForm);
+                currentForm.Dock = DockStyle.Fill;
+                currentForm.Show();
+                currentForm.FormBorderStyle = FormBorderStyle.None;
+                MainTablControl.SelectedTab = newTabPage;
             }
         }
 
@@ -334,8 +337,7 @@ namespace EasyXmlSample
         {
             renameStripMenuItem_Click(this, null);
         }
-
-        private void DeleteToolStripButton_Click(object sender, EventArgs e)
+          private void DeleteToolStripButton_Click(object sender, EventArgs e)
         {
             DeleteToolStripMenuItem_Click(this, null);
         }
@@ -582,6 +584,33 @@ namespace EasyXmlSample
                 xDoc.Save(xmlFileName);
                 LoadConfiguration(selectedClient + '\\' + originalPath.Split('\\')[1] + '\\' + originalPath.Split('\\')[2]);
             }
+        }
+
+        private void EasyETLDemoApplication_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (MessageBox.Show("Are you sure to close the application ?","Close Application ?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.No)
+            {
+                e.Cancel = true;
+                return;
+            }
+        }
+
+        private void cmOpen_Click(object sender, EventArgs e)
+        {
+            tvClients_DoubleClick(this, null);
+        }
+
+        private void EasyETLDemoApplication_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LoadConfigurationDocument()
+        {
+            configXmlDocument = new EasyETLXmlDocument();
+            configXmlDocument.Load(xmlFileName);
+            configXmlDocument.AddGlobalValue("XmlTemplatePath");
+            configXmlDocument.AddGlobalValue("WordTemplatePath");
         }
     }
 }
