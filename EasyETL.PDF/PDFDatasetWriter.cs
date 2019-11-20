@@ -31,14 +31,16 @@ namespace EasyETL.Writers
         {
             ExportFileName = PopulatedName(ExportFileName);
             Document document = new Document();
-            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(ExportFileName, FileMode.Create));
+            _ = PdfWriter.GetInstance(document, new FileStream(ExportFileName, FileMode.Create));
             document.Open();
 
             foreach (DataTable dataTable in _dataSet.Tables)
             {
                 if (PrintHeader) document.Add(new Phrase(dataTable.TableName));
-                PdfPTable table = new PdfPTable(dataTable.Columns.Count);
-                table.WidthPercentage = 100;
+                PdfPTable table = new PdfPTable(dataTable.Columns.Count)
+                {
+                    WidthPercentage = 100
+                };
 
                 if (PrintTableHeader)
                 {
@@ -46,11 +48,12 @@ namespace EasyETL.Writers
                     //Set columns names in the pdf file
                     for (int k = 0; k < dataTable.Columns.Count; k++)
                     {
-                        PdfPCell cell = new PdfPCell(new Phrase(GetColumnName(dataTable.Columns[k])));
-
-                        cell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
-                        cell.VerticalAlignment = PdfPCell.ALIGN_CENTER;
-                        cell.BackgroundColor = new iTextSharp.text.BaseColor(51, 102, 102);
+                        PdfPCell cell = new PdfPCell(new Phrase(GetColumnName(dataTable.Columns[k])))
+                        {
+                            HorizontalAlignment = PdfPCell.ALIGN_CENTER,
+                            VerticalAlignment = PdfPCell.ALIGN_CENTER,
+                            BackgroundColor = new iTextSharp.text.BaseColor(51, 102, 102)
+                        };
 
                         table.AddCell(cell);
                     }
@@ -61,11 +64,13 @@ namespace EasyETL.Writers
                 {
                     for (int j = 0; j < dataTable.Columns.Count; j++)
                     {
-                        PdfPCell cell = new PdfPCell(new Phrase(dataTable.Rows[i][j].ToString()));
+                        PdfPCell cell = new PdfPCell(new Phrase(dataTable.Rows[i][j].ToString()))
+                        {
 
-                        //Align the cell in the center
-                        cell.HorizontalAlignment = PdfPCell.ALIGN_CENTER;
-                        cell.VerticalAlignment = PdfPCell.ALIGN_CENTER;
+                            //Align the cell in the center
+                            HorizontalAlignment = PdfPCell.ALIGN_CENTER,
+                            VerticalAlignment = PdfPCell.ALIGN_CENTER
+                        };
 
                         table.AddCell(cell);
                     }

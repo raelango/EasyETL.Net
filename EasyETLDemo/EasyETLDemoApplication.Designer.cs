@@ -49,6 +49,8 @@
             this.amRename = new System.Windows.Forms.ToolStripMenuItem();
             this.amDelete = new System.Windows.Forms.ToolStripMenuItem();
             this.amClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.ActionTypeContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.atNewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.MainContainer)).BeginInit();
             this.MainContainer.Panel1.SuspendLayout();
@@ -56,6 +58,7 @@
             this.MainContainer.SuspendLayout();
             this.ClientContextMenuStrip.SuspendLayout();
             this.ActionContextMenuStrip.SuspendLayout();
+            this.ActionTypeContextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip
@@ -226,6 +229,20 @@
             this.amClose.Text = "Close";
             this.amClose.Click += new System.EventHandler(this.amClose_Click);
             // 
+            // ActionTypeContextMenuStrip
+            // 
+            this.ActionTypeContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.atNewToolStripMenuItem});
+            this.ActionTypeContextMenuStrip.Name = "contextMenuStrip1";
+            this.ActionTypeContextMenuStrip.Size = new System.Drawing.Size(181, 48);
+            // 
+            // atNewToolStripMenuItem
+            // 
+            this.atNewToolStripMenuItem.Name = "atNewToolStripMenuItem";
+            this.atNewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.atNewToolStripMenuItem.Text = "Create New";
+            this.atNewToolStripMenuItem.Click += new System.EventHandler(this.atNewToolStripMenuItem_Click);
+            // 
             // EasyETLDemoApplication
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -248,6 +265,7 @@
             this.MainContainer.ResumeLayout(false);
             this.ClientContextMenuStrip.ResumeLayout(false);
             this.ActionContextMenuStrip.ResumeLayout(false);
+            this.ActionTypeContextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -273,6 +291,8 @@
         private System.Windows.Forms.ToolStripMenuItem cmClone;
         private System.Windows.Forms.ToolStripMenuItem cmRename;
         private System.Windows.Forms.ToolStripMenuItem cmDelete;
+        private System.Windows.Forms.ContextMenuStrip ActionTypeContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem atNewToolStripMenuItem;
     }
 }
 

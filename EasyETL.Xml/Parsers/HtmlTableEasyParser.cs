@@ -44,9 +44,6 @@ namespace EasyETL.Xml.Parsers
             string HeaderExpression = "(<TH>|<TH[\\s]>)(.*?)</TH>";
             string RowExpression = "(<TR>|<TR[\\s]>)(.*?)</TR>";
             string ColumnExpression = "(<TD>|<TD[\\s]>)(.*?)</TD>";
-            bool HeadersExist = false;
-            int iCurrentColumn = 0;
-            int iCurrentRow = 0;
             // Get a match for all the tables in the HTML  
             MatchCollection Tables = Regex.Matches(HTML, TableExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
             // Loop through each table element  
@@ -57,8 +54,8 @@ namespace EasyETL.Xml.Parsers
                 tableIndex++;
                 string tableName = RootNodeName + tableIndex.ToString();
                 // Reset the current row counter and the header flag  
-                iCurrentRow = 0;
-                HeadersExist = false;
+                int iCurrentRow = 0;
+                bool HeadersExist = false;
                 Match TableNameMatch = null;
                 if (Regex.IsMatch(Table.Value, "id=(?<TableName>.\\w+)")) TableNameMatch = Regex.Match(Table.Value, "id=(?<TableName>.\\w+)");
                 if (Regex.IsMatch(Table.Value, "name=(?<TableName>.\\w+)")) TableNameMatch = Regex.Match(Table.Value, "name=(?<TableName>.\\w+)");
@@ -114,7 +111,7 @@ namespace EasyETL.Xml.Parsers
                             XmlNode rowNode = rootNode.OwnerDocument.CreateElement(tableName);
                             //rootNode.AppendChild(rowNode);
 
-                            iCurrentColumn = 0;
+                            int iCurrentColumn = 0;
                             // Get a match for all the columns in the row  
                             MatchCollection Columns = Regex.Matches(Row.Value, ColumnExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase);
 

@@ -47,9 +47,11 @@ namespace EasyETL.DataSets
                 iCurrentRow = 0;
                 HeadersExist = false;
                 // Add a new table to the DataSet  
-                dt = new DataTable();
-                //Create the relevant amount of columns for this table (use the headers if they exist, otherwise use default names)  
-                dt.TableName = "Table" + (this.Tables.Count + 1).ToString();
+                dt = new DataTable
+                {
+                    //Create the relevant amount of columns for this table (use the headers if they exist, otherwise use default names)  
+                    TableName = "Table" + (this.Tables.Count + 1).ToString()
+                };
                 Match TableNameMatch = null;
                 if (Regex.IsMatch(Table.Value,"id=(?<TableName>.\\w+)")) TableNameMatch = Regex.Match(Table.Value,"id=(?<TableName>.\\w+)");
                 if (Regex.IsMatch(Table.Value,"name=(?<TableName>.\\w+)")) TableNameMatch = Regex.Match(Table.Value,"name=(?<TableName>.\\w+)");

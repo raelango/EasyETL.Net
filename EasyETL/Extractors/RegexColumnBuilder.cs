@@ -518,8 +518,7 @@ namespace EasyETL.DataSets
                     //This is fixed length
                     strRegex = strRegex.Substring(2);
                     strRegex = strRegex.TrimEnd('}');
-                    int intRegex;
-                    if ((!String.IsNullOrEmpty(strRegex)) && (Int32.TryParse(strRegex, out intRegex)))
+                    if ((!String.IsNullOrEmpty(strRegex)) && (Int32.TryParse(strRegex, out _)))
                     {
                         strResult += " length='" + strRegex + "'";
                     }

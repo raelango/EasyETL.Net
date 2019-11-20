@@ -29,11 +29,10 @@ namespace EasyETL.Xml
             List<string> lstRowElements = new List<string>();
 
             StringBuilder xslSB = new StringBuilder();
-            Dictionary<string, string> dctSortOrders = new Dictionary<string, string>();
-            string strSortOrder = String.Empty;
             foreach (string settingCommand in settingsCommands)
             {
                 string[] settings = settingCommand.Split(' ');
+                string strSortOrder;
                 switch (settings[0].ToUpper())
                 {
                     case "ADD":
@@ -118,9 +117,11 @@ namespace EasyETL.Xml
                 XsltArgumentList xal = new XsltArgumentList();
                 xal.AddExtensionObject(XsltExtensions.XsltStringExtensions.Namespace, new XsltExtensions.XsltStringExtensions()); //This is to make the "easy" extension functions available...
                 StringBuilder xmlSB = new StringBuilder();
-                XmlWriterSettings xwSettings = new XmlWriterSettings();
-                xwSettings.OmitXmlDeclaration = true;
-                xwSettings.ConformanceLevel = ConformanceLevel.Auto;
+                XmlWriterSettings xwSettings = new XmlWriterSettings
+                {
+                    OmitXmlDeclaration = true,
+                    ConformanceLevel = ConformanceLevel.Auto
+                };
                 XmlWriter xWriter = XmlWriter.Create(xmlSB, xwSettings);
                 xsl.Transform(xmlNode, xal, xWriter);
                 XmlDocument xDoc = new XmlDocument();
@@ -149,11 +150,10 @@ namespace EasyETL.Xml
             List<string> lstRowElements = new List<string>();
 
             StringBuilder xslSB = new StringBuilder();
-            Dictionary<string, string> dctSortOrders = new Dictionary<string, string>();
-            string strSortOrder = String.Empty;
             foreach (string settingCommand in settingsCommands)
             {
                 string[] settings = settingCommand.Split(' ');
+                string strSortOrder;
                 switch (settings[0].ToUpper())
                 {
                     case "ADD":
@@ -315,10 +315,9 @@ namespace EasyETL.Xml
             // object and create a new XmlElemnt object.
             ////////////////////////////////////////////////
 
-            XmlElement elementToEncrypt = Doc.GetElementsByTagName(ElementToEncrypt)[0] as XmlElement;
 
             // Throw an XmlException if the element was not found.
-            if (elementToEncrypt == null)
+            if (!(Doc.GetElementsByTagName(ElementToEncrypt)[0] is XmlElement elementToEncrypt))
             {
                 throw new XmlException("The specified element was not found");
 

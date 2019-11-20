@@ -173,8 +173,8 @@ namespace EasyETL.Xml.Parsers
                                 }
                                 else
                                 {
-                                    int colWidth =0;
-                                    if (Int32.TryParse(colFormat,out colWidth)) {
+                                    if (Int32.TryParse(colFormat, out int colWidth))
+                                    {
                                         //This is fixed width
                                         colRegex = ".{" + colWidth.ToString() + "}";
                                     }

@@ -40,8 +40,10 @@ namespace EasyETL.Endpoint
 
         public virtual Dictionary<string, string> GetSettingsAsDictionary()
         {
-            Dictionary<string, string> resultDict = new Dictionary<string, string>();
-            resultDict.Add("overwrite", Overwrite.ToString());
+            Dictionary<string, string> resultDict = new Dictionary<string, string>
+            {
+                { "overwrite", Overwrite.ToString() }
+            };
             return resultDict;
         }
 

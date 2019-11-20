@@ -89,20 +89,18 @@ namespace EasyETL.DataSets
         #region protected methods
         protected void SendMessageToCallingApplicationHandler(int lineNumber, string message, object rowData = null)
         {
-            RowReadEventArgs lrEventArgs = new RowReadEventArgs();
-            lrEventArgs.RowNumber = lineNumber;
-            lrEventArgs.Message = message;
-            lrEventArgs.RowData = rowData;
+            RowReadEventArgs lrEventArgs = new RowReadEventArgs
+            {
+                RowNumber = lineNumber,
+                Message = message,
+                RowData = rowData
+            };
             OnLineReadAndProcessed(lrEventArgs);
         }
 
         protected virtual void OnLineReadAndProcessed(RowReadEventArgs e)
         {
-            EventHandler<RowReadEventArgs> handler = RowReadAndProcessed;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            RowReadAndProcessed?.Invoke(this, e);
         }
         #endregion    
     }

@@ -17,8 +17,10 @@ namespace EasyETL.Xml.Configuration
             UserName = GetSetting("UserName");
             DisplayName = GetSetting("DisplayName");
 
-            Permissions = new EasyETLPermission();
-            Permissions.AttributesDictionary = new Dictionary<string, string>(AttributesDictionary);
+            Permissions = new EasyETLPermission
+            {
+                AttributesDictionary = new Dictionary<string, string>(AttributesDictionary)
+            };
             Permissions.ReadSettingsFromDictionary();
         }
 

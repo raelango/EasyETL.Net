@@ -27,9 +27,6 @@ namespace EasyETL.DataSets
             var jsonString = sr.ReadToEnd();
             sr.Close();
             this.Tables.Clear();
-
-            DataTable dt = null;
-            DataRow dr = null;
             string TableExpression = @"({|,)\s*" + '"' + @"(?<TableName>.*?)" + '"' + @"\s*:\s*(\[\s*(?<TableContents>.*?)\s*\]\s*)";
             string RowExpression = @"{((\s*" + '"' + @"(?<ColumnName>.*?)" + '"' + @"\s*:\s*" + '"' + @"(?<ColumnValue>.*?)" + '"' + @").*?(,|\n))*.*?}";
 
@@ -42,9 +39,11 @@ namespace EasyETL.DataSets
                 // Reset the current row counter and the header flag  
                 string tableName = Table.Groups["TableName"].Value.Trim('"');
                 string tableContents = Table.Groups["TableContents"].Value.Trim('"');
-                dt = new DataTable();
-                //Create the relevant amount of columns for this table (use the headers if they exist, otherwise use default names)  
-                dt.TableName = tableName;
+                DataTable dt = new DataTable
+                {
+                    //Create the relevant amount of columns for this table (use the headers if they exist, otherwise use default names)  
+                    TableName = tableName
+                };
 
                 MatchCollection Rows = Regex.Matches(tableContents, RowExpression, RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
                 if (Rows.Count > 0)
@@ -55,7 +54,7 @@ namespace EasyETL.DataSets
                     }
                     foreach (Match row in Rows)
                     {
-                        dr = dt.NewRow();
+                        DataRow dr = dt.NewRow();
                         for (int i = 0; i < row.Groups["ColumnName"].Captures.Count; i++)
                         {
                             dr[row.Groups["ColumnName"].Captures[i].Value] = row.Groups["ColumnValue"].Captures[i].Value;

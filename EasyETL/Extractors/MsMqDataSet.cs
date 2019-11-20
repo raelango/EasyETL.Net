@@ -41,18 +41,16 @@ namespace EasyETL.DataSets
 
         public override void ProcessRowObject(object row)
         {
-            if (row is Dictionary<string, object>)
+            if (row is Dictionary<string, object> Data)
             {
-                Dictionary<string, object> Data = (Dictionary<string, object>)row;
                 if (Data.ContainsKey("Message"))
                 {
                     row = Data["Message"];
                 }
             }
 
-            if (row is Message)
+            if (row is Message msg)
             {
-                Message msg = (Message)row;
                 DataRow dr = Tables[0].NewRow();
                 dr["ArrivedTime"] = msg.ArrivedTime;
                 dr["Body"] = msg.Body.ToString();

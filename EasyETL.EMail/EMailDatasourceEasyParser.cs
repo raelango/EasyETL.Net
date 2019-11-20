@@ -192,6 +192,7 @@ namespace EasyETL.Xml.EMail
 
         public void Dispose()
         {
+            if (mailStore != null) mailStore.Dispose();
             DisconnectFromEmailServer();
         }
     }

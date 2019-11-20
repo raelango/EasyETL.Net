@@ -54,9 +54,6 @@ namespace EasyETL
 
         protected void ProcessValidation()
         {
-            bool passRegEx = false;
-            bool passIssuer = false;
-            bool passLuhn = false;
             IsValid = false;
 
 
@@ -65,17 +62,16 @@ namespace EasyETL
                 // Reg Ex check //
                 Regex RegExNumber = new Regex(@"(?<firsttwo>(?<firstone>\d)\d)\d{11,14}");
                 Match m = RegExNumber.Match(_CardNumber);
-                passRegEx = m.Success;
-                if (!passRegEx) break;
+                if (!m.Success) break;
                 string number = m.Groups[0].Value; // only digits //
                 string firstNum = m.Groups["firstone"].Value;
                 int firstTwoNum = int.Parse(m.Groups["firsttwo"].Value);
-                passIssuer = (firstNum == "4") || ((firstTwoNum >= 51) && (firstTwoNum <= 55));
+                bool passIssuer = (firstNum == "4") || ((firstTwoNum >= 51) && (firstTwoNum <= 55));
                 if (!passIssuer) break;
                 if (firstNum == "4") CardType = CCType.VISA;
                 if ((firstTwoNum >= 51) && (firstTwoNum <= 55)) CardType = CCType.MC;
                 // Now make Luhn check //
-                passLuhn = LuhnCheck(number);
+                bool passLuhn = LuhnCheck(number);
                 if (!passLuhn) break;
                 //
                 IsValid = true;
@@ -91,14 +87,13 @@ namespace EasyETL
         protected bool LuhnCheck(String cardNumber)
         {
             int sum = 0;
-            int digit = 0;
-            int addend = 0;
             bool timesTwo = false;
 
 
             for (int i = cardNumber.Length - 1; i >= 0; i--)
             {
-                digit = int.Parse(cardNumber.Substring(i, 1));
+                int digit = int.Parse(cardNumber.Substring(i, 1));
+                int addend;
                 if (timesTwo)
                 {
                     addend = digit * 2;

@@ -87,8 +87,10 @@ namespace EasyETL.Endpoint
             GetS3Client();
             List<string> fileList = new List<string>();
             if (AWSClient != null) {
-                ListObjectsRequest request = new ListObjectsRequest();
-                request.BucketName = BucketName;
+                ListObjectsRequest request = new ListObjectsRequest
+                {
+                    BucketName = BucketName
+                };
                 while (request != null) {
                     ListObjectsResponse loResponse = AWSClient.ListObjects(request);
                     fileList.AddRange(loResponse.S3Objects.Select(s => s.Key).ToList());
@@ -106,9 +108,11 @@ namespace EasyETL.Endpoint
             if (!FileExists(fileName)) return null;
             if (AWSClient != null)
             {
-                GetObjectRequest request = new GetObjectRequest();
-                request.BucketName = BucketName;
-                request.Key = fileName;
+                GetObjectRequest request = new GetObjectRequest
+                {
+                    BucketName = BucketName,
+                    Key = fileName
+                };
                 using (GetObjectResponse response = AWSClient.GetObject(request))
                 {
                     MemoryStream ms = new MemoryStream();
@@ -174,9 +178,11 @@ namespace EasyETL.Endpoint
             {
                 if (FileExists(fileName))
                 {
-                    DeleteObjectRequest deleteRequest = new DeleteObjectRequest();
-                    deleteRequest.BucketName = BucketName;
-                    deleteRequest.Key = AccessKey;
+                    DeleteObjectRequest deleteRequest = new DeleteObjectRequest
+                    {
+                        BucketName = BucketName,
+                        Key = AccessKey
+                    };
                     AWSClient.DeleteObject(deleteRequest);
                 }
             }

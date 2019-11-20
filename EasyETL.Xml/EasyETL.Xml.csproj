@@ -80,7 +80,6 @@
     <Compile Include="Parsers\DatabaseEasyParser.cs" />
     <Compile Include="Parsers\DatasourceEasyParser.cs" />
     <Compile Include="Parsers\DelimitedEasyParser.cs" />
-    <Compile Include="Parsers\EasyParser.cs" />
     <Compile Include="Parsers\ExcelDatabaseEasyParser.cs" />
     <Compile Include="Parsers\FileListEasyParser.cs" />
     <Compile Include="Parsers\FixedWidthEasyParser.cs" />

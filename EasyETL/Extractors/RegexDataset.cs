@@ -660,60 +660,61 @@ namespace EasyETL.DataSets
                 throw new ApplicationException("No stream available to convert to a DataSet");
 
             TextFile.Seek(0, SeekOrigin.Begin);
-            var sr = new StreamReader(TextFile);
-
-            var readLine = sr.ReadLine();
-            var isFirstLine = true;
-
-            int lineNumber = 1;
-
-            SendMessageToCallingApplicationHandler(0, "Loading First Line");
-
-            if (UseFirstRowNamesAsColumnNames && (FirstRowExpression == null) && ((_regexColumns == null) || (_regexColumns.Count == 0)))
+            using (StreamReader sr = new StreamReader(TextFile))
             {
-                string firstRow = readLine;
-                Regex regexSeparator = new Regex("^([a-zA-Z0-9_\"]*)(?<Separator>.)");
-                Match match = regexSeparator.Match(firstRow);
-                if (match.Success)
+                var readLine = sr.ReadLine();
+                var isFirstLine = true;
+
+                int lineNumber = 1;
+
+                SendMessageToCallingApplicationHandler(0, "Loading First Line");
+
+                if (UseFirstRowNamesAsColumnNames && (FirstRowExpression == null) && ((_regexColumns == null) || (_regexColumns.Count == 0)))
                 {
-                    string fieldSeparator = match.Groups["Separator"].ToString();
-                    string[] columnNames = firstRow.Split(fieldSeparator[0]);
-                    ColumnBuilder = new RegexColumnBuilder(fieldSeparator, columnNames);
+                    string firstRow = readLine;
+                    Regex regexSeparator = new Regex("^([a-zA-Z0-9_\"]*)(?<Separator>.)");
+                    Match match = regexSeparator.Match(firstRow);
+                    if (match.Success)
+                    {
+                        string fieldSeparator = match.Groups["Separator"].ToString();
+                        string[] columnNames = firstRow.Split(fieldSeparator[0]);
+                        ColumnBuilder = new RegexColumnBuilder(fieldSeparator, columnNames);
+                    }
+                    UseFirstRowNamesAsColumnNames = false;
+                    SkipFirstRow = true;
                 }
-                UseFirstRowNamesAsColumnNames = false;
-                SkipFirstRow = true;
-            }
 
 
-            SendMessageToCallingApplicationHandler(lineNumber, "Building Schema...");
-            BuildRegexSchemaIntoDataSet();
+                SendMessageToCallingApplicationHandler(lineNumber, "Building Schema...");
+                BuildRegexSchemaIntoDataSet();
 
-            while (readLine != null)
-            {
-                if (isFirstLine && UseFirstRowNamesAsColumnNames && !SkipFirstRow)
+                while (readLine != null)
                 {
-                    SendMessageToCallingApplicationHandler(lineNumber, "Building First Row...");
-                    if (FirstRowExpression == null)
-                        throw new RegexDataSetException(
-                            "FirstRowExpression is not set, but UseFirstRowNamesAsColumnNames is set to true");
-                    if (!FirstRowExpression.IsMatch(readLine))
-                        throw new RegexDataSetException(
-                            "The first row in the file does not match the FirstRowExpression");
+                    if (isFirstLine && UseFirstRowNamesAsColumnNames && !SkipFirstRow)
+                    {
+                        SendMessageToCallingApplicationHandler(lineNumber, "Building First Row...");
+                        if (FirstRowExpression == null)
+                            throw new RegexDataSetException(
+                                "FirstRowExpression is not set, but UseFirstRowNamesAsColumnNames is set to true");
+                        if (!FirstRowExpression.IsMatch(readLine))
+                            throw new RegexDataSetException(
+                                "The first row in the file does not match the FirstRowExpression");
 
-                    var m = FirstRowExpression.Match(readLine);
-                    foreach (var sGroup in FirstRowExpression.GetGroupNames())
-                        if (sGroup != DefaultGroup)
-                            DataTable.Columns[sGroup].ExtendedProperties.Add(NewName, m.Groups[sGroup].Value);
-                }
-                else if (!(isFirstLine && SkipFirstRow))
-                {
-                    ProcessRowObject(readLine);
-                }
-                SendMessageToCallingApplicationHandler(lineNumber, "Processed line");
+                        var m = FirstRowExpression.Match(readLine);
+                        foreach (var sGroup in FirstRowExpression.GetGroupNames())
+                            if (sGroup != DefaultGroup)
+                                DataTable.Columns[sGroup].ExtendedProperties.Add(NewName, m.Groups[sGroup].Value);
+                    }
+                    else if (!(isFirstLine && SkipFirstRow))
+                    {
+                        ProcessRowObject(readLine);
+                    }
+                    SendMessageToCallingApplicationHandler(lineNumber, "Processed line");
 
-                readLine = sr.ReadLine();
-                lineNumber += 1;
-                isFirstLine = false;
+                    readLine = sr.ReadLine();
+                    lineNumber += 1;
+                    isFirstLine = false;
+                }
             }
             if (!UseFirstRowNamesAsColumnNames) return;
             foreach (DataColumn column in DataTable.Columns)
@@ -731,9 +732,8 @@ namespace EasyETL.DataSets
                     QueueToParse.Enqueue((string)row);
                 }
             }
-            if (row is Dictionary<string, object>)
+            if (row is Dictionary<string, object> Data)
             {
-                Dictionary<string, object> Data = (Dictionary<string, object>)row;
                 if (Data.ContainsKey("AdditionalContent"))
                 {
                     lock (QueueToParse)
@@ -777,11 +777,10 @@ namespace EasyETL.DataSets
                 {
                     var m = ContentExpression.Match(readLine);
                     bImportRow = true;
-                    short groupNum;
                     rowDict = new Dictionary<string, object>();
                     foreach (var sGroup in ContentExpression.GetGroupNames())
                     {
-                        if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
+                        if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out short groupNum)))
                         {
                             RegexColumn curRegexColumn = _regexColumns.Find(r => r.ColumnName == sGroup);
                             if (!String.IsNullOrWhiteSpace(curRegexColumn.ValueMatchingCondition) && (!Regex.IsMatch(m.Groups[sGroup].Value, curRegexColumn.ValueMatchingCondition)))
@@ -829,10 +828,9 @@ namespace EasyETL.DataSets
                             bImportRow = true;
                             DataTable crpDataTable = Tables[crp.TableName];
                             var m = crp.parseRegex.Match(readLine);
-                            short groupNum;
                             foreach (var sGroup in crp.parseRegex.GetGroupNames())
                             {
-                                if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out groupNum)))
+                                if ((sGroup != DefaultGroup) && (!Int16.TryParse(sGroup, out short groupNum)))
                                 {
                                     RegexColumn curRegexColumn = crp.RegexColumns.Find(r => r.ColumnName == sGroup);
                                     if (!String.IsNullOrWhiteSpace(curRegexColumn.ValueMatchingCondition) && (!Regex.IsMatch(m.Groups[sGroup].Value, curRegexColumn.ValueMatchingCondition)))

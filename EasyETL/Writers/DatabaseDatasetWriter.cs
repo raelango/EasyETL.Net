@@ -237,7 +237,7 @@ namespace EasyETL.Writers
         public List<string> GetColumnsOfCollection(string collectionName)
         {
             List<string> result = new List<string>();
-            DbCommand command = _connection.CreateCommand();
+            //DbCommand command = _connection.CreateCommand();
             string[] restrictions = new string[] { null, null, _tableName };
             DataTable table = _connection.GetSchema(collectionName, restrictions);
 
@@ -433,29 +433,17 @@ namespace EasyETL.Writers
         #region protected methods
         protected virtual void OnRowInserted(RowWrittenEventArgs e)
         {
-            EventHandler<RowWrittenEventArgs> handler = RowInserted;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            RowInserted?.Invoke(this, e);
         }
 
         protected virtual void OnRowUpdated(RowWrittenEventArgs e)
         {
-            EventHandler<RowWrittenEventArgs> handler = RowUpdated;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            RowUpdated?.Invoke(this, e);
         }
 
         protected virtual void OnRowErrored(RowWrittenEventArgs e)
         {
-            EventHandler<RowWrittenEventArgs> handler = RowErrored;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            RowErrored?.Invoke(this, e);
         }
 
         #endregion

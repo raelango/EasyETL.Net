@@ -64,8 +64,10 @@ namespace EasyETL.Actions.DemoActions
         {
             if (CanExecute(dataDictionary) && (!String.IsNullOrWhiteSpace(ActionName)))
             {
-                ProcessStartInfo psi = new ProcessStartInfo(WorkingFileName);
-                psi.Verb = ActionName;
+                ProcessStartInfo psi = new ProcessStartInfo(WorkingFileName)
+                {
+                    Verb = ActionName
+                };
                 Process.Start(psi);
             }
         }

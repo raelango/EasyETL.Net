@@ -9,6 +9,7 @@ namespace EasyETL.Xml.Configuration
 {
     public class EasyETLXmlDocument : XmlDocument
     {
+        public string ConfigFileName;
         public List<EasyETLClient> Clients = new List<EasyETLClient>();
         public Dictionary<string, string> GlobalValues = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
 
@@ -25,6 +26,7 @@ namespace EasyETL.Xml.Configuration
 
         public override void Load(string filename)
         {
+            ConfigFileName = filename;
             base.Load(filename);
 
             Clients = new List<EasyETLClient>();
@@ -43,6 +45,11 @@ namespace EasyETL.Xml.Configuration
                 foreach (XmlAttribute xAttr in clientConfigNode.Attributes)
                     GlobalValues.Add(xAttr.Name, xAttr.Value);
             }
+        }
+
+        public void Save()
+        {
+            if (!String.IsNullOrWhiteSpace(ConfigFileName)) Save(ConfigFileName);
         }
 
         public override void Save(string filename)

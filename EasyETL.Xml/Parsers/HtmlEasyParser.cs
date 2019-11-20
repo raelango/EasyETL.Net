@@ -12,11 +12,13 @@ namespace EasyETL.Xml.Parsers
     {
         public override XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null)
         {
-            SgmlReader sgmlReader = new SgmlReader();
-            sgmlReader.DocType = "HTML";
-            sgmlReader.WhitespaceHandling = WhitespaceHandling.All;
-            sgmlReader.CaseFolding = Sgml.CaseFolding.ToLower;
-            sgmlReader.InputStream = txtReader;
+            SgmlReader sgmlReader = new SgmlReader
+            {
+                DocType = "HTML",
+                WhitespaceHandling = WhitespaceHandling.All,
+                CaseFolding = Sgml.CaseFolding.ToLower,
+                InputStream = txtReader
+            };
 
             if (xDoc == null)
             {

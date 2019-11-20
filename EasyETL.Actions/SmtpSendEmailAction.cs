@@ -59,8 +59,10 @@ namespace EasyETL.Actions
 
         public override void SendEmail(string recipient, string cc, string bcc, string subject, string body)
         {
-            MailMessage mailMessage = new MailMessage();
-            mailMessage.From = new MailAddress(SenderAccount);
+            MailMessage mailMessage = new MailMessage
+            {
+                From = new MailAddress(SenderAccount)
+            };
             mailMessage.To.Add(recipient.Replace(';', ','));
             if (!String.IsNullOrWhiteSpace(cc)) mailMessage.CC.Add(cc.Replace(';', ','));
             if (!String.IsNullOrWhiteSpace(bcc)) mailMessage.Bcc.Add(bcc.Replace(';', ','));
@@ -68,14 +70,17 @@ namespace EasyETL.Actions
             mailMessage.IsBodyHtml = body.StartsWith("<html", StringComparison.CurrentCultureIgnoreCase);
             mailMessage.Body = body;
 
-            SmtpClient smtpClient = new SmtpClient(SmtpServerName);
-            smtpClient.Port = SmtpPort;
-            smtpClient.UseDefaultCredentials = UseDefaultCredentials;
-            if (!UseDefaultCredentials) {
-                smtpClient.Credentials = new NetworkCredential(SenderAccount,SenderAccountPassword);
+            using (SmtpClient smtpClient = new SmtpClient(SmtpServerName))
+            {
+                smtpClient.Port = SmtpPort;
+                smtpClient.UseDefaultCredentials = UseDefaultCredentials;
+                if (!UseDefaultCredentials)
+                {
+                    smtpClient.Credentials = new NetworkCredential(SenderAccount, SenderAccountPassword);
+                }
+                smtpClient.EnableSsl = UseSSL;
+                smtpClient.Send(mailMessage);
             }
-            smtpClient.EnableSsl = UseSSL;
-            smtpClient.Send(mailMessage);
         }
     }
 }

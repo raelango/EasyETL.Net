@@ -85,13 +85,14 @@ namespace EasyEndpoint
         {
             try
             {
-                SP.File spFile;
-                if (TryGetFileByServerRelativeUrl(_web, _web.ServerRelativeUrl + "/" + LibraryName + "/" + fileName, out spFile))
+                if (TryGetFileByServerRelativeUrl(_web, _web.ServerRelativeUrl + "/" + LibraryName + "/" + fileName, out SP.File spFile))
                 {
                     SharepointClientContext.Load(spFile);
                     SharepointClientContext.ExecuteQuery();
-                    SP.FileInformation fileInfo = SP.File.OpenBinaryDirect(_clientContext, spFile.ServerRelativeUrl);
-                    return fileInfo.Stream;
+                    using (SP.FileInformation fileInfo = SP.File.OpenBinaryDirect(_clientContext, spFile.ServerRelativeUrl))
+                    {
+                        return fileInfo.Stream;
+                    }
                 }
             }
             catch
@@ -149,8 +150,7 @@ namespace EasyEndpoint
 
         public override bool FileExists(string fileName)
         {
-            SP.File spFile;
-            return TryGetFileByServerRelativeUrl(_web, _web.ServerRelativeUrl + "/" + LibraryName + "/" + fileName, out spFile);
+            return TryGetFileByServerRelativeUrl(_web, _web.ServerRelativeUrl + "/" + LibraryName + "/" + fileName, out _);
         }
 
         public override bool Delete(string fileName)
@@ -302,7 +302,11 @@ namespace EasyEndpoint
         {
             if (_site != null) _site = null;
             if (_web != null) _web = null;
-            if (_clientContext != null) _clientContext = null; 
+            if (_clientContext != null)
+            {
+                _clientContext.Dispose();
+                _clientContext = null;
+            }
             Credentials = null;
         }
     }

@@ -128,8 +128,7 @@ namespace EasyETL.IFilter
                 if (filter is IPersistStream persistStream)
                 {
                     persistStream.Load(new ManagedStream(stream));
-
-                    if (filter.Init(IFILTER_INIT.IFILTER_INIT_APPLY_INDEX_ATTRIBUTES, 0, IntPtr.Zero, out IFILTER_FLAGS filterFlags) == IFilterReturnCodes.S_OK)
+                    if (filter.Init(IFILTER_INIT.IFILTER_INIT_APPLY_INDEX_ATTRIBUTES, 0, IntPtr.Zero, out _) == IFilterReturnCodes.S_OK)
                     {
                         return filter;
                     }

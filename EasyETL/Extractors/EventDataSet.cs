@@ -61,24 +61,22 @@ namespace EasyETL.DataSets
 
         public override void ProcessRowObject(object row)
         {
-            if (row is Dictionary<string, object>)
+            if (row is Dictionary<string, object> Data)
             {
-                Dictionary<string, object> Data = (Dictionary<string, object>)row;
                 if (Data.ContainsKey("EventLogEntry"))
                 {
                     row = Data["EventLogEntry"];
                 }
             }
 
-            if (row is EventLogEntry)
+            if (row is EventLogEntry elogEntry)
             {
-                EventLogEntry elogEntry = (EventLogEntry)row;
                 DataRow dr = Tables[0].NewRow();
                 dr["Index"] = elogEntry.Index.ToString();
                 dr["Category"] = elogEntry.Category;
                 dr["CategoryID"] = elogEntry.CategoryNumber.ToString();
                 dr["EntryType"] = elogEntry.EntryType.ToString();
-                dr["Message"]  = elogEntry.Message;
+                dr["Message"] = elogEntry.Message;
                 dr["MachineName"] = elogEntry.MachineName;
                 dr["Application"] = elogEntry.Source;
                 dr["TimeCreated"] = elogEntry.TimeGenerated.ToString();

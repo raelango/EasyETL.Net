@@ -22,9 +22,8 @@ namespace EasyETL.Utils
             if ((inputType == "detect") && (MatchesPattern(inputStr, @"^\d{5}(?:[-\s]\d{4})?$"))) inputType = "zipcode";
             if ((inputType == "detect") && (MatchesPattern(inputStr, @"\d{1,3}.?\d{0,3}\s[a-zA-Z]{2,30}\s[a-zA-Z]{2,15}"))) inputType = "address";
             if ((inputType == "detect") && (MatchesPattern(inputStr, @"\d{3}-\d{2}-\d{4}"))) inputType = "ssn";
-            if ((inputType == "detect") && (IPAddress.TryParse(inputStr, out IPAddress ipAddress))) inputType = "ipaddress";
-
-            if ((inputType == "detect") && (DateTime.TryParse(inputStr, out DateTime dateTime))) inputType = "date";
+            if ((inputType == "detect") && (IPAddress.TryParse(inputStr, out _))) inputType = "ipaddress";
+            if ((inputType == "detect") && (DateTime.TryParse(inputStr, out _))) inputType = "date";
             if ((inputType == "detect") && (new CreditCardValidator(inputStr).IsValid)) inputType = "creditcard";
             if ((inputType == "detect") && (MatchesPattern(inputStr, @"[A-Za-z]+(\s+[A-Za-z]+)+", @"[A-Za-z]+"))) inputType = "name";
 
@@ -102,8 +101,7 @@ namespace EasyETL.Utils
                         string yearPart = String.Empty;
                         foreach (string part in inputStr.Split('-', ' ', '/'))
                         {
-                            short intPart;
-                            if (Int16.TryParse(part, out intPart))
+                            if (Int16.TryParse(part, out short intPart))
                             {
                                 //this is an integer and hence, could be an year..
                                 if (part.Length > 2)
@@ -135,11 +133,11 @@ namespace EasyETL.Utils
                     }
                     break;
                 case "ipaddress":
-                    if (IPAddress.TryParse(inputStr, out IPAddress ip)) return Regex.Replace(inputStr, "[0-9]", "*");
+                    if (IPAddress.TryParse(inputStr, out _)) return Regex.Replace(inputStr, "[0-9]", "*");
                     break;
                 case "uri":
                 case "url":
-                    if (Uri.TryCreate(inputStr, UriKind.Absolute, out Uri uriResult))
+                    if (Uri.TryCreate(inputStr, UriKind.Absolute, out _))
                     {
                         //This is a valid URL
                         resultData = inputStr.Substring(0, inputStr.IndexOf('.'));

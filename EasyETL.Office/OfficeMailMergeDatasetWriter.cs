@@ -43,20 +43,22 @@ namespace EasyETL.Writers
             string originalFileName = ExportFileName;
             foreach (DataTable dTable in fullDataSet.Tables)
             {
-                DataSet tempDataSet = new DataSet(fullDataSet.DataSetName);
-                tempDataSet.Tables.Add(dTable.Clone());
-                DataTable tempTable = tempDataSet.Tables[0];
-                foreach (DataRow dRow in dTable.Rows)
+                using (DataSet tempDataSet = new DataSet(fullDataSet.DataSetName))
                 {
-                    tempTable.Clear();
-                    tempTable.ImportRow(dRow);
-                    _dataSet = tempDataSet;
-                    string tempTemplateFileName =  PopulatedName(originalTemplateFileName);
-                    string tempFileName = PopulatedName(originalFileName);
+                    tempDataSet.Tables.Add(dTable.Clone());
+                    DataTable tempTable = tempDataSet.Tables[0];
+                    foreach (DataRow dRow in dTable.Rows)
+                    {
+                        tempTable.Clear();
+                        tempTable.ImportRow(dRow);
+                        _dataSet = tempDataSet;
+                        string tempTemplateFileName = PopulatedName(originalTemplateFileName);
+                        string tempFileName = PopulatedName(originalFileName);
 
-                    ExportFileName = tempFileName;
-                    TemplateFileName = tempTemplateFileName;
-                    base.Write();
+                        ExportFileName = tempFileName;
+                        TemplateFileName = tempTemplateFileName;
+                        base.Write();
+                    }
                 }
             }
             ExportFileName = originalFileName;

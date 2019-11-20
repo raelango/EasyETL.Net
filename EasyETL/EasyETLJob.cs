@@ -29,13 +29,13 @@ namespace EasyETL
         {
             foreach (DatasetParser extractor in DatasetParsers)
             {
-                extractor.LineReadAndProcessed += extractor_LineReadAndProcessed;
+                extractor.LineReadAndProcessed += Extractor_LineReadAndProcessed;
                 extractor.Parse();
             }
             BuildMasterDataSet();
             foreach (JobListener listener in Listeners)
             {
-                listener.OnTriggered += listener_OnTriggered;
+                listener.OnTriggered += Listener_OnTriggered;
                 listener.Start();
             }
 
@@ -45,16 +45,12 @@ namespace EasyETL
             }
         }
 
-        void extractor_LineReadAndProcessed(object sender, RowReadEventArgs e)
+        void Extractor_LineReadAndProcessed(object sender, RowReadEventArgs e)
         {
-            EventHandler<RowReadEventArgs> handler = RowReadAndProcessed;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            RowReadAndProcessed?.Invoke(this, e);
         }
 
-        void listener_OnTriggered(object sender, ListenerTriggeredEventArgs e)
+        void Listener_OnTriggered(object sender, ListenerTriggeredEventArgs e)
         {
             if (e.Data.ContainsKey("AdditionalContent"))
             {

@@ -116,11 +116,7 @@ namespace EasyETL.Writers
 
         protected virtual void OnRowWritten(RowWrittenEventArgs e)
         {
-            EventHandler<RowWrittenEventArgs> handler = RowWritten;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            RowWritten?.Invoke(this, e);
         }
 
         protected string GetColumnName(DataColumn dColumn)
@@ -163,9 +159,10 @@ namespace EasyETL.Writers
 
         public virtual Dictionary<string, string> GetSettingsAsDictionary()
         {
-            Dictionary<string, string> resultDict = new Dictionary<string, string>();
-            resultDict.Add("includeheader", PrintTableHeader.ToString());
-            return resultDict;
+            return new Dictionary<string, string>
+            {
+                { "includeheader", PrintTableHeader.ToString() }
+            };
         }
 
 

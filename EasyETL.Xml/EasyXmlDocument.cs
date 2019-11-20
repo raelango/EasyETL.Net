@@ -167,14 +167,18 @@ namespace EasyETL.Xml
 
         public DataTable ToDataTable(int tableIndex = 0)
         {
-            DataSet ds = ToDataSet();
-            return (ds != null && ds.Tables.Count > tableIndex) ? ds.Tables[tableIndex] : new DataTable();
+            using (DataSet ds = ToDataSet())
+            {
+                return (ds != null && ds.Tables.Count > tableIndex) ? ds.Tables[tableIndex] : new DataTable();
+            }
         }
 
         public DataTable ToDataTable(string tableName)
         {
-            DataSet ds = ToDataSet();
-            return (ds != null && ds.Tables.Contains(tableName)) ? ds.Tables[tableName] : new DataTable();
+            using (DataSet ds = ToDataSet())
+            {
+                return (ds != null && ds.Tables.Contains(tableName)) ? ds.Tables[tableName] : new DataTable();
+            }
         }
 
         public EasyXmlDocument ApplyFilter(string xPathFilter)
@@ -200,10 +204,12 @@ namespace EasyETL.Xml
                 using (var x = new XmlTextWriter(ms, new UTF8Encoding(false)) { Formatting = Formatting.Indented, IndentChar = ' ', Namespaces=false })
                 {
                     this.Save(x);
-                    StreamReader sr = new StreamReader(ms);
-                    ms.Position = 0;
-                    string resultText = sr.ReadToEnd();
-                    return resultText;
+                    using (StreamReader sr = new StreamReader(ms))
+                    {
+                        ms.Position = 0;
+                        string resultText = sr.ReadToEnd();
+                        return resultText;
+                    }
                 }
             }
         }
@@ -271,10 +277,10 @@ namespace EasyETL.Xml
 
             StringBuilder xslSB = new StringBuilder();
             Dictionary<string, string> dctSortOrders = new Dictionary<string, string>();
-            string strSortOrder = String.Empty;
             foreach (string settingCommand in settingsCommands)
             {
                 string[] settings = settingCommand.Split(' ');
+                string strSortOrder;
                 switch (settings[0].ToUpper())
                 {
                     case "ADD":
@@ -359,10 +365,12 @@ namespace EasyETL.Xml
                 xal.AddExtensionObject(XsltExtensions.XsltStringExtensions.Namespace, new XsltExtensions.XsltStringExtensions()); //This is to make the "easy" extension functions available...
                 XslCompiledTransform xsl = GetCompiledTransform(xslSB, dctSortOrders);
                 StringBuilder xmlSB = new StringBuilder();
-                XmlWriterSettings xwSettings = new XmlWriterSettings();
-                xwSettings.OmitXmlDeclaration = true;
-                xwSettings.Indent = true;
-                xwSettings.ConformanceLevel = ConformanceLevel.Auto;
+                XmlWriterSettings xwSettings = new XmlWriterSettings
+                {
+                    OmitXmlDeclaration = true,
+                    Indent = true,
+                    ConformanceLevel = ConformanceLevel.Auto
+                };
                 XmlWriter xWriter = XmlWriter.Create(xmlSB, xwSettings);
                 xsl.Transform(this, xal, xWriter);
                 LoadXml(xmlSB.ToString());

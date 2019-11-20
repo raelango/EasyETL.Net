@@ -17,6 +17,7 @@ namespace EasyETL.Xml.Configuration
         public List<EasyETLDatasource> Datasources = new List<EasyETLDatasource>();
         public List<EasyETLWriter> Writers = new List<EasyETLWriter>();
         public List<EasyETLEndpoint> Endpoints = new List<EasyETLEndpoint>();
+        public List<EasyETLParser> Parsers = new List<EasyETLParser>();
 
         public List<EasyETLJob> ETLs = new List<EasyETLJob>();
 
@@ -53,6 +54,14 @@ namespace EasyETL.Xml.Configuration
                 EasyETLEndpoint etlEndpoint = new EasyETLEndpoint();
                 etlEndpoint.ReadSettings(childNode);
                 Endpoints.Add(etlEndpoint);
+            }
+
+            Parsers = new List<EasyETLParser>();
+            foreach (XmlNode childNode in xNode.SelectNodes("parsers/parser"))
+            {
+                EasyETLParser easyETLParser = new EasyETLParser();
+                easyETLParser.ReadSettings(childNode);
+                Parsers.Add(easyETLParser);
             }
 
             ETLs = new List<EasyETLJob>();
@@ -108,6 +117,16 @@ namespace EasyETL.Xml.Configuration
                 XmlElement writerNode = xNode.OwnerDocument.CreateElement("export");
                 writersNode.AppendChild(writerNode);
                 writer.WriteSettings(writerNode);
+            }
+
+            //Write all parsers
+            XmlElement parsersNode = xNode.OwnerDocument.CreateElement("parsers");
+            xNode.AppendChild(parsersNode);
+            foreach (EasyETLParser parser in parsersNode)
+            {
+                XmlElement parserNode = xNode.OwnerDocument.CreateElement("parser");
+                parsersNode.AppendChild(parserNode);
+                parser.WriteSettings(parserNode);
             }
 
             //Write all actions

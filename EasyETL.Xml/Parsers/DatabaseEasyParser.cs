@@ -62,63 +62,65 @@ namespace EasyETL.Xml.Parsers
 
         public XmlDocument LoadFromQuery(string sqlToExecute, XmlDocument xDoc = null)
         {
-            DataSet ds = new DataSet();
-            IDbDataAdapter adapter = null;
-            if (xDoc == null)
+            using (DataSet ds = new DataSet())
             {
-                xDoc = new XmlDocument();
-            }
-
-            int tableIndex = 1;
-            foreach (string individualSQL in sqlToExecute.Split(';'))
-            {
-                try
+                IDbDataAdapter adapter = null;
+                if (xDoc == null)
                 {
+                    xDoc = new XmlDocument();
+                }
 
-                    if (!String.IsNullOrWhiteSpace(individualSQL))
+                int tableIndex = 1;
+                foreach (string individualSQL in sqlToExecute.Split(';'))
+                {
+                    try
                     {
-                        switch (ConnectionType)
-                        {
-                            case EasyDatabaseConnectionType.edctODBC:
-                                adapter = new OdbcDataAdapter(individualSQL, new OdbcConnection(ConnectionString));
-                                break;
-                            case EasyDatabaseConnectionType.edctOledb:
-                                adapter = new OleDbDataAdapter(individualSQL, new OleDbConnection(ConnectionString));
-                                break;
-                            case EasyDatabaseConnectionType.edctSQL:
-                                adapter = new SqlDataAdapter(individualSQL, new SqlConnection(ConnectionString));
-                                break;
-                        }
-                        if (adapter != null)
-                        {
-                            string dataTableName = "Table_" + (char)(tableIndex + 64);
-                            //Let us attempt to parse the table name from the SQL 
-                            if (individualSQL.IndexOf(" from ", StringComparison.InvariantCultureIgnoreCase) > 0)
-                            {
-                                dataTableName = individualSQL.Substring(individualSQL.IndexOf(" from ", StringComparison.InvariantCultureIgnoreCase) + 6);
-                                dataTableName = dataTableName.TrimStart('[', '\'');
-                                dataTableName = dataTableName.TrimEnd(']', '\'', '$');
-                                if (dataTableName.Contains(']'))
-                                    dataTableName = dataTableName.Substring(dataTableName.IndexOf(']') + 1).Trim();
-                                dataTableName = dataTableName.Replace(' ', '_');
-                            }
-                            DataSet individualDataSet = new DataSet();
-                            adapter.Fill(individualDataSet);
-                            DataTable individualDataTable = individualDataSet.Tables[0].Copy();
-                            individualDataTable.TableName = dataTableName;
-                            ds.Tables.Add(individualDataTable);
-                            individualDataSet = null;
-                        }
-                        adapter = null;
-                    }
-                }
-                catch
-                {
 
+                        if (!String.IsNullOrWhiteSpace(individualSQL))
+                        {
+                            switch (ConnectionType)
+                            {
+                                case EasyDatabaseConnectionType.edctODBC:
+                                    adapter = new OdbcDataAdapter(individualSQL, new OdbcConnection(ConnectionString));
+                                    break;
+                                case EasyDatabaseConnectionType.edctOledb:
+                                    adapter = new OleDbDataAdapter(individualSQL, new OleDbConnection(ConnectionString));
+                                    break;
+                                case EasyDatabaseConnectionType.edctSQL:
+                                    adapter = new SqlDataAdapter(individualSQL, new SqlConnection(ConnectionString));
+                                    break;
+                            }
+                            if (adapter != null)
+                            {
+                                string dataTableName = "Table_" + (char)(tableIndex + 64);
+                                //Let us attempt to parse the table name from the SQL 
+                                if (individualSQL.IndexOf(" from ", StringComparison.InvariantCultureIgnoreCase) > 0)
+                                {
+                                    dataTableName = individualSQL.Substring(individualSQL.IndexOf(" from ", StringComparison.InvariantCultureIgnoreCase) + 6);
+                                    dataTableName = dataTableName.TrimStart('[', '\'');
+                                    dataTableName = dataTableName.TrimEnd(']', '\'', '$');
+                                    if (dataTableName.Contains(']'))
+                                        dataTableName = dataTableName.Substring(dataTableName.IndexOf(']') + 1).Trim();
+                                    dataTableName = dataTableName.Replace(' ', '_');
+                                }
+                                DataSet individualDataSet = new DataSet();
+                                adapter.Fill(individualDataSet);
+                                DataTable individualDataTable = individualDataSet.Tables[0].Copy();
+                                individualDataTable.TableName = dataTableName;
+                                ds.Tables.Add(individualDataTable);
+                                individualDataSet = null;
+                            }
+                            adapter = null;
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+                    tableIndex++;
                 }
-                tableIndex++;
+                xDoc.LoadXml(ds.GetXml());
             }
-            xDoc.LoadXml(ds.GetXml());
             return xDoc;
         }
 
@@ -173,11 +175,12 @@ namespace EasyETL.Xml.Parsers
 
         public override Dictionary<string, string> GetSettingsAsDictionary()
         {
-            Dictionary<string, string> resultDict = new Dictionary<string, string>();
-            resultDict.Add("connectionstring", ConnectionString);
-            resultDict.Add("connectiontype", ConnectionType.ToString().Substring(4));
-            resultDict.Add("query", Query);
-            return resultDict;
+            return new Dictionary<string, string>
+            {
+                { "connectionstring", ConnectionString },
+                { "connectiontype", ConnectionType.ToString().Substring(4) },
+                { "query", Query }
+            };
         }
 
         public List<string> GetTables()

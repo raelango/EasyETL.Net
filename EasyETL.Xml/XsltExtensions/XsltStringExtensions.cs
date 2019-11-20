@@ -63,8 +63,7 @@ namespace EasyETL.Xml.XsltExtensions
 
         public bool IsDate(string inputStr)
         {
-            DateTime dateTime;
-            return DateTime.TryParse(inputStr, out dateTime);
+            return DateTime.TryParse(inputStr, out _);
         }
 
         public string Trim(string inputStr)

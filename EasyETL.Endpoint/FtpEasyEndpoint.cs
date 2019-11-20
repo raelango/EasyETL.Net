@@ -105,8 +105,7 @@ namespace EasyETL.Endpoint
             try
             {
                 EstablishFTPConnection();
-                byte[] contents;
-                FTPControl.Download(out contents, fileName);
+                FTPControl.Download(out byte[] contents, fileName);
                 return contents;
             }
             catch

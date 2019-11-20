@@ -94,8 +94,10 @@ namespace EasyETL.Writers
                         if (mainDoc == null) mainDoc = doc.AddMainDocumentPart();
 
                         DocumentSettingsPart settingsPart = mainDoc.GetPartsOfType<DocumentSettingsPart>().First();
-                        UpdateFieldsOnOpen updateFields = new UpdateFieldsOnOpen();
-                        updateFields.Val = new OnOffValue(true);
+                        UpdateFieldsOnOpen updateFields = new UpdateFieldsOnOpen
+                        {
+                            Val = new OnOffValue(true)
+                        };
                         settingsPart.Settings.PrependChild<UpdateFieldsOnOpen>(updateFields);
                         settingsPart.Settings.Save();
 
@@ -121,7 +123,6 @@ namespace EasyETL.Writers
                         }
                         mainDoc.Document.Save();
                         doc.Dispose();
-                        doc = null;
                         break;
                     case OfficeFileType.ExcelWorkbook:
                         SpreadsheetDocument spreadSheet;
@@ -190,9 +191,11 @@ namespace EasyETL.Writers
 
                                     foreach (string column in columns)
                                     {
-                                        excel.Cell cell = new excel.Cell();
-                                        cell.DataType = excel.CellValues.String;
-                                        cell.CellValue = new excel.CellValue(GetColumnName(table.Columns[column]));
+                                        excel.Cell cell = new excel.Cell
+                                        {
+                                            DataType = excel.CellValues.String,
+                                            CellValue = new excel.CellValue(GetColumnName(table.Columns[column]))
+                                        };
                                         headerRow.AppendChild(cell);
                                     }
 
@@ -205,9 +208,11 @@ namespace EasyETL.Writers
                                     excel.Row newRow = new excel.Row();
                                     foreach (String col in columns)
                                     {
-                                        excel.Cell cell = new excel.Cell();
-                                        cell.DataType = excel.CellValues.String;
-                                        cell.CellValue = new excel.CellValue(dsrow[col].ToString()); //
+                                        excel.Cell cell = new excel.Cell
+                                        {
+                                            DataType = excel.CellValues.String,
+                                            CellValue = new excel.CellValue(dsrow[col].ToString()) //
+                                        };
                                         newRow.AppendChild(cell);
                                     }
 
@@ -219,7 +224,7 @@ namespace EasyETL.Writers
                             workbook.Save();
                             workbook.Close();
                         }
-                        spreadSheet = null;
+
                         break;
                 }
 
@@ -260,8 +265,10 @@ namespace EasyETL.Writers
             paragraph.Append(new word.Run(new word.Text(text)));
             if (styleID != null)
             {
-                paragraph.ParagraphProperties = new word.ParagraphProperties();
-                paragraph.ParagraphProperties.ParagraphStyleId = styleID;
+                paragraph.ParagraphProperties = new word.ParagraphProperties
+                {
+                    ParagraphStyleId = styleID
+                };
             }
             return paragraph;
         }

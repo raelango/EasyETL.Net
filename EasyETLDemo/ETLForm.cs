@@ -76,9 +76,11 @@ namespace EasyXmlSample
             {
                 string actionName = actionNode.Attributes.GetNamedItem("name").Value;
                 chkAvailableActions.Items.Add(actionName);
-                Button btnControl = new Button();
-                btnControl.AutoSize = true;
-                btnControl.Text = actionName;
+                Button btnControl = new Button
+                {
+                    AutoSize = true,
+                    Text = actionName
+                };
                 btnControl.Click += btnControl_Click;
                 fpActions.Controls.Add(btnControl);
 
@@ -381,9 +383,8 @@ namespace EasyXmlSample
         {
             foreach (Control c in fpActions.Controls)
             {
-                if (c is Button)
+                if (c is Button b)
                 {
-                    Button b = (Button)c;
                     b.Visible = chkAvailableActions.CheckedItems.Contains(b.Text);
                 }
             }
@@ -442,7 +443,6 @@ namespace EasyXmlSample
 
         private void LoadParseOptionsFromNode(XmlNode optionsNode)
         {
-            string delimiter = "";
             foreach (XmlAttribute xAttr in optionsNode.Attributes)
             {
                 switch (xAttr.Name.ToLower())
@@ -452,7 +452,7 @@ namespace EasyXmlSample
                         cmbFileType_SelectedIndexChanged(this, null);
                         break;
                     case "delimiter":
-                        delimiter = xAttr.Value;
+                        string delimiter = xAttr.Value;
                         Control c = this.Controls.Find("rbDelimiter" + delimiter, true)[0];
                         ((RadioButton)c).Checked = true;
                         break;
@@ -504,22 +504,16 @@ namespace EasyXmlSample
             AbstractFileEasyEndpoint endpoint = GetEndpoint();
             if (endpoint == null) return;
             if (!endpoint.CanFunction()) return;
-            
-            EndpointFilesForm epfForm = new EndpointFilesForm();
-            epfForm.LoadEndPoint(endpoint, cmbEndpoint.Text);
-            if (epfForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                txtFileName.Text = epfForm.FileName;
-            }
-            
-            //ofd.CheckFileExists = true;
-            //ofd.FileName = txtFileName.Text;
 
-            //if (ofd.ShowDialog() == DialogResult.OK)
-            //{
-            //    txtFileName.Text = ofd.FileName;
-            //    //LoadDataToGridView();
-            //}
+            using (EndpointFilesForm epfForm = new EndpointFilesForm())
+            {
+                epfForm.LoadEndPoint(endpoint, cmbEndpoint.Text);
+                if (epfForm.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    txtFileName.Text = epfForm.FileName;
+                }
+            }
+
         }
 
         private AbstractFileEasyEndpoint GetEndpoint()
@@ -714,7 +708,7 @@ namespace EasyXmlSample
             if (!stopWatch.IsRunning) stopWatch.Restart();
             lblRecordCount.Text = "";
             cmbTableName.Items.Clear();
-            EasyXmlDocument xDoc = (EasyXmlDocument)ezDoc;
+            EasyXmlDocument xDoc;
             try
             {
                 xDoc = (EasyXmlDocument)ezDoc.Clone();
@@ -747,10 +741,11 @@ namespace EasyXmlSample
             {
             }
 
-            DataSet ds = null;
             fpActions.Visible = false;
             try
             {
+
+                DataSet ds;
                 if (rbUseDatasetLoad.Checked)
                 {
                     ds = xDoc.ToDataSet();
@@ -766,11 +761,11 @@ namespace EasyXmlSample
                         if (strNodeMapping.Contains('='))
                         {
                             tableName = strNodeMapping.Substring(0, strNodeMapping.IndexOf('='));
-                            nodePath = strNodeMapping.Substring(strNodeMapping.IndexOf('=')+1);
+                            nodePath = strNodeMapping.Substring(strNodeMapping.IndexOf('=') + 1);
                         }
                         DataTable dataTable = ds.Tables.Add(tableName);
                         XmlNodeList xmlNodeList = xDoc.SelectNodes(nodePath);
-                        if ((xmlNodeList != null) && (xmlNodeList.Count >0))
+                        if ((xmlNodeList != null) && (xmlNodeList.Count > 0))
                         {
                             foreach (XmlNode columnNode in xmlNodeList[0])
                                 dataTable.Columns.Add(columnNode.Name);
@@ -1393,9 +1388,8 @@ namespace EasyXmlSample
             List<DataRow> dataRows = null;
             foreach (Control c in fpActions.Controls)
             {
-                if (c is Button)
+                if (c is Button b)
                 {
-                    Button b = (Button)c;
                     fpActions.Visible = true;
                     b.Enabled = false;
                     if ((b.Visible) && dctActionClassMapping.ContainsKey(b.Text) && (dctActionClassMapping[b.Text] != null))

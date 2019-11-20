@@ -16,24 +16,28 @@ namespace EasyETL.Attributes
         public static string Encrypt256(this string text)
         {
             // AesCryptoServiceProvider
-            AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
-            aes.BlockSize = 128;
-            aes.KeySize = 256;
-            aes.IV = Encoding.UTF8.GetBytes(AesIV256);
-            aes.Key = Encoding.UTF8.GetBytes(AesKey256);
-            aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.PKCS7;
-
-            // Convert string to byte array
-            byte[] src = Encoding.Unicode.GetBytes(text);
-
-            // encryption
-            using (ICryptoTransform encrypt = aes.CreateEncryptor())
+            using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider
             {
-                byte[] dest = encrypt.TransformFinalBlock(src, 0, src.Length);
+                BlockSize = 128,
+                KeySize = 256,
+                IV = Encoding.UTF8.GetBytes(AesIV256),
+                Key = Encoding.UTF8.GetBytes(AesKey256),
+                Mode = CipherMode.CBC,
+                Padding = PaddingMode.PKCS7
+            })
+            {
 
-                // Convert byte array to Base64 strings
-                return Convert.ToBase64String(dest);
+                // Convert string to byte array
+                byte[] src = Encoding.Unicode.GetBytes(text);
+
+                // encryption
+                using (ICryptoTransform encrypt = aes.CreateEncryptor())
+                {
+                    byte[] dest = encrypt.TransformFinalBlock(src, 0, src.Length);
+
+                    // Convert byte array to Base64 strings
+                    return Convert.ToBase64String(dest);
+                }
             }
         }
 
@@ -43,29 +47,33 @@ namespace EasyETL.Attributes
         public static string Decrypt256(this string text)
         {
             // AesCryptoServiceProvider
-            AesCryptoServiceProvider aes = new AesCryptoServiceProvider();
-            aes.BlockSize = 128;
-            aes.KeySize = 256;
-            aes.IV = Encoding.UTF8.GetBytes(AesIV256);
-            aes.Key = Encoding.UTF8.GetBytes(AesKey256);
-            aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.PKCS7;
-
-            // Convert Base64 strings to byte array
-
-            // decryption
-            using (ICryptoTransform decrypt = aes.CreateDecryptor())
+            using (AesCryptoServiceProvider aes = new AesCryptoServiceProvider
             {
-                try
-                {
-                    byte[] src = System.Convert.FromBase64String(text);
-                    byte[] dest = decrypt.TransformFinalBlock(src, 0, src.Length);
-                    return Encoding.Unicode.GetString(dest);
+                BlockSize = 128,
+                KeySize = 256,
+                IV = Encoding.UTF8.GetBytes(AesIV256),
+                Key = Encoding.UTF8.GetBytes(AesKey256),
+                Mode = CipherMode.CBC,
+                Padding = PaddingMode.PKCS7
+            })
+            {
 
-                }
-                catch
+                // Convert Base64 strings to byte array
+
+                // decryption
+                using (ICryptoTransform decrypt = aes.CreateDecryptor())
                 {
-                    return text;
+                    try
+                    {
+                        byte[] src = System.Convert.FromBase64String(text);
+                        byte[] dest = decrypt.TransformFinalBlock(src, 0, src.Length);
+                        return Encoding.Unicode.GetString(dest);
+
+                    }
+                    catch
+                    {
+                        return text;
+                    }
                 }
             }
         }

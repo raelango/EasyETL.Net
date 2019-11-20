@@ -22,7 +22,7 @@ namespace EasyETL
         public static void LoadCustomFunctions()
         {
             ExtractMethodsFromFile(Path.Combine(Environment.CurrentDirectory, "Plugins"));
-            ExtractMethodsFromFile(Path.Combine(Environment.CurrentDirectory,"Extensions"));
+            ExtractMethodsFromFile(Path.Combine(Environment.CurrentDirectory, "Extensions"));
         }
 
         public static void ExtractMethodsFromFile(string dllPath)
@@ -100,14 +100,14 @@ namespace EasyETL
                 {
                     int paramLength = args.Length - methodParamLength + 1;
                     Type argType = Type.GetType(tcm.Method.GetParameters()[methodParamLength - 1].ParameterType.FullName).GetElementType();
-                    dynamic paramObject = Array.CreateInstance(argType,paramLength);
+                    dynamic paramObject = Array.CreateInstance(argType, paramLength);
 
                     for (int i = 0; i < paramLength; i++)
                     {
-                        paramObject[i] =  Convert.ChangeType(args[methodParamLength - 1 + i], argType);
+                        paramObject[i] = Convert.ChangeType(args[methodParamLength - 1 + i], argType);
                     }
                     Array.Resize(ref args, tcm.Method.GetParameters().Length);
-                    args[args.Length -1] = paramObject;
+                    args[args.Length - 1] = paramObject;
                 }
                 if ((methodParamLength > 0) && (args.Length != methodParamLength))
                 {
@@ -126,7 +126,7 @@ namespace EasyETL
         }
 
 
-        public static object ExecuteString(string command,Dictionary<string,object> props = null)
+        public static object ExecuteString(string command, Dictionary<string, object> props = null)
         {
             if (String.IsNullOrWhiteSpace(command)) return false;
             string commandPattern = @"@(?'methodname' [a-zA-Z]\w*)
@@ -153,66 +153,69 @@ namespace EasyETL
                 commandResult = ExecuteMethod(methodName, methodParams);
                 command = command.Replace(commandMatch.Value, commandResult.ToString());
             }
-            return EvaluateString(command,props);
+            return EvaluateString(command, props);
         }
 
         [STAThread]
-        public static string EvaluateString(string strToEvaluate, Dictionary<string,object> props = null)
+        public static string EvaluateString(string strToEvaluate, Dictionary<string, object> props = null)
         {
             try
             {
-                CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");
-                CompilerParameters cp = new CompilerParameters();
-
-                string className = "Class" + System.Guid.NewGuid().ToString().Replace("-", "");
-
-                cp.ReferencedAssemblies.Add("system.dll");
-                cp.CompilerOptions = "/t:library";
-                cp.GenerateInMemory = true;
-
-                StringBuilder sb = new StringBuilder("");
-                sb.Append("using System;\n");
-                sb.Append("using System.Collections.Generic;\n");
-
-                sb.Append("namespace EasyObject.Evaluator { \n");
-                sb.Append("\tpublic class " + className + "{ \n");
-                if (props != null)
+                using (CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp"))
                 {
-                    foreach (KeyValuePair<string, object> kvPair in props)
+
+                    CompilerParameters cp = new CompilerParameters();
+
+                    string className = "Class" + System.Guid.NewGuid().ToString().Replace("-", "");
+
+                    cp.ReferencedAssemblies.Add("system.dll");
+                    cp.CompilerOptions = "/t:library";
+                    cp.GenerateInMemory = true;
+
+                    StringBuilder sb = new StringBuilder("");
+                    sb.Append("using System;\n");
+                    sb.Append("using System.Collections.Generic;\n");
+
+                    sb.Append("namespace EasyObject.Evaluator { \n");
+                    sb.Append("\tpublic class " + className + "{ \n");
+                    if (props != null)
                     {
-                        sb.AppendFormat("\t\t{0} {1};\n", kvPair.Value.GetType().Name, kvPair.Key);
+                        foreach (KeyValuePair<string, object> kvPair in props)
+                        {
+                            sb.AppendFormat("\t\t{0} {1};\n", kvPair.Value.GetType().Name, kvPair.Key);
+                        }
                     }
-                }
-                sb.Append("\t\tpublic object Evaluate(object props = null){\n");
-                if (props != null)
-                {
-                    sb.Append("\t\t\tif ((props !=null) && (props is Dictionary<string,object>)){\n");
-
-                    foreach (KeyValuePair<string, object> kvPair in props)
+                    sb.Append("\t\tpublic object Evaluate(object props = null){\n");
+                    if (props != null)
                     {
-                        sb.AppendFormat("\t\t\t\t{1} = ({0})((Dictionary<string,object>)props)[\"{1}\"]; \n", kvPair.Value.GetType().Name, kvPair.Key);
+                        sb.Append("\t\t\tif ((props !=null) && (props is Dictionary<string,object>)){\n");
+
+                        foreach (KeyValuePair<string, object> kvPair in props)
+                        {
+                            sb.AppendFormat("\t\t\t\t{1} = ({0})((Dictionary<string,object>)props)[\"{1}\"]; \n", kvPair.Value.GetType().Name, kvPair.Key);
+                        }
+                        sb.Append("\t\t\t}\n");
                     }
-                    sb.Append("\t\t\t}\n");
+                    sb.Append("\t\t\treturn " + strToEvaluate + "; \n");
+                    sb.Append("\t\t} \n");
+                    sb.Append("\t} \n");
+                    sb.Append("}\n");
+
+                    CompilerResults cr = codeProvider.CompileAssemblyFromSource(cp, sb.ToString());
+                    if (cr.Errors.Count > 0)
+                    {
+                        return strToEvaluate;
+                    }
+
+                    System.Reflection.Assembly a = cr.CompiledAssembly;
+                    object o = a.CreateInstance("EasyObject.Evaluator." + className);
+                    Type t = o.GetType();
+                    MethodInfo mi = t.GetMethod("Evaluate");
+
+                    object s = String.Empty;
+                    s = mi.Invoke(o, new object[] { props });
+                    return s.ToString();
                 }
-                sb.Append("\t\t\treturn " + strToEvaluate + "; \n");
-                sb.Append("\t\t} \n");
-                sb.Append("\t} \n");
-                sb.Append("}\n");
-
-                CompilerResults cr = codeProvider.CompileAssemblyFromSource(cp, sb.ToString());
-                if (cr.Errors.Count > 0)
-                {
-                    return strToEvaluate;
-                }
-
-                System.Reflection.Assembly a = cr.CompiledAssembly;
-                object o = a.CreateInstance("EasyObject.Evaluator." + className);
-                Type t = o.GetType();
-                MethodInfo mi = t.GetMethod("Evaluate");
-
-                object s = String.Empty;
-                s = mi.Invoke(o, new object[] { props });
-                return s.ToString();
             }
             catch
             {

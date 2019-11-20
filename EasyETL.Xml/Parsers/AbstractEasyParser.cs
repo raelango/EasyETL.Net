@@ -70,7 +70,6 @@ namespace EasyETL.Xml.Parsers
             {
                 if (OnLoadXsl == null)
                 {
-                    returnNode = childNode.Clone();
                     XmlDocument rDoc = new XmlDocument();
                     returnNode = rDoc.ImportNode(childNode, true);
                     OnLoadXsl = returnNode.GetCompiledTransform(OnLoadSettings);
@@ -168,9 +167,10 @@ namespace EasyETL.Xml.Parsers
 
         public virtual Dictionary<string, string> GetSettingsAsDictionary()
         {
-            Dictionary<string,string> resultDict = new Dictionary<string, string>();
-            resultDict.Add("parsertype","abstract");
-            return resultDict;
+            return new Dictionary<string, string>
+            {
+                { "parsertype", "abstract" }
+            };
         }
     
     

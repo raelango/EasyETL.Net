@@ -20,8 +20,10 @@ namespace EasyETL.Listeners
         public FolderListener(object caller, string folderName, string filter = "*.*", bool monitorSubFolders = false, WatcherChangeTypes monitorChangeTypes = WatcherChangeTypes.All, NotifyFilters notificationFilter = NotifyFilters.Attributes | NotifyFilters.CreationTime | NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastAccess | NotifyFilters.LastWrite | NotifyFilters.Security | NotifyFilters.Size)
             : base(caller)
         {
-            _folderWatcher = new FileSystemWatcher(folderName, filter);
-            _folderWatcher.IncludeSubdirectories = monitorSubFolders;
+            _folderWatcher = new FileSystemWatcher(folderName, filter)
+            {
+                IncludeSubdirectories = monitorSubFolders
+            };
             MonitorChangeTypes = monitorChangeTypes;
             NotificationFilter = notificationFilter;
 

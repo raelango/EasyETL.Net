@@ -131,7 +131,7 @@ namespace EasyETL.Parsers
                     break;
             }
             Data.LoadProfileSettings(ProfileNode);
-            Data.RowReadAndProcessed += resultDataSet_RowReadAndProcessed;
+            Data.RowReadAndProcessed += ResultDataSet_RowReadAndProcessed;
             if ((!String.IsNullOrWhiteSpace(FileToParse)) && (File.Exists(FileToParse))  ) {
                 if (Data is EasyDataSet)
                 {
@@ -146,13 +146,9 @@ namespace EasyETL.Parsers
             Data.ProcessRowObject(row);
         }
 
-        void resultDataSet_RowReadAndProcessed(object sender, RowReadEventArgs e)
+        void ResultDataSet_RowReadAndProcessed(object sender, RowReadEventArgs e)
         {
-            EventHandler<RowReadEventArgs> handler = LineReadAndProcessed;
-            if (handler != null)
-            {
-                handler(this, e);
-            }
+            LineReadAndProcessed?.Invoke(this, e);
         }
 
         public void Dispose()

@@ -85,8 +85,8 @@ namespace EasyETL
                 {
                     try
                     {
-                        string dllFullName = Assembly.LoadFile(dllFile).FullName;
-                        if (!AppDomain.CurrentDomain.GetAssemblies().Select(f => f.FullName).Contains(dllFullName))
+                        //string dllFullName = Assembly.LoadFile(dllFile).FullName;
+                        if (!AppDomain.CurrentDomain.GetAssemblies().Select(f => f.Location).Contains(dllFile))
                             lstClasses.AddRange(LoadClassesFromLibrary(baseClassType, dllFile));
                     }
                     catch
@@ -112,12 +112,14 @@ namespace EasyETL
 
         private static void AddClassToList(List<ClassMapping> lstClasses, Type type)
         {
-            ClassMapping cMapping = new ClassMapping();
-            cMapping.Class = type;
-            cMapping.DisplayName = type.GetDisplayName();
-            cMapping.Description = type.GetDescription();
-            cMapping.Fields = type.GetEasyProperties();
-            cMapping.Assembly = type.Assembly;
+            ClassMapping cMapping = new ClassMapping
+            {
+                Class = type,
+                DisplayName = type.GetDisplayName(),
+                Description = type.GetDescription(),
+                Fields = type.GetEasyProperties(),
+                Assembly = type.Assembly
+            };
             lstClasses.Add(cMapping);
         }
 
@@ -134,11 +136,13 @@ namespace EasyETL
                     {
                         if (typeName == type.GetDisplayName())
                         {
-                            classMapping = new ClassMapping();
-                            classMapping.Class = type;
-                            classMapping.DisplayName = type.GetDisplayName();
-                            classMapping.Description = type.GetDescription();
-                            classMapping.Fields = type.GetEasyProperties();
+                            classMapping = new ClassMapping
+                            {
+                                Class = type,
+                                DisplayName = type.GetDisplayName(),
+                                Description = type.GetDescription(),
+                                Fields = type.GetEasyProperties()
+                            };
                             return classMapping;
                         }
                     }
@@ -194,23 +198,27 @@ namespace EasyETL
             string errorFileName = Path.ChangeExtension(csFileName, "error");
             if (File.Exists(dllFileName)) File.Delete(dllFileName);
             if (File.Exists(errorFileName)) File.Delete(errorFileName);
-            CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp");
-            CompilerParameters parameters = new CompilerParameters();
-            parameters.OutputAssembly = dllFileName;
-            var assemblies = AppDomain.CurrentDomain
-                                        .GetAssemblies()
-                                        .Where(a => !a.IsDynamic)
-                                        .Select(a => a.Location);
-
-            parameters.ReferencedAssemblies.AddRange(assemblies.ToArray());
-            CompilerResults results = codeProvider.CompileAssemblyFromFile(parameters, csFileName);
-            if (results.Errors.Count > 0)
+            using (CodeDomProvider codeProvider = CodeDomProvider.CreateProvider("CSharp"))
             {
-                using (StreamWriter sw = new StreamWriter(errorFileName, false))
+                CompilerParameters parameters = new CompilerParameters
                 {
-                    foreach (CompilerError cError in results.Errors)
+                    OutputAssembly = dllFileName
+                };
+                var assemblies = AppDomain.CurrentDomain
+                                            .GetAssemblies()
+                                            .Where(a => !a.IsDynamic)
+                                            .Select(a => a.Location);
+
+                parameters.ReferencedAssemblies.AddRange(assemblies.ToArray());
+                CompilerResults results = codeProvider.CompileAssemblyFromFile(parameters, csFileName);
+                if (results.Errors.Count > 0)
+                {
+                    using (StreamWriter sw = new StreamWriter(errorFileName, false))
                     {
-                        sw.WriteLine(String.Format("Line Number: {0}, Error Number: {1}, Error: {2}", cError.Line, cError.ErrorNumber, cError.ErrorText));
+                        foreach (CompilerError cError in results.Errors)
+                        {
+                            sw.WriteLine(String.Format("Line Number: {0}, Error Number: {1}, Error: {2}", cError.Line, cError.ErrorNumber, cError.ErrorText));
+                        }
                     }
                 }
             }

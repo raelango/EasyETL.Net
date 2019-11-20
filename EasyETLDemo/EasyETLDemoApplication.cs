@@ -49,7 +49,6 @@ namespace EasyXmlSample
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(xmlFileName);
             AddTreeViewChildNodes(tvClients.Nodes, xDoc.SelectSingleNode("//clients"));
-            xDoc = null;
             if (!String.IsNullOrWhiteSpace(visibleNodeFullpath))
             {
                 TreeNodeCollection parentNodes = tvClients.Nodes;
@@ -135,7 +134,25 @@ namespace EasyXmlSample
             XmlNode xNode = xDoc.SelectSingleNode("//clients/client[@name='" + node.Text + "']");
             if (xNode != null)
             {
+                EasyETLClient selectedClientConfiguration = configXmlDocument.GetClientConfiguration(node.Text);
+                if (selectedClientConfiguration !=null)
+                {
+                    foreach (KeyValuePair<string,string> keyValuePair in selectedClientConfiguration.AttributesDictionary)
+                    {
+                        if (xNode.Attributes.GetNamedItem(keyValuePair.Key) == null)
+                        {
+                            XmlAttribute xAttr = xDoc.CreateAttribute(keyValuePair.Key);
+                            xAttr.Value = keyValuePair.Value;
+                            xNode.Attributes.Append(xAttr);
+                        }
+                        else
+                        {
+                            xNode.Attributes[keyValuePair.Key].Value = keyValuePair.Value;
+                        }
+                    }
+                }
                 xNode.Attributes["name"].Value = newLabel;
+                xNode.Attributes["id"].Value = xNode.Attributes["name"].Value;
             }
             else
             {
@@ -145,7 +162,7 @@ namespace EasyXmlSample
                     string nodeCategory = node.FullPath.Split('\\')[1];
                     string nodeName = node.FullPath.Split('\\')[2];
                     string nodeLabel = newLabel;
-                    xNode = xDoc.SelectSingleNode("//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + node.Name + "']");
+                    xNode = xDoc.SelectSingleNode("//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + nodeName + "']");
                     if (xNode != null)
                     {
                         xNode.Attributes["name"].Value = newLabel;
@@ -163,7 +180,7 @@ namespace EasyXmlSample
                 {
                     string nodeType = "client";
                     XmlElement childNode = xDoc.CreateElement(nodeType);
-                    childNode.SetAttribute("id", node.Name);
+                    childNode.SetAttribute("id", node.Text);
                     childNode.SetAttribute("name", node.Text);
                     foreach (string clientCategory in clientCategories.Split(';'))
                     {
@@ -223,9 +240,11 @@ namespace EasyXmlSample
                 EasyETLClient selectClientConfiguration = configXmlDocument.GetClientConfiguration(tvClients.SelectedNode.Text);
                 if (selectClientConfiguration !=null)
                 {
-                    ClientSettingsConfiguration cForm = new ClientSettingsConfiguration();
-                    cForm.clientConfiguration = selectClientConfiguration;
-                    cForm.configDocument = configXmlDocument;
+                    ClientSettingsConfiguration cForm = new ClientSettingsConfiguration
+                    {
+                        clientConfiguration = selectClientConfiguration,
+                        configDocument = configXmlDocument
+                    };
                     cForm.LoadConfiguration();
                     currentForm = cForm;
                 }
@@ -240,15 +259,19 @@ namespace EasyXmlSample
                     switch (tvClients.SelectedNode.Parent.Text)
                     {
                         case "etls":
-                            ETLForm mForm = new ETLForm();
-                            mForm.SettingsFileName = xmlFileName;
+                            ETLForm mForm = new ETLForm
+                            {
+                                SettingsFileName = xmlFileName
+                            };
                             mForm.LoadControls();
                             mForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
                             currentForm = mForm;
                             break;
                         case "transfers":
-                            TransferForm tForm = new TransferForm();
-                            tForm.XmlFileName = xmlFileName;
+                            TransferForm tForm = new TransferForm
+                            {
+                                XmlFileName = xmlFileName
+                            };
                             tForm.LoadSettingsFromXml(configXmlDocument.SelectSingleNode("//clients/client[@name='" + clientName + "']/transfers/transfer[@name='" + nodeName + "']"));
                             currentForm = tForm;
                             break;
@@ -257,31 +280,39 @@ namespace EasyXmlSample
                         case "endpoints":
                         case "datasources":
                         case "parsers":
-                            ClassConfigurationForm aForm = new ClassConfigurationForm();
-                            aForm.ClassType = tvClients.SelectedNode.Parent.Text.TrimEnd('s');
+                            ClassConfigurationForm aForm = new ClassConfigurationForm
+                            {
+                                ClassType = tvClients.SelectedNode.Parent.Text.TrimEnd('s')
+                            };
                             switch (tvClients.SelectedNode.Parent.Text)
                             {
                                 case "actions":
                                     aForm.BaseClassType = typeof(AbstractEasyAction);
+                                    aForm.lstClasses = EasyETLEnvironment.Actions;
                                     break;
                                 case "exports":
                                     aForm.BaseClassType = typeof(DatasetWriter);
+                                    aForm.lstClasses = EasyETLEnvironment.Writers;
                                     break;
                                 case "endpoints":
                                     aForm.BaseClassType = typeof(AbstractEasyEndpoint);
+                                    aForm.lstClasses = EasyETLEnvironment.Endpoints;
                                     break;
                                 case "datasources":
                                     aForm.BaseClassType = typeof(DatasourceEasyParser);
+                                    aForm.lstClasses = EasyETLEnvironment.Datasources;
                                     break;
                                 case "parsers":
                                     aForm.BaseClassType = typeof(ContentEasyParser);
+                                    aForm.lstClasses = EasyETLEnvironment.Parsers;
                                     break;
                                 default:
                                     break;
                             }
                             aForm.SettingsFileName = xmlFileName;
                             aForm.LoadFormControls();
-                            aForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
+                            aForm.LoadSettingsFromConfig(tvClients.SelectedNode.FullPath, configXmlDocument);
+                            //aForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
                             currentForm = aForm;
                             break;
 
@@ -300,19 +331,6 @@ namespace EasyXmlSample
                 currentForm.FormBorderStyle = FormBorderStyle.None;
                 MainTablControl.SelectedTab = newTabPage;
             }
-        }
-
-        private void saveToolStripButton_Click(object sender, EventArgs e)
-        {
-            if (MainTablControl.SelectedTab != null)
-            {
-                ((ETLForm)MainTablControl.SelectedTab.Controls[0]).SaveSettingsToXmlFile();
-            }
-        }
-
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            saveToolStripButton_Click(this, null);
         }
 
         private void tvClients_KeyDown(object sender, KeyEventArgs e)
@@ -384,46 +402,54 @@ namespace EasyXmlSample
         private void tvClients_AfterSelect(object sender, TreeViewEventArgs e)
         {
             tvClients.ContextMenu = null;
-            if (e.Node.Level == 0) tvClients.ContextMenuStrip = ClientContextMenuStrip;
-            if (e.Node.Level == 2)
+            switch (e.Node.Level)
             {
-                //this is a action level node... let us initialize and assign the ActionContextMenuStrip
+                case 0:
+                    tvClients.ContextMenuStrip = ClientContextMenuStrip;
+                    break;
+                case 1:
+                    tvClients.ContextMenuStrip = ActionTypeContextMenuStrip;
+                    atNewToolStripMenuItem.Text = "Create New " + e.Node.Text.TrimEnd('s');
+                    break;
+                case 2:
+                    //this is a action level node... let us initialize and assign the ActionContextMenuStrip
 
-                //Let us populate the move to client list
-                amMoveTo.DropDownItems.Clear();
-                string CurrentClient = tvClients.SelectedNode.Parent.Parent.Text;
-                string CurrentActionType = tvClients.SelectedNode.Parent.Text;
-                foreach (TreeNode clientNode in tvClients.Nodes)
-                {
-
-                    if (clientNode.Text != CurrentClient)
+                    //Let us populate the move to client list
+                    amMoveTo.DropDownItems.Clear();
+                    string CurrentClient = tvClients.SelectedNode.Parent.Parent.Text;
+                    string CurrentActionType = tvClients.SelectedNode.Parent.Text;
+                    foreach (TreeNode clientNode in tvClients.Nodes)
                     {
-                        TreeNode actionTypeNode = null;
-                        if (clientNode.Nodes.Cast<TreeNode>().Where(r => r.Text == CurrentActionType).Count() > 0) actionTypeNode = clientNode.Nodes.Cast<TreeNode>().Where(r => r.Text == CurrentActionType).ToArray()[0];
-                        if (actionTypeNode != null)
+
+                        if (clientNode.Text != CurrentClient)
                         {
-                            if (actionTypeNode.Nodes.Cast<TreeNode>().Where(r => r.Text == tvClients.SelectedNode.Text).Count() == 0)
-                                amMoveTo.DropDownItems.Add(clientNode.Text);
+                            TreeNode actionTypeNode = null;
+                            if (clientNode.Nodes.Cast<TreeNode>().Where(r => r.Text == CurrentActionType).Count() > 0) actionTypeNode = clientNode.Nodes.Cast<TreeNode>().Where(r => r.Text == CurrentActionType).ToArray()[0];
+                            if (actionTypeNode != null)
+                            {
+                                if (actionTypeNode.Nodes.Cast<TreeNode>().Where(r => r.Text == tvClients.SelectedNode.Text).Count() == 0)
+                                    amMoveTo.DropDownItems.Add(clientNode.Text);
+                            }
+
                         }
-
                     }
-                }
+                    amMoveTo.Visible = amMoveTo.DropDownItems.Count > 0;
 
-                //Change text of create new to the relevant action
-                amCreateNew.Text = "Create New " + e.Node.Parent.Text;
-                tvClients.ContextMenuStrip = ActionContextMenuStrip;
+                    //Change text of create new to the relevant action
+                    amCreateNew.Text = "Create New " + e.Node.Parent.Text.TrimEnd('s');
+                    tvClients.ContextMenuStrip = ActionContextMenuStrip;
+                    break;
+
             }
         }
 
         private void cmNewClient_Click(object sender, EventArgs e)
         {
-            TreeNode tNode = null;
-            int nodeCount = 0;
             if ((tvClients.SelectedNode == null) || (tvClients.SelectedNode.Parent == null))
             {
-                nodeCount = tvClients.Nodes.Count + 1;
+                int nodeCount = tvClients.Nodes.Count + 1;
                 while (tvClients.Nodes[nodeCount.ToString()] != null) nodeCount++;
-                tNode = tvClients.Nodes.Add(nodeCount.ToString(), "Client" + nodeCount.ToString());
+                TreeNode tNode = tvClients.Nodes.Add(nodeCount.ToString(), "Client" + nodeCount.ToString());
                 SaveXmlFile(tNode, tNode.Text);
                 LoadConfiguration(tNode.FullPath);
             }
@@ -439,14 +465,13 @@ namespace EasyXmlSample
                 string xPath = "//clients/client[@name='" + node.FullPath + "']";
 
                 string clientName = node.FullPath;
-                string nodeCategory = "";
                 string nodeName = node.Text;
                 string newNodeName = "Copy of " + nodeName;
                 string newNodePath = newNodeName;
                 if (node.FullPath.Contains('\\'))
                 {
-                    clientName = node.FullPath.Split('\\')[0];
-                    nodeCategory = node.FullPath.Split('\\')[1];
+                    clientName = clientName.Split('\\')[0];
+                    string nodeCategory = node.FullPath.Split('\\')[1];
                     nodeName = node.FullPath.Split('\\')[2];
                     xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + nodeName + "']";
                     newNodePath = clientName + '\\' + nodeCategory + '\\' + newNodeName;
@@ -493,7 +518,7 @@ namespace EasyXmlSample
                     string clientName = node.FullPath.Split('\\')[0];
                     string nodeCategory = node.FullPath.Split('\\')[1];
                     string nodeName = node.FullPath.Split('\\')[2];
-                    xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + node.Text + "']";
+                    xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + nodeName + "']";
                 }
                 string selectedNodePath = "";
                 if (node.NextNode != null) selectedNodePath = node.NextNode.FullPath;
@@ -515,20 +540,18 @@ namespace EasyXmlSample
 
         private void amCreateNew_Click(object sender, EventArgs e)
         {
-            TreeNode tNode = null;
-            int nodeCount = 0;
             if ((tvClients.SelectedNode != null) && (tvClients.SelectedNode.Parent != null))
             {
                 TreeNode categoryNode = tvClients.SelectedNode;
                 if (clientCategories.Split(';').Contains(tvClients.SelectedNode.Parent.Text)) categoryNode = tvClients.SelectedNode.Parent;
-                nodeCount = categoryNode.Nodes.Count + 1;
+                int nodeCount = categoryNode.Nodes.Count + 1;
                 string newNodeName = categoryNode.Parent.Name + "_" + categoryNode.Text.TrimEnd('s') + "_" + nodeCount.ToString();
                 while (categoryNode.Nodes[newNodeName] != null)
                 {
                     nodeCount++;
                     newNodeName = categoryNode.Parent.Name + "_" + categoryNode.Text.TrimEnd('s') + "_" + nodeCount.ToString();
                 }
-                tNode = tvClients.SelectedNode.Nodes.Add(newNodeName, newNodeName);
+                TreeNode tNode = tvClients.SelectedNode.Nodes.Add(newNodeName, newNodeName);
                 SaveXmlFile(tNode, tNode.Text);
                 LoadConfiguration(tNode.FullPath);
             }
@@ -611,6 +634,11 @@ namespace EasyXmlSample
             configXmlDocument.Load(xmlFileName);
             configXmlDocument.AddGlobalValue("XmlTemplatePath");
             configXmlDocument.AddGlobalValue("WordTemplatePath");
+        }
+
+        private void atNewToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            amCreateNew_Click(this, null);
         }
     }
 }
