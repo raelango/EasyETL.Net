@@ -78,6 +78,7 @@ namespace EasyETL.Xml.XsltExtensions
 
         public string Deidentify(string inputStr, string inputType)
         {
+            if (String.IsNullOrWhiteSpace(inputType)) inputType = "detect";
             return inputStr.DeidentifyData(inputType);
         }
 

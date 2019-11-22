@@ -19,7 +19,7 @@ namespace EasyETL.Utils
             inputType = inputType.ToLower();
             if ((inputType == "detect") && (MatchesPattern(inputStr, @"\(?\d{3}\)?-? *\d{3}-? *-?\d{4}"))) inputType = "phone";
             if ((inputType == "detect") && (MatchesPattern(inputStr, @"([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)"))) inputType = "email";
-            if ((inputType == "detect") && (MatchesPattern(inputStr, @"^\d{5}(?:[-\s]\d{4})?$"))) inputType = "zipcode";
+            if ((inputType == "detect") && MatchesPattern(inputStr, @"^\d{5}(?:[-\s]\d{4})?$")) inputType = "zipcode";
             if ((inputType == "detect") && (MatchesPattern(inputStr, @"\d{1,3}.?\d{0,3}\s[a-zA-Z]{2,30}\s[a-zA-Z]{2,15}"))) inputType = "address";
             if ((inputType == "detect") && (MatchesPattern(inputStr, @"\d{3}-\d{2}-\d{4}"))) inputType = "ssn";
             if ((inputType == "detect") && (IPAddress.TryParse(inputStr, out _))) inputType = "ipaddress";
@@ -148,8 +148,6 @@ namespace EasyETL.Utils
                 case "detect":
                     break;
             }
-
-
             return resultData;
         }
 
