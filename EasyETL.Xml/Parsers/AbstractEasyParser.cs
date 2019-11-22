@@ -157,6 +157,17 @@ namespace EasyETL.Xml.Parsers
 
         public virtual void LoadSetting(string fieldName, string fieldValue)
         {
+            switch (fieldName.ToLower())
+            {
+
+                case "columnnames":
+                    string[] fieldNames = fieldValue.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                    if (fieldNames.Length > 0) SetFieldNames(fieldNames);
+                    break;
+                case "tablename":
+                    RowNodeName = fieldValue;
+                    break;
+            }
 
         }
 
@@ -169,8 +180,10 @@ namespace EasyETL.Xml.Parsers
         {
             return new Dictionary<string, string>
             {
-                { "parsertype", "abstract" }
-            };
+                { "parsertype", "abstract" },
+                { "tablename", RowNodeName },
+                { "columnnames", String.Join(Environment.NewLine, FieldNames) }
+        };
         }
     
     

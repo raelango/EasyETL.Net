@@ -13,9 +13,12 @@ using System.Xml.Xsl;
 namespace EasyETL.Xml.Parsers
 {
     [DisplayName("Fixed Width")]
-    [EasyField("widths", "The widths of each column.  Use space to separate multiple widths.  If left empty, implies AutoDetect.")]
+    [EasyField("Widths", "The widths of each column.  Input multiple widths in separate lines.  If left empty, implies AutoDetect.")]
     [EasyField("HasHeader", "The first row contains the column names.", "True", "True|False", "True;False")]
+    [EasyField("ColumnNames", "Enter the columns names in separate lines", "")]
     [EasyField("Comments", "Lines starting with this prefix will be ignored for import")]
+    [EasyField("TableName", "Name of the table", "row")]
+
     public class FixedWidthEasyParser : SingleLineEasyParser
     {
         public List<int> ColumnWidths = new List<int>();
@@ -31,7 +34,7 @@ namespace EasyETL.Xml.Parsers
             FirstRowHasFieldNames = hasHeaderRow;
             if (columnWidths.Length == 0)
                 ColumnWidths.Add(-1);
-            else 
+            else
                 ColumnWidths.AddRange(columnWidths);
         }
 

@@ -1,9 +1,11 @@
 ﻿using EasyETL;
 using EasyETL.Actions;
+using EasyETL.Attributes;
 using EasyETL.Endpoint;
 using EasyETL.Extractors;
 using EasyETL.Writers;
 using EasyETL.Xml;
+using EasyETL.Xml.Configuration;
 using EasyETL.Xml.Parsers;
 using Microsoft.VisualBasic.FileIO;
 using System;
@@ -33,7 +35,8 @@ namespace EasyXmlSample
         public Dictionary<string, Dictionary<string, string>> dctExportFieldSettings = new Dictionary<string, Dictionary<string, string>>();
         public Dictionary<string, XmlNode> dctDatasources = new Dictionary<string, XmlNode>();
         public Dictionary<string, XmlNode> dctEndpoints = new Dictionary<string, XmlNode>();
-
+        public EasyETLXmlDocument ConfigXmlDocument = null;
+        public EasyETLClient ClientConfiguration = null;
 
         public int intAutoNumber = 0;
         public string SettingsPath = "";
@@ -46,19 +49,36 @@ namespace EasyXmlSample
             if (!File.Exists(SettingsFileName)) return;
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(SettingsFileName);
-
-            #region load profiles
-            cmbParserProfile.Items.Clear();
-            XmlNodeList profileNodes = xDoc.SelectNodes("//profiles/profile");
-            foreach (XmlNode profileNode in profileNodes)
-            {
-                cmbParserProfile.Items.Add(profileNode.Attributes["profilename"].Value);
-            }
-            #endregion
-
             string clientName = settingsPath.Split('\\')[0];
             string etlName = settingsPath.Split('\\')[2];
             SettingsPath = "//clients/client[@name='" + clientName + "']/etls/etl[@name='" + etlName + "']";
+
+            #region load profiles
+            cmbParserProfile.Items.Clear();
+            if (ConfigXmlDocument != null)
+            {
+                if (ClientConfiguration == null) ClientConfiguration = ConfigXmlDocument.Clients.Where(w => w.ClientName == clientName).First();
+
+                foreach (ClassMapping classMapping in EasyETLEnvironment.Parsers)
+                {
+                    if (classMapping.Class.GetEasyFields().Count() == 0) cmbParserProfile.Items.Add(classMapping.DisplayName);
+                }
+                foreach (EasyETLParser easyETLParser in ClientConfiguration.Parsers)
+                {
+                    cmbParserProfile.Items.Add(easyETLParser.ActionName);               
+                }
+            }
+            else
+            {
+                cmbParserProfile.Items.Clear();
+                XmlNodeList profileNodes = xDoc.SelectNodes("//profiles/profile");
+                foreach (XmlNode profileNode in profileNodes)
+                {
+                    cmbParserProfile.Items.Add(profileNode.Attributes["profilename"].Value);
+                }
+            }
+            #endregion
+
 
             #region load all available actions
             chkAvailableActions.Items.Clear();
@@ -586,59 +606,40 @@ namespace EasyXmlSample
                 else
                 {
                     AbstractEasyParser ep = null;
-                    switch (cmbFileType.Text)
+                    if (ClientConfiguration.Parsers.Where(p=>p.ActionName == cmbParserProfile.Text).Count() >0)
                     {
-                        case "Html":
-                            ep = new HtmlEasyParser();
-                            break;
-                        case "Delimited":
-                            string delimiter = "";
-                            if (rbDelimiterComma.Checked) delimiter = ",";
-                            if (rbDelimiterSemicolon.Checked) delimiter = ";";
-                            if (rbDelimiterSpace.Checked) delimiter = " ";
-                            if (rbDelimiterTab.Checked) delimiter = "\t";
-                            if (rbDelimiterCustom.Checked) delimiter = txtCustomDelimiter.Text;
-                            ep = new DelimitedEasyParser(cbHeaderRow.Checked) { RowNodeName = "record" };
-                            if (!String.IsNullOrEmpty(delimiter))
-                            {
-                                ((DelimitedEasyParser)ep).Delimiters.Add(delimiter);
-                            }
-                            if (txtDelimitedComments.Text.Trim().Length > 0)
-                            {
-                                ((DelimitedEasyParser)ep).SetCommentTokens(txtDelimitedComments.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
-                            }
-                            break;
-                        case "HL7":
-                            ep = new HL7EasyParser();
-                            break;
-                        case "EDI":
-                            ep = new EDIEasyParser();
-                            break;
-                        case "Fixed Width":
-                            ep = new FixedWidthEasyParser(false, lstFixedColumnWidths.Items.Cast<int>().ToArray());
-                            if (txtFixedWidthComments.Text.Trim().Length > 0)
-                            {
-                                ((FixedWidthEasyParser)ep).SetCommentTokens(txtFixedWidthComments.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
-                            }
-                            break;
-                        case "Json":
-                            ep = new JsonEasyParser();
-                            break;
-                        case "Template":
-                            if (String.IsNullOrWhiteSpace(txtTemplateString.Text)) txtTemplateString.Text = "[Contents]";
-                            ep = new TemplateEasyParser();
-                            ((TemplateEasyParser)ep).Templates = txtTemplateString.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-                            ((TemplateEasyParser)ep).LoadStr("");
-                            StringBuilder sb = new StringBuilder();
-                            foreach (string strRegex in ((TemplateEasyParser)ep).lstRegex.Keys)
-                            {
-                                sb.AppendLine(strRegex);
-                            }
-                            txtRegexContents.Text = sb.ToString();
-                            break;
-                        case "HtmlTable":
-                            ep = new HtmlTableEasyParser();
-                            break;
+                        ep = ClientConfiguration.Parsers.Where(p => p.ActionName == cmbParserProfile.Text).First().CreateParser();
+                    }
+
+                    if ((ep == null) && (EasyETLEnvironment.Parsers.Where(p=>p.DisplayName == cmbParserProfile.Text).Count() > 0)) {
+                        ClassMapping parserClassMapping = EasyETLEnvironment.Parsers.Where(p => p.DisplayName == cmbParserProfile.Text).First();
+                        ep = (AbstractEasyParser)Activator.CreateInstance(parserClassMapping.Class);
+                    }
+                    if (ep == null)
+                    {
+                        switch (cmbFileType.Text)
+                        {
+                            case "Fixed Width":
+                                ep = new FixedWidthEasyParser(false, lstFixedColumnWidths.Items.Cast<int>().ToArray());
+                                if (txtFixedWidthComments.Text.Trim().Length > 0)
+                                {
+                                    ((FixedWidthEasyParser)ep).SetCommentTokens(txtFixedWidthComments.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+                                }
+                                break;
+                            case "Template":
+                                if (String.IsNullOrWhiteSpace(txtTemplateString.Text)) txtTemplateString.Text = "[Contents]";
+                                ep = new TemplateEasyParser();
+                                ((TemplateEasyParser)ep).Templates = txtTemplateString.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                                ((TemplateEasyParser)ep).LoadStr("");
+                                StringBuilder sb = new StringBuilder();
+                                foreach (string strRegex in ((TemplateEasyParser)ep).lstRegex.Keys)
+                                {
+                                    sb.AppendLine(strRegex);
+                                }
+                                txtRegexContents.Text = sb.ToString();
+                                break;
+                        }
+
                     }
                     ep.ProgressInterval = 100;
                     if (chkHasMaxRows.Checked) ep.MaxRecords = Convert.ToInt64(nudMaxRows.Value);

@@ -78,6 +78,10 @@
             this.txtTransformText = new System.Windows.Forms.TextBox();
             this.btnTransformProfilesLoad = new System.Windows.Forms.Button();
             this.cbTransformProfiles = new System.Windows.Forms.ComboBox();
+            this.tabDataSetConversion = new System.Windows.Forms.TabPage();
+            this.txtNodeMapping = new System.Windows.Forms.TextBox();
+            this.rbUseCustomTableLoad = new System.Windows.Forms.RadioButton();
+            this.rbUseDatasetLoad = new System.Windows.Forms.RadioButton();
             this.cmbFileType = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.tabDataSource = new System.Windows.Forms.TabControl();
@@ -144,6 +148,7 @@
             this.chkCanAddData = new System.Windows.Forms.CheckBox();
             this.chkCanEditData = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkShowConfigurationOnLoad = new System.Windows.Forms.CheckBox();
             this.chkCanEditConfiguration = new System.Windows.Forms.CheckBox();
             this.chkAutoRefresh = new System.Windows.Forms.CheckBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
@@ -155,11 +160,6 @@
             this.btnHideSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
-            this.tabDataSetConversion = new System.Windows.Forms.TabPage();
-            this.rbUseDatasetLoad = new System.Windows.Forms.RadioButton();
-            this.rbUseCustomTableLoad = new System.Windows.Forms.RadioButton();
-            this.txtNodeMapping = new System.Windows.Forms.TextBox();
-            this.chkShowConfigurationOnLoad = new System.Windows.Forms.CheckBox();
             this.cmbDelimited.SuspendLayout();
             this.grpDelimiters.SuspendLayout();
             this.grpFixedFileOptions.SuspendLayout();
@@ -169,6 +169,7 @@
             this.tabControl2.SuspendLayout();
             this.tabDuringLoad.SuspendLayout();
             this.tabAfterLoad.SuspendLayout();
+            this.tabDataSetConversion.SuspendLayout();
             this.tabDataSource.SuspendLayout();
             this.tabDatasourceFile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxRows)).BeginInit();
@@ -198,7 +199,6 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlExport.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.tabDataSetConversion.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnCloseWindow
@@ -718,6 +718,51 @@
             this.cbTransformProfiles.Size = new System.Drawing.Size(134, 21);
             this.cbTransformProfiles.TabIndex = 12;
             this.cbTransformProfiles.SelectedIndexChanged += new System.EventHandler(this.cbTransformProfiles_SelectedIndexChanged);
+            // 
+            // tabDataSetConversion
+            // 
+            this.tabDataSetConversion.Controls.Add(this.txtNodeMapping);
+            this.tabDataSetConversion.Controls.Add(this.rbUseCustomTableLoad);
+            this.tabDataSetConversion.Controls.Add(this.rbUseDatasetLoad);
+            this.tabDataSetConversion.Location = new System.Drawing.Point(4, 22);
+            this.tabDataSetConversion.Name = "tabDataSetConversion";
+            this.tabDataSetConversion.Padding = new System.Windows.Forms.Padding(3);
+            this.tabDataSetConversion.Size = new System.Drawing.Size(1053, 173);
+            this.tabDataSetConversion.TabIndex = 2;
+            this.tabDataSetConversion.Text = "XML to Dataset Conversion";
+            this.tabDataSetConversion.UseVisualStyleBackColor = true;
+            // 
+            // txtNodeMapping
+            // 
+            this.txtNodeMapping.Enabled = false;
+            this.txtNodeMapping.Location = new System.Drawing.Point(7, 55);
+            this.txtNodeMapping.Multiline = true;
+            this.txtNodeMapping.Name = "txtNodeMapping";
+            this.txtNodeMapping.Size = new System.Drawing.Size(429, 112);
+            this.txtNodeMapping.TabIndex = 2;
+            // 
+            // rbUseCustomTableLoad
+            // 
+            this.rbUseCustomTableLoad.AutoSize = true;
+            this.rbUseCustomTableLoad.Location = new System.Drawing.Point(7, 31);
+            this.rbUseCustomTableLoad.Name = "rbUseCustomTableLoad";
+            this.rbUseCustomTableLoad.Size = new System.Drawing.Size(117, 17);
+            this.rbUseCustomTableLoad.TabIndex = 1;
+            this.rbUseCustomTableLoad.Text = "Use Node Mapping";
+            this.rbUseCustomTableLoad.UseVisualStyleBackColor = true;
+            this.rbUseCustomTableLoad.CheckedChanged += new System.EventHandler(this.rbUseCustomTableLoad_CheckedChanged);
+            // 
+            // rbUseDatasetLoad
+            // 
+            this.rbUseDatasetLoad.AutoSize = true;
+            this.rbUseDatasetLoad.Checked = true;
+            this.rbUseDatasetLoad.Location = new System.Drawing.Point(7, 7);
+            this.rbUseDatasetLoad.Name = "rbUseDatasetLoad";
+            this.rbUseDatasetLoad.Size = new System.Drawing.Size(139, 17);
+            this.rbUseDatasetLoad.TabIndex = 0;
+            this.rbUseDatasetLoad.TabStop = true;
+            this.rbUseDatasetLoad.Text = "Convert XML to Dataset";
+            this.rbUseDatasetLoad.UseVisualStyleBackColor = true;
             // 
             // cmbFileType
             // 
@@ -1394,6 +1439,8 @@
             // chkCanExportData
             // 
             this.chkCanExportData.AutoSize = true;
+            this.chkCanExportData.Checked = true;
+            this.chkCanExportData.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkCanExportData.Location = new System.Drawing.Point(18, 124);
             this.chkCanExportData.Name = "chkCanExportData";
             this.chkCanExportData.Size = new System.Drawing.Size(104, 17);
@@ -1446,9 +1493,23 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Configuration Access:";
             // 
+            // chkShowConfigurationOnLoad
+            // 
+            this.chkShowConfigurationOnLoad.AutoSize = true;
+            this.chkShowConfigurationOnLoad.Checked = true;
+            this.chkShowConfigurationOnLoad.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkShowConfigurationOnLoad.Location = new System.Drawing.Point(7, 43);
+            this.chkShowConfigurationOnLoad.Name = "chkShowConfigurationOnLoad";
+            this.chkShowConfigurationOnLoad.Size = new System.Drawing.Size(169, 17);
+            this.chkShowConfigurationOnLoad.TabIndex = 1;
+            this.chkShowConfigurationOnLoad.Text = "Display Configuration On Load";
+            this.chkShowConfigurationOnLoad.UseVisualStyleBackColor = true;
+            // 
             // chkCanEditConfiguration
             // 
             this.chkCanEditConfiguration.AutoSize = true;
+            this.chkCanEditConfiguration.Checked = true;
+            this.chkCanEditConfiguration.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkCanEditConfiguration.Location = new System.Drawing.Point(7, 20);
             this.chkCanEditConfiguration.Name = "chkCanEditConfiguration";
             this.chkCanEditConfiguration.Size = new System.Drawing.Size(131, 17);
@@ -1460,6 +1521,8 @@
             // chkAutoRefresh
             // 
             this.chkAutoRefresh.AutoSize = true;
+            this.chkAutoRefresh.Checked = true;
+            this.chkAutoRefresh.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkAutoRefresh.Location = new System.Drawing.Point(13, 22);
             this.chkAutoRefresh.Name = "chkAutoRefresh";
             this.chkAutoRefresh.RightToLeft = System.Windows.Forms.RightToLeft.No;
@@ -1573,61 +1636,6 @@
             // 
             this.ofd.FileName = "openFileDialog1";
             // 
-            // tabDataSetConversion
-            // 
-            this.tabDataSetConversion.Controls.Add(this.txtNodeMapping);
-            this.tabDataSetConversion.Controls.Add(this.rbUseCustomTableLoad);
-            this.tabDataSetConversion.Controls.Add(this.rbUseDatasetLoad);
-            this.tabDataSetConversion.Location = new System.Drawing.Point(4, 22);
-            this.tabDataSetConversion.Name = "tabDataSetConversion";
-            this.tabDataSetConversion.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDataSetConversion.Size = new System.Drawing.Size(1053, 173);
-            this.tabDataSetConversion.TabIndex = 2;
-            this.tabDataSetConversion.Text = "XML to Dataset Conversion";
-            this.tabDataSetConversion.UseVisualStyleBackColor = true;
-            // 
-            // rbUseDatasetLoad
-            // 
-            this.rbUseDatasetLoad.AutoSize = true;
-            this.rbUseDatasetLoad.Checked = true;
-            this.rbUseDatasetLoad.Location = new System.Drawing.Point(7, 7);
-            this.rbUseDatasetLoad.Name = "rbUseDatasetLoad";
-            this.rbUseDatasetLoad.Size = new System.Drawing.Size(139, 17);
-            this.rbUseDatasetLoad.TabIndex = 0;
-            this.rbUseDatasetLoad.TabStop = true;
-            this.rbUseDatasetLoad.Text = "Convert XML to Dataset";
-            this.rbUseDatasetLoad.UseVisualStyleBackColor = true;
-            // 
-            // rbUseCustomTableLoad
-            // 
-            this.rbUseCustomTableLoad.AutoSize = true;
-            this.rbUseCustomTableLoad.Location = new System.Drawing.Point(7, 31);
-            this.rbUseCustomTableLoad.Name = "rbUseCustomTableLoad";
-            this.rbUseCustomTableLoad.Size = new System.Drawing.Size(117, 17);
-            this.rbUseCustomTableLoad.TabIndex = 1;
-            this.rbUseCustomTableLoad.Text = "Use Node Mapping";
-            this.rbUseCustomTableLoad.UseVisualStyleBackColor = true;
-            this.rbUseCustomTableLoad.CheckedChanged += new System.EventHandler(this.rbUseCustomTableLoad_CheckedChanged);
-            // 
-            // txtNodeMapping
-            // 
-            this.txtNodeMapping.Enabled = false;
-            this.txtNodeMapping.Location = new System.Drawing.Point(7, 55);
-            this.txtNodeMapping.Multiline = true;
-            this.txtNodeMapping.Name = "txtNodeMapping";
-            this.txtNodeMapping.Size = new System.Drawing.Size(429, 112);
-            this.txtNodeMapping.TabIndex = 2;
-            // 
-            // chkShowConfigurationOnLoad
-            // 
-            this.chkShowConfigurationOnLoad.AutoSize = true;
-            this.chkShowConfigurationOnLoad.Location = new System.Drawing.Point(7, 43);
-            this.chkShowConfigurationOnLoad.Name = "chkShowConfigurationOnLoad";
-            this.chkShowConfigurationOnLoad.Size = new System.Drawing.Size(169, 17);
-            this.chkShowConfigurationOnLoad.TabIndex = 1;
-            this.chkShowConfigurationOnLoad.Text = "Display Configuration On Load";
-            this.chkShowConfigurationOnLoad.UseVisualStyleBackColor = true;
-            // 
             // ETLForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1652,6 +1660,8 @@
             this.tabDuringLoad.PerformLayout();
             this.tabAfterLoad.ResumeLayout(false);
             this.tabAfterLoad.PerformLayout();
+            this.tabDataSetConversion.ResumeLayout(false);
+            this.tabDataSetConversion.PerformLayout();
             this.tabDataSource.ResumeLayout(false);
             this.tabDatasourceFile.ResumeLayout(false);
             this.tabDatasourceFile.PerformLayout();
@@ -1696,8 +1706,6 @@
             this.pnlExport.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.tabDataSetConversion.ResumeLayout(false);
-            this.tabDataSetConversion.PerformLayout();
             this.ResumeLayout(false);
 
         }

@@ -15,9 +15,11 @@ namespace EasyETL.Xml.Parsers
 {
 
     [DisplayName("Delimited")]
-    [EasyField("Delimiters", "The delimiters to separate columns.  Use space to separate multiple delimiters.  If left empty, implies AutoDetect.")]
+    [EasyField("Delimiters", "The delimiters to separate columns.  Input multiple delimiters in separate lines.  If left empty, implies AutoDetect.","")]
     [EasyField("HasHeader", "The first row contains the column names.","True","True|False","True;False")]
-    [EasyField("Comments","Lines starting with this prefix will be ignored for import")]
+    [EasyField("ColumnNames","Enter the columns names in separate lines","")]
+    [EasyField("Comments","Lines starting with this prefix will be ignored for import","")]
+    [EasyField("TableName","Name of the table","row")]
     public class DelimitedEasyParser : SingleLineEasyParser
     {
         public List<string> Delimiters = new List<string>();
@@ -83,10 +85,8 @@ namespace EasyETL.Xml.Parsers
         public override Dictionary<string, string> GetSettingsAsDictionary()
         {
             Dictionary<string,string> resultDict =  base.GetSettingsAsDictionary();
-            List<string> hexDelimiters = new List<string>();
-            foreach (string delimiter in Delimiters) 
-                hexDelimiters.Add(String.Format("{0:X}",delimiter));
-            resultDict.Add("delimiters", String.Join(" ", hexDelimiters.ToArray()));
+            resultDict.Add("delimiters", String.Join(Environment.NewLine, Delimiters));
+//            resultDict.Add("columnnames", FirstRowHasFieldNames ? "" : String.Join(Environment.NewLine, FieldNames));
             resultDict["parsertype"] = "Delimited";
             return resultDict;
         }
@@ -94,7 +94,7 @@ namespace EasyETL.Xml.Parsers
         public override void LoadSetting(string fieldName, string fieldValue)
         {
             base.LoadSetting(fieldName, fieldValue);
-            if (String.IsNullOrWhiteSpace(fieldValue)) return;
+            //if (String.IsNullOrWhiteSpace(fieldValue)) return;
             switch (fieldName.ToLower())
             {
                 case "delimiters":
@@ -104,9 +104,9 @@ namespace EasyETL.Xml.Parsers
                     }
                     else
                     {
-                        foreach (string hexDelimiter in fieldValue.Split(' '))
+                        foreach (string delimiter in fieldValue.Split(new [] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                         {
-                            Delimiters.Add(Convert.ToChar(Int16.Parse(hexDelimiter, NumberStyles.AllowHexSpecifier)).ToString());
+                            Delimiters.Add(delimiter);
                         }
                     }
                     break;

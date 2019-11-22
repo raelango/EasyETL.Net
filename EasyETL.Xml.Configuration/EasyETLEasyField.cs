@@ -19,21 +19,48 @@ namespace EasyETL.Xml.Configuration
 
         public override void ReadSettings(XmlNode xNode)
         {
-            Fields = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
             base.ReadSettings(xNode);
-            XmlNodeList fieldNodes = xNode.SelectNodes("field");
-            foreach (XmlNode fieldNode in fieldNodes)
+            Fields = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+            if (EasyFieldType == null)
             {
-                string AttributeName = (fieldNode.Attributes.GetNamedItem("name") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("name").Value;
-                string AttributeValue = (fieldNode.Attributes.GetNamedItem("value") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("value").Value;
-                if (!String.IsNullOrWhiteSpace(AttributeName)) {
-                    if (!Fields.ContainsKey(AttributeName)) 
-                        Fields.Add(AttributeName,AttributeValue);
-                    else 
-                        Fields[AttributeName] = AttributeValue;
-
+                XmlNodeList fieldNodes = xNode.SelectNodes("field");
+                foreach (XmlNode fieldNode in fieldNodes)
+                {
+                    string AttributeName = (fieldNode.Attributes.GetNamedItem("name") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("name").Value;
+                    string AttributeValue = (fieldNode.Attributes.GetNamedItem("value") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("value").Value;
+                    switch (AttributeName.ToLower())
+                    {
+                        case "id":
+                            ActionID = AttributeValue; break;
+                        case "name":
+                            ActionName = AttributeValue; break;
+                        case "classname":
+                            ClassName = AttributeValue; break;
+                    }
+                    if (String.IsNullOrWhiteSpace(ClassName))
+                        EasyFieldType = null;
+                    else
+                        EasyFieldType = GetClassOf(ClassName);
                 }
             }
+            if (EasyFieldType != null) Fields = EasyFieldType.LoadFieldSettings(xNode);
+            //base.ReadSettings(xNode);
+            //XmlNodeList fieldNodes = xNode.SelectNodes("field");
+            //foreach (XmlNode fieldNode in fieldNodes)
+            //{
+            //    string AttributeName = (fieldNode.Attributes.GetNamedItem("name") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("name").Value;
+            //    string AttributeValue = (fieldNode.Attributes.GetNamedItem("value") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("value").Value;
+            //    if ((String.IsNullOrEmpty(AttributeValue)) && (!String.IsNullOrEmpty(fieldNode.InnerText))) {
+            //        AttributeValue = Encoding.UTF8.GetString(Convert.FromBase64String(fieldNode.InnerText));
+            //    }
+            //    if (!String.IsNullOrWhiteSpace(AttributeName)) {
+            //        if (!Fields.ContainsKey(AttributeName)) 
+            //            Fields.Add(AttributeName,AttributeValue);
+            //        else 
+            //            Fields[AttributeName] = AttributeValue;
+
+            //    }
+            //}
         }
 
         public override void WriteSettings(XmlNode xNode)
@@ -73,6 +100,7 @@ namespace EasyETL.Xml.Configuration
 
         public object CreateInstance() 
         {
+            ReadSettingsFromDictionary();
             if (EasyFieldType == null) return null;
             object instance = Activator.CreateInstance(EasyFieldType);            
             ((IEasyFieldInterface)instance).LoadFieldSettings(Fields);

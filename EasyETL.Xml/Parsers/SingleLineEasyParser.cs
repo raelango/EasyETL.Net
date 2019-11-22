@@ -95,8 +95,8 @@ namespace EasyETL.Xml.Parsers
 
         public virtual void NewRow(string[] fieldValues)
         {
-            RowNodeName = "row";
-            FieldPrefix = "Field_";
+            //RowNodeName = "row";
+            //FieldPrefix = "Field_";
         }
 
         public override Dictionary<string, string> GetSettingsAsDictionary()
@@ -115,6 +115,12 @@ namespace EasyETL.Xml.Parsers
             {
                 case "hasheader":
                     FirstRowHasFieldNames = Convert.ToBoolean(fieldValue); break;
+                case "comments":
+                    SetCommentTokens(fieldValue.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+                    break;
+                case "columnnames":
+                    FirstRowHasFieldNames = (fieldValue.Length == 0);
+                    break;
             }
         }
 

@@ -264,6 +264,8 @@ namespace EasyXmlSample
                                 SettingsFileName = xmlFileName
                             };
                             mForm.LoadControls();
+                            mForm.ConfigXmlDocument = configXmlDocument;
+                            mForm.ClientConfiguration = configXmlDocument.Clients.Where(w => w.ClientName == clientName).First();
                             mForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
                             currentForm = mForm;
                             break;

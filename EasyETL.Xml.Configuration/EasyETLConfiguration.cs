@@ -9,7 +9,7 @@ namespace EasyETL.Xml.Configuration
 {
     public abstract class EasyETLConfiguration : IEasyETLConfiguration
     {
-        public Dictionary<string, string> AttributesDictionary = new Dictionary<string, string>();
+        public Dictionary<string, string> AttributesDictionary = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
         public virtual void ReadSettings(XmlNode xNode)
         {
             LoadAttributesToDictionary(xNode);
@@ -33,7 +33,7 @@ namespace EasyETL.Xml.Configuration
 
         private void LoadAttributesToDictionary(XmlNode xNode)
         {
-            AttributesDictionary = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
+            AttributesDictionary = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
             foreach (XmlAttribute xAttr in xNode.Attributes)
             {
                 AttributesDictionary.Add(xAttr.Name, xAttr.Value);
