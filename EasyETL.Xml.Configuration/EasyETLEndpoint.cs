@@ -15,9 +15,10 @@ namespace EasyETL.Xml.Configuration
             return null;
         }
 
-        public AbstractEasyEndpoint CreateWriter()
+        public AbstractEasyEndpoint CreateEndpoint()
         {
             return (AbstractEasyEndpoint)CreateInstance();
         }
+
     }
 }

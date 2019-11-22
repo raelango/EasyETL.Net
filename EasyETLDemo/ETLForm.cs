@@ -28,13 +28,6 @@ namespace EasyXmlSample
         EasyXmlDocument ezDoc = null;
         XslCompiledTransform xsl = null;
         Stopwatch stopWatch = new Stopwatch();
-        public Dictionary<string, ClassMapping> dctActionClassMapping = new Dictionary<string, ClassMapping>();
-        public Dictionary<string, ClassMapping> dctContentExtractors = new Dictionary<string, ClassMapping>();
-        public Dictionary<string, ClassMapping> dctExporters = new Dictionary<string, ClassMapping>();
-        public Dictionary<string, Dictionary<string, string>> dctActionFieldSettings = new Dictionary<string, Dictionary<string, string>>();
-        public Dictionary<string, Dictionary<string, string>> dctExportFieldSettings = new Dictionary<string, Dictionary<string, string>>();
-        public Dictionary<string, XmlNode> dctDatasources = new Dictionary<string, XmlNode>();
-        public Dictionary<string, XmlNode> dctEndpoints = new Dictionary<string, XmlNode>();
         public EasyETLXmlDocument ConfigXmlDocument = null;
         public EasyETLClient ClientConfiguration = null;
 
@@ -55,26 +48,24 @@ namespace EasyXmlSample
 
             #region load profiles
             cmbParserProfile.Items.Clear();
+            cbTextExtractor.Items.Clear();
             if (ConfigXmlDocument != null)
             {
-                if (ClientConfiguration == null) ClientConfiguration = ConfigXmlDocument.Clients.Where(w => w.ClientName == clientName).First();
+                if (ClientConfiguration == null) ClientConfiguration = ConfigXmlDocument.Clients.Find(w => w.ClientName == clientName);
+
+                foreach (ClassMapping extractorMapping in EasyETLEnvironment.Extractors)
+                {
+                    cbTextExtractor.Items.Add(extractorMapping.DisplayName);
+                }
 
                 foreach (ClassMapping classMapping in EasyETLEnvironment.Parsers)
                 {
                     if (classMapping.Class.GetEasyFields().Count() == 0) cmbParserProfile.Items.Add(classMapping.DisplayName);
                 }
+
                 foreach (EasyETLParser easyETLParser in ClientConfiguration.Parsers)
                 {
-                    cmbParserProfile.Items.Add(easyETLParser.ActionName);               
-                }
-            }
-            else
-            {
-                cmbParserProfile.Items.Clear();
-                XmlNodeList profileNodes = xDoc.SelectNodes("//profiles/profile");
-                foreach (XmlNode profileNode in profileNodes)
-                {
-                    cmbParserProfile.Items.Add(profileNode.Attributes["profilename"].Value);
+                    cmbParserProfile.Items.Add(easyETLParser.ActionName);
                 }
             }
             #endregion
@@ -83,79 +74,55 @@ namespace EasyXmlSample
             #region load all available actions
             chkAvailableActions.Items.Clear();
             fpActions.Controls.Clear();
-            XmlNodeList actionNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/actions/action");
-            dctActionClassMapping.Clear();
-            dctActionFieldSettings.Clear();
-            ClassMapping[] actionClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractEasyAction));
-            Dictionary<string, ClassMapping> dctAllActions = new Dictionary<string, ClassMapping>();
-            foreach (ClassMapping actionClass in actionClasses)
+            //dctActionClassMapping.Clear();
+            foreach (EasyETLAction etlAction in ClientConfiguration.Actions)
             {
-                dctAllActions.Add(actionClass.DisplayName, actionClass);
-            }
-            foreach (XmlNode actionNode in actionNodes)
-            {
-                string actionName = actionNode.Attributes.GetNamedItem("name").Value;
-                chkAvailableActions.Items.Add(actionName);
-                Button btnControl = new Button
+                string actionName = etlAction.ActionName;
+                string className = etlAction.ClassName;
+                if (EasyETLEnvironment.Actions.Where(a => a.DisplayName == className).Count() > 0)
                 {
-                    AutoSize = true,
-                    Text = actionName
-                };
-                btnControl.Click += btnControl_Click;
-                fpActions.Controls.Add(btnControl);
-
-                string className = (actionNode.Attributes.GetNamedItem("classname") == null) ? "" : actionNode.Attributes.GetNamedItem("classname").Value;
-
-                ClassMapping cMapping = null;
-                if (dctAllActions.ContainsKey(className)) cMapping = dctAllActions[className];
-
-                if (cMapping != null)
-                {
-                    dctActionClassMapping.Add(actionName, cMapping);
-
-                    Dictionary<string, string> actionDictionary =  new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
-                    dctActionFieldSettings.Add(actionName, actionDictionary);
-                    
-                    XmlNodeList actionFieldNodeList = actionNode.SelectNodes("field");
-                    foreach (XmlNode actionFieldNode in actionFieldNodeList)
+                    ClassMapping cMapping = EasyETLEnvironment.Actions.Where(a => a.DisplayName == className).First();
+                    chkAvailableActions.Items.Add(etlAction.ActionName);
+                    Button btnControl = new Button
                     {
-                        string fieldName = actionFieldNode.Attributes.GetNamedItem("name").Value;
-                        string fieldValue = Encoding.UTF8.GetString(Convert.FromBase64String(actionFieldNode.InnerText));
-                        if (actionFieldNode.Attributes.GetNamedItem("value") != null)
-                            fieldValue = actionFieldNode.Attributes.GetNamedItem("value").Value;
-                        actionDictionary.Add(fieldName,fieldValue);
-                    }
-
+                        AutoSize = true,
+                        Text = etlAction.ActionName
+                    };
+                    btnControl.Click += btnControl_Click;
+                    fpActions.Controls.Add(btnControl);
+                    //dctActionClassMapping.Add(actionName, cMapping);
                 }
-
             }
+
+            XmlNodeList actionNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/actions/action");
+
             #endregion
 
-            #region load all available data sources
-            dctDatasources.Clear();
-            cmbDatasource.Items.Clear();
+            #region load all available exports
 
-            XmlNodeList datasourceNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/datasources/datasource");
-            foreach (XmlNode datasourceNode in datasourceNodes)
+            chkAvailableExports.Items.Clear();
+            cmbExport.Items.Clear();
+            
+            foreach (EasyETLWriter easyETLWriter in ClientConfiguration.Writers)
             {
-                string datasourceName = datasourceNode.Attributes.GetNamedItem("name").Value;
-                cmbDatasource.Items.Add(datasourceName);
-                dctDatasources.Add(datasourceName, datasourceNode);
+                string actionName = easyETLWriter.ActionName;
+                string className = easyETLWriter.ClassName;
+                ClassMapping exportClassMapping = EasyETLEnvironment.Writers.Find(w => w.DisplayName == className);
+                if (exportClassMapping != null)
+                {
+                    chkAvailableExports.Items.Add(actionName);
+                }
             }
+            #endregion
+            #region load all available data sources
+            cmbDatasource.Items.Clear();
+            foreach (EasyETLDatasource easyETLDatasource in ClientConfiguration.Datasources)
+                cmbDatasource.Items.Add(easyETLDatasource.ActionName);
             #endregion
 
             #region load all available endpoints
-            dctEndpoints.Clear();
             cmbEndpoint.Items.Clear();
-
-            XmlNodeList endpointNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/endpoints/endpoint");
-            foreach (XmlNode endpointNode in endpointNodes)
-            {
-                string endpointName = endpointNode.Attributes.GetNamedItem("name").Value;
-                cmbEndpoint.Items.Add(endpointName);
-                dctEndpoints.Add(endpointName, endpointNode);
-            }
-
+            foreach (EasyETLEndpoint easyETLEndpoint in ClientConfiguration.Endpoints) cmbEndpoint.Items.Add(easyETLEndpoint.ActionName);
             #endregion
 
 
@@ -226,14 +193,14 @@ namespace EasyXmlSample
                                 case "usexslt":
                                     chkUseXsltTemplate.Checked = Convert.ToBoolean(xAttr.Value); break;
                                 case "xsltfilename":
-                                    txtXsltFileName.Text = xAttr.Value;break;
+                                    txtXsltFileName.Text = xAttr.Value; break;
                             }
                         }
                         txtTransformText.Text = afterLoadNode.InnerText;
                     }
                     XmlNode datasetConversionNode = transformationNode.SelectSingleNode("datasetconversion");
                     rbUseDatasetLoad.Checked = true;
-                    if (datasetConversionNode !=null)
+                    if (datasetConversionNode != null)
                     {
                         foreach (XmlAttribute xAttr in datasetConversionNode.Attributes)
                         {
@@ -250,57 +217,17 @@ namespace EasyXmlSample
                 }
                 #endregion
 
-                #region Parse Options Load
-                XmlNode optionsNode = xNode.SelectSingleNode("parseoptions");
-                if (optionsNode != null)
+                #region ParserOptions Load
+                XmlNode parseOptionsNode = xNode.SelectSingleNode("parseoptions");
+                if ((parseOptionsNode !=null) && (parseOptionsNode.Attributes.GetNamedItem("profilename") != null))
                 {
-                    if (optionsNode.Attributes["profilename"] != null)
-                    {
-                        cmbParserProfile.Text = optionsNode.Attributes["profilename"].Value;
-                    }
-
-                    LoadParseOptionsFromNode(optionsNode);
+                    cmbParserProfile.Text = parseOptionsNode.Attributes.GetNamedItem("profilename").Value;
                 }
                 #endregion
-
                 #region Output Settings Load
-                chkAvailableExports.Items.Clear();
-                dctExportFieldSettings.Clear();
-                cmbExport.Items.Clear();
-                XmlNodeList exportNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/exports/export");
-                dctExporters.Clear();
-                #region load all dataset writers
-                ClassMapping[] exportClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(DatasetWriter));
-                Dictionary<string, ClassMapping> dctAllExports = new Dictionary<string, ClassMapping>();
-                foreach (ClassMapping actionClass in exportClasses)
-                {
-                    dctAllExports.Add(actionClass.DisplayName, actionClass);
-                }
-                #endregion
-
-                foreach (XmlNode exportNode in exportNodes)
-                {
-                    string exportName = exportNode.Attributes.GetNamedItem("name").Value;
-                    string className = "";
-                    if (exportNode.Attributes.GetNamedItem("classname") != null) className = exportNode.Attributes.GetNamedItem("classname").Value;
-                    ClassMapping eMapping = null;
-                    if (dctAllExports.ContainsKey(className)) eMapping = dctAllExports[className];
-                    if (eMapping != null)
-                    {
-                        chkAvailableExports.Items.Add(exportName);
-                        dctExporters.Add(exportName, eMapping);
-                        Dictionary<string, string> exportDictionary = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
-                        dctExportFieldSettings.Add(exportName, exportDictionary);
-                        XmlNodeList exportFieldNodeList = exportNode.SelectNodes("field");
-                        foreach (XmlNode exportFieldNode in exportFieldNodeList)
-                        {
-                            exportDictionary.Add(exportFieldNode.Attributes.GetNamedItem("name").Value, exportFieldNode.Attributes.GetNamedItem("value").Value);
-                        }
-                    }
-                }
 
                 XmlNode exportsNode = xNode.SelectSingleNode("exports");
-                exportNodes = null;
+                XmlNodeList exportNodes = null;
                 if (exportsNode != null) exportNodes = exportsNode.SelectNodes("export");
                 if (exportNodes != null)
                 {
@@ -346,6 +273,7 @@ namespace EasyXmlSample
                         }
                     }
                     btnSaveSettings.Visible = chkCanEditConfiguration.Checked;
+                    pnlExport.Visible = chkCanExportData.Checked;
                 }
                 #endregion
 
@@ -414,13 +342,13 @@ namespace EasyXmlSample
         {
             actionInProgress = true;
             string actionName = ((Button)sender).Text;
-            if (dctActionClassMapping.ContainsKey(actionName))
+            if (ClientConfiguration.Actions.Find(a => a.ActionName == actionName) != null)
             {
-                AbstractEasyAction aea = (AbstractEasyAction)Activator.CreateInstance(dctActionClassMapping[actionName].Class);
-                foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[actionName])
-                {
-                    aea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
-                }
+                AbstractEasyAction aea = ClientConfiguration.Actions.Find(a => a.ActionName == actionName).CreateAction();
+                //foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[actionName])
+                //{
+                //    aea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
+                //}
                 List<DataRow> dataRows = new List<DataRow>();
                 foreach (DataGridViewRow dgvRow in dataGrid.SelectedRows)
                 {
@@ -539,16 +467,9 @@ namespace EasyXmlSample
         private AbstractFileEasyEndpoint GetEndpoint()
         {
             AbstractFileEasyEndpoint endpoint = null;
-            if ((cmbEndpoint.SelectedItem != null) && (dctEndpoints.ContainsKey(cmbEndpoint.SelectedItem.ToString())))
+            if ((cmbEndpoint.SelectedItem != null) && (ClientConfiguration.Endpoints.Find(ep=>ep.ActionName == cmbEndpoint.SelectedItem.ToString()) !=null))
             {
-                XmlNode endpointNode = dctEndpoints[cmbEndpoint.SelectedItem.ToString()];
-                ClassMapping[] endpointClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractFileEasyEndpoint));
-                Type classType = endpointClasses.First(f => f.DisplayName == endpointNode.Attributes.GetNamedItem("classname").Value).Class;
-                endpoint = (AbstractFileEasyEndpoint)Activator.CreateInstance(classType);
-                foreach (XmlNode childNode in endpointNode.SelectNodes("field"))
-                {
-                    endpoint.LoadSetting(childNode.Attributes.GetNamedItem("name").Value, childNode.Attributes.GetNamedItem("value").Value);
-                }
+                endpoint = (AbstractFileEasyEndpoint)ClientConfiguration.Endpoints.Find(ep => ep.ActionName == cmbEndpoint.SelectedItem.ToString()).CreateEndpoint();
             }
             return endpoint;
         }
@@ -574,9 +495,9 @@ namespace EasyXmlSample
             txtRegexContents.Text = "";
             cmbTableName.Items.Clear();
             AbstractContentExtractor extractor = null;
-            if ((chkUseTextExtractor.Checked) && (dctContentExtractors.ContainsKey(cbTextExtractor.Text)))
+            if ((chkUseTextExtractor.Checked) && (EasyETLEnvironment.Extractors.Find(e => e.DisplayName == cbTextExtractor.Text) != null))
             {
-                extractor = (AbstractContentExtractor)Activator.CreateInstance(dctContentExtractors[cbTextExtractor.Text].Class);
+                extractor =   (AbstractContentExtractor)Activator.CreateInstance(EasyETLEnvironment.Extractors.Find(e => e.DisplayName == cbTextExtractor.Text).Class);
             }
             try
             {
@@ -588,30 +509,23 @@ namespace EasyXmlSample
                 if (tabDataSource.SelectedTab == tabDatasourceDatabase)
                 {
                     DatasourceEasyParser dbep = null;
-                    if ((cmbDatasource.SelectedItem != null) && (dctDatasources.ContainsKey(cmbDatasource.SelectedItem.ToString())))
+                    if ((cmbDatasource.SelectedItem != null) && (ClientConfiguration.Datasources.Find(ds => ds.ActionName == cmbDatasource.SelectedItem.ToString()) !=null))
                     {
-                        XmlNode datasourceNode = dctDatasources[cmbDatasource.SelectedItem.ToString()];
-                        ClassMapping[] databaseClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(DatasourceEasyParser));
-                        Type classType = databaseClasses.First(f => f.DisplayName == datasourceNode.Attributes.GetNamedItem("classname").Value).Class;
-                        dbep = (DatasourceEasyParser)Activator.CreateInstance(classType);
-                        foreach (XmlNode childNode in datasourceNode.SelectNodes("field"))
-                        {
-                            dbep.LoadSetting(childNode.Attributes.GetNamedItem("name").Value, childNode.Attributes.GetNamedItem("value").Value);
-                        }
+                        dbep = ClientConfiguration.Datasources.Find(ds => ds.ActionName == cmbDatasource.SelectedItem.ToString()).CreateDatasource();
                         if (chkHasMaxRows.Checked) dbep.MaxRecords = Convert.ToInt64(nudMaxRows.Value);
-
                         xDoc.LoadXml(dbep.Load(txtDatabaseQuery.Text).OuterXml);
                     }
                 }
                 else
                 {
                     AbstractEasyParser ep = null;
-                    if (ClientConfiguration.Parsers.Where(p=>p.ActionName == cmbParserProfile.Text).Count() >0)
+                    if (ClientConfiguration.Parsers.Where(p => p.ActionName == cmbParserProfile.Text).Count() > 0)
                     {
-                        ep = ClientConfiguration.Parsers.Where(p => p.ActionName == cmbParserProfile.Text).First().CreateParser();
+                        ep = ClientConfiguration.Parsers.Find(p => p.ActionName == cmbParserProfile.Text).CreateParser();
                     }
 
-                    if ((ep == null) && (EasyETLEnvironment.Parsers.Where(p=>p.DisplayName == cmbParserProfile.Text).Count() > 0)) {
+                    if ((ep == null) && (EasyETLEnvironment.Parsers.Where(p => p.DisplayName == cmbParserProfile.Text).Count() > 0))
+                    {
                         ClassMapping parserClassMapping = EasyETLEnvironment.Parsers.Where(p => p.DisplayName == cmbParserProfile.Text).First();
                         ep = (AbstractEasyParser)Activator.CreateInstance(parserClassMapping.Class);
                     }
@@ -645,7 +559,8 @@ namespace EasyXmlSample
                     if (chkHasMaxRows.Checked) ep.MaxRecords = Convert.ToInt64(nudMaxRows.Value);
                     if (!String.IsNullOrWhiteSpace(txtOnLoadContents.Text))
                         ep.OnLoadSettings = txtOnLoadContents.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-                    if ((tabDataSource.SelectedTab == tabDatasourceFile)) {
+                    if ((tabDataSource.SelectedTab == tabDatasourceFile))
+                    {
                         Stream fileStream = endpoint.GetStream(txtFileName.Text);
                         if (extractor != null) extractor.FileName = txtFileName.Text;
                         xDoc.Load(fileStream, ep, extractor);
@@ -822,14 +737,6 @@ namespace EasyXmlSample
             cmbDatasource.SelectedItem = 0;
             btnRefreshOnLoadProfiles_Click(this, null);
             btnTransformProfilesLoad_Click(this, null);
-            dctContentExtractors.Clear();
-            cbTextExtractor.Items.Clear();
-            foreach (ClassMapping cmapping in ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractContentExtractor)))
-            {
-                dctContentExtractors.Add(cmapping.DisplayName, cmapping);
-                cbTextExtractor.Items.Add(cmapping.DisplayName);
-            }
-
         }
 
         private void cmbFileType_SelectedIndexChanged(object sender, EventArgs e)
@@ -936,10 +843,9 @@ namespace EasyXmlSample
         {
             if (cmbExport.SelectedItem == null) return;
             string exportName = cmbExport.SelectedItem.ToString();
-            if ((String.IsNullOrWhiteSpace(exportName)) || (!dctExporters.ContainsKey(exportName))) return;
+            if ((String.IsNullOrWhiteSpace(exportName)) || (ClientConfiguration.Writers.Find(w=>w.ActionName == exportName) == null)) return;
             DataSet rds = (DataSet)dataGrid.DataSource;
-            DatasetWriter dsw = (DatasetWriter)Activator.CreateInstance(dctExporters[exportName].Class);
-            dsw.LoadFieldSettings(dctExportFieldSettings[exportName]);
+            DatasetWriter dsw = ClientConfiguration.Writers.Find(w => w.ActionName == exportName).CreateWriter();
             if (!dsw.IsFieldSettingsComplete())
             {
                 MessageBox.Show("The configuration of this export setting is incomplete.");
@@ -1393,7 +1299,7 @@ namespace EasyXmlSample
                 {
                     fpActions.Visible = true;
                     b.Enabled = false;
-                    if ((b.Visible) && dctActionClassMapping.ContainsKey(b.Text) && (dctActionClassMapping[b.Text] != null))
+                    if ((b.Visible) && (ClientConfiguration.Actions.Find(a => a.ActionName == b.Text) != null))
                     {
                         if (dataRows == null)
                         {
@@ -1425,11 +1331,12 @@ namespace EasyXmlSample
                                 dataRows.Add(dataRow);
                             }
                         }
-                        AbstractEasyAction ea = (AbstractEasyAction)Activator.CreateInstance(dctActionClassMapping[b.Text].Class);
-                        foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[b.Text])
-                        {
-                            ea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
-                        }
+                        AbstractEasyAction ea = ClientConfiguration.Actions.Where(a => a.ActionName == b.Text).First().CreateAction(); 
+                        //(AbstractEasyAction)Activator.CreateInstance(dctActionClassMapping[b.Text].Class);
+                        //foreach (KeyValuePair<string, string> kvPair in dctActionFieldSettings[b.Text])
+                        //{
+                        //    ea.SettingsDictionary.Add(kvPair.Key, kvPair.Value);
+                        //}
                         b.Enabled = ea.CanExecute(dataRows.ToArray());
                     }
                 }
