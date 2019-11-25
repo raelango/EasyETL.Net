@@ -367,7 +367,7 @@ namespace EasyETL.Xml
                 StringBuilder xmlSB = new StringBuilder();
                 XmlWriterSettings xwSettings = new XmlWriterSettings
                 {
-                    OmitXmlDeclaration = true,
+                    OmitXmlDeclaration = false,
                     Indent = true,
                     ConformanceLevel = ConformanceLevel.Auto
                 };

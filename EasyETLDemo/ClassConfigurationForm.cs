@@ -154,6 +154,7 @@ namespace EasyXmlSample
                         return;
                     }
                     actionConfiguration.Fields = new Dictionary<string, string>(SelectedClassSettings);
+                    actionConfiguration.ClassName = cmbClassName.SelectedItem.ToString();
                     //configDocument.Save();
                 }
                 else
@@ -221,6 +222,7 @@ namespace EasyXmlSample
                 EasyETLDemoApplication app = ((EasyETLDemoApplication)(tcontrol.FindForm()));
                 tcontrol.TabPages.Remove(tpage);
                 app.FocusClientsTreeView();
+                app.LoadConfigurationDocument();
             }
         }
 

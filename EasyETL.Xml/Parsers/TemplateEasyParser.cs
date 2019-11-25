@@ -17,14 +17,14 @@ using System.Globalization;
 namespace EasyETL.Xml.Parsers
 {
     [DisplayName("Template")]
-    [EasyField("RowSeparator","Default is the New Line.")]
-    [EasyField("Templates","Enter multiple templates in separate lines")]
+    [EasyField("RowSeparator","Default is the New Line.","")]
+    [EasyField("Templates","Enter multiple templates in separate lines.","[Contents]")]
     public class TemplateEasyParser : SingleLineEasyParser
     {
         public string RowSeparator = String.Empty;
         public Dictionary<string,string> lstRegex = new Dictionary<string,string>();
 
-        public List<string> lstTemplates = new List<string>();
+        public List<string> lstTemplates = new List<string>(new[] { "[Contents]" }) ;
 
         public string[] Templates { get { return lstTemplates.ToArray() ; } set { lstTemplates.Clear(); lstTemplates.AddRange(value.AsEnumerable()); lstRegex.Clear(); } }
 

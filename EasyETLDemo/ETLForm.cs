@@ -60,7 +60,7 @@ namespace EasyXmlSample
 
                 foreach (ClassMapping classMapping in EasyETLEnvironment.Parsers)
                 {
-                    if (classMapping.Class.GetEasyFields().Count() == 0) cmbParserProfile.Items.Add(classMapping.DisplayName);
+                    if ((classMapping.Class.GetEasyFields().Count() == 0) || (!classMapping.Class.GetEasyFields().Select(p=>p.Value.DefaultValue).Contains(null))) cmbParserProfile.Items.Add(classMapping.DisplayName);
                 }
 
                 foreach (EasyETLParser easyETLParser in ClientConfiguration.Parsers)
@@ -505,7 +505,7 @@ namespace EasyXmlSample
                 EasyXmlDocument xDoc = new EasyXmlDocument();
                 xDoc.OnProgress += xDoc_OnProgress;
                 //xDoc.OnRowAdd += xDoc_OnRowAdd;
-                xDoc.OnError += xDoc_OnError;
+                //xDoc.OnError += xDoc_OnError;
                 if (tabDataSource.SelectedTab == tabDatasourceDatabase)
                 {
                     DatasourceEasyParser dbep = null;
@@ -529,51 +529,29 @@ namespace EasyXmlSample
                         ClassMapping parserClassMapping = EasyETLEnvironment.Parsers.Where(p => p.DisplayName == cmbParserProfile.Text).First();
                         ep = (AbstractEasyParser)Activator.CreateInstance(parserClassMapping.Class);
                     }
-                    if (ep == null)
-                    {
-                        switch (cmbFileType.Text)
-                        {
-                            case "Fixed Width":
-                                ep = new FixedWidthEasyParser(false, lstFixedColumnWidths.Items.Cast<int>().ToArray());
-                                if (txtFixedWidthComments.Text.Trim().Length > 0)
-                                {
-                                    ((FixedWidthEasyParser)ep).SetCommentTokens(txtFixedWidthComments.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
-                                }
-                                break;
-                            case "Template":
-                                if (String.IsNullOrWhiteSpace(txtTemplateString.Text)) txtTemplateString.Text = "[Contents]";
-                                ep = new TemplateEasyParser();
-                                ((TemplateEasyParser)ep).Templates = txtTemplateString.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-                                ((TemplateEasyParser)ep).LoadStr("");
-                                StringBuilder sb = new StringBuilder();
-                                foreach (string strRegex in ((TemplateEasyParser)ep).lstRegex.Keys)
-                                {
-                                    sb.AppendLine(strRegex);
-                                }
-                                txtRegexContents.Text = sb.ToString();
-                                break;
-                        }
 
-                    }
-                    ep.ProgressInterval = 100;
-                    if (chkHasMaxRows.Checked) ep.MaxRecords = Convert.ToInt64(nudMaxRows.Value);
-                    if (!String.IsNullOrWhiteSpace(txtOnLoadContents.Text))
-                        ep.OnLoadSettings = txtOnLoadContents.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
-                    if ((tabDataSource.SelectedTab == tabDatasourceFile))
+                    if (ep != null)
                     {
-                        Stream fileStream = endpoint.GetStream(txtFileName.Text);
-                        if (extractor != null) extractor.FileName = txtFileName.Text;
-                        xDoc.Load(fileStream, ep, extractor);
-                    }
-                    else
-                        xDoc.LoadStr(txtTextContents.Text, ep, extractor);
-                    txtExceptions.Text = "";
-                    if ((ep != null) && (ep.Exceptions.Count > 0))
-                    {
-                        MessageBox.Show("There were " + ep.Exceptions.Count + " Exceptions while loading the document");
-                        foreach (MalformedLineException mep in ep.Exceptions)
+                        ep.ProgressInterval = 100;
+                        if (chkHasMaxRows.Checked) ep.MaxRecords = Convert.ToInt64(nudMaxRows.Value);
+                        if (!String.IsNullOrWhiteSpace(txtOnLoadContents.Text))
+                            ep.OnLoadSettings = txtOnLoadContents.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                        if ((tabDataSource.SelectedTab == tabDatasourceFile))
                         {
-                            txtExceptions.Text += String.Format("(Line {0} - {1}", mep.LineNumber, mep.Message) + Environment.NewLine;
+                            Stream fileStream = endpoint.GetStream(txtFileName.Text);
+                            if (extractor != null) extractor.FileName = txtFileName.Text;
+                            xDoc.Load(fileStream, ep, extractor);
+                        }
+                        else
+                            xDoc.LoadStr(txtTextContents.Text, ep, extractor);
+                        txtExceptions.Text = "";
+                        if ((ep != null) && (ep.Exceptions.Count > 0))
+                        {
+                            MessageBox.Show("There were " + ep.Exceptions.Count + " Exceptions while loading the document");
+                            foreach (MalformedLineException mep in ep.Exceptions)
+                            {
+                                txtExceptions.Text += String.Format("(Line {0} - {1}", mep.LineNumber, mep.Message) + Environment.NewLine;
+                            }
                         }
                     }
                 }
@@ -600,23 +578,6 @@ namespace EasyXmlSample
         {
             lblRecordCount.Text = "(" + e.LineNumber.ToString() + ") Records Processed....";
             Application.DoEvents();
-        }
-
-        void xDoc_OnError(object sender, EasyParserExceptionEventArgs e)
-        {
-            MessageBox.Show("Error <<" + e.Exception.Message + ">> in line number (" + e.Exception.LineNumber.ToString() + ")");
-        }
-
-        void xDoc_OnRowAdd(object sender, XmlNodeChangedEventArgs e)
-        {
-            if (String.IsNullOrWhiteSpace(txtOnLoadContents.Text)) return;
-            XmlNode rowNode = e.Node;
-            if (xsl == null)
-            {
-                xsl = rowNode.GetCompiledTransform(txtOnLoadContents.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
-            }
-            rowNode = rowNode.TransformXml(xsl);
-            e.Node.InnerXml = (rowNode == null) ? String.Empty : rowNode.InnerXml;
         }
 
         private void TransformDataFromEzDoc()

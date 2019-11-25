@@ -16,9 +16,9 @@ namespace EasyETL.Xml.Parsers
     [EasyField("Widths", "The widths of each column.  Input multiple widths in separate lines.  If left empty, implies AutoDetect.")]
     [EasyField("HasHeader", "The first row contains the column names.", "True", "True|False", "True;False")]
     [EasyField("ColumnNames", "Enter the columns names in separate lines", "")]
-    [EasyField("Comments", "Lines starting with this prefix will be ignored for import")]
+    [EasyField("Comments", "Lines starting with this prefix will be ignored for import","")]
     [EasyField("TableName", "Name of the table", "row")]
-
+    [EasyField("IgnoreErrors","Set to true to ignore errored data.","False","True|False","True;False")]
     public class FixedWidthEasyParser : SingleLineEasyParser
     {
         public List<int> ColumnWidths = new List<int>();
@@ -42,7 +42,7 @@ namespace EasyETL.Xml.Parsers
         {
             txtFieldParser = new TextFieldParser(txtReader) { TextFieldType = FieldType.FixedWidth };
             txtFieldParser.SetFieldWidths(ColumnWidths.ToArray());
-            return GetXmlDocument();
+            return GetXmlDocument(null, xDoc);
         }
 
         public override bool IsFieldSettingsComplete()
@@ -66,7 +66,7 @@ namespace EasyETL.Xml.Parsers
             {
                 case "widths":
                     ColumnWidths.Clear();
-                    foreach (string columnWidth in fieldValue.Split(' '))
+                    foreach (string columnWidth in fieldValue.Split(new []  { " ", Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
                     {
                         ColumnWidths.Add(Int16.Parse(columnWidth));
                     }

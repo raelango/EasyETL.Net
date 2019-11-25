@@ -20,6 +20,7 @@ namespace EasyETL.Xml.Parsers
     [EasyField("ColumnNames","Enter the columns names in separate lines","")]
     [EasyField("Comments","Lines starting with this prefix will be ignored for import","")]
     [EasyField("TableName","Name of the table","row")]
+    [EasyField("IgnoreErrors", "Set to true to ignore errored data.", "False", "True|False", "True;False")]
     public class DelimitedEasyParser : SingleLineEasyParser
     {
         public List<string> Delimiters = new List<string>();

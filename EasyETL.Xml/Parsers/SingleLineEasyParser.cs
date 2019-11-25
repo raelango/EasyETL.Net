@@ -15,7 +15,7 @@ namespace EasyETL.Xml.Parsers
         public TextFieldParser txtFieldParser;
         public FieldType ParserFieldType = FieldType.Delimited;
         public string[] CommentTokens;
-
+        public bool IgnoreErrors = false;
         protected XmlDocument GetXmlDocument(XmlNode xmlNode = null, XmlDocument xDoc = null)
         {
             bool bFirstRow = true;
@@ -68,15 +68,21 @@ namespace EasyETL.Xml.Parsers
                     catch (MalformedLineException mex)
                     {
                         Exceptions.Add(mex);
-                        errorCount++;
-                        RaiseException(mex);
-                        if (errorCount > MaximumErrorsToAbort) break;
+                        if (!IgnoreErrors)
+                        {
+                            errorCount++;
+                            RaiseException(mex);
+                            if (errorCount > MaximumErrorsToAbort) break;
+                        }
                     }
                     catch (Exception ex)
                     {
-                        errorCount++;
-                        RaiseException(new MalformedLineException(ex.Message, ex));
-                        if (errorCount > MaximumErrorsToAbort) break;
+                        if (!IgnoreErrors)
+                        {
+                            errorCount++;
+                            RaiseException(new MalformedLineException(ex.Message, ex));
+                            if (errorCount > MaximumErrorsToAbort) break;
+                        }
                     }
                 }
             }
@@ -101,9 +107,10 @@ namespace EasyETL.Xml.Parsers
 
         public override Dictionary<string, string> GetSettingsAsDictionary()
         {
-            Dictionary<string,string> resultDict =  base.GetSettingsAsDictionary();
-            if ((CommentTokens != null) && (CommentTokens.Length > 0 )) resultDict.Add("comments", String.Join(Environment.NewLine, CommentTokens));
+            Dictionary<string, string> resultDict = base.GetSettingsAsDictionary();
+            if ((CommentTokens != null) && (CommentTokens.Length > 0)) resultDict.Add("comments", String.Join(Environment.NewLine, CommentTokens));
             resultDict.Add("hasheader", FirstRowHasFieldNames.ToString());
+            resultDict.Add("ignoreerrors", IgnoreErrors.ToString());
             resultDict["parsertype"] = "SingleLine";
             return resultDict;
         }
@@ -120,6 +127,9 @@ namespace EasyETL.Xml.Parsers
                     break;
                 case "columnnames":
                     FirstRowHasFieldNames = (fieldValue.Length == 0);
+                    break;
+                case "ignoreerrors":
+                    IgnoreErrors = Convert.ToBoolean(fieldValue);
                     break;
             }
         }

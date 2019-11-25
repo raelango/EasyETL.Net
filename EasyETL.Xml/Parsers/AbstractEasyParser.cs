@@ -182,7 +182,7 @@ namespace EasyETL.Xml.Parsers
             {
                 { "parsertype", "abstract" },
                 { "tablename", RowNodeName },
-                { "columnnames", String.Join(Environment.NewLine, FieldNames) }
+                { "columnnames", String.Join(Environment.NewLine, (FieldNames == null) ? new string[] { } : FieldNames) }
         };
         }
     

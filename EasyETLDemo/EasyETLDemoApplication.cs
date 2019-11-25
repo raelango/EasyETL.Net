@@ -630,7 +630,7 @@ namespace EasyXmlSample
 
         }
 
-        private void LoadConfigurationDocument()
+        public void LoadConfigurationDocument()
         {
             configXmlDocument = new EasyETLXmlDocument();
             configXmlDocument.Load(xmlFileName);

@@ -16,7 +16,7 @@ namespace EasyETL.Attributes
         public string RegexMatch;
         public List<string> PossibleValues;
         public bool IsPassword = false;
-        public EasyFieldAttribute(string fieldName, string fieldDescription = "", string defaultValue = "", string regexMatch = "", string possibleValues = "", bool isPassword = false)
+        public EasyFieldAttribute(string fieldName, string fieldDescription = "", string defaultValue = null, string regexMatch = "", string possibleValues = "", bool isPassword = false)
         {
             FieldName = fieldName;
             FieldDescription = String.IsNullOrWhiteSpace(fieldDescription) ? fieldName:fieldDescription;
