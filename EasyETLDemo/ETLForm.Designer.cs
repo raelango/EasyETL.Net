@@ -32,34 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ETLForm));
             this.btnCloseWindow = new System.Windows.Forms.Button();
             this.btnRefreshData = new System.Windows.Forms.Button();
-            this.cmbDelimited = new System.Windows.Forms.GroupBox();
-            this.txtDelimitedComments = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.cbHeaderRow = new System.Windows.Forms.CheckBox();
-            this.grpDelimiters = new System.Windows.Forms.GroupBox();
-            this.rbDelimiterSpace = new System.Windows.Forms.RadioButton();
-            this.txtCustomDelimiter = new System.Windows.Forms.TextBox();
-            this.rbDelimiterCustom = new System.Windows.Forms.RadioButton();
-            this.rbDelimiterSemicolon = new System.Windows.Forms.RadioButton();
-            this.rbDelimiterTab = new System.Windows.Forms.RadioButton();
-            this.rbDelimiterComma = new System.Windows.Forms.RadioButton();
-            this.rbDelimiterAutoDetect = new System.Windows.Forms.RadioButton();
-            this.grpFixedFileOptions = new System.Windows.Forms.GroupBox();
-            this.lstFixedColumnWidths = new System.Windows.Forms.ListBox();
-            this.chkFixedFirstRowHasFieldNames = new System.Windows.Forms.CheckBox();
-            this.txtFixedWidthComments = new System.Windows.Forms.TextBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.btnRemove = new System.Windows.Forms.Button();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.btnUpdate = new System.Windows.Forms.Button();
-            this.nupColumnWidth = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
-            this.grpHtmlOptions = new System.Windows.Forms.GroupBox();
-            this.txtXPathQuery = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.grpTemplate = new System.Windows.Forms.GroupBox();
-            this.txtTemplateString = new System.Windows.Forms.TextBox();
-            this.label10 = new System.Windows.Forms.Label();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabDuringLoad = new System.Windows.Forms.TabPage();
             this.label14 = new System.Windows.Forms.Label();
@@ -82,8 +54,6 @@
             this.txtNodeMapping = new System.Windows.Forms.TextBox();
             this.rbUseCustomTableLoad = new System.Windows.Forms.RadioButton();
             this.rbUseDatasetLoad = new System.Windows.Forms.RadioButton();
-            this.cmbFileType = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
             this.tabDataSource = new System.Windows.Forms.TabControl();
             this.tabDatasourceFile = new System.Windows.Forms.TabPage();
             this.cmbEndpoint = new System.Windows.Forms.ComboBox();
@@ -124,11 +94,6 @@
             this.ProgressTimer = new System.Windows.Forms.Timer(this.components);
             this.tabSource = new System.Windows.Forms.TabControl();
             this.tabDataSourceOptions = new System.Windows.Forms.TabPage();
-            this.tabParseOptions = new System.Windows.Forms.TabPage();
-            this.panelParserProfileSave = new System.Windows.Forms.Panel();
-            this.btnSaveParserProfile = new System.Windows.Forms.Button();
-            this.txtParserProfileSaveFileName = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
             this.cmbParserProfile = new System.Windows.Forms.ComboBox();
             this.label15 = new System.Windows.Forms.Label();
             this.tabTransformationOptions = new System.Windows.Forms.TabPage();
@@ -160,12 +125,6 @@
             this.btnHideSettings = new System.Windows.Forms.Button();
             this.btnSaveSettings = new System.Windows.Forms.Button();
             this.ofd = new System.Windows.Forms.OpenFileDialog();
-            this.cmbDelimited.SuspendLayout();
-            this.grpDelimiters.SuspendLayout();
-            this.grpFixedFileOptions.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nupColumnWidth)).BeginInit();
-            this.grpHtmlOptions.SuspendLayout();
-            this.grpTemplate.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabDuringLoad.SuspendLayout();
             this.tabAfterLoad.SuspendLayout();
@@ -188,8 +147,6 @@
             this.tabPage5.SuspendLayout();
             this.tabSource.SuspendLayout();
             this.tabDataSourceOptions.SuspendLayout();
-            this.tabParseOptions.SuspendLayout();
-            this.panelParserProfileSave.SuspendLayout();
             this.tabTransformationOptions.SuspendLayout();
             this.tabActionOptions.SuspendLayout();
             this.tabExportOptions.SuspendLayout();
@@ -222,315 +179,6 @@
             this.btnRefreshData.Text = "Load Data";
             this.btnRefreshData.UseVisualStyleBackColor = true;
             this.btnRefreshData.Click += new System.EventHandler(this.btnRefreshData_Click);
-            // 
-            // cmbDelimited
-            // 
-            this.cmbDelimited.Controls.Add(this.txtDelimitedComments);
-            this.cmbDelimited.Controls.Add(this.label11);
-            this.cmbDelimited.Controls.Add(this.cbHeaderRow);
-            this.cmbDelimited.Controls.Add(this.grpDelimiters);
-            this.cmbDelimited.Location = new System.Drawing.Point(348, 8);
-            this.cmbDelimited.Name = "cmbDelimited";
-            this.cmbDelimited.Size = new System.Drawing.Size(676, 185);
-            this.cmbDelimited.TabIndex = 11;
-            this.cmbDelimited.TabStop = false;
-            this.cmbDelimited.Text = "Delimited File Options:";
-            // 
-            // txtDelimitedComments
-            // 
-            this.txtDelimitedComments.Location = new System.Drawing.Point(504, 57);
-            this.txtDelimitedComments.Multiline = true;
-            this.txtDelimitedComments.Name = "txtDelimitedComments";
-            this.txtDelimitedComments.Size = new System.Drawing.Size(153, 58);
-            this.txtDelimitedComments.TabIndex = 4;
-            this.txtDelimitedComments.Leave += new System.EventHandler(this.txtTextContents_Leave);
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(501, 41);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(132, 13);
-            this.label11.TabIndex = 3;
-            this.label11.Text = "Comment Lines Start With:";
-            // 
-            // cbHeaderRow
-            // 
-            this.cbHeaderRow.AutoSize = true;
-            this.cbHeaderRow.Checked = true;
-            this.cbHeaderRow.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbHeaderRow.Location = new System.Drawing.Point(504, 19);
-            this.cbHeaderRow.Name = "cbHeaderRow";
-            this.cbHeaderRow.Size = new System.Drawing.Size(153, 17);
-            this.cbHeaderRow.TabIndex = 2;
-            this.cbHeaderRow.Text = "First Row Has Field Names";
-            this.cbHeaderRow.UseVisualStyleBackColor = true;
-            this.cbHeaderRow.CheckedChanged += new System.EventHandler(this.chkFixedFirstRowHasFieldNames_CheckedChanged);
-            // 
-            // grpDelimiters
-            // 
-            this.grpDelimiters.Controls.Add(this.rbDelimiterSpace);
-            this.grpDelimiters.Controls.Add(this.txtCustomDelimiter);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterCustom);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterSemicolon);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterTab);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterComma);
-            this.grpDelimiters.Controls.Add(this.rbDelimiterAutoDetect);
-            this.grpDelimiters.Location = new System.Drawing.Point(6, 19);
-            this.grpDelimiters.Name = "grpDelimiters";
-            this.grpDelimiters.Size = new System.Drawing.Size(432, 96);
-            this.grpDelimiters.TabIndex = 1;
-            this.grpDelimiters.TabStop = false;
-            this.grpDelimiters.Text = "Delimiter:";
-            // 
-            // rbDelimiterSpace
-            // 
-            this.rbDelimiterSpace.AutoSize = true;
-            this.rbDelimiterSpace.Location = new System.Drawing.Point(7, 67);
-            this.rbDelimiterSpace.Name = "rbDelimiterSpace";
-            this.rbDelimiterSpace.Size = new System.Drawing.Size(108, 17);
-            this.rbDelimiterSpace.TabIndex = 6;
-            this.rbDelimiterSpace.TabStop = true;
-            this.rbDelimiterSpace.Text = "Space Separated";
-            this.rbDelimiterSpace.UseVisualStyleBackColor = true;
-            // 
-            // txtCustomDelimiter
-            // 
-            this.txtCustomDelimiter.Enabled = false;
-            this.txtCustomDelimiter.Location = new System.Drawing.Point(347, 64);
-            this.txtCustomDelimiter.Name = "txtCustomDelimiter";
-            this.txtCustomDelimiter.Size = new System.Drawing.Size(67, 20);
-            this.txtCustomDelimiter.TabIndex = 5;
-            this.txtCustomDelimiter.TextChanged += new System.EventHandler(this.txtCustomDelimiter_TextChanged);
-            // 
-            // rbDelimiterCustom
-            // 
-            this.rbDelimiterCustom.AutoSize = true;
-            this.rbDelimiterCustom.Location = new System.Drawing.Point(238, 66);
-            this.rbDelimiterCustom.Name = "rbDelimiterCustom";
-            this.rbDelimiterCustom.Size = new System.Drawing.Size(109, 17);
-            this.rbDelimiterCustom.TabIndex = 4;
-            this.rbDelimiterCustom.TabStop = true;
-            this.rbDelimiterCustom.Text = "Custom Separator";
-            this.rbDelimiterCustom.UseVisualStyleBackColor = true;
-            this.rbDelimiterCustom.CheckedChanged += new System.EventHandler(this.rbDelimiterCustom_CheckedChanged);
-            // 
-            // rbDelimiterSemicolon
-            // 
-            this.rbDelimiterSemicolon.AutoSize = true;
-            this.rbDelimiterSemicolon.Location = new System.Drawing.Point(238, 20);
-            this.rbDelimiterSemicolon.Name = "rbDelimiterSemicolon";
-            this.rbDelimiterSemicolon.Size = new System.Drawing.Size(126, 17);
-            this.rbDelimiterSemicolon.TabIndex = 3;
-            this.rbDelimiterSemicolon.TabStop = true;
-            this.rbDelimiterSemicolon.Text = "Semicolon Separated";
-            this.rbDelimiterSemicolon.UseVisualStyleBackColor = true;
-            // 
-            // rbDelimiterTab
-            // 
-            this.rbDelimiterTab.AutoSize = true;
-            this.rbDelimiterTab.Location = new System.Drawing.Point(238, 43);
-            this.rbDelimiterTab.Name = "rbDelimiterTab";
-            this.rbDelimiterTab.Size = new System.Drawing.Size(98, 17);
-            this.rbDelimiterTab.TabIndex = 2;
-            this.rbDelimiterTab.TabStop = true;
-            this.rbDelimiterTab.Text = "TAB Separated";
-            this.rbDelimiterTab.UseVisualStyleBackColor = true;
-            // 
-            // rbDelimiterComma
-            // 
-            this.rbDelimiterComma.AutoSize = true;
-            this.rbDelimiterComma.Location = new System.Drawing.Point(6, 43);
-            this.rbDelimiterComma.Name = "rbDelimiterComma";
-            this.rbDelimiterComma.Size = new System.Drawing.Size(112, 17);
-            this.rbDelimiterComma.TabIndex = 1;
-            this.rbDelimiterComma.TabStop = true;
-            this.rbDelimiterComma.Text = "Comma Separated";
-            this.rbDelimiterComma.UseVisualStyleBackColor = true;
-            // 
-            // rbDelimiterAutoDetect
-            // 
-            this.rbDelimiterAutoDetect.AutoSize = true;
-            this.rbDelimiterAutoDetect.Checked = true;
-            this.rbDelimiterAutoDetect.Location = new System.Drawing.Point(7, 20);
-            this.rbDelimiterAutoDetect.Name = "rbDelimiterAutoDetect";
-            this.rbDelimiterAutoDetect.Size = new System.Drawing.Size(82, 17);
-            this.rbDelimiterAutoDetect.TabIndex = 0;
-            this.rbDelimiterAutoDetect.TabStop = true;
-            this.rbDelimiterAutoDetect.Text = "Auto Detect";
-            this.rbDelimiterAutoDetect.UseVisualStyleBackColor = true;
-            // 
-            // grpFixedFileOptions
-            // 
-            this.grpFixedFileOptions.Controls.Add(this.lstFixedColumnWidths);
-            this.grpFixedFileOptions.Controls.Add(this.chkFixedFirstRowHasFieldNames);
-            this.grpFixedFileOptions.Controls.Add(this.txtFixedWidthComments);
-            this.grpFixedFileOptions.Controls.Add(this.label12);
-            this.grpFixedFileOptions.Controls.Add(this.btnRemove);
-            this.grpFixedFileOptions.Controls.Add(this.btnAdd);
-            this.grpFixedFileOptions.Controls.Add(this.btnUpdate);
-            this.grpFixedFileOptions.Controls.Add(this.nupColumnWidth);
-            this.grpFixedFileOptions.Controls.Add(this.label4);
-            this.grpFixedFileOptions.Location = new System.Drawing.Point(342, 25);
-            this.grpFixedFileOptions.Name = "grpFixedFileOptions";
-            this.grpFixedFileOptions.Size = new System.Drawing.Size(676, 185);
-            this.grpFixedFileOptions.TabIndex = 12;
-            this.grpFixedFileOptions.TabStop = false;
-            this.grpFixedFileOptions.Text = "Fixed File Options:";
-            // 
-            // lstFixedColumnWidths
-            // 
-            this.lstFixedColumnWidths.FormattingEnabled = true;
-            this.lstFixedColumnWidths.Location = new System.Drawing.Point(15, 40);
-            this.lstFixedColumnWidths.Name = "lstFixedColumnWidths";
-            this.lstFixedColumnWidths.Size = new System.Drawing.Size(195, 134);
-            this.lstFixedColumnWidths.TabIndex = 3;
-            // 
-            // chkFixedFirstRowHasFieldNames
-            // 
-            this.chkFixedFirstRowHasFieldNames.AutoSize = true;
-            this.chkFixedFirstRowHasFieldNames.Checked = true;
-            this.chkFixedFirstRowHasFieldNames.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkFixedFirstRowHasFieldNames.Location = new System.Drawing.Point(355, 18);
-            this.chkFixedFirstRowHasFieldNames.Name = "chkFixedFirstRowHasFieldNames";
-            this.chkFixedFirstRowHasFieldNames.Size = new System.Drawing.Size(153, 17);
-            this.chkFixedFirstRowHasFieldNames.TabIndex = 2;
-            this.chkFixedFirstRowHasFieldNames.Text = "First Row Has Field Names";
-            this.chkFixedFirstRowHasFieldNames.UseVisualStyleBackColor = true;
-            this.chkFixedFirstRowHasFieldNames.CheckedChanged += new System.EventHandler(this.chkFixedFirstRowHasFieldNames_CheckedChanged);
-            // 
-            // txtFixedWidthComments
-            // 
-            this.txtFixedWidthComments.Location = new System.Drawing.Point(355, 62);
-            this.txtFixedWidthComments.Multiline = true;
-            this.txtFixedWidthComments.Name = "txtFixedWidthComments";
-            this.txtFixedWidthComments.Size = new System.Drawing.Size(153, 94);
-            this.txtFixedWidthComments.TabIndex = 10;
-            this.txtFixedWidthComments.Leave += new System.EventHandler(this.txtTextContents_Leave);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(352, 41);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(132, 13);
-            this.label12.TabIndex = 9;
-            this.label12.Text = "Comment Lines Start With:";
-            // 
-            // btnRemove
-            // 
-            this.btnRemove.Location = new System.Drawing.Point(220, 148);
-            this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnRemove.TabIndex = 8;
-            this.btnRemove.Text = "Remove";
-            this.btnRemove.UseVisualStyleBackColor = true;
-            this.btnRemove.Visible = false;
-            this.btnRemove.Click += new System.EventHandler(this.btnRemove_Click);
-            // 
-            // btnAdd
-            // 
-            this.btnAdd.Location = new System.Drawing.Point(223, 92);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnAdd.TabIndex = 7;
-            this.btnAdd.Text = "Add Column";
-            this.btnAdd.UseVisualStyleBackColor = true;
-            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
-            // 
-            // btnUpdate
-            // 
-            this.btnUpdate.Location = new System.Drawing.Point(223, 63);
-            this.btnUpdate.Name = "btnUpdate";
-            this.btnUpdate.Size = new System.Drawing.Size(75, 23);
-            this.btnUpdate.TabIndex = 6;
-            this.btnUpdate.Text = "Update";
-            this.btnUpdate.UseVisualStyleBackColor = true;
-            this.btnUpdate.Visible = false;
-            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
-            // 
-            // nupColumnWidth
-            // 
-            this.nupColumnWidth.Location = new System.Drawing.Point(223, 37);
-            this.nupColumnWidth.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.nupColumnWidth.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            -2147483648});
-            this.nupColumnWidth.Name = "nupColumnWidth";
-            this.nupColumnWidth.Size = new System.Drawing.Size(75, 20);
-            this.nupColumnWidth.TabIndex = 5;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 19);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(81, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Column Widths:";
-            // 
-            // grpHtmlOptions
-            // 
-            this.grpHtmlOptions.Controls.Add(this.txtXPathQuery);
-            this.grpHtmlOptions.Controls.Add(this.label7);
-            this.grpHtmlOptions.Location = new System.Drawing.Point(361, 3);
-            this.grpHtmlOptions.Name = "grpHtmlOptions";
-            this.grpHtmlOptions.Size = new System.Drawing.Size(449, 99);
-            this.grpHtmlOptions.TabIndex = 7;
-            this.grpHtmlOptions.TabStop = false;
-            this.grpHtmlOptions.Text = "Html Options:";
-            // 
-            // txtXPathQuery
-            // 
-            this.txtXPathQuery.Location = new System.Drawing.Point(91, 26);
-            this.txtXPathQuery.Multiline = true;
-            this.txtXPathQuery.Name = "txtXPathQuery";
-            this.txtXPathQuery.Size = new System.Drawing.Size(352, 62);
-            this.txtXPathQuery.TabIndex = 5;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(15, 26);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(70, 13);
-            this.label7.TabIndex = 4;
-            this.label7.Text = "XPath Query:";
-            // 
-            // grpTemplate
-            // 
-            this.grpTemplate.Controls.Add(this.txtTemplateString);
-            this.grpTemplate.Controls.Add(this.label10);
-            this.grpTemplate.Location = new System.Drawing.Point(361, 6);
-            this.grpTemplate.Name = "grpTemplate";
-            this.grpTemplate.Size = new System.Drawing.Size(449, 169);
-            this.grpTemplate.TabIndex = 10;
-            this.grpTemplate.TabStop = false;
-            this.grpTemplate.Text = "Template Options:";
-            // 
-            // txtTemplateString
-            // 
-            this.txtTemplateString.Location = new System.Drawing.Point(105, 23);
-            this.txtTemplateString.Multiline = true;
-            this.txtTemplateString.Name = "txtTemplateString";
-            this.txtTemplateString.Size = new System.Drawing.Size(338, 140);
-            this.txtTemplateString.TabIndex = 7;
-            this.txtTemplateString.Leave += new System.EventHandler(this.txtTextContents_Leave);
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(15, 23);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(84, 13);
-            this.label10.TabIndex = 6;
-            this.label10.Text = "Template String:";
             // 
             // tabControl2
             // 
@@ -584,7 +232,6 @@
             this.btnOnLoadSave.TabIndex = 21;
             this.btnOnLoadSave.Text = "Save";
             this.btnOnLoadSave.UseVisualStyleBackColor = true;
-            this.btnOnLoadSave.Click += new System.EventHandler(this.btnOnLoadSave_Click);
             // 
             // txtOnLoadContents
             // 
@@ -764,37 +411,6 @@
             this.rbUseDatasetLoad.Text = "Convert XML to Dataset";
             this.rbUseDatasetLoad.UseVisualStyleBackColor = true;
             // 
-            // cmbFileType
-            // 
-            this.cmbFileType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFileType.FormattingEnabled = true;
-            this.cmbFileType.Items.AddRange(new object[] {
-            "Delimited",
-            "EDI",
-            "Fixed Width",
-            "HL7",
-            "Html",
-            "HtmlTable",
-            "Json",
-            "Template",
-            "Xml"});
-            this.cmbFileType.Location = new System.Drawing.Point(90, 42);
-            this.cmbFileType.Name = "cmbFileType";
-            this.cmbFileType.Size = new System.Drawing.Size(252, 21);
-            this.cmbFileType.Sorted = true;
-            this.cmbFileType.TabIndex = 1;
-            this.cmbFileType.SelectedIndexChanged += new System.EventHandler(this.cmbFileType_SelectedIndexChanged);
-            this.cmbFileType.SelectedValueChanged += new System.EventHandler(this.cmbFileType_SelectedIndexChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 42);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(34, 13);
-            this.label2.TabIndex = 0;
-            this.label2.Text = "Type:";
-            // 
             // tabDataSource
             // 
             this.tabDataSource.Controls.Add(this.tabDatasourceFile);
@@ -809,7 +425,9 @@
             // 
             // tabDatasourceFile
             // 
+            this.tabDatasourceFile.Controls.Add(this.cmbParserProfile);
             this.tabDatasourceFile.Controls.Add(this.cmbEndpoint);
+            this.tabDatasourceFile.Controls.Add(this.label15);
             this.tabDatasourceFile.Controls.Add(this.label5);
             this.tabDatasourceFile.Controls.Add(this.label18);
             this.tabDatasourceFile.Controls.Add(this.label13);
@@ -1213,7 +831,6 @@
             // tabSource
             // 
             this.tabSource.Controls.Add(this.tabDataSourceOptions);
-            this.tabSource.Controls.Add(this.tabParseOptions);
             this.tabSource.Controls.Add(this.tabTransformationOptions);
             this.tabSource.Controls.Add(this.tabActionOptions);
             this.tabSource.Controls.Add(this.tabExportOptions);
@@ -1224,7 +841,6 @@
             this.tabSource.SelectedIndex = 0;
             this.tabSource.Size = new System.Drawing.Size(1069, 225);
             this.tabSource.TabIndex = 8;
-            this.tabSource.SelectedIndexChanged += new System.EventHandler(this.tabSource_SelectedIndexChanged);
             // 
             // tabDataSourceOptions
             // 
@@ -1237,79 +853,20 @@
             this.tabDataSourceOptions.Text = "Data Source";
             this.tabDataSourceOptions.UseVisualStyleBackColor = true;
             // 
-            // tabParseOptions
-            // 
-            this.tabParseOptions.Controls.Add(this.cmbDelimited);
-            this.tabParseOptions.Controls.Add(this.panelParserProfileSave);
-            this.tabParseOptions.Controls.Add(this.cmbParserProfile);
-            this.tabParseOptions.Controls.Add(this.label15);
-            this.tabParseOptions.Controls.Add(this.grpTemplate);
-            this.tabParseOptions.Controls.Add(this.grpFixedFileOptions);
-            this.tabParseOptions.Controls.Add(this.grpHtmlOptions);
-            this.tabParseOptions.Controls.Add(this.cmbFileType);
-            this.tabParseOptions.Controls.Add(this.label2);
-            this.tabParseOptions.Location = new System.Drawing.Point(4, 22);
-            this.tabParseOptions.Name = "tabParseOptions";
-            this.tabParseOptions.Padding = new System.Windows.Forms.Padding(3);
-            this.tabParseOptions.Size = new System.Drawing.Size(1061, 199);
-            this.tabParseOptions.TabIndex = 1;
-            this.tabParseOptions.Text = "Parser";
-            this.tabParseOptions.UseVisualStyleBackColor = true;
-            // 
-            // panelParserProfileSave
-            // 
-            this.panelParserProfileSave.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.panelParserProfileSave.Controls.Add(this.btnSaveParserProfile);
-            this.panelParserProfileSave.Controls.Add(this.txtParserProfileSaveFileName);
-            this.panelParserProfileSave.Controls.Add(this.label16);
-            this.panelParserProfileSave.Location = new System.Drawing.Point(6, 87);
-            this.panelParserProfileSave.Name = "panelParserProfileSave";
-            this.panelParserProfileSave.Size = new System.Drawing.Size(336, 104);
-            this.panelParserProfileSave.TabIndex = 15;
-            // 
-            // btnSaveParserProfile
-            // 
-            this.btnSaveParserProfile.Enabled = false;
-            this.btnSaveParserProfile.Location = new System.Drawing.Point(84, 69);
-            this.btnSaveParserProfile.Name = "btnSaveParserProfile";
-            this.btnSaveParserProfile.Size = new System.Drawing.Size(157, 23);
-            this.btnSaveParserProfile.TabIndex = 15;
-            this.btnSaveParserProfile.Text = "Save Parser Profile";
-            this.btnSaveParserProfile.UseVisualStyleBackColor = true;
-            this.btnSaveParserProfile.Click += new System.EventHandler(this.btnSaveParserProfile_Click);
-            // 
-            // txtParserProfileSaveFileName
-            // 
-            this.txtParserProfileSaveFileName.Location = new System.Drawing.Point(10, 30);
-            this.txtParserProfileSaveFileName.Name = "txtParserProfileSaveFileName";
-            this.txtParserProfileSaveFileName.Size = new System.Drawing.Size(311, 20);
-            this.txtParserProfileSaveFileName.TabIndex = 14;
-            this.txtParserProfileSaveFileName.TextChanged += new System.EventHandler(this.txtParserProfileSaveFileName_TextChanged);
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(115, 11);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(98, 13);
-            this.label16.TabIndex = 13;
-            this.label16.Text = "Save Profile Name:";
-            // 
             // cmbParserProfile
             // 
             this.cmbParserProfile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbParserProfile.FormattingEnabled = true;
-            this.cmbParserProfile.Location = new System.Drawing.Point(90, 6);
+            this.cmbParserProfile.Location = new System.Drawing.Point(498, 97);
             this.cmbParserProfile.Name = "cmbParserProfile";
             this.cmbParserProfile.Size = new System.Drawing.Size(252, 21);
             this.cmbParserProfile.Sorted = true;
             this.cmbParserProfile.TabIndex = 3;
-            this.cmbParserProfile.SelectedIndexChanged += new System.EventHandler(this.cmbParserProfile_SelectedIndexChanged);
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(16, 6);
+            this.label15.Location = new System.Drawing.Point(408, 100);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(72, 13);
             this.label15.TabIndex = 2;
@@ -1644,17 +1201,6 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "ETLForm";
             this.Text = "Easy Controls Demo Application";
-            this.cmbDelimited.ResumeLayout(false);
-            this.cmbDelimited.PerformLayout();
-            this.grpDelimiters.ResumeLayout(false);
-            this.grpDelimiters.PerformLayout();
-            this.grpFixedFileOptions.ResumeLayout(false);
-            this.grpFixedFileOptions.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nupColumnWidth)).EndInit();
-            this.grpHtmlOptions.ResumeLayout(false);
-            this.grpHtmlOptions.PerformLayout();
-            this.grpTemplate.ResumeLayout(false);
-            this.grpTemplate.PerformLayout();
             this.tabControl2.ResumeLayout(false);
             this.tabDuringLoad.ResumeLayout(false);
             this.tabDuringLoad.PerformLayout();
@@ -1688,10 +1234,6 @@
             this.tabPage5.PerformLayout();
             this.tabSource.ResumeLayout(false);
             this.tabDataSourceOptions.ResumeLayout(false);
-            this.tabParseOptions.ResumeLayout(false);
-            this.tabParseOptions.PerformLayout();
-            this.panelParserProfileSave.ResumeLayout(false);
-            this.panelParserProfileSave.PerformLayout();
             this.tabTransformationOptions.ResumeLayout(false);
             this.tabActionOptions.ResumeLayout(false);
             this.tabActionOptions.PerformLayout();
@@ -1711,12 +1253,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.ComboBox cmbFileType;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox grpHtmlOptions;
-        private System.Windows.Forms.TextBox txtXPathQuery;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.DataGridView dataGrid;
@@ -1737,37 +1273,12 @@
         private System.Windows.Forms.Label lblRecordCount;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TextBox txtXPathContents;
-        private System.Windows.Forms.GroupBox grpTemplate;
-        private System.Windows.Forms.TextBox txtTemplateString;
-        private System.Windows.Forms.Label label10;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TextBox txtRegexContents;
         private System.Windows.Forms.ComboBox cbTextExtractor;
         private System.Windows.Forms.CheckBox chkUseTextExtractor;
         private System.Windows.Forms.TabPage tabPage5;
         private System.Windows.Forms.TextBox txtExceptions;
-        private System.Windows.Forms.GroupBox cmbDelimited;
-        private System.Windows.Forms.TextBox txtDelimitedComments;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.CheckBox cbHeaderRow;
-        private System.Windows.Forms.GroupBox grpDelimiters;
-        private System.Windows.Forms.RadioButton rbDelimiterSpace;
-        private System.Windows.Forms.TextBox txtCustomDelimiter;
-        private System.Windows.Forms.RadioButton rbDelimiterCustom;
-        private System.Windows.Forms.RadioButton rbDelimiterSemicolon;
-        private System.Windows.Forms.RadioButton rbDelimiterTab;
-        private System.Windows.Forms.RadioButton rbDelimiterComma;
-        private System.Windows.Forms.RadioButton rbDelimiterAutoDetect;
-        private System.Windows.Forms.GroupBox grpFixedFileOptions;
-        private System.Windows.Forms.ListBox lstFixedColumnWidths;
-        private System.Windows.Forms.CheckBox chkFixedFirstRowHasFieldNames;
-        private System.Windows.Forms.TextBox txtFixedWidthComments;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Button btnRemove;
-        private System.Windows.Forms.Button btnAdd;
-        private System.Windows.Forms.Button btnUpdate;
-        private System.Windows.Forms.NumericUpDown nupColumnWidth;
-        private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.NumericUpDown nudMaxRows;
         private System.Windows.Forms.CheckBox chkHasMaxRows;
@@ -1791,16 +1302,11 @@
         private System.Windows.Forms.Button btnCloseWindow;
         private System.Windows.Forms.TabControl tabSource;
         private System.Windows.Forms.TabPage tabDataSourceOptions;
-        private System.Windows.Forms.TabPage tabParseOptions;
         private System.Windows.Forms.TabPage tabTransformationOptions;
         private System.Windows.Forms.TabPage tabExportOptions;
         private System.Windows.Forms.ComboBox cmbParserProfile;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Panel panelParserProfileSave;
-        private System.Windows.Forms.Button btnSaveParserProfile;
-        private System.Windows.Forms.TextBox txtParserProfileSaveFileName;
-        private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.CheckBox chkAutoRefresh;
         private System.Windows.Forms.TabPage tabActionOptions;

@@ -201,7 +201,7 @@ namespace EasyETL.Xml
         {
             using (var ms = new MemoryStream())
             {
-                using (var x = new XmlTextWriter(ms, new UTF8Encoding(false)) { Formatting = Formatting.Indented, IndentChar = ' ', Namespaces=false })
+                using (var x = new XmlTextWriter(ms, new UTF8Encoding(false)) { Formatting = Formatting.Indented, IndentChar = ' ' })
                 {
                     this.Save(x);
                     using (StreamReader sr = new StreamReader(ms))
@@ -236,9 +236,11 @@ namespace EasyETL.Xml
         {
             if (LastTransformer != null)
             {
+                XsltArgumentList xal = new XsltArgumentList();
+                xal.AddExtensionObject(XsltExtensions.XsltStringExtensions.Namespace, new XsltExtensions.XsltStringExtensions()); //This is to make the "easy" extension functions available...
                 StringBuilder xmlSB = new StringBuilder();
                 XmlWriter xWriter = XmlWriter.Create(xmlSB);
-                LastTransformer.Transform(this, null, xWriter);
+                LastTransformer.Transform(this, xal, xWriter);
                 LoadXml(xmlSB.ToString());
             }
             return this;

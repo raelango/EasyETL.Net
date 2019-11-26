@@ -26,7 +26,6 @@ namespace EasyXmlSample
     {
         bool actionInProgress = false;
         EasyXmlDocument ezDoc = null;
-        XslCompiledTransform xsl = null;
         Stopwatch stopWatch = new Stopwatch();
         public EasyETLXmlDocument ConfigXmlDocument = null;
         public EasyETLClient ClientConfiguration = null;
@@ -389,57 +388,6 @@ namespace EasyXmlSample
             Application.DoEvents();
         }
 
-        private void LoadParseOptionsFromNode(XmlNode optionsNode)
-        {
-            foreach (XmlAttribute xAttr in optionsNode.Attributes)
-            {
-                switch (xAttr.Name.ToLower())
-                {
-                    case "parsertype":
-                        cmbFileType.SelectedItem = xAttr.Value;
-                        cmbFileType_SelectedIndexChanged(this, null);
-                        break;
-                    case "delimiter":
-                        string delimiter = xAttr.Value;
-                        Control c = this.Controls.Find("rbDelimiter" + delimiter, true)[0];
-                        ((RadioButton)c).Checked = true;
-                        break;
-                    case "hasheader":
-                        cbHeaderRow.Checked = Convert.ToBoolean(xAttr.Value);
-                        break;
-                    case "separator":
-                        txtCustomDelimiter.Text = xAttr.InnerText; break;
-                }
-            }
-            if (optionsNode.SelectSingleNode("comments") != null)
-            {
-                if (cmbFileType.SelectedItem.ToString() == "Delimited")
-                    txtDelimitedComments.Text = optionsNode.SelectSingleNode("comments").InnerText;
-                else
-                    txtFixedWidthComments.Text = optionsNode.SelectSingleNode("comments").InnerText;
-            }
-
-            if (optionsNode.SelectSingleNode("xpath") != null)
-            {
-                txtXPathQuery.Text = optionsNode.SelectSingleNode("xpath").InnerText;
-            }
-
-            if (optionsNode.SelectSingleNode("template") != null)
-            {
-                txtTemplateString.Text = optionsNode.SelectSingleNode("template").InnerText;
-            }
-
-            XmlNodeList widthList = optionsNode.SelectNodes("width");
-            if (widthList != null)
-            {
-                lstFixedColumnWidths.Items.Clear();
-                foreach (XmlNode widthNode in widthList)
-                {
-                    lstFixedColumnWidths.Items.Add(Convert.ToInt16(widthNode.InnerText));
-                }
-            }
-        }
-
         public ETLForm()
         {
             InitializeComponent();
@@ -501,7 +449,6 @@ namespace EasyXmlSample
             }
             try
             {
-                xsl = null;
                 EasyXmlDocument xDoc = new EasyXmlDocument();
                 xDoc.OnProgress += xDoc_OnProgress;
                 //xDoc.OnRowAdd += xDoc_OnRowAdd;
@@ -593,10 +540,6 @@ namespace EasyXmlSample
                 {
                     xDoc.Transform(txtTransformText.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None), Properties.Settings.Default.XsltExtensionNamespace);
                 }
-                if (!String.IsNullOrWhiteSpace(txtXPathQuery.Text))
-                {
-                    xDoc = xDoc.ApplyFilter(txtXPathQuery.Text);
-                }
                 txtXPathContents.Text = xDoc.LastTransformerTemplate;
                 if (chkUseXsltTemplate.Checked && File.Exists(txtXsltFileName.Text))
                 {
@@ -614,7 +557,7 @@ namespace EasyXmlSample
             {
                 txtXmlContents.Text = xDoc.Beautify();
             }
-            catch
+            catch (Exception ex)
             {
             }
 
@@ -694,47 +637,9 @@ namespace EasyXmlSample
 
         public void LoadControls()
         {
-            cmbFileType.SelectedIndex = 0;
             cmbDatasource.SelectedItem = 0;
             btnRefreshOnLoadProfiles_Click(this, null);
             btnTransformProfilesLoad_Click(this, null);
-        }
-
-        private void cmbFileType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            cmbDelimited.Visible = false;
-            grpFixedFileOptions.Visible = false;
-            grpHtmlOptions.Visible = false;
-            grpTemplate.Visible = false;
-            switch (cmbFileType.Text)
-            {
-                case "Delimited":
-                    cmbDelimited.Visible = true;
-                    break;
-                case "Fixed Width":
-                    grpFixedFileOptions.Visible = true;
-                    grpFixedFileOptions.Top = cmbDelimited.Top;
-                    grpFixedFileOptions.Left = cmbDelimited.Left;
-                    break;
-                case "Html":
-                    grpHtmlOptions.Visible = true;
-                    grpHtmlOptions.Top = cmbDelimited.Top;
-                    grpHtmlOptions.Left = cmbDelimited.Left;
-                    break;
-                case "Template":
-                    grpTemplate.Visible = true;
-                    grpTemplate.Top = cmbDelimited.Top;
-                    grpTemplate.Left = cmbDelimited.Left;
-                    break;
-
-            }
-            if (chkAutoRefresh.Checked) LoadDataToGridView();
-        }
-
-        private void rbDelimiterCustom_CheckedChanged(object sender, EventArgs e)
-        {
-            txtCustomDelimiter.Enabled = rbDelimiterCustom.Checked;
-            if (txtCustomDelimiter.Enabled) txtCustomDelimiter.Focus();
         }
 
         private void cmbTableName_SelectedIndexChanged(object sender, EventArgs e)
@@ -745,33 +650,6 @@ namespace EasyXmlSample
             {
                 lblRecordCount.Text = dataGrid.RowCount + " Record(s)";
             }
-        }
-
-        private void lstFixedColumnWidths_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!String.IsNullOrWhiteSpace(lstFixedColumnWidths.Text)) nupColumnWidth.Value = Int16.Parse(lstFixedColumnWidths.Text);
-            btnRemove.Visible = !String.IsNullOrWhiteSpace(lstFixedColumnWidths.Text);
-            btnUpdate.Visible = btnRemove.Visible;
-        }
-
-        private void btnAdd_Click(object sender, EventArgs e)
-        {
-            if (lstFixedColumnWidths.Text == String.Empty)
-                lstFixedColumnWidths.Items.Add(Int32.Parse(nupColumnWidth.Value.ToString()));
-            else
-                lstFixedColumnWidths.Items.Insert(lstFixedColumnWidths.SelectedIndex, Int32.Parse(nupColumnWidth.Value.ToString()));
-        }
-
-        private void btnUpdate_Click(object sender, EventArgs e)
-        {
-            int pos = lstFixedColumnWidths.SelectedIndex;
-            lstFixedColumnWidths.Items.RemoveAt(pos);
-            lstFixedColumnWidths.Items.Insert(pos, Int32.Parse(nupColumnWidth.Value.ToString()));
-        }
-
-        private void btnRemove_Click(object sender, EventArgs e)
-        {
-            lstFixedColumnWidths.Items.RemoveAt(lstFixedColumnWidths.SelectedIndex);
         }
 
         private void txtTextContents_Leave(object sender, EventArgs e)
@@ -878,31 +756,7 @@ namespace EasyXmlSample
             }
         }
 
-        private void btnOnLoadSave_Click(object sender, EventArgs e)
-        {
-            if (!String.IsNullOrWhiteSpace(txtOnLoadFileName.Text))
-            {
-                XmlDocument xDoc = new XmlDocument();
-                xDoc.Load(SettingsFileName);
-                XmlNode transformsNode = xDoc.SelectSingleNode("//transforms");
-                if (transformsNode == null)
-                {
-                    transformsNode = xDoc.CreateElement("transforms");
-                    xDoc.DocumentElement.AppendChild(transformsNode);
-                }
-                XmlElement transformNode = (XmlElement)xDoc.SelectSingleNode("//transforms/transform[@profilename='" + txtParserProfileSaveFileName.Text + "']");
-                if (transformNode == null)
-                {
-                    transformNode = xDoc.CreateElement("transform");
-                    transformNode.SetAttribute("profilename", txtOnLoadFileName.Text);
-                    transformsNode.AppendChild(transformNode);
-                }
-                transformNode.InnerText = txtOnLoadContents.Text;
-                xDoc.Save(SettingsFileName);
-                if (!cbOnLoadProfiles.Items.Contains(txtOnLoadFileName.Text)) cbOnLoadProfiles.Items.Add(txtOnLoadFileName.Text);
-                cbOnLoadProfiles.SelectedText = txtOnLoadFileName.Text;
-            }
-        }
+        
 
         private void cbOnLoadProfiles_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1016,7 +870,6 @@ namespace EasyXmlSample
             {
                 optionsNode.SetAttribute("profilename", cmbParserProfile.Text);
             }
-            GetCurrentParserSettings(optionsNode);
             xNode.AppendChild(optionsNode);
             #endregion
 
@@ -1049,50 +902,6 @@ namespace EasyXmlSample
             xDoc.Save(SettingsFileName);
         }
 
-        private void GetCurrentParserSettings(XmlElement optionsNode)
-        {
-            XmlDocument xDoc = optionsNode.OwnerDocument;
-            optionsNode.SetAttribute("parsertype", cmbFileType.Text);
-            switch (cmbFileType.Text)
-            {
-                case "Delimited":
-                    string delimiter = "AutoDetect";
-                    if (rbDelimiterComma.Checked) delimiter = "Comma";
-                    if (rbDelimiterSemicolon.Checked) delimiter = "Semicolon";
-                    if (rbDelimiterSpace.Checked) delimiter = "Space";
-                    if (rbDelimiterTab.Checked) delimiter = "Tab";
-                    if (rbDelimiterCustom.Checked) delimiter = "Custom";
-                    string separator = String.Empty;
-                    if (rbDelimiterCustom.Checked) separator = txtCustomDelimiter.Text;
-                    optionsNode.SetAttribute("delimiter", delimiter);
-                    optionsNode.SetAttribute("separator", separator);
-                    optionsNode.SetAttribute("hasheader", cbHeaderRow.Checked.ToString());
-                    XmlElement dCommentsElement = xDoc.CreateElement("comments");
-                    dCommentsElement.InnerText = txtDelimitedComments.Text;
-                    optionsNode.AppendChild(dCommentsElement);
-                    break;
-                case "Fixed Width":
-                    XmlElement fCommentsElement = xDoc.CreateElement("comments");
-                    fCommentsElement.InnerText = txtFixedWidthComments.Text;
-                    optionsNode.AppendChild(fCommentsElement);
-                    foreach (int i in lstFixedColumnWidths.Items.Cast<int>())
-                    {
-                        XmlElement widthNode = xDoc.CreateElement("width");
-                        widthNode.InnerText = i.ToString();
-                        optionsNode.AppendChild(widthNode);
-                    }
-                    break;
-                case "Html":
-                    XmlElement htmlElement = xDoc.CreateElement("xpath");
-                    htmlElement.InnerText = txtXPathQuery.Text;
-                    break;
-                case "Template":
-                    XmlElement templateElement = xDoc.CreateElement("template");
-                    templateElement.InnerText = txtTemplateString.Text;
-                    optionsNode.AppendChild(templateElement);
-                    break;
-            }
-        }
 
         private void btnCloseWindow_Click(object sender, EventArgs e)
         {
@@ -1101,60 +910,6 @@ namespace EasyXmlSample
                 TabPage tpage = (TabPage)this.Parent;
                 TabControl tcontrol = (TabControl)tpage.Parent;
                 tcontrol.TabPages.Remove(tpage);
-            }
-        }
-
-        private void tabSource_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if ((tabSource.SelectedTab == tabParseOptions) && (tabDataSource.SelectedTab == tabDatasourceDatabase))
-            {
-                tabSource.SelectedTab = tabTransformationOptions;
-            }
-        }
-
-        private void txtParserProfileSaveFileName_TextChanged(object sender, EventArgs e)
-        {
-            btnSaveParserProfile.Enabled = !String.IsNullOrWhiteSpace(txtParserProfileSaveFileName.Text);
-        }
-
-        private void btnSaveParserProfile_Click(object sender, EventArgs e)
-        {
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(SettingsFileName);
-            XmlNode profilesNode = xDoc.SelectSingleNode("//profiles");
-            if (profilesNode == null)
-            {
-                profilesNode = xDoc.CreateElement("profiles");
-                xDoc.DocumentElement.AppendChild(profilesNode);
-            }
-            XmlElement profileNode = (XmlElement)xDoc.SelectSingleNode("//profiles/profile[@profilename='" + txtParserProfileSaveFileName.Text + "']");
-            if (profileNode == null)
-            {
-                profileNode = xDoc.CreateElement("profile");
-                profileNode.SetAttribute("profilename", txtParserProfileSaveFileName.Text);
-                profilesNode.AppendChild(profileNode);
-            }
-            profileNode.InnerText = "";
-            GetCurrentParserSettings(profileNode);
-
-            xDoc.Save(SettingsFileName);
-            btnSaveParserProfile.Enabled = false;
-            if (!cmbParserProfile.Items.Contains(txtParserProfileSaveFileName.Text)) cmbParserProfile.Items.Add(txtParserProfileSaveFileName.Text);
-            cmbParserProfile.Text = txtParserProfileSaveFileName.Text;
-        }
-
-        private void cmbParserProfile_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (!String.IsNullOrWhiteSpace(cmbParserProfile.Text))
-            {
-                XmlDocument xDoc = new XmlDocument();
-                xDoc.Load(SettingsFileName);
-                XmlNode profileNode = xDoc.SelectSingleNode("//profiles/profile[@profilename='" + cmbParserProfile.Text + "']");
-                if (profileNode != null)
-                {
-                    txtParserProfileSaveFileName.Text = cmbParserProfile.Text;
-                    LoadParseOptionsFromNode(profileNode);
-                }
             }
         }
 
