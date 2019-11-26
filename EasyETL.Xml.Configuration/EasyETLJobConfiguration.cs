@@ -7,13 +7,21 @@ using System.Xml;
 
 namespace EasyETL.Xml.Configuration
 {
-    public class EasyETLJob : EasyETLConfiguration
+    public class EasyETLJobConfiguration : EasyETLConfiguration
     {
         public string ETLName;
         public string ETLID;
         public bool AutoRefresh;
 
         public EasyETLJobDatasource Datasource = new EasyETLJobDatasource();
+
+        public List<EasyETLJobAction> Actions = new List<EasyETLJobAction>();
+
+        public EasyETLJobParseOptions ParseOptions = new EasyETLJobParseOptions();
+
+        public List<EasyETLJobExport> Exports = new List<EasyETLJobExport>();
+
+        public EasyETLJobTransformations Transformations = new EasyETLJobTransformations();
 
         public List<EasyETLPermission> Permissions = new List<EasyETLPermission>();
         public EasyETLPermission DefaultPermission = new EasyETLPermission();
@@ -24,6 +32,28 @@ namespace EasyETL.Xml.Configuration
 
             Datasource = new EasyETLJobDatasource();
             if (xNode.SelectSingleNode("datasource") !=null) Datasource.ReadSettings(xNode.SelectSingleNode("datasource"));
+
+            Actions = new List<EasyETLJobAction>();
+            foreach (XmlNode actionNode in xNode.SelectNodes("actions/action"))
+            {
+                EasyETLJobAction easyETLJobAction = new EasyETLJobAction();
+                easyETLJobAction.ReadSettings(actionNode);
+                Actions.Add(easyETLJobAction);
+            }
+
+            ParseOptions = new EasyETLJobParseOptions();
+            if (xNode.SelectSingleNode("parseoptions") != null) ParseOptions.ReadSettings(xNode.SelectSingleNode("parseoptions"));
+
+            Exports = new List<EasyETLJobExport>();
+            foreach (XmlNode exportNode in xNode.SelectNodes("exports/export"))
+            {
+                EasyETLJobExport easyETLJobExport = new EasyETLJobExport();
+                easyETLJobExport.ReadSettings(exportNode);
+                Exports.Add(easyETLJobExport);
+            }
+
+            Transformations = new EasyETLJobTransformations();
+            if (xNode.SelectNodes("transformations") != null) Transformations.ReadSettings(xNode.SelectSingleNode("transformations"));
 
             DefaultPermission = new EasyETLPermission();
             if (xNode.SelectSingleNode("permissions") != null) DefaultPermission.ReadSettings(xNode.SelectSingleNode("permissions"));

@@ -16,9 +16,11 @@ namespace EasyETL.Xml.Configuration
         public int MaxRows;
         public string FileName;
         public string DataSource;
+        public string Endpoint;
         //The below properties are child nodes
         public string TextContents;
         public string Query;
+
 
         public override void ReadSettings(XmlNode xNode)
         {
@@ -38,6 +40,7 @@ namespace EasyETL.Xml.Configuration
             MaxRows = Convert.ToInt32(GetSetting("MaxRows", "-1"));
             FileName = GetSetting("FileName");
             DataSource = GetSetting("Datasource");
+            Endpoint = GetSetting("Endpoint");
         }
 
         public override void WriteSettingsToDictionary()
@@ -49,6 +52,7 @@ namespace EasyETL.Xml.Configuration
             SetSetting("MaxRows", MaxRows.ToString());
             SetSetting("FileName", FileName);
             SetSetting("DataSource", DataSource);
+            SetSetting("Endpoint", Endpoint);
         }
 
         public override void WriteSettings(XmlNode xNode)

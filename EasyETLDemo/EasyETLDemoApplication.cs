@@ -265,7 +265,8 @@ namespace EasyXmlSample
                             };
                             mForm.LoadControls();
                             mForm.ConfigXmlDocument = configXmlDocument;
-                            mForm.ClientConfiguration = configXmlDocument.Clients.Where(w => w.ClientName == clientName).First();
+                            mForm.ClientConfiguration = configXmlDocument.Clients.Find(w => w.ClientName == clientName);
+                            mForm.JobConfiguration = mForm.ClientConfiguration.ETLs.Find(etl => etl.ETLName == nodeName);
                             mForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
                             currentForm = mForm;
                             break;

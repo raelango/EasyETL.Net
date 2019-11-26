@@ -15,6 +15,7 @@ namespace EasyETL.Xml.Configuration
         public bool CanEditData;
         public bool CanDeleteData;
         public bool CanExportData;
+        public bool DisplaySettingsOnLoad;
 
         public override void ReadSettingsFromDictionary()
         {
@@ -25,6 +26,7 @@ namespace EasyETL.Xml.Configuration
             CanEditData = Convert.ToBoolean(GetSetting("CanEditData", CanEditData.ToString()));
             CanDeleteData = Convert.ToBoolean(GetSetting("CanDeleteData", CanDeleteData.ToString()));
             CanExportData = Convert.ToBoolean(GetSetting("CanExportData", CanExportData.ToString()));
+            DisplaySettingsOnLoad = Convert.ToBoolean(GetSetting("DisplaySettingsOnLoad", CanExportData.ToString()));
         }
 
         public override void WriteSettingsToDictionary()
@@ -36,6 +38,7 @@ namespace EasyETL.Xml.Configuration
             SetSetting("CanEditData", CanEditData.ToString());
             SetSetting("CanDeleteData", CanDeleteData.ToString());
             SetSetting("CanExportData", CanExportData.ToString());
+            SetSetting("DisplaySettingsOnLoad", CanExportData.ToString());            
         }
     }
 }

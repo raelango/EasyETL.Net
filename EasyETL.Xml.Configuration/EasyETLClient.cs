@@ -19,7 +19,7 @@ namespace EasyETL.Xml.Configuration
         public List<EasyETLEndpoint> Endpoints = new List<EasyETLEndpoint>();
         public List<EasyETLParser> Parsers = new List<EasyETLParser>();
 
-        public List<EasyETLJob> ETLs = new List<EasyETLJob>();
+        public List<EasyETLJobConfiguration> ETLs = new List<EasyETLJobConfiguration>();
 
         public override void ReadSettings(XmlNode xNode)
         {
@@ -64,10 +64,10 @@ namespace EasyETL.Xml.Configuration
                 Parsers.Add(easyETLParser);
             }
 
-            ETLs = new List<EasyETLJob>();
+            ETLs = new List<EasyETLJobConfiguration>();
             foreach (XmlNode childNode in xNode.SelectNodes("etls/etl"))
             {
-                EasyETLJob etlJob = new EasyETLJob();
+                EasyETLJobConfiguration etlJob = new EasyETLJobConfiguration();
                 etlJob.ReadSettings(childNode);
                 ETLs.Add(etlJob);
             }

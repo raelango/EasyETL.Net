@@ -29,6 +29,7 @@ namespace EasyXmlSample
         Stopwatch stopWatch = new Stopwatch();
         public EasyETLXmlDocument ConfigXmlDocument = null;
         public EasyETLClient ClientConfiguration = null;
+        public EasyETLJobConfiguration JobConfiguration = null;
 
         public int intAutoNumber = 0;
         public string SettingsPath = "";
@@ -73,7 +74,6 @@ namespace EasyXmlSample
             #region load all available actions
             chkAvailableActions.Items.Clear();
             fpActions.Controls.Clear();
-            //dctActionClassMapping.Clear();
             foreach (EasyETLAction etlAction in ClientConfiguration.Actions)
             {
                 string actionName = etlAction.ActionName;
@@ -89,11 +89,8 @@ namespace EasyXmlSample
                     };
                     btnControl.Click += btnControl_Click;
                     fpActions.Controls.Add(btnControl);
-                    //dctActionClassMapping.Add(actionName, cMapping);
                 }
             }
-
-            XmlNodeList actionNodes = xDoc.SelectNodes("//clients/client[@name='" + clientName + "']/actions/action");
 
             #endregion
 
@@ -113,6 +110,7 @@ namespace EasyXmlSample
                 }
             }
             #endregion
+
             #region load all available data sources
             cmbDatasource.Items.Clear();
             foreach (EasyETLDatasource easyETLDatasource in ClientConfiguration.Datasources)
@@ -125,204 +123,82 @@ namespace EasyXmlSample
             #endregion
 
 
-            XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
-            if (xNode != null)
-            {
                 #region Actions Load
-                XmlNode actionsNode = xNode.SelectSingleNode("actions");
-                actionNodes = null;
-                if (actionsNode != null) actionNodes = actionsNode.SelectNodes("action");
-                if (actionNodes != null)
+                foreach (EasyETLJobAction easyETLJobAction in JobConfiguration.Actions)
                 {
-
-                    foreach (XmlNode actionNode in actionNodes)
-                    {
-                        if (actionNode.Attributes.GetNamedItem("name") != null)
-                        {
-                            int loadIndex = chkAvailableActions.Items.IndexOf(actionNode.Attributes.GetNamedItem("name").Value);
-                            bool toCheck = true;
-                            if ((actionNode.Attributes.GetNamedItem("enabled") != null) && (!Convert.ToBoolean(actionNode.Attributes.GetNamedItem("enabled").Value)))
-                            {
-                                toCheck = false;
-                            }
-                            if (loadIndex >= 0) chkAvailableActions.SetItemChecked(loadIndex, toCheck);
-                        }
-                    }
-                    XmlNode defaultActionNode = actionsNode.SelectSingleNode("defaultaction");
-                    if ((defaultActionNode != null) && (defaultActionNode.Attributes.GetNamedItem("name") != null))
-                    {
-                        cmbDefaultAction.Text = defaultActionNode.Attributes.GetNamedItem("name").Value;
-                    }
+                    int loadIndex = chkAvailableActions.Items.IndexOf(easyETLJobAction.ActionName);
+                    bool toCheck = (easyETLJobAction.IsEnabled);
+                    if (loadIndex >= 0) chkAvailableActions.SetItemChecked(loadIndex, toCheck);
+                    if (easyETLJobAction.IsDefault) cmbDefaultAction.Text = easyETLJobAction.ActionName;
                 }
 
                 DisplayActionButtonsAsNeeded();
                 #endregion
 
                 #region Transformations Load
-                XmlNode transformationNode = xNode.SelectSingleNode("transformations");
-                if (transformationNode != null)
-                {
-                    XmlNode duringLoadNode = transformationNode.SelectSingleNode("duringload");
-                    if (duringLoadNode != null)
-                    {
-                        foreach (XmlAttribute xAttr in duringLoadNode.Attributes)
-                        {
-                            switch (xAttr.Name.ToLower())
-                            {
-                                case "profilename":
-                                    cbOnLoadProfiles.Text = xAttr.Value; break;
-                                case "savefilename":
-                                    txtOnLoadFileName.Text = xAttr.Value; break;
-                            }
-                        }
-                        txtOnLoadContents.Text = duringLoadNode.InnerText;
-                    }
-                    XmlNode afterLoadNode = transformationNode.SelectSingleNode("afterload");
-                    chkUseXsltTemplate.Checked = false;
-                    if (afterLoadNode != null)
-                    {
-                        foreach (XmlAttribute xAttr in afterLoadNode.Attributes)
-                        {
-                            switch (xAttr.Name.ToLower())
-                            {
-                                case "profilename":
-                                    cbTransformProfiles.Text = xAttr.Value; break;
-                                case "savefilename":
-                                    txtTransformFileName.Text = xAttr.Value; break;
-                                case "usexslt":
-                                    chkUseXsltTemplate.Checked = Convert.ToBoolean(xAttr.Value); break;
-                                case "xsltfilename":
-                                    txtXsltFileName.Text = xAttr.Value; break;
-                            }
-                        }
-                        txtTransformText.Text = afterLoadNode.InnerText;
-                    }
-                    XmlNode datasetConversionNode = transformationNode.SelectSingleNode("datasetconversion");
-                    rbUseDatasetLoad.Checked = true;
-                    if (datasetConversionNode != null)
-                    {
-                        foreach (XmlAttribute xAttr in datasetConversionNode.Attributes)
-                        {
-                            switch (xAttr.Name.ToLower())
-                            {
-                                case "usedefault":
-                                    rbUseDatasetLoad.Checked = Convert.ToBoolean(xAttr.Value); break;
-                                case "usecustom":
-                                    rbUseCustomTableLoad.Checked = Convert.ToBoolean(xAttr.Value); break;
-                            }
-                        }
-                        txtNodeMapping.Text = datasetConversionNode.InnerText;
-                    }
-                }
+                cbOnLoadProfiles.Text = JobConfiguration.Transformations.DuringLoad.SaveProfileName;
+                txtOnLoadFileName.Text = JobConfiguration.Transformations.DuringLoad.SaveFileName;
+                txtOnLoadContents.Text = String.Join(Environment.NewLine, JobConfiguration.Transformations.DuringLoad.SettingsCommands);
+
+                chkUseXsltTemplate.Checked = JobConfiguration.Transformations.AfterLoad.UseXslt;
+                cbTransformProfiles.Text = JobConfiguration.Transformations.AfterLoad.SaveProfileName;
+                txtTransformFileName.Text = JobConfiguration.Transformations.AfterLoad.SaveFileName;
+                txtXsltFileName.Text = JobConfiguration.Transformations.AfterLoad.XsltFileName;
+                txtTransformText.Text = String.Join(Environment.NewLine, JobConfiguration.Transformations.AfterLoad.SettingsCommands);
+
+                rbUseDatasetLoad.Checked = JobConfiguration.Transformations.Dataset.UseDefault;
+                rbUseCustomTableLoad.Checked = JobConfiguration.Transformations.Dataset.UseCustom;
+                txtNodeMapping.Text = String.Join(Environment.NewLine, JobConfiguration.Transformations.Dataset.SettingsCommands);
+
                 #endregion
 
                 #region ParserOptions Load
-                XmlNode parseOptionsNode = xNode.SelectSingleNode("parseoptions");
-                if ((parseOptionsNode !=null) && (parseOptionsNode.Attributes.GetNamedItem("profilename") != null))
-                {
-                    cmbParserProfile.Text = parseOptionsNode.Attributes.GetNamedItem("profilename").Value;
-                }
+                cmbParserProfile.Text = JobConfiguration.ParseOptions.ProfileName;
                 #endregion
+
                 #region Output Settings Load
 
-                XmlNode exportsNode = xNode.SelectSingleNode("exports");
-                XmlNodeList exportNodes = null;
-                if (exportsNode != null) exportNodes = exportsNode.SelectNodes("export");
-                if (exportNodes != null)
+                foreach (EasyETLJobExport easyETLJobExport in JobConfiguration.Exports)
                 {
-
-                    foreach (XmlNode exportNode in exportNodes)
-                    {
-                        if (exportNode.Attributes.GetNamedItem("name") != null)
-                        {
-                            int loadIndex = chkAvailableExports.Items.IndexOf(exportNode.Attributes.GetNamedItem("name").Value);
-                            bool toCheck = !((exportNode.Attributes.GetNamedItem("enabled") != null) && (!Convert.ToBoolean(exportNode.Attributes.GetNamedItem("enabled").Value)));
-                            if (loadIndex >= 0) chkAvailableExports.SetItemChecked(loadIndex, toCheck);
-                        }
-                    }
+                    int loadIndex = chkAvailableExports.Items.IndexOf(easyETLJobExport.ExportName);
+                    bool toCheck = (easyETLJobExport.IsEnabled);
+                    if (loadIndex >= 0) chkAvailableExports.SetItemChecked(loadIndex, toCheck);
                 }
                 #endregion
 
                 #region Permissions Settings
                 btnSaveSettings.Visible = false;
-                XmlNode permissionsNode = xNode.SelectSingleNode("permissions");
-                if (permissionsNode != null)
-                {
-                    foreach (XmlAttribute xAttr in permissionsNode.Attributes)
-                    {
-                        switch (xAttr.Name.ToLower())
-                        {
-                            case "canviewsettings":
-                                ToggleDisplayConfigurationSection(Convert.ToBoolean(xAttr.Value));
-                                break;
-                            case "caneditsettings":
-                                chkCanEditConfiguration.Checked = Convert.ToBoolean(xAttr.Value); break;
-                            case "displaysettingsonload":
-                                chkShowConfigurationOnLoad.Checked = Convert.ToBoolean(xAttr.Value);
-                                ToggleDisplayConfigurationSection(chkShowConfigurationOnLoad.Checked);
-                                break;
-                            case "canadddata":
-                                chkCanAddData.Checked = Convert.ToBoolean(xAttr.Value); break;
-                            case "caneditdata":
-                                chkCanEditData.Checked = Convert.ToBoolean(xAttr.Value); break;
-                            case "candeletedata":
-                                chkCanDeleteData.Checked = Convert.ToBoolean(xAttr.Value); break;
-                            case "canexportdata":
-                                chkCanExportData.Checked = Convert.ToBoolean(xAttr.Value); break;
-                        }
-                    }
-                    btnSaveSettings.Visible = chkCanEditConfiguration.Checked;
-                    pnlExport.Visible = chkCanExportData.Checked;
-                }
+                EasyETLPermission etlPermission = JobConfiguration.DefaultPermission;
+                chkCanEditConfiguration.Checked = etlPermission.CanEditSettings;
+                chkShowConfigurationOnLoad.Checked = etlPermission.DisplaySettingsOnLoad;
+                chkCanAddData.Checked = etlPermission.CanAddData;
+                chkCanEditData.Checked = etlPermission.CanEditData;
+                chkCanDeleteData.Checked = etlPermission.CanDeleteData;
+                chkCanExportData.Checked = etlPermission.CanExportData;
+
+                ToggleDisplayConfigurationSection(chkShowConfigurationOnLoad.Checked && etlPermission.CanViewSettings);
+
+                chkAutoRefresh.Visible = chkCanEditConfiguration.Checked;
+                btnSaveSettings.Visible = chkCanEditConfiguration.Checked;
+                pnlExport.Visible = chkCanExportData.Checked;
+
                 #endregion
 
                 #region Datasource Node Load
-                XmlNode datasourceNode = xNode.SelectSingleNode("datasource");
-                if (datasourceNode != null)
-                {
+                tabDataSource.SelectTab("tabDatasource" + JobConfiguration.Datasource.SourceType);
+                cmbEndpoint.Text = JobConfiguration.Datasource.Endpoint;
+                txtFileName.Text = JobConfiguration.Datasource.FileName;
+                chkUseTextExtractor.Checked = JobConfiguration.Datasource.UseTextExtractor;
+                cbTextExtractor.Text = JobConfiguration.Datasource.TextExtractor;
+                chkHasMaxRows.Checked = JobConfiguration.Datasource.HasMaxRows;
+                nudMaxRows.Value = JobConfiguration.Datasource.MaxRows;
+                cmbDatasource.Text = JobConfiguration.Datasource.DataSource;
+                txtTextContents.Text = JobConfiguration.Datasource.TextContents;
+                txtDatabaseQuery.Text = JobConfiguration.Datasource.Query;
 
-                    foreach (XmlAttribute xAttr in datasourceNode.Attributes)
-                    {
-                        switch (xAttr.Name.ToLower())
-                        {
-                            case "sourcetype":
-                                tabDataSource.SelectTab("tabDatasource" + xAttr.Value); break;
-                            case "endpoint":
-                                cmbEndpoint.Text = xAttr.Value; break;
-                            case "filename":
-                                txtFileName.Text = xAttr.Value; break;
-                            case "usetextextractor":
-                                chkUseTextExtractor.Checked = Convert.ToBoolean(xAttr.Value); break;
-                            case "textextractor":
-                                cbTextExtractor.Text = xAttr.Value; break;
-                            case "hasmaxrows":
-                                chkHasMaxRows.Checked = Convert.ToBoolean(xAttr.Value); break;
-                            case "maxrows":
-                                nudMaxRows.Value = Convert.ToInt64(xAttr.Value); break;
-                            case "datasource":
-                                cmbDatasource.Text = xAttr.Value; break;
-                        }
-                    }
-                    if (datasourceNode.SelectSingleNode("textcontents") != null)
-                    {
-                        txtTextContents.Text = datasourceNode.SelectSingleNode("textcontents").InnerText;
-                    }
-                    if (datasourceNode.SelectSingleNode("query") != null)
-                    {
-                        txtDatabaseQuery.Text = datasourceNode.SelectSingleNode("query").InnerText;
-                    }
-                }
                 #endregion
 
-                if (xNode.Attributes.GetNamedItem("autorefresh") != null)
-                {
-                    chkAutoRefresh.Checked = Boolean.Parse(xNode.Attributes.GetNamedItem("autorefresh").Value);
-                }
-                else
-                {
-                    chkAutoRefresh.Checked = false;
-                }
-            }
+                chkAutoRefresh.Checked = JobConfiguration.AutoRefresh; // (xNode.Attributes.GetNamedItem("autorefresh") == null) ? false : Boolean.Parse(xNode.Attributes.GetNamedItem("autorefresh").Value);
 
         }
 
@@ -451,8 +327,6 @@ namespace EasyXmlSample
             {
                 EasyXmlDocument xDoc = new EasyXmlDocument();
                 xDoc.OnProgress += xDoc_OnProgress;
-                //xDoc.OnRowAdd += xDoc_OnRowAdd;
-                //xDoc.OnError += xDoc_OnError;
                 if (tabDataSource.SelectedTab == tabDatasourceDatabase)
                 {
                     DatasourceEasyParser dbep = null;
@@ -756,8 +630,6 @@ namespace EasyXmlSample
             }
         }
 
-        
-
         private void cbOnLoadProfiles_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtOnLoadFileName.Text = cbOnLoadProfiles.Text;
@@ -829,14 +701,8 @@ namespace EasyXmlSample
                 XmlElement actionNode = xDoc.CreateElement("action");
                 actionNode.SetAttribute("name", cic.ToString());
                 actionNode.SetAttribute("enabled", "True");
+                if (cic.ToString() == cmbDefaultAction.Text) actionNode.SetAttribute("default", "True");
                 actionsNode.AppendChild(actionNode);
-            }
-
-            if (!String.IsNullOrWhiteSpace(cmbDefaultAction.Text))
-            {
-                XmlElement defaultActionNode = xDoc.CreateElement("defaultaction");
-                defaultActionNode.SetAttribute("name", cmbDefaultAction.Text);
-                actionsNode.AppendChild(defaultActionNode);
             }
 
             xNode.AppendChild(actionsNode);
@@ -902,7 +768,6 @@ namespace EasyXmlSample
             xDoc.Save(SettingsFileName);
         }
 
-
         private void btnCloseWindow_Click(object sender, EventArgs e)
         {
             if ((this.Parent != null) && (this.Parent is TabPage))
@@ -934,15 +799,6 @@ namespace EasyXmlSample
             if (chkAutoRefresh.Checked) LoadDataToGridView();
         }
 
-        private void chkFixedFirstRowHasFieldNames_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkAutoRefresh.Checked) LoadDataToGridView();
-        }
-
-        private void txtCustomDelimiter_TextChanged(object sender, EventArgs e)
-        {
-            if (chkAutoRefresh.Checked) LoadDataToGridView();
-        }
 
         private void chkCanAddData_CheckedChanged(object sender, EventArgs e)
         {
