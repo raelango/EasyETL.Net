@@ -44,6 +44,10 @@ namespace EasyETL.Xml.Configuration
             ParseOptions = new EasyETLJobParseOptions();
             if (xNode.SelectSingleNode("parseoptions") != null) ParseOptions.ReadSettings(xNode.SelectSingleNode("parseoptions"));
 
+
+            Transformations = new EasyETLJobTransformations();
+            if (xNode.SelectSingleNode("transformations") != null) Transformations.ReadSettings(xNode.SelectSingleNode("transformations"));
+
             Exports = new List<EasyETLJobExport>();
             foreach (XmlNode exportNode in xNode.SelectNodes("exports/export"))
             {
@@ -51,9 +55,6 @@ namespace EasyETL.Xml.Configuration
                 easyETLJobExport.ReadSettings(exportNode);
                 Exports.Add(easyETLJobExport);
             }
-
-            Transformations = new EasyETLJobTransformations();
-            if (xNode.SelectNodes("transformations") != null) Transformations.ReadSettings(xNode.SelectSingleNode("transformations"));
 
             DefaultPermission = new EasyETLPermission();
             if (xNode.SelectSingleNode("permissions") != null) DefaultPermission.ReadSettings(xNode.SelectSingleNode("permissions"));
@@ -89,6 +90,46 @@ namespace EasyETL.Xml.Configuration
             XmlElement dsElement = xNode.OwnerDocument.CreateElement("datasource");
             xNode.AppendChild(dsElement);
             Datasource.WriteSettings(dsElement);
+
+            XmlElement actionsElement = xNode.OwnerDocument.CreateElement("actions");
+            xNode.AppendChild(actionsElement);
+            foreach (EasyETLJobAction eTLJobAction in Actions)
+            {
+                XmlElement actionElement = xNode.OwnerDocument.CreateElement("action");
+                actionsElement.AppendChild(actionElement);
+                eTLJobAction.WriteSettings(actionElement);
+            }
+
+            XmlElement parseElement = xNode.OwnerDocument.CreateElement("parseoptions");
+            xNode.AppendChild(parseElement);
+            ParseOptions.WriteSettings(parseElement);
+
+            XmlElement transformationsElement = xNode.OwnerDocument.CreateElement("transformations");
+            xNode.AppendChild(transformationsElement);
+            Transformations.WriteSettings(transformationsElement);
+
+
+            XmlElement exportsElement = xNode.OwnerDocument.CreateElement("exports");
+            xNode.AppendChild(exportsElement);
+            foreach (EasyETLJobExport jobExport in Exports)
+            {
+                XmlElement exportElement = xNode.OwnerDocument.CreateElement("export");
+                exportsElement.AppendChild(exportElement);
+                jobExport.WriteSettings(exportElement);
+            }
+
+
+            XmlElement permissionsElement = xNode.OwnerDocument.CreateElement("permissions");
+            xNode.AppendChild(permissionsElement);
+            DefaultPermission.WriteSettings(permissionsElement);
+
+            foreach (EasyETLPermission permission in Permissions)
+            {
+                XmlElement permissionElement = xNode.OwnerDocument.CreateElement("permission");
+                permissionsElement.AppendChild(permissionElement);
+                permission.WriteSettings(permissionElement);
+            }
+
         }
     }
 }

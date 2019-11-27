@@ -1,5 +1,6 @@
 ﻿using EasyETL;
 using EasyETL.Endpoint;
+using EasyETL.Xml.Configuration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,41 +18,29 @@ namespace EasyXmlSample
     {
         AbstractEasyEndpoint SourceEndpoint = null;
         AbstractEasyEndpoint TargetEndpoint = null;
-        XmlDocument configXmlDocument = null;
-        XmlNode configNode = null;
-        public string XmlFileName;
-        string clientName = "";
-        string transferName = "";
+        public XmlDocument configXmlDocument = null;
+        public EasyETLXmlDocument ConfigurationDocument = null;
+        public EasyETLClient ClientConfiguration = null;
+        public EasyETLTransfer TransferConfiguration = null;
+        public string ClientName = "";
+        public string TransferName = "";
         List<string> lstEndpoints = new List<string>();
         public TransferForm()
         {
             InitializeComponent();
         }
 
-        public void LoadSettingsFromXml(XmlNode xmlNode)
+        public void LoadSettingsFromXml()
         {
-            configNode = xmlNode;
-            configXmlDocument = xmlNode.OwnerDocument;
-            clientName = xmlNode.ParentNode.ParentNode.Attributes.GetNamedItem("name").Value;
-            transferName = xmlNode.Attributes.GetNamedItem("name").Value;
+            ClientConfiguration = ConfigurationDocument.Clients.Find(c => c.ClientName == ClientName);
+            TransferConfiguration = ClientConfiguration.Transfers.Find(t => t.TransferName == TransferName);
             LoadAllEndPoints();
-            foreach (XmlAttribute xAttr in xmlNode.Attributes) {
-                switch (xAttr.Name.ToLower())
-                {
-                    case "sourceendpoint":
-                        if (cmbSource.Items.Contains(xAttr.Value)) cmbSource.Text = xAttr.Value;
-                        SetSourceEndpoint();
-                        break;
-                    case "targetendpoint":
-                        if (cmbDestination.Items.Contains(xAttr.Value)) cmbDestination.Text = xAttr.Value;
-                        SetDestinationEndpoint();
-                        break;
-                    case "sourcefilter":
-                        txtSourceFilter.Text = xAttr.Value; break;
-                    case "targetfilter":
-                        txtDestinationFilter.Text = xAttr.Value; break;
-                }
-            }
+            cmbSource.Text = TransferConfiguration.SourceEndpointName;
+            cmbDestination.Text = TransferConfiguration.TargetEndpointName;
+            txtSourceFilter.Text = TransferConfiguration.SourceFilter;
+            txtDestinationFilter.Text = TransferConfiguration.TargetFilter;
+            SetSourceEndpoint();
+            SetDestinationEndpoint();
             PopulateSourceList();
             PopulateTargetList();
         }
@@ -61,28 +50,21 @@ namespace EasyXmlSample
             lstEndpoints.Clear();
             cmbDestination.Items.Clear();
             cmbSource.Items.Clear();
-            XmlNode endpointsNode = configXmlDocument.SelectSingleNode("//clients/client[@name='" + clientName + "']/endpoints");
-            if (endpointsNode == null) return;
-            foreach (XmlNode endpointNode in endpointsNode)
+            foreach (EasyETLEndpoint easyETLEndpoint in ClientConfiguration.Endpoints)
             {
-                if (endpointNode.Attributes.GetNamedItem("name") != null) lstEndpoints.Add(endpointNode.Attributes.GetNamedItem("name").Value);
+                lstEndpoints.Add(easyETLEndpoint.ActionName);
             }
             PopulateSourceEndPoint();
             PopulateDestinationEndPoint();
         }
 
-        public void PopulateSourceEndPoint() {
+        public void PopulateSourceEndPoint()
+        {
             foreach (string endpoint in lstEndpoints)
             {
-                //if ((cmbDestination.SelectedItem != null) && (cmbDestination.SelectedItem.ToString().Equals(endpoint))) {
-                //    cmbSource.Items.Remove(endpoint);
-                //}
-                //else
-                //{
-                    if (!cmbSource.Items.Contains(endpoint)) cmbSource.Items.Add(endpoint);
-                //}
+                if (!cmbSource.Items.Contains(endpoint)) cmbSource.Items.Add(endpoint);
             }
-            if ((cmbSource.SelectedItem == null) && (cmbSource.Items.Count >0)) cmbSource.SelectedIndex = 0;
+            if ((cmbSource.SelectedItem == null) && (cmbSource.Items.Count > 0)) cmbSource.SelectedIndex = 0;
         }
 
         public void PopulateDestinationEndPoint()
@@ -115,7 +97,7 @@ namespace EasyXmlSample
 
         private void PopulateSourceList()
         {
-            if (SourceEndpoint != null) 
+            if (SourceEndpoint != null)
             {
                 lstSourceFileList.Items.Clear();
                 lstSourceFileList.Items.AddRange(SourceEndpoint.GetList(txtSourceFilter.Text));
@@ -146,30 +128,20 @@ namespace EasyXmlSample
 
         private AbstractEasyEndpoint GetEndPoint(string endpointName)
         {
-            AbstractFileEasyEndpoint endpoint = null;
-            XmlNode endpointNode = configXmlDocument.SelectSingleNode("//clients/client[@name='" + clientName + "']/endpoints/endpoint[@name='" + endpointName + "']");
-            if (endpointNode != null) {
-
-                ClassMapping[] endpointClasses = ReflectionUtils.LoadClassesFromLibrary(typeof(AbstractFileEasyEndpoint));
-                Type classType = endpointClasses.First(f => f.DisplayName == endpointNode.Attributes.GetNamedItem("classname").Value).Class;
-                endpoint = (AbstractFileEasyEndpoint)Activator.CreateInstance(classType);
-                foreach (XmlNode childNode in endpointNode.SelectNodes("field"))
-                {
-                    endpoint.LoadSetting(childNode.Attributes.GetNamedItem("name").Value, childNode.Attributes.GetNamedItem("value").Value);
-                }
-            }
-            return endpoint;
+            return ClientConfiguration.Endpoints.Find(e => e.ActionName == endpointName).CreateEndpoint();
         }
 
         private void lstSourceFileList_SelectedValueChanged(object sender, EventArgs e)
         {
-            btnTransfer.Enabled = (lstSourceFileList.SelectedItems.Count > 0) && (SourceEndpoint != null) && (TargetEndpoint !=null);
+            btnTransfer.Enabled = (lstSourceFileList.SelectedItems.Count > 0) && (SourceEndpoint != null) && (TargetEndpoint != null);
         }
 
         private void btnTransfer_Click(object sender, EventArgs e)
         {
-            if ((SourceEndpoint !=null) && (TargetEndpoint !=null)) {
-                foreach (string fileName in lstSourceFileList.SelectedItems) {
+            if ((SourceEndpoint != null) && (TargetEndpoint != null))
+            {
+                foreach (string fileName in lstSourceFileList.SelectedItems)
+                {
                     SourceEndpoint.CopyTo(TargetEndpoint, fileName);
                 }
                 PopulateTargetList();
@@ -178,29 +150,12 @@ namespace EasyXmlSample
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            if (String.IsNullOrWhiteSpace(XmlFileName)) return;
-            if (configNode == null) return;
-            configXmlDocument = new XmlDocument();
-            configXmlDocument.Load(XmlFileName);
-            configNode = configXmlDocument.SelectSingleNode("//clients/client[@name='" + clientName + "']/transfers/transfer[@name='" + transferName + "']");
-            SetConfiguration("sourceendpoint",cmbSource.Text);
-            SetConfiguration("sourcefilter", txtSourceFilter.Text);
-            SetConfiguration("targetendpoint", cmbDestination.Text);
-            SetConfiguration("targetfilter", txtDestinationFilter.Text);
-            configXmlDocument.Save(XmlFileName);
+            TransferConfiguration.SourceFilter = txtSourceFilter.Text;
+            TransferConfiguration.TargetFilter = txtDestinationFilter.Text;
+            TransferConfiguration.SourceEndpointName = cmbSource.Text;
+            TransferConfiguration.TargetEndpointName = cmbDestination.Text;
+            ConfigurationDocument.Save();
             btnClose_Click(this, null);
-        }
-
-        private void SetConfiguration(string attrName, string attrValue)
-        {
-            attrName = attrName.ToLower();
-            XmlAttribute xAttr = (XmlAttribute)configNode.Attributes.GetNamedItem(attrName);
-            if (xAttr == null)
-            {
-                xAttr = configXmlDocument.CreateAttribute(attrName);
-                configNode.Attributes.Append(xAttr);
-            }
-            xAttr.Value = attrValue;
         }
 
         private void btnClose_Click(object sender, EventArgs e)

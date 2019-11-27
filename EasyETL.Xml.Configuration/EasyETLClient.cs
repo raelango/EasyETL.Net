@@ -19,6 +19,8 @@ namespace EasyETL.Xml.Configuration
         public List<EasyETLEndpoint> Endpoints = new List<EasyETLEndpoint>();
         public List<EasyETLParser> Parsers = new List<EasyETLParser>();
 
+        public List<EasyETLTransfer> Transfers = new List<EasyETLTransfer>();
+
         public List<EasyETLJobConfiguration> ETLs = new List<EasyETLJobConfiguration>();
 
         public override void ReadSettings(XmlNode xNode)
@@ -62,6 +64,14 @@ namespace EasyETL.Xml.Configuration
                 EasyETLParser easyETLParser = new EasyETLParser();
                 easyETLParser.ReadSettings(childNode);
                 Parsers.Add(easyETLParser);
+            }
+
+            Transfers = new List<EasyETLTransfer>();
+            foreach (XmlNode childNode in xNode.SelectNodes("transfers/transfer"))
+            {
+                EasyETLTransfer easyETLTransfer = new EasyETLTransfer();
+                easyETLTransfer.ReadSettings(childNode);
+                Transfers.Add(easyETLTransfer);
             }
 
             ETLs = new List<EasyETLJobConfiguration>();
@@ -109,7 +119,7 @@ namespace EasyETL.Xml.Configuration
                 datasource.WriteSettings(datasourceNode);
             }
 
-            //Write all actions
+            //Write all exports
             XmlElement writersNode = xNode.OwnerDocument.CreateElement("exports");
             xNode.AppendChild(writersNode);
             foreach (EasyETLWriter writer in Writers)
@@ -122,14 +132,24 @@ namespace EasyETL.Xml.Configuration
             //Write all parsers
             XmlElement parsersNode = xNode.OwnerDocument.CreateElement("parsers");
             xNode.AppendChild(parsersNode);
-            foreach (EasyETLParser parser in parsersNode)
+            foreach (EasyETLParser parser in Parsers)
             {
                 XmlElement parserNode = xNode.OwnerDocument.CreateElement("parser");
                 parsersNode.AppendChild(parserNode);
                 parser.WriteSettings(parserNode);
             }
 
-            //Write all actions
+            //Write all transfers
+            XmlElement transfersNode = xNode.OwnerDocument.CreateElement("transfers");
+            xNode.AppendChild(transfersNode);
+            foreach (EasyETLTransfer easyETLTransfer in Transfers)
+            {
+                XmlElement transferNode = xNode.OwnerDocument.CreateElement("transfer");
+                transfersNode.AppendChild(transferNode);
+                easyETLTransfer.WriteSettings(transferNode);
+            }
+
+            //Write all endpoints
             XmlElement endpointsNode = xNode.OwnerDocument.CreateElement("endpoints");
             xNode.AppendChild(endpointsNode);
             foreach (EasyETLEndpoint endpoint in Endpoints)
@@ -138,6 +158,17 @@ namespace EasyETL.Xml.Configuration
                 endpointsNode.AppendChild(endpointNode);
                 endpoint.WriteSettings(endpointNode);
             }
+
+            //Write all ETLs
+            XmlElement etlsNode = xNode.OwnerDocument.CreateElement("etls");
+            xNode.AppendChild(etlsNode);
+            foreach (EasyETLJobConfiguration easyETLJobConfiguration in ETLs)
+            {
+                XmlElement etlNode = xNode.OwnerDocument.CreateElement("etl");
+                etlsNode.AppendChild(etlNode);
+                easyETLJobConfiguration.WriteSettings(etlNode);
+            }
+
 
         }
 

@@ -48,7 +48,7 @@
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 88.03738F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.96262F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 592F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 594F));
             this.tableLayoutPanel1.Controls.Add(this.lstDestinationFileList, 2, 3);
             this.tableLayoutPanel1.Controls.Add(this.txtDestinationFilter, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.cmbDestination, 2, 1);
@@ -76,18 +76,18 @@
             // 
             this.lstDestinationFileList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstDestinationFileList.FormattingEnabled = true;
-            this.lstDestinationFileList.Location = new System.Drawing.Point(537, 133);
+            this.lstDestinationFileList.Location = new System.Drawing.Point(535, 133);
             this.lstDestinationFileList.Name = "lstDestinationFileList";
-            this.lstDestinationFileList.Size = new System.Drawing.Size(587, 323);
+            this.lstDestinationFileList.Size = new System.Drawing.Size(589, 323);
             this.lstDestinationFileList.TabIndex = 7;
             // 
             // txtDestinationFilter
             // 
             this.txtDestinationFilter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtDestinationFilter.Location = new System.Drawing.Point(569, 95);
+            this.txtDestinationFilter.Location = new System.Drawing.Point(567, 95);
             this.txtDestinationFilter.Margin = new System.Windows.Forms.Padding(35, 5, 35, 5);
             this.txtDestinationFilter.Name = "txtDestinationFilter";
-            this.txtDestinationFilter.Size = new System.Drawing.Size(523, 20);
+            this.txtDestinationFilter.Size = new System.Drawing.Size(525, 20);
             this.txtDestinationFilter.TabIndex = 5;
             this.txtDestinationFilter.Text = "*.*";
             this.txtDestinationFilter.Leave += new System.EventHandler(this.txtDestinationFilter_Leave);
@@ -96,9 +96,9 @@
             // 
             this.cmbDestination.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmbDestination.FormattingEnabled = true;
-            this.cmbDestination.Location = new System.Drawing.Point(537, 53);
+            this.cmbDestination.Location = new System.Drawing.Point(535, 53);
             this.cmbDestination.Name = "cmbDestination";
-            this.cmbDestination.Size = new System.Drawing.Size(587, 21);
+            this.cmbDestination.Size = new System.Drawing.Size(589, 21);
             this.cmbDestination.TabIndex = 3;
             this.cmbDestination.SelectedIndexChanged += new System.EventHandler(this.cmbDestination_SelectedIndexChanged);
             // 
@@ -107,9 +107,9 @@
             this.label2.AutoSize = true;
             this.label2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(537, 0);
+            this.label2.Location = new System.Drawing.Point(535, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(587, 50);
+            this.label2.Size = new System.Drawing.Size(589, 50);
             this.label2.TabIndex = 1;
             this.label2.Text = "Destination";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -121,7 +121,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(3, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(464, 50);
+            this.label1.Size = new System.Drawing.Size(463, 50);
             this.label1.TabIndex = 0;
             this.label1.Text = "Source";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -132,7 +132,7 @@
             this.cmbSource.FormattingEnabled = true;
             this.cmbSource.Location = new System.Drawing.Point(3, 53);
             this.cmbSource.Name = "cmbSource";
-            this.cmbSource.Size = new System.Drawing.Size(464, 21);
+            this.cmbSource.Size = new System.Drawing.Size(463, 21);
             this.cmbSource.TabIndex = 2;
             this.cmbSource.SelectedIndexChanged += new System.EventHandler(this.cmbSource_SelectedIndexChanged);
             // 
@@ -142,7 +142,7 @@
             this.txtSourceFilter.Location = new System.Drawing.Point(35, 95);
             this.txtSourceFilter.Margin = new System.Windows.Forms.Padding(35, 5, 35, 5);
             this.txtSourceFilter.Name = "txtSourceFilter";
-            this.txtSourceFilter.Size = new System.Drawing.Size(400, 20);
+            this.txtSourceFilter.Size = new System.Drawing.Size(399, 20);
             this.txtSourceFilter.TabIndex = 4;
             this.txtSourceFilter.Text = "*.*";
             this.txtSourceFilter.Leave += new System.EventHandler(this.txtSourceFilter_Leave);
@@ -154,7 +154,7 @@
             this.lstSourceFileList.Location = new System.Drawing.Point(3, 133);
             this.lstSourceFileList.Name = "lstSourceFileList";
             this.lstSourceFileList.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstSourceFileList.Size = new System.Drawing.Size(464, 323);
+            this.lstSourceFileList.Size = new System.Drawing.Size(463, 323);
             this.lstSourceFileList.TabIndex = 6;
             this.lstSourceFileList.SelectedValueChanged += new System.EventHandler(this.lstSourceFileList_SelectedValueChanged);
             // 
@@ -162,9 +162,9 @@
             // 
             this.btnTransfer.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.btnTransfer.Enabled = false;
-            this.btnTransfer.Location = new System.Drawing.Point(473, 283);
+            this.btnTransfer.Location = new System.Drawing.Point(472, 283);
             this.btnTransfer.Name = "btnTransfer";
-            this.btnTransfer.Size = new System.Drawing.Size(58, 23);
+            this.btnTransfer.Size = new System.Drawing.Size(57, 23);
             this.btnTransfer.TabIndex = 8;
             this.btnTransfer.Text = "==>";
             this.btnTransfer.UseVisualStyleBackColor = true;

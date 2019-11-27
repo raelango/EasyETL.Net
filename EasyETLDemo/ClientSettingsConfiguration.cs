@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace EasyXmlSample
 {
@@ -80,6 +81,7 @@ namespace EasyXmlSample
             {
                 clientConfiguration.SetSetting(dgvRow.Cells[0].Value.ToString(), dgvRow.Cells[2].Value.ToString());
             }
+            configDocument.Save();
             btnClose_Click(this, null);
         }
     }

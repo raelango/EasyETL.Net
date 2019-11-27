@@ -7,10 +7,10 @@ using System.Xml;
 
 namespace EasyETL.Xml.Configuration
 {
-    public class EasyETLJobDatasetTransformation : EasyETLConfiguration
+    public class EasyETLTransform : EasyETLConfiguration
     {
-        public bool UseCustom;
-        public bool UseDefault;
+        public string SaveFileName;
+        public string ProfileName;
         public string[] SettingsCommands;
 
         public override void ReadSettings(XmlNode xNode)
@@ -22,20 +22,20 @@ namespace EasyETL.Xml.Configuration
 
         public override void ReadSettingsFromDictionary()
         {
-            UseCustom = Convert.ToBoolean(GetSetting("UseCustom", "False"));
-            UseDefault = Convert.ToBoolean(GetSetting("UseDefault", "True"));
+            SaveFileName = GetSetting("SaveFileName");
+            ProfileName = GetSetting("ProfileName");
         }
 
         public override void WriteSettingsToDictionary()
         {
-            SetSetting("UseCustom", UseCustom.ToString());
-            SetSetting("UseDefault", UseCustom.ToString());
+            SetSetting("SaveFileName", SaveFileName);
+            SetSetting("ProfileName", ProfileName);
         }
 
         public override void WriteSettings(XmlNode xNode)
         {
             base.WriteSettings(xNode);
-            xNode.InnerText = (SettingsCommands == null) ? "": String.Join(Environment.NewLine,  SettingsCommands);
+            xNode.InnerText = String.Join(Environment.NewLine, SettingsCommands);
         }
     }
 }

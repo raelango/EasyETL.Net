@@ -46,9 +46,24 @@ namespace EasyXmlSample
 
             }
             LoadConfigurationDocument();
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(xmlFileName);
-            AddTreeViewChildNodes(tvClients.Nodes, xDoc.SelectSingleNode("//clients"));
+            foreach (EasyETLClient client in configXmlDocument.Clients)
+            {
+                TreeNode clientNode = tvClients.Nodes.Add(client.ClientID, client.ClientName);
+                TreeNode actionsNode = clientNode.Nodes.Add("actions");
+                TreeNode datasourcesNode = clientNode.Nodes.Add("datasources");
+                TreeNode exportsNode = clientNode.Nodes.Add("exports");
+                TreeNode endpointsNode = clientNode.Nodes.Add("endpoints");
+                TreeNode parsersNode = clientNode.Nodes.Add("parsers");
+                TreeNode transfersNode = clientNode.Nodes.Add("transfers");
+                TreeNode etlsNode = clientNode.Nodes.Add("etls");
+                foreach (EasyETLAction action in client.Actions) actionsNode.Nodes.Add(action.ActionID, action.ActionName);
+                foreach (EasyETLDatasource datasource in client.Datasources) datasourcesNode.Nodes.Add(datasource.ActionID, datasource.ActionName);
+                foreach (EasyETLWriter writer in client.Writers) exportsNode.Nodes.Add(writer.ActionID, writer.ActionName);
+                foreach (EasyETLEndpoint endpoint in client.Endpoints) endpointsNode.Nodes.Add(endpoint.ActionID, endpoint.ActionName);
+                foreach (EasyETLParser parser in client.Parsers) parsersNode.Nodes.Add(parser.ActionID, parser.ActionName);
+                foreach (EasyETLTransfer transfer in client.Transfers) transfersNode.Nodes.Add(transfer.TransferName, transfer.TransferName);
+                foreach (EasyETLJobConfiguration job in client.ETLs) etlsNode.Nodes.Add(job.ETLID, job.ETLName);
+            }
             if (!String.IsNullOrWhiteSpace(visibleNodeFullpath))
             {
                 TreeNodeCollection parentNodes = tvClients.Nodes;
@@ -69,54 +84,12 @@ namespace EasyXmlSample
             }
         }
 
-        // Add the children of this XML node 
-        // to this child nodes collection.
-        private void AddTreeViewChildNodes(
-            TreeNodeCollection parent_nodes, XmlNode xml_node, int currentDepth = 0)
-        {
-            foreach (XmlNode child_node in xml_node.ChildNodes)
-            {
-                // Make the new TreeView node.
-                string clientid = child_node.Name;
-                string clientname = child_node.Name;
-                if ((child_node.Attributes != null) && (child_node.Attributes["id"] != null))
-                {
-                    clientid = child_node.Attributes["id"].Value;
-                    clientname = child_node.Attributes["name"].Value;
-                }
-                else
-                {
-                    if (child_node.ParentNode.Name == "client")
-                    {
-                        clientid = child_node.Name + "_" + child_node.ParentNode.Attributes["id"].Value;
-                    }
-                    clientname = child_node.Name;
-                }
-                TreeNode new_node = parent_nodes.Add(clientid, clientname);
 
-                // Recursively make this node's descendants.
-                if (currentDepth < 2) AddTreeViewChildNodes(new_node.Nodes, child_node, currentDepth + 1);
-
-                // If this is a leaf node, make sure it's visible.
-                //if (new_node.Nodes.Count == 0) new_node.EnsureVisible();
-            }
-        }
-
-        private void ShowNewForm(object sender, EventArgs e)
-        {
-            cmNewClient_Click(this, null);
-        }
-
-        private void OpenFile(object sender, EventArgs e)
-        {
-            tvClients_DoubleClick(this, null);
-        }
-
-       
         private void ExitToolsStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
         }
+
         private void tvClients_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
         {
             if (e.CancelEdit) return;
@@ -129,70 +102,85 @@ namespace EasyXmlSample
 
         private void SaveXmlFile(TreeNode node, string newLabel)
         {
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(xmlFileName);
-            XmlNode xNode = xDoc.SelectSingleNode("//clients/client[@name='" + node.Text + "']");
-            if (xNode != null)
+            if (configXmlDocument.GetClientConfiguration(node.Text) != null) configXmlDocument.GetClientConfiguration(node.Text).ClientName = newLabel;
+            if (node.FullPath.Contains('\\'))
             {
-                EasyETLClient selectedClientConfiguration = configXmlDocument.GetClientConfiguration(node.Text);
-                if (selectedClientConfiguration !=null)
+                string clientName = node.FullPath.Split('\\')[0];
+                string nodeCategory = node.FullPath.Split('\\')[1];
+                string nodeName = node.FullPath.Split('\\')[2];
+                string nodeLabel = newLabel;
+                EasyETLClient selectedClientConfiguration = configXmlDocument.GetClientConfiguration(clientName);
+                if (selectedClientConfiguration != null)
                 {
-                    foreach (KeyValuePair<string,string> keyValuePair in selectedClientConfiguration.AttributesDictionary)
+                    switch (nodeCategory.ToLower())
                     {
-                        if (xNode.Attributes.GetNamedItem(keyValuePair.Key) == null)
-                        {
-                            XmlAttribute xAttr = xDoc.CreateAttribute(keyValuePair.Key);
-                            xAttr.Value = keyValuePair.Value;
-                            xNode.Attributes.Append(xAttr);
-                        }
-                        else
-                        {
-                            xNode.Attributes[keyValuePair.Key].Value = keyValuePair.Value;
-                        }
+                        case "actions":
+                            EasyETLAction action = selectedClientConfiguration.Actions.Find(a => a.ActionName == nodeName);
+                            if (action == null)
+                            {
+                                action = new EasyETLAction() { ActionID = newLabel, ActionName = newLabel };
+                                selectedClientConfiguration.Actions.Add(action);
+                            }
+                            action.ActionName = newLabel;
+                            break;
+                        case "datasources":
+                            EasyETLDatasource datasource = selectedClientConfiguration.Datasources.Find(d => d.ActionName == nodeName);
+                            if (datasource == null)
+                            {
+                                datasource = new EasyETLDatasource() { ActionID = newLabel, ActionName = newLabel };
+                                selectedClientConfiguration.Datasources.Add(datasource);
+                            }
+                            datasource.ActionName = newLabel;
+                            break;
+                        case "exports":
+                            EasyETLWriter writer = selectedClientConfiguration.Writers.Find(w => w.ActionName == nodeName);
+                            if (writer == null)
+                            {
+                                writer = new EasyETLWriter() { ActionID = newLabel, ActionName = newLabel };
+                                selectedClientConfiguration.Writers.Add(writer);
+                            }
+                            writer.ActionName = newLabel;
+                            break;
+                        case "endpoints":
+                            EasyETLEndpoint endpoint = selectedClientConfiguration.Endpoints.Find(ep => ep.ActionName == nodeName);
+                            if (endpoint == null)
+                            {
+                                endpoint = new EasyETLEndpoint() { ActionID = newLabel, ActionName = newLabel };
+                                selectedClientConfiguration.Endpoints.Add(endpoint);
+                            }
+                            endpoint.ActionName = newLabel;
+                            break;
+                        case "parsers":
+                            EasyETLParser parser = selectedClientConfiguration.Parsers.Find(p => p.ActionName == nodeName);
+                            if (parser == null)
+                            {
+                                parser = new EasyETLParser() { ActionID = newLabel, ActionName = newLabel };
+                                selectedClientConfiguration.Parsers.Add(parser);
+                            }
+                            parser.ActionName = newLabel;
+                            break;
+                        case "transfers":
+                            EasyETLTransfer transfer = selectedClientConfiguration.Transfers.Find(t => t.TransferName == nodeName);
+                            if (transfer == null)
+                            {
+                                transfer = new EasyETLTransfer() { TransferName = newLabel };
+                                selectedClientConfiguration.Transfers.Add(transfer);
+                            }
+                            transfer.TransferName = newLabel;
+                            break;
+                        case "etls":
+                            EasyETLJobConfiguration etl = selectedClientConfiguration.ETLs.Find(e => e.ETLName == nodeName);
+                            if (etl == null)
+                            {
+                                etl = new EasyETLJobConfiguration() { ETLID = newLabel, ETLName = newLabel };
+                                selectedClientConfiguration.ETLs.Add(etl);
+                            }
+                            etl.ETLName = newLabel;
+                            break;
                     }
                 }
-                xNode.Attributes["name"].Value = newLabel;
-                xNode.Attributes["id"].Value = xNode.Attributes["name"].Value;
             }
-            else
-            {
-                if (node.FullPath.Contains('\\'))
-                {
-                    string clientName = node.FullPath.Split('\\')[0];
-                    string nodeCategory = node.FullPath.Split('\\')[1];
-                    string nodeName = node.FullPath.Split('\\')[2];
-                    string nodeLabel = newLabel;
-                    xNode = xDoc.SelectSingleNode("//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + nodeName + "']");
-                    if (xNode != null)
-                    {
-                        xNode.Attributes["name"].Value = newLabel;
-                    }
-                    else
-                    {
-                        xNode = xDoc.SelectSingleNode("//clients/client[@name='" + clientName + "']/" + nodeCategory);
-                        XmlElement xElement = xDoc.CreateElement(nodeCategory.TrimEnd('s'));
-                        xElement.SetAttribute("id", nodeLabel);
-                        xElement.SetAttribute("name", nodeLabel);
-                        xNode.AppendChild(xElement);
-                    }
-                }
-                else
-                {
-                    string nodeType = "client";
-                    XmlElement childNode = xDoc.CreateElement(nodeType);
-                    childNode.SetAttribute("id", node.Text);
-                    childNode.SetAttribute("name", node.Text);
-                    foreach (string clientCategory in clientCategories.Split(';'))
-                    {
-                        XmlElement ccNode = xDoc.CreateElement(clientCategory);
-                        childNode.AppendChild(ccNode);
-                    }
-
-                    xDoc.SelectSingleNode("//clients").AppendChild(childNode);
-                }
-            }
-            xDoc.Save(xmlFileName);
-            LoadConfigurationDocument();
+            configXmlDocument.Save();
         }
 
         private void tvClients_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
@@ -238,7 +226,7 @@ namespace EasyXmlSample
             {
                 //this is the top level node...
                 EasyETLClient selectClientConfiguration = configXmlDocument.GetClientConfiguration(tvClients.SelectedNode.Text);
-                if (selectClientConfiguration !=null)
+                if (selectClientConfiguration != null)
                 {
                     ClientSettingsConfiguration cForm = new ClientSettingsConfiguration
                     {
@@ -261,21 +249,22 @@ namespace EasyXmlSample
                         case "etls":
                             ETLForm mForm = new ETLForm
                             {
-                                SettingsFileName = xmlFileName
+                                ConfigXmlDocument = configXmlDocument,
+                                ClientName = clientName,
+                                ETLName = nodeName
                             };
                             mForm.LoadControls();
-                            mForm.ConfigXmlDocument = configXmlDocument;
-                            mForm.ClientConfiguration = configXmlDocument.Clients.Find(w => w.ClientName == clientName);
-                            mForm.JobConfiguration = mForm.ClientConfiguration.ETLs.Find(etl => etl.ETLName == nodeName);
-                            mForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
+                            mForm.LoadSettingsFromXml();
                             currentForm = mForm;
                             break;
                         case "transfers":
-                            TransferForm tForm = new TransferForm
+                            TransferForm tForm = new TransferForm()
                             {
-                                XmlFileName = xmlFileName
+                                ConfigurationDocument = configXmlDocument,
+                                ClientName = clientName,
+                                TransferName = nodeName
                             };
-                            tForm.LoadSettingsFromXml(configXmlDocument.SelectSingleNode("//clients/client[@name='" + clientName + "']/transfers/transfer[@name='" + nodeName + "']"));
+                            tForm.LoadSettingsFromXml();
                             currentForm = tForm;
                             break;
                         case "actions":
@@ -285,7 +274,10 @@ namespace EasyXmlSample
                         case "parsers":
                             ClassConfigurationForm aForm = new ClassConfigurationForm
                             {
-                                ClassType = tvClients.SelectedNode.Parent.Text.TrimEnd('s')
+                                ClassType = tvClients.SelectedNode.Parent.Text.TrimEnd('s'),
+                                ConfigXmlDocument = configXmlDocument,
+                                ClientName = clientName,
+                                ActionName = nodeName
                             };
                             switch (tvClients.SelectedNode.Parent.Text)
                             {
@@ -312,9 +304,8 @@ namespace EasyXmlSample
                                 default:
                                     break;
                             }
-                            aForm.SettingsFileName = xmlFileName;
                             aForm.LoadFormControls();
-                            aForm.LoadSettingsFromConfig(tvClients.SelectedNode.FullPath, configXmlDocument);
+                            aForm.LoadSettingsFromConfig();
                             //aForm.LoadSettingsFromXml(tvClients.SelectedNode.FullPath);
                             currentForm = aForm;
                             break;
@@ -358,7 +349,7 @@ namespace EasyXmlSample
         {
             renameStripMenuItem_Click(this, null);
         }
-          private void DeleteToolStripButton_Click(object sender, EventArgs e)
+        private void DeleteToolStripButton_Click(object sender, EventArgs e)
         {
             DeleteToolStripMenuItem_Click(this, null);
         }
@@ -460,33 +451,116 @@ namespace EasyXmlSample
 
         private void cmClone_Click(object sender, EventArgs e)
         {
-            if (tvClients.SelectedNode != null)
+            string newPath = "";
+            if (!tvClients.SelectedNode.FullPath.Contains('\\'))
             {
-                XmlDocument xDoc = new XmlDocument();
-                xDoc.Load(xmlFileName);
-                TreeNode node = tvClients.SelectedNode;
-                string xPath = "//clients/client[@name='" + node.FullPath + "']";
-
-                string clientName = node.FullPath;
-                string nodeName = node.Text;
-                string newNodeName = "Copy of " + nodeName;
-                string newNodePath = newNodeName;
-                if (node.FullPath.Contains('\\'))
+                //This is a client
+                EasyETLClient client = configXmlDocument.GetClientConfiguration(tvClients.SelectedNode.Text);
+                if (client != null)
                 {
-                    clientName = clientName.Split('\\')[0];
-                    string nodeCategory = node.FullPath.Split('\\')[1];
-                    nodeName = node.FullPath.Split('\\')[2];
-                    xPath = "//clients/client[@name='" + clientName + "']/" + nodeCategory + "/" + nodeCategory.TrimEnd('s') + "[@name='" + nodeName + "']";
-                    newNodePath = clientName + '\\' + nodeCategory + '\\' + newNodeName;
+                    newPath = "Copy Of " + client.ClientName;
+                    EasyETLClient newClient = new EasyETLClient();
+                    XmlElement clientElement = configXmlDocument.CreateElement("client");
+                    client.WriteSettings(clientElement);
+                    newClient.ReadSettings(clientElement);
+                    newClient.AttributesDictionary = new Dictionary<string, string>(client.AttributesDictionary);
+                    newClient.ClientID = newPath;
+                    newClient.ClientName = newPath;
+                    configXmlDocument.Clients.Add(newClient);
                 }
-                XmlNode xNode = xDoc.SelectSingleNode(xPath);
-                XmlNode cloneNode = xNode.CloneNode(true);
-                cloneNode.Attributes.GetNamedItem("name").Value = newNodeName;
-                cloneNode.Attributes.GetNamedItem("id").Value = newNodeName;
-                xNode.ParentNode.AppendChild(cloneNode);
-                xDoc.Save(xmlFileName);
-                LoadConfiguration(newNodePath);
             }
+            else
+            {
+                if (tvClients.SelectedNode.FullPath.Split('\\').Length == 3)
+                {
+                    //This is leaf node...
+                    string clientName = tvClients.SelectedNode.FullPath.Split('\\')[0];
+                    string nodeCategory = tvClients.SelectedNode.FullPath.Split('\\')[1];
+                    string nodeName = tvClients.SelectedNode.FullPath.Split('\\')[2];
+                    string newNodeName = "Copy Of " + nodeName;
+                    newPath = clientName + '\\' + nodeCategory + '\\' + newNodeName;
+                    EasyETLClient selectedClientConfiguration = configXmlDocument.GetClientConfiguration(clientName);
+                    if (selectedClientConfiguration != null)
+                    {
+                        XmlElement element = null;
+                        switch (nodeCategory.ToLower())
+                        {
+                            case "actions":
+                                EasyETLAction action = selectedClientConfiguration.Actions.Find(a => a.ActionName == nodeName);
+                                EasyETLAction newAction = new EasyETLAction();
+                                element = configXmlDocument.CreateElement("action");
+                                action.WriteSettings(element);
+                                newAction.ReadSettings(element);
+                                newAction.ActionName = newNodeName;
+                                newAction.ActionID = newNodeName;
+                                selectedClientConfiguration.Actions.Add(newAction);
+                                break;
+                            case "datasources":
+                                EasyETLDatasource datasource = selectedClientConfiguration.Datasources.Find(d => d.ActionName == nodeName);
+                                EasyETLDatasource newdatasource = new EasyETLDatasource();
+                                element = configXmlDocument.CreateElement("datasource");
+                                datasource.WriteSettings(element);
+                                newdatasource.ReadSettings(element);
+                                newdatasource.ActionName = newNodeName;
+                                newdatasource.ActionID = newNodeName;
+                                selectedClientConfiguration.Datasources.Add(newdatasource);
+                                break;
+                            case "exports":
+                                EasyETLWriter writer = selectedClientConfiguration.Writers.Find(w => w.ActionName == nodeName);
+                                EasyETLWriter newwriter = new EasyETLWriter();
+                                element = configXmlDocument.CreateElement("export");
+                                writer.WriteSettings(element);
+                                newwriter.ReadSettings(element);
+                                newwriter.ActionName = newNodeName;
+                                newwriter.ActionID = newNodeName;
+                                selectedClientConfiguration.Writers.Add(newwriter);
+                                break;
+                            case "endpoints":
+                                EasyETLEndpoint endpoint = selectedClientConfiguration.Endpoints.Find(ep => ep.ActionName == nodeName);
+                                EasyETLEndpoint newendpoint = new EasyETLEndpoint();
+                                element = configXmlDocument.CreateElement("endpoint");
+                                endpoint.WriteSettings(element);
+                                newendpoint.ReadSettings(element);
+                                newendpoint.ActionName = newNodeName;
+                                newendpoint.ActionID = newNodeName;
+                                selectedClientConfiguration.Endpoints.Add(newendpoint);
+                                break;
+                            case "parsers":
+                                EasyETLParser parser = selectedClientConfiguration.Parsers.Find(p => p.ActionName == nodeName);
+                                EasyETLParser newparser = new EasyETLParser();
+                                element = configXmlDocument.CreateElement("parser");
+                                parser.WriteSettings(element);
+                                newparser.ReadSettings(element);
+                                newparser.ActionName = newNodeName;
+                                newparser.ActionID = newNodeName;
+                                selectedClientConfiguration.Parsers.Add(newparser);
+                                break;
+                            case "transfers":
+                                EasyETLTransfer transfer = selectedClientConfiguration.Transfers.Find(t => t.TransferName == nodeName);
+                                EasyETLTransfer newtransfer = new EasyETLTransfer();
+                                element = configXmlDocument.CreateElement("transfer");
+                                transfer.WriteSettings(element);
+                                newtransfer.ReadSettings(element);
+                                newtransfer.TransferName = newNodeName;
+                                selectedClientConfiguration.Transfers.Add(newtransfer);
+                                break;
+                            case "etls":
+                                EasyETLJobConfiguration etl = selectedClientConfiguration.ETLs.Find(et => et.ETLName == nodeName);
+                                EasyETLJobConfiguration newetl = new EasyETLJobConfiguration();
+                                element = configXmlDocument.CreateElement("etl");
+                                etl.WriteSettings(element);
+                                newetl.ReadSettings(element);
+                                newetl.ETLID = newNodeName;
+                                newetl.ETLName = newNodeName;
+                                selectedClientConfiguration.ETLs.Add(newetl);
+                                break;
+                        }
+
+                    }
+                }
+            }
+            configXmlDocument.Save();
+            LoadConfiguration(newPath);
         }
 
         private void cmRename_Click(object sender, EventArgs e)
@@ -513,8 +587,7 @@ namespace EasyXmlSample
 
             if ((allowDelete) && (MessageBox.Show("Deleted nodes cannot be recovered.  Are you sure to delete ?", "Deleting Configuration", MessageBoxButtons.YesNo) == DialogResult.Yes))
             {
-                XmlDocument xDoc = new XmlDocument();
-                xDoc.Load(xmlFileName);
+
                 string xPath = "//clients/client[@name='" + node.FullPath + "']";
                 if (node.FullPath.Contains('\\'))
                 {
@@ -526,12 +599,62 @@ namespace EasyXmlSample
                 string selectedNodePath = "";
                 if (node.NextNode != null) selectedNodePath = node.NextNode.FullPath;
                 if (node.PrevNode != null) selectedNodePath = node.PrevNode.FullPath;
-                XmlNode xNode = xDoc.SelectSingleNode(xPath);
-                if (xNode != null)
+                if ((selectedNodePath == "") && (node.Parent != null)) selectedNodePath = node.Parent.FullPath;
+
+                if (!tvClients.SelectedNode.FullPath.Contains('\\'))
                 {
-                    xNode.ParentNode.RemoveChild(xNode);
-                    xDoc.Save(xmlFileName);
+                    //This is a client
+                    EasyETLClient client = configXmlDocument.GetClientConfiguration(tvClients.SelectedNode.Text);
+                    if (client != null) configXmlDocument.Clients.Remove(client);
+                    configXmlDocument.Save();
                     LoadConfiguration(selectedNodePath);
+                }
+                else
+                {
+                    if (tvClients.SelectedNode.FullPath.Split('\\').Length == 3)
+                    {
+                        //This is leaf node...
+                        string clientName = tvClients.SelectedNode.FullPath.Split('\\')[0];
+                        string nodeCategory = tvClients.SelectedNode.FullPath.Split('\\')[1];
+                        string nodeName = tvClients.SelectedNode.FullPath.Split('\\')[2];
+                        EasyETLClient selectedClientConfiguration = configXmlDocument.GetClientConfiguration(clientName);
+                        if (selectedClientConfiguration != null)
+                        {
+                            switch (nodeCategory.ToLower())
+                            {
+                                case "actions":
+                                    EasyETLAction action = selectedClientConfiguration.Actions.Find(a => a.ActionName == nodeName);
+                                    selectedClientConfiguration.Actions.Remove(action);
+                                    break;
+                                case "datasources":
+                                    EasyETLDatasource datasource = selectedClientConfiguration.Datasources.Find(d => d.ActionName == nodeName);
+                                    selectedClientConfiguration.Datasources.Remove(datasource);
+                                    break;
+                                case "exports":
+                                    EasyETLWriter writer = selectedClientConfiguration.Writers.Find(w => w.ActionName == nodeName);
+                                    selectedClientConfiguration.Writers.Remove(writer);
+                                    break;
+                                case "endpoints":
+                                    EasyETLEndpoint endpoint = selectedClientConfiguration.Endpoints.Find(ep => ep.ActionName == nodeName);
+                                    selectedClientConfiguration.Endpoints.Remove(endpoint);
+                                    break;
+                                case "parsers":
+                                    EasyETLParser parser = selectedClientConfiguration.Parsers.Find(p => p.ActionName == nodeName);
+                                    selectedClientConfiguration.Parsers.Remove(parser);
+                                    break;
+                                case "transfers":
+                                    EasyETLTransfer transfer = selectedClientConfiguration.Transfers.Find(t => t.TransferName == nodeName);
+                                    selectedClientConfiguration.Transfers.Remove(transfer);
+                                    break;
+                                case "etls":
+                                    EasyETLJobConfiguration etl = selectedClientConfiguration.ETLs.Find(et => et.ETLName == nodeName);
+                                    selectedClientConfiguration.ETLs.Remove(etl);
+                                    break;
+                            }
+                        }
+                        configXmlDocument.Save();
+                        LoadConfiguration(selectedNodePath);
+                    }
                 }
             }
         }
@@ -593,28 +716,60 @@ namespace EasyXmlSample
             string originalClientName = originalPath.Split('\\')[0];
             string originalActionType = originalPath.Split('\\')[1];
             string originalActionName = originalPath.Split('\\')[2];
+            string selectedPath = selectedClient + '\\' + originalActionType + '\\' + originalActionName; 
             if (!String.IsNullOrWhiteSpace(selectedClient))
             {
-                XmlDocument xDoc = new XmlDocument();
-                xDoc.Load(xmlFileName);
-
-                XmlNode xNode = xDoc.SelectSingleNode("//clients/client[@name='" + originalClientName + "']/" + originalActionType + "/" + originalActionType.Trim('s') + "[@name='" + originalActionName + "']");
-                if (xNode != null)
+                EasyETLClient oldClient = configXmlDocument.GetClientConfiguration(originalClientName);
+                EasyETLClient newClient = configXmlDocument.GetClientConfiguration(selectedClient);
+                if ((oldClient != null) && (newClient != null))
                 {
-                    XmlNode newParentNode = xDoc.SelectSingleNode("//clients/client[@name='" + selectedClient + "']/" + originalActionType);
-                    if (newParentNode != null)
+                    switch (originalActionType.ToLower())
                     {
-                        newParentNode.AppendChild(xNode);
+                        case "actions":
+                            EasyETLAction action = oldClient.Actions.Find(a => a.ActionName == originalActionName);
+                            oldClient.Actions.Remove(action);
+                            newClient.Actions.Add(action);
+                            break;
+                        case "datasources":
+                            EasyETLDatasource datasource = oldClient.Datasources.Find(d => d.ActionName == originalActionName);
+                            oldClient.Datasources.Remove(datasource);
+                            newClient.Datasources.Add(datasource);
+                            break;
+                        case "exports":
+                            EasyETLWriter writer = oldClient.Writers.Find(w => w.ActionName == originalActionName);
+                            oldClient.Writers.Remove(writer);
+                            newClient.Writers.Add(writer);
+                            break;
+                        case "endpoints":
+                            EasyETLEndpoint endpoint = oldClient.Endpoints.Find(ep => ep.ActionName == originalActionName);
+                            oldClient.Endpoints.Remove(endpoint);
+                            newClient.Endpoints.Add(endpoint);
+                            break;
+                        case "parsers":
+                            EasyETLParser parser = oldClient.Parsers.Find(p => p.ActionName == originalActionName);
+                            oldClient.Parsers.Remove(parser);
+                            newClient.Parsers.Add(parser);
+                            break;
+                        case "transfers":
+                            EasyETLTransfer transfer = oldClient.Transfers.Find(t => t.TransferName == originalActionName);
+                            oldClient.Transfers.Remove(transfer);
+                            newClient.Transfers.Add(transfer);
+                            break;
+                        case "etls":
+                            EasyETLJobConfiguration etl = oldClient.ETLs.Find(et => et.ETLName == originalActionName);
+                            oldClient.ETLs.Remove(etl);
+                            newClient.ETLs.Add(etl);
+                            break;
                     }
+                    configXmlDocument.Save();
+                    LoadConfiguration(selectedPath);
                 }
-                xDoc.Save(xmlFileName);
-                LoadConfiguration(selectedClient + '\\' + originalPath.Split('\\')[1] + '\\' + originalPath.Split('\\')[2]);
             }
         }
 
         private void EasyETLDemoApplication_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (MessageBox.Show("Are you sure to close the application ?","Close Application ?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.No)
+            if (MessageBox.Show("Are you sure to close the application ?", "Close Application ?", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.No)
             {
                 e.Cancel = true;
                 return;

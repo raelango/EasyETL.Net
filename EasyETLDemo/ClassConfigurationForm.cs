@@ -14,15 +14,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 
 namespace EasyXmlSample
 {
     public partial class ClassConfigurationForm : Form
     {
-        public string SettingsPath = "";
-        public string SettingsFileName = "";
-        public string ActionsFolder = "";
         public Type BaseClassType = null;
         public string ClassType = "action";
 
@@ -33,100 +29,55 @@ namespace EasyXmlSample
         public string SelectedDescription;
         public string SelectedProperties;
 
-        public EasyETLClient clientConfiguration;
-        public EasyETLXmlDocument configDocument;
-        public EasyETLEasyField actionConfiguration;
+        public string ClientName;
+        public string ActionName;
+
+        EasyETLClient ClientConfiguration;
+        public EasyETLXmlDocument ConfigXmlDocument;
+        EasyETLEasyField ActionConfiguration;
 
         public void LoadFormControls()
         {
             cmbClassName.Items.Clear();
             foreach (ClassMapping cMapping in lstClasses)
             {
-                if (cMapping.Class.GetEasyFields().Count >0) cmbClassName.Items.Add(cMapping.DisplayName);
+                if (cMapping.Class.GetEasyFields().Count > 0) cmbClassName.Items.Add(cMapping.DisplayName);
             }
             lblSettingsComplete.Width = panel2.Width;
         }
 
-        public void LoadSettingsFromConfig(string settingsPath = "", EasyETLXmlDocument easyETLXmlDocument = null)
+        public void LoadSettingsFromConfig()
         {
-            if (easyETLXmlDocument != null) configDocument = easyETLXmlDocument;
-            if (configDocument == null) return;
-            if ((clientConfiguration == null) && (!String.IsNullOrWhiteSpace(settingsPath)))
+            ClientConfiguration = ConfigXmlDocument.Clients.Find(c => c.ClientName == ClientName);
+
+            switch (ClassType.ToLower())
             {
-                string clientName = settingsPath.Split('\\')[0];
-                string className = settingsPath.Split('\\')[2];
-                SettingsPath = "//clients/client[@name='" + clientName + "']/" + ClassType + "s/" + ClassType + "[@name='" + className + "']";
-                clientConfiguration = configDocument.Clients.Where(w => w.ClientName == clientName).First();
-                if (clientConfiguration !=null)
-                {
-                    switch (ClassType.ToLower())
-                    {
-                        case "action":
-                            actionConfiguration = clientConfiguration.Actions.Where(a => a.ActionName == className).First();
-                            break;
-                        case "export":
-                            actionConfiguration = clientConfiguration.Writers.Where(a => a.ActionName == className).First();
-                            break;
-                        case "endpoint":
-                            actionConfiguration = clientConfiguration.Endpoints.Where(a => a.ActionName == className).First();
-                            break;
-                        case "datasource":
-                            actionConfiguration = clientConfiguration.Datasources.Where(a => a.ActionName == className).First();
-                            break;
-                        case "parser":
-                            actionConfiguration = clientConfiguration.Parsers.Where(a => a.ActionName == className).First();
-                            break;
-                        default:
-                            actionConfiguration = null;
-                            break;
-                    }
-                }
+                case "action":
+                    ActionConfiguration = ClientConfiguration.Actions.Find(a => a.ActionName == ActionName);
+                    break;
+                case "export":
+                    ActionConfiguration = ClientConfiguration.Writers.Find(a => a.ActionName == ActionName);
+                    break;
+                case "endpoint":
+                    ActionConfiguration = ClientConfiguration.Endpoints.Find(a => a.ActionName == ActionName);
+                    break;
+                case "datasource":
+                    ActionConfiguration = ClientConfiguration.Datasources.Find(a => a.ActionName == ActionName);
+                    break;
+                case "parser":
+                    ActionConfiguration = ClientConfiguration.Parsers.Find(a => a.ActionName == ActionName);
+                    break;
+                default:
+                    ActionConfiguration = null;
+                    break;
             }
-            SettingsFileName = configDocument.ConfigFileName;
-            if (actionConfiguration != null)
-            {
-                txtActionName.Text = actionConfiguration.ActionName;
-                cmbClassName.SelectedItem = actionConfiguration.ClassName;
-                SelectedClassSettings = actionConfiguration.Fields;
-            }
-            //if (SelectedClassMapping != null) SelectedClassSettings = actionConfiguration.Fields; SelectedClassMapping.Class.LoadFieldSettings(xNode);
+            txtActionName.Text = ActionConfiguration.ActionName;
+            cmbClassName.SelectedItem = ActionConfiguration.ClassName;
+            SelectedClassSettings = ActionConfiguration.Fields;
             RefreshGridView();
             UpdateColorOfLabel();
-            
-            //LoadSettingsFromXml(settingsPath);
+
         }
-
-        //public void LoadSettingsFromXml(string settingsPath)
-        //{
-        //    if (String.IsNullOrWhiteSpace(SettingsFileName)) return;
-        //    if (!File.Exists(SettingsFileName)) return;
-        //    XmlDocument xDoc = new XmlDocument();
-        //    xDoc.Load(SettingsFileName);
-
-        //    string clientName = settingsPath.Split('\\')[0];
-        //    string className = settingsPath.Split('\\')[2];
-        //    SettingsPath = "//clients/client[@name='" + clientName + "']/" + ClassType + "s/" + ClassType + "[@name='" + className + "']";
-        //    XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
-        //    if (xNode != null)
-        //    {
-        //        foreach (XmlAttribute xAttr in xNode.Attributes)
-        //        {
-        //            switch (xAttr.Name.ToLower())
-        //            {
-        //                case "name":
-        //                    txtActionName.Text = xAttr.Value; break;
-        //                case "classname":
-        //                    cmbClassName.SelectedItem = xAttr.Value;
-        //                    break;
-        //            }
-        //        }
-
-        //        if (SelectedClassMapping != null) SelectedClassSettings = SelectedClassMapping.Class.LoadFieldSettings(xNode);
-        //        RefreshGridView();
-        //        UpdateColorOfLabel();
-        //    }
-
-        //}
 
         public ClassConfigurationForm()
         {
@@ -136,7 +87,6 @@ namespace EasyXmlSample
         private void btnSaveAction_Click(object sender, EventArgs e)
         {
             SaveSettingsToConfig();
-            //SaveSettingsToXmlFile();
         }
 
 
@@ -153,8 +103,8 @@ namespace EasyXmlSample
                         MessageBox.Show(this, "The field settings are incomplete.  Please correct before saving.", "ERROR", MessageBoxButtons.OK);
                         return;
                     }
-                    actionConfiguration.Fields = new Dictionary<string, string>(SelectedClassSettings);
-                    actionConfiguration.ClassName = cmbClassName.SelectedItem.ToString();
+                    ActionConfiguration.Fields = new Dictionary<string, string>(SelectedClassSettings);
+                    ActionConfiguration.ClassName = cmbClassName.SelectedItem.ToString();
                     //configDocument.Save();
                 }
                 else
@@ -167,49 +117,8 @@ namespace EasyXmlSample
 
         public void SaveSettingsToXmlFile()
         {
-            if (String.IsNullOrWhiteSpace(SettingsFileName)) return;
-            if (!File.Exists(SettingsFileName)) return;
             if (cmbClassName.SelectedItem == null) return;
-            XmlDocument xDoc = new XmlDocument();
-            xDoc.Load(SettingsFileName);
-            XmlNode xNode = xDoc.SelectSingleNode(SettingsPath);
-            xNode.InnerText = "";
-
-            XmlAttribute classAttr = xDoc.CreateAttribute("classname");
-            classAttr.Value = cmbClassName.SelectedItem.ToString();
-            xNode.Attributes.Append(classAttr);
-
-
-            if (SelectedClassSettings != null)
-            {
-                if (typeof(IEasyFieldInterface).IsAssignableFrom(SelectedClassMapping.Class))
-                {
-                    IEasyFieldInterface efiObject = (IEasyFieldInterface)Activator.CreateInstance(SelectedClassMapping.Class);
-                    efiObject.LoadFieldSettings(SelectedClassSettings);
-                    if (!efiObject.IsFieldSettingsComplete())
-                    {
-                        MessageBox.Show(this, "The field settings are incomplete.  Please correct before saving.", "ERROR", MessageBoxButtons.OK);
-                        return;
-                    }
-                    efiObject.SaveFieldSettingsToXmlNode(xNode);
-                }
-                else
-                {
-                    MessageBox.Show(this, "This control has not implemented the EasyFieldInterface.", "Information", MessageBoxButtons.OK);
-                    foreach (KeyValuePair<string, string> kvPair in SelectedClassSettings)
-                    {
-                        if (!String.IsNullOrWhiteSpace(kvPair.Value))
-                        {
-                            XmlElement fieldNode = xDoc.CreateElement("field");
-                            fieldNode.SetAttribute("name", kvPair.Key);
-                            fieldNode.SetAttribute("value", kvPair.Value);
-                            xNode.AppendChild(fieldNode);
-                        }
-                    }
-                }
-            }
-
-            xDoc.Save(SettingsFileName);
+            ConfigXmlDocument.Save();
             btnCloseWindow_Click(this, null);
         }
 

@@ -11,6 +11,7 @@ namespace EasyETL.Xml.Configuration
     {
         public string ConfigFileName;
         public List<EasyETLClient> Clients = new List<EasyETLClient>();
+        public List<EasyETLTransform> Transforms = new List<EasyETLTransform>(); 
         public Dictionary<string, string> GlobalValues = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
 
         public void SetGlobalValue(string fieldName, string fieldValue)
@@ -37,6 +38,16 @@ namespace EasyETL.Xml.Configuration
                 Clients.Add(etlClient);
             }
 
+            Transforms = new List<EasyETLTransform>();
+            foreach (XmlNode transformNode in SelectNodes("//transforms/transform"))
+            {
+                EasyETLTransform etlTransform = new EasyETLTransform();
+                etlTransform.ReadSettings(transformNode);
+                Transforms.Add(etlTransform);
+            }
+
+
+
             //Let us load the global values from attributes of clients node
             XmlNode clientConfigNode = SelectSingleNode("clients");
             GlobalValues = new Dictionary<string, string>(StringComparer.CurrentCultureIgnoreCase);
@@ -45,6 +56,8 @@ namespace EasyETL.Xml.Configuration
                 foreach (XmlAttribute xAttr in clientConfigNode.Attributes)
                     GlobalValues.Add(xAttr.Name, xAttr.Value);
             }
+
+
         }
 
         public void Save()
@@ -54,7 +67,7 @@ namespace EasyETL.Xml.Configuration
 
         public override void Save(string filename)
         {
-            this.InnerXml = "";
+            this.LoadXml("<config></config>");
             XmlElement clientsNode = this.CreateElement("clients");
             foreach (KeyValuePair<string, string> kvPair in GlobalValues)
             {
@@ -62,13 +75,24 @@ namespace EasyETL.Xml.Configuration
                 xAttr.Value = kvPair.Value;
                 clientsNode.Attributes.Append(xAttr);
             }
-            this.AppendChild(clientsNode);
+            this.DocumentElement.AppendChild(clientsNode);
 
             foreach (EasyETLClient client in Clients)
             {
                 XmlElement clientNode = this.CreateElement("client");
                 clientsNode.AppendChild(clientNode);
                 client.WriteSettings(clientNode);
+            }
+
+
+            XmlElement transformsNode = this.CreateElement("transforms");
+            this.DocumentElement.AppendChild(transformsNode);
+
+            foreach (EasyETLTransform transform in Transforms)
+            {
+                XmlElement transformNode = this.CreateElement("transform");
+                transformsNode.AppendChild(transformNode);
+                transform.WriteSettings(transformNode);
             }
 
             base.Save(filename);

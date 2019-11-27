@@ -58,6 +58,8 @@
     <Compile Include="EasyETLJobTransformations.cs" />
     <Compile Include="EasyETLParser.cs" />
     <Compile Include="EasyETLPermission.cs" />
+    <Compile Include="EasyETLTransfer.cs" />
+    <Compile Include="EasyETLTransform.cs" />
     <Compile Include="EasyETLUser.cs" />
     <Compile Include="EasyETLWriter.cs" />
     <Compile Include="EasyETLXmlDocument.cs" />
