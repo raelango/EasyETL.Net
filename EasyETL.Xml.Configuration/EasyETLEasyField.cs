@@ -27,7 +27,7 @@ namespace EasyETL.Xml.Configuration
                 foreach (XmlNode fieldNode in fieldNodes)
                 {
                     string AttributeName = (fieldNode.Attributes.GetNamedItem("name") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("name").Value;
-                    string AttributeValue = (fieldNode.Attributes.GetNamedItem("value") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("value").Value;
+                    string AttributeValue = (fieldNode.Attributes.GetNamedItem("value") == null) ? fieldNode.InnerText : fieldNode.Attributes.GetNamedItem("value").Value;
                     switch (AttributeName.ToLower())
                     {
                         case "id":
@@ -44,23 +44,6 @@ namespace EasyETL.Xml.Configuration
                 }
             }
             if (EasyFieldType != null) Fields = EasyFieldType.LoadFieldSettings(xNode);
-            //base.ReadSettings(xNode);
-            //XmlNodeList fieldNodes = xNode.SelectNodes("field");
-            //foreach (XmlNode fieldNode in fieldNodes)
-            //{
-            //    string AttributeName = (fieldNode.Attributes.GetNamedItem("name") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("name").Value;
-            //    string AttributeValue = (fieldNode.Attributes.GetNamedItem("value") == null) ? String.Empty : fieldNode.Attributes.GetNamedItem("value").Value;
-            //    if ((String.IsNullOrEmpty(AttributeValue)) && (!String.IsNullOrEmpty(fieldNode.InnerText))) {
-            //        AttributeValue = Encoding.UTF8.GetString(Convert.FromBase64String(fieldNode.InnerText));
-            //    }
-            //    if (!String.IsNullOrWhiteSpace(AttributeName)) {
-            //        if (!Fields.ContainsKey(AttributeName)) 
-            //            Fields.Add(AttributeName,AttributeValue);
-            //        else 
-            //            Fields[AttributeName] = AttributeValue;
-
-            //    }
-            //}
         }
 
         public override void WriteSettings(XmlNode xNode)
@@ -70,7 +53,10 @@ namespace EasyETL.Xml.Configuration
             {
                 XmlElement fieldNode = xNode.OwnerDocument.CreateElement("field");
                 fieldNode.SetAttribute("name", kvPair.Key);
-                fieldNode.SetAttribute("value", kvPair.Value);
+                if (kvPair.Value.Contains(Environment.NewLine))
+                    fieldNode.InnerText = Convert.ToBase64String(Encoding.UTF8.GetBytes(kvPair.Value));
+                else
+                    fieldNode.SetAttribute("value", kvPair.Value);
                 xNode.AppendChild(fieldNode);
             }
         }

@@ -53,7 +53,7 @@ namespace EasyETL.Xml.Parsers
         public override Dictionary<string, string> GetSettingsAsDictionary()
         {
             Dictionary<string, string> resultDict = base.GetSettingsAsDictionary();
-            resultDict.Add("widths", String.Join(" ", ColumnWidths.ToArray()));
+            resultDict.Add("widths", String.Join(Environment.NewLine, ColumnWidths.ToArray()));
             resultDict["parsertype"] = "Fixed Width";
             return resultDict;
         }

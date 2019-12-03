@@ -23,10 +23,8 @@ namespace EasyETL.Attributes
             {
                 XmlElement xNode = parentNode.OwnerDocument.CreateElement("field");
                 xNode.SetAttribute("name", kvPair.Key);
-                if (kvPair.Value.Contains('\n'))
-                {
+                if (kvPair.Value.Contains(Environment.NewLine))
                     xNode.InnerText = Convert.ToBase64String(Encoding.UTF8.GetBytes(kvPair.Value));
-                }
                 else
                     xNode.SetAttribute("value", kvPair.Value);
                 parentNode.AppendChild(xNode);

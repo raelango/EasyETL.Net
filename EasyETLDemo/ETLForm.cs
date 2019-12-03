@@ -136,7 +136,7 @@ namespace EasyXmlSample
             txtXsltFileName.Text = JobConfiguration.Transformations.AfterLoad.XsltFileName;
             txtTransformText.Text = String.Join(Environment.NewLine, JobConfiguration.Transformations.AfterLoad.SettingsCommands);
 
-            rbUseDatasetLoad.Checked = JobConfiguration.Transformations.Dataset.UseDefault;
+            rbUseDatasetLoad.Checked = !JobConfiguration.Transformations.Dataset.UseCustom; 
             rbUseCustomTableLoad.Checked = JobConfiguration.Transformations.Dataset.UseCustom;
             txtNodeMapping.Text = String.Join(Environment.NewLine, JobConfiguration.Transformations.Dataset.SettingsCommands);
 
@@ -175,7 +175,7 @@ namespace EasyXmlSample
             #endregion
 
             #region Datasource Node Load
-            tabDataSource.SelectTab("tabDatasource" + JobConfiguration.Datasource.SourceType);
+            if (!String.IsNullOrWhiteSpace(JobConfiguration.Datasource.SourceType)) tabDataSource.SelectTab("tabDatasource" + JobConfiguration.Datasource.SourceType);
             cmbEndpoint.Text = JobConfiguration.Datasource.Endpoint;
             txtFileName.Text = JobConfiguration.Datasource.FileName;
             chkUseTextExtractor.Checked = JobConfiguration.Datasource.UseTextExtractor;
@@ -701,7 +701,7 @@ namespace EasyXmlSample
             JobConfiguration.DefaultPermission.Role = "owner";
             JobConfiguration.DefaultPermission.CanViewSettings = tableLayoutPanel1.RowStyles[0].Height > 0;
             JobConfiguration.DefaultPermission.DisplaySettingsOnLoad = chkShowConfigurationOnLoad.Checked;
-            JobConfiguration.DefaultPermission.CanEditSettings = chkShowConfigurationOnLoad.Checked;
+            JobConfiguration.DefaultPermission.CanEditSettings = chkCanEditConfiguration.Checked;
             JobConfiguration.DefaultPermission.CanAddData = chkCanAddData.Checked;
             JobConfiguration.DefaultPermission.CanEditData = chkCanEditData.Checked;
             JobConfiguration.DefaultPermission.CanDeleteData = chkCanDeleteData.Checked;

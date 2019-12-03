@@ -35,7 +35,7 @@ namespace EasyETL.Xml.Configuration
         public override void WriteSettings(XmlNode xNode)
         {
             base.WriteSettings(xNode);
-            xNode.InnerText = String.Join(Environment.NewLine, SettingsCommands);
+            xNode.InnerText = (SettingsCommands == null) ? "" : String.Join(Environment.NewLine, SettingsCommands);
         }
     }
 }

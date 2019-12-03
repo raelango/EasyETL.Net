@@ -115,6 +115,8 @@
     </Compile>
     <Compile Include="Extractors\RegexColumnBuilder.cs" />
     <Compile Include="Extractors\RegexDataset.cs" />
+    <Compile Include="Extractors\RichTextContentExtractor.cs" />
+    <Compile Include="Extractors\RichTextStripper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Listeners\ConfigurationClasses.cs" />
     <Compile Include="Listeners\EventLogListener.cs" />

@@ -15,7 +15,7 @@ namespace EasyETL.Xml.Parsers
     [EasyField("Directory", "Full path of the folder")]
     [EasyField("Filter", "Match Pattern to retrieve files", "*.*")]
     [EasyField("IncludeSubFolders", "True to include all files in subfolders, false to limit search to the root folder", "False", "", "True;False")]
-    [EasyField("OutputFields", "Field Names to output.  Separate by semicolon.  Supported fields -- FolderName, FileName, FullPath, Size, LastAccessedTime, CreationTime, LastModifiedTime")]
+    [EasyField("OutputFields", "Field Names to output.  Input multiple fields in separate lines.  Supported fields -- FolderName, FileName, FullPath, Size, LastAccessedTime, CreationTime, LastModifiedTime")]
     public class FileListEasyParser : DatasourceEasyParser
     {
         public string DirectoryName;
@@ -41,7 +41,7 @@ namespace EasyETL.Xml.Parsers
                     OutputFields.Clear();
                     if (!String.IsNullOrWhiteSpace(fieldValue))
                     {
-                        foreach (string outputField in fieldValue.Split(';'))
+                        foreach (string outputField in fieldValue.Split(new string[] { Environment.NewLine, ";" }, StringSplitOptions.RemoveEmptyEntries))
                         {
                             //if ("FolderName;FileName;FullPath;Size;LastAccessedTime;CreationTime;LastModifiedTime".Split(';').Contains(outputField,StringComparer.CurrentCultureIgnoreCase)) 
                             OutputFields.Add(outputField);
@@ -68,7 +68,7 @@ namespace EasyETL.Xml.Parsers
             resultDict.Add("directory", DirectoryName);
             resultDict.Add("filter", Filter);
             resultDict.Add("includesubfolders", IncludeSubFolders.ToString());
-            resultDict.Add("outputfields", String.Join(";", OutputFields));
+            resultDict.Add("outputfields", String.Join(Environment.NewLine, OutputFields));
             return resultDict;
         }
 
