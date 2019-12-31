@@ -36,8 +36,8 @@ namespace EasyETL.Xml.Configuration
             SourceType = GetSetting("SourceType");
             UseTextExtractor = Convert.ToBoolean(GetSetting("UseTextExtractor", "False"));
             TextExtractor = GetSetting("TextExtractor");
-            HasMaxRows = Convert.ToBoolean(GetSetting("HasMaxRows", "False"));
-            MaxRows = Convert.ToInt32(GetSetting("MaxRows", "-1"));
+            HasMaxRows = Convert.ToBoolean(GetSetting("HasMaxRows", "True"));
+            MaxRows = Convert.ToInt32(GetSetting("MaxRows", "20"));
             FileName = GetSetting("FileName");
             DataSource = GetSetting("Datasource");
             Endpoint = GetSetting("Endpoint");

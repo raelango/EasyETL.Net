@@ -22,6 +22,7 @@ namespace EasyETL.Xml.EMail
     [EasyField("MailboxName", "Name of the Mailbox or Folder", "Inbox")]
     [EasyField("Encryption", "What level of encryption to be used", "Auto", "", "Auto;None;SslOnConnect;StartTls;StartTlsWhenAvailable")]
     [EasyField("Query", "Search Query to execute on the folder")]
+    [EasyField("UnreadMailsOnly","Retrieve Unread Emails Only?","True","True|False","True;False")]
     [EasyField("IncludeSubFolders", "Should include the items in subfolders", "False", "", "True;False")]
     public class EMailDatasourceEasyParser : DatasourceEasyParser, IDisposable
     {
@@ -32,7 +33,8 @@ namespace EasyETL.Xml.EMail
         public string MailboxName = "Inbox";
         public string Query;
         public bool IncludeSubfolders = false;
-        public SecureSocketOptions Encryption = SecureSocketOptions.Auto;
+        public bool UnreadMailsOnly = true;
+        public SecureSocketOptions Encryption = SecureSocketOptions.SslOnConnect;
         public MailStore mailStore = null;
 
         public EMailDatasourceEasyParser() { }
@@ -58,6 +60,8 @@ namespace EasyETL.Xml.EMail
                     Query = fieldValue; break;
                 case "includesubfolders":
                     IncludeSubfolders = Convert.ToBoolean(fieldValue); break;
+                case "unreadmailsonly":
+                    UnreadMailsOnly = Convert.ToBoolean(fieldValue); break;
             }
         }
 
@@ -85,6 +89,7 @@ namespace EasyETL.Xml.EMail
             resultDict.Add("encryption", Encryption.ToString());
             resultDict.Add("query", Query);
             resultDict.Add("includesubfolders", IncludeSubfolders.ToString());
+            resultDict.Add("unreadmailsonly", UnreadMailsOnly.ToString());
             return resultDict;
         }
 
@@ -96,6 +101,18 @@ namespace EasyETL.Xml.EMail
         public override XmlDocument Load(string filename, XmlDocument xDoc = null)
         {
             return LoadStr(filename);
+        }
+
+        public MimeMessage GetMessage(int messageID)
+        {
+            try
+            {
+                return mailStore.GetFolder(MailboxName).GetMessage(messageID);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public override XmlDocument LoadStr(string strToLoad, XmlDocument xDoc = null)
@@ -120,7 +137,7 @@ namespace EasyETL.Xml.EMail
             #endregion
 
 
-            SearchQuery searchQuery = SearchQuery.All;
+            SearchQuery searchQuery = UnreadMailsOnly ? SearchQuery.NotSeen : SearchQuery.All;
             if (!String.IsNullOrWhiteSpace(Query)) searchQuery = SearchQuery.MessageContains(Query) ;
             IMailFolder mailFolder = mailStore.GetFolder(MailboxName);
             mailFolder.Open(FolderAccess.ReadOnly);
@@ -174,7 +191,7 @@ namespace EasyETL.Xml.EMail
                     case "imap":
                         mailStore = new MailKit.Net.Imap.ImapClient(); break;
                 }
-                if (mailStore !=null) mailStore.Connect(MailHost,0,Encryption);
+                if (mailStore !=null) mailStore.Connect(MailHost,993,Encryption);
             }
             if (mailStore == null) return;
             if (mailStore.IsConnected) {

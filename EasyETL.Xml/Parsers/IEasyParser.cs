@@ -14,6 +14,9 @@ namespace EasyETL.Xml.Parsers
         XmlDocument Load(Stream inStream, XmlDocument xDoc = null);
         XmlDocument Load(TextReader txtReader, XmlDocument xDoc = null);
         XmlDocument Load(string filename, XmlDocument xDoc = null);
+
+        XmlDocument Load(XmlDocument xDoc, params string[] filenames);
+
         XmlDocument LoadStr(string strToLoad, XmlDocument xDoc = null);
     }
 }

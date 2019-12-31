@@ -147,7 +147,6 @@ namespace EasyXmlSample
             #endregion
 
             #region Output Settings Load
-
             foreach (EasyETLJobExport easyETLJobExport in JobConfiguration.Exports)
             {
                 int loadIndex = chkAvailableExports.Items.IndexOf(easyETLJobExport.ExportName);
@@ -171,7 +170,6 @@ namespace EasyXmlSample
             chkAutoRefresh.Visible = chkCanEditConfiguration.Checked;
             btnSaveSettings.Visible = chkCanEditConfiguration.Checked;
             pnlExport.Visible = chkCanExportData.Checked;
-
             #endregion
 
             #region Datasource Node Load
@@ -185,7 +183,6 @@ namespace EasyXmlSample
             cmbDatasource.Text = JobConfiguration.Datasource.DataSource;
             txtTextContents.Text = JobConfiguration.Datasource.TextContents;
             txtDatabaseQuery.Text = JobConfiguration.Datasource.Query;
-
             #endregion
 
             chkAutoRefresh.Checked = JobConfiguration.AutoRefresh; // (xNode.Attributes.GetNamedItem("autorefresh") == null) ? false : Boolean.Parse(xNode.Attributes.GetNamedItem("autorefresh").Value);
@@ -568,31 +565,6 @@ namespace EasyXmlSample
             ConfigXmlDocument.Save();
             if (!cbTransformProfiles.Items.Contains(transform.ProfileName)) cbTransformProfiles.Items.Add(transform.ProfileName);
             cbTransformProfiles.SelectedText = String.Join(Environment.NewLine, transform.SettingsCommands);
-
-            //if (!String.IsNullOrWhiteSpace(txtTransformFileName.Text))
-            //{
-
-            //    XmlDocument xDoc = new XmlDocument();
-            //    xDoc.Load(SettingsFileName);
-            //    XmlNode transformsNode = xDoc.SelectSingleNode("//transforms");
-            //    if (transformsNode == null)
-            //    {
-            //        transformsNode = xDoc.CreateElement("transforms");
-            //        xDoc.DocumentElement.AppendChild(transformsNode);
-            //    }
-            //    XmlElement transformNode = (XmlElement)xDoc.SelectSingleNode("//transforms/transform[@profilename='" + txtTransformFileName.Text + "']");
-            //    if (transformNode == null)
-            //    {
-            //        transformNode = xDoc.CreateElement("transform");
-            //        transformNode.SetAttribute("profilename", txtTransformFileName.Text);
-            //        transformsNode.AppendChild(transformNode);
-            //    }
-            //    transformNode.InnerText = txtTransformText.Text;
-            //    xDoc.Save(SettingsFileName);
-            //    if (!cbTransformProfiles.Items.Contains(txtTransformFileName.Text)) cbTransformProfiles.Items.Add(txtTransformFileName.Text);
-            //    cbTransformProfiles.SelectedText = txtOnLoadFileName.Text;
-            //}
-
         }
 
         private void txtTransformText_Leave(object sender, EventArgs e)

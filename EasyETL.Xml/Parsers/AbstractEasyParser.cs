@@ -28,6 +28,7 @@ namespace EasyETL.Xml.Parsers
         public long LineNumber;
     }
 
+
     public abstract class AbstractEasyParser : IEasyParser, IEasyFieldInterface
     {
         public string[] FieldNames = null;
@@ -111,6 +112,15 @@ namespace EasyETL.Xml.Parsers
         public virtual XmlDocument LoadStr(string strToLoad, XmlDocument xDoc = null)
         {
             return Load(new StringReader(strToLoad), xDoc);
+        }
+
+        public virtual XmlDocument Load(XmlDocument xDoc, params string[] filenames)
+        {
+            foreach (string filename in filenames)
+            {
+                xDoc = Load(filename, xDoc);
+            }
+            return xDoc;
         }
 
         public virtual XmlDocument Load(string filename, XmlDocument xDoc = null)
