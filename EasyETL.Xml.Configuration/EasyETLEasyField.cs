@@ -49,14 +49,17 @@ namespace EasyETL.Xml.Configuration
         public override void WriteSettings(XmlNode xNode)
         {
             base.WriteSettings(xNode);
+            if (Fields == null) return;
             foreach (KeyValuePair<string, string> kvPair in Fields)
             {
                 XmlElement fieldNode = xNode.OwnerDocument.CreateElement("field");
                 fieldNode.SetAttribute("name", kvPair.Key);
-                if (kvPair.Value.Contains(Environment.NewLine))
-                    fieldNode.InnerText = Convert.ToBase64String(Encoding.UTF8.GetBytes(kvPair.Value));
+                string keyValue = kvPair.Value;
+                if (keyValue == null) keyValue = "";
+                if (keyValue.Contains(Environment.NewLine))
+                    fieldNode.InnerText = Convert.ToBase64String(Encoding.UTF8.GetBytes(keyValue));
                 else
-                    fieldNode.SetAttribute("value", kvPair.Value);
+                    fieldNode.SetAttribute("value", keyValue);
                 xNode.AppendChild(fieldNode);
             }
         }
