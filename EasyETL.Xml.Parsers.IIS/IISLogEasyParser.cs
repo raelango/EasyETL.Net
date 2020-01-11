@@ -1,7 +1,9 @@
 ﻿using EasyETL.Attributes;
+using Microsoft.Web.Administration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,9 +27,18 @@ namespace EasyETL.Xml.Parsers
         {
             ServerName = serverName;
             SiteNames = new List<string>();
-            foreach (string siteName in siteNames)
+            if (siteNames.Length > 0)
             {
-                SiteNames.Add(siteName);
+                foreach (string siteName in siteNames)
+                    SiteNames.Add(siteName);
+            }
+            else
+            {
+                using (ServerManager serverManager = String.IsNullOrWhiteSpace(serverName) ? new ServerManager() : ServerManager.OpenRemote(serverName))
+                {
+                    foreach (Site site in serverManager.Sites)
+                        SiteNames.Add(site.Name);
+                }
             }
         }
 
@@ -36,10 +47,38 @@ namespace EasyETL.Xml.Parsers
 
             if (filenames.Length == 0)
             {
-
-                filenames = SiteNames.ToArray();
+                using (ServerManager serverManager = String.IsNullOrWhiteSpace(ServerName) ? new ServerManager() : ServerManager.OpenRemote(ServerName))
+                {
+                    List<string> logFiles = new List<string>();
+                    foreach (string siteName in SiteNames)
+                    {
+                        Site site = serverManager.Sites[siteName];
+                        if (site != null)
+                        {
+                            SiteLogFile siteLogFile = site.LogFile;
+                            foreach (string logFileName in Directory.EnumerateFiles(siteLogFile.Directory, "*.log", SearchOption.TopDirectoryOnly))
+                            {
+                                if ((StartDate.HasValue) && (StartDate.Value <= File.GetCreationTime(logFileName)) &&
+                                    (EndDate.HasValue) && (EndDate.Value >= File.GetLastWriteTime(logFileName)))
+                                {
+                                    logFiles.Add(logFileName);
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            return base.Load(xDoc, filenames);
+            return (filenames.Length > 0) ? base.Load(xDoc, filenames) : xDoc;
+        }
+
+        public override XmlDocument Load(string filename, XmlDocument xDoc = null)
+        {
+            if (String.IsNullOrWhiteSpace(filename)) filename = ServerName;
+            if ((!File.Exists(filename)) && (SiteNames.Count >0))
+            {
+                Load(xDoc);
+            }
+            return base.Load(filename, xDoc);
         }
     }
 }

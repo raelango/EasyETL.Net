@@ -31,6 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,6 +44,20 @@
   <ItemGroup>
     <Compile Include="IISLogEasyParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EasyETL.Attributes\EasyETL.Attributes.csproj">
+      <Project>{b0708c3a-1339-4852-b529-7747352133b8}</Project>
+      <Name>EasyETL.Attributes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Dynamic\EasyETL.Dynamic.csproj">
+      <Project>{a9568049-8a98-4fba-a7a8-4742d56ffe0f}</Project>
+      <Name>EasyETL.Dynamic</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Xml\EasyETL.Xml.csproj">
+      <Project>{5cf95a36-7bc7-4617-827d-4f9056161f14}</Project>
+      <Name>EasyETL.Xml</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
