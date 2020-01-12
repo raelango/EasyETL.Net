@@ -74,4 +74,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Tesseract.3.3.0\build\Tesseract.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Tesseract.3.3.0\build\Tesseract.targets'))" />
   </Target>
+<Target Name="SpicNSpan" AfterTargets="Clean"> 
+     <RemoveDir Directories="$(BaseIntermediateOutputPath)" /> 
+</Target> 
 </Project>

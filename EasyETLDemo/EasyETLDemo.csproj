@@ -185,6 +185,6 @@
   </Target>
 -->
 <Target Name="SpicNSpan" AfterTargets="Clean"> 
-     <RemoveDir Directories="$(ProjectDir)$(BaseIntermediateOutputPath)" /> 
+     <RemoveDir Directories="$(BaseIntermediateOutputPath)" /> 
 </Target> 
 </Project>

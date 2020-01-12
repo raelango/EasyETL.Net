@@ -23,6 +23,16 @@ namespace EasyETL.Xml.Parsers
         public List<String> SiteNames;
         public DateTime? StartDate;
         public DateTime? EndDate;
+
+        public IISLogEasyParser()
+        {
+            ServerName = "";
+            SiteNames = new List<string>();
+            StartDate = null;
+            EndDate = null;
+        }
+
+
         public IISLogEasyParser(string serverName, params string[] siteNames)
         {
             ServerName = serverName;
