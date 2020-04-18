@@ -36,7 +36,7 @@ namespace EasyETL.Endpoint
         #region public overriden methods
         public override string[] GetList(string filter = "*.*")
         {
-            return Directory.GetFiles(FolderName, filter).Select(file => Path.GetFileName(file)).ToArray();
+            return Directory.Exists(FolderName) ? Directory.GetFiles(FolderName, filter).Select(file => Path.GetFileName(file)).ToArray() : Array.Empty<string>();
         }
 
         public override Stream GetStream(string fileName)

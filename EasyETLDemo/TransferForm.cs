@@ -128,7 +128,7 @@ namespace EasyXmlSample
 
         private AbstractEasyEndpoint GetEndPoint(string endpointName)
         {
-            return ClientConfiguration.Endpoints.Find(e => e.ActionName == endpointName).CreateEndpoint();
+            return  (ClientConfiguration.Endpoints.Find(e => e.ActionName == endpointName) != null) ? ClientConfiguration.Endpoints.Find(e => e.ActionName == endpointName).CreateEndpoint() : null;
         }
 
         private void lstSourceFileList_SelectedValueChanged(object sender, EventArgs e)

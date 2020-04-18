@@ -9,13 +9,13 @@ namespace EasyETL.Xml.Configuration
     public class EasyETLPermission : EasyETLConfiguration
     {
         public string Role;
-        public bool CanViewSettings;
-        public bool CanEditSettings;
+        public bool CanViewSettings = true;
+        public bool CanEditSettings = true;
         public bool CanAddData;
         public bool CanEditData;
         public bool CanDeleteData;
-        public bool CanExportData;
-        public bool DisplaySettingsOnLoad;
+        public bool CanExportData = true;
+        public bool DisplaySettingsOnLoad = true;
 
         public override void ReadSettingsFromDictionary()
         {

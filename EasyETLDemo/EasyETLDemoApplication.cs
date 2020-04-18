@@ -258,6 +258,7 @@ namespace EasyXmlSample
                             currentForm = mForm;
                             break;
                         case "transfers":
+                            currentForm = null;
                             TransferForm tForm = new TransferForm()
                             {
                                 ConfigurationDocument = configXmlDocument,
@@ -441,11 +442,13 @@ namespace EasyXmlSample
         {
             if ((tvClients.SelectedNode == null) || (tvClients.SelectedNode.Parent == null))
             {
-                int nodeCount = tvClients.Nodes.Count + 1;
-                while (tvClients.Nodes[nodeCount.ToString()] != null) nodeCount++;
-                TreeNode tNode = tvClients.Nodes.Add(nodeCount.ToString(), "Client" + nodeCount.ToString());
-                SaveXmlFile(tNode, tNode.Text);
-                LoadConfiguration(tNode.FullPath);
+                string newPath = "Client_" + tvClients.Nodes.Count + 1;
+                EasyETLClient newClient = new EasyETLClient();
+                newClient.ClientID = newPath;
+                newClient.ClientName = newPath;
+                configXmlDocument.Clients.Add(newClient);
+                configXmlDocument.Save();
+                LoadConfiguration(newPath);
             }
         }
 
@@ -666,17 +669,25 @@ namespace EasyXmlSample
 
         private void amCreateNew_Click(object sender, EventArgs e)
         {
+            string newNodeName;
             if ((tvClients.SelectedNode != null) && (tvClients.SelectedNode.Parent != null))
             {
                 TreeNode categoryNode = tvClients.SelectedNode;
                 if (clientCategories.Split(';').Contains(tvClients.SelectedNode.Parent.Text)) categoryNode = tvClients.SelectedNode.Parent;
                 int nodeCount = categoryNode.Nodes.Count + 1;
-                string newNodeName = categoryNode.Parent.Name + "_" + categoryNode.Text.TrimEnd('s') + "_" + nodeCount.ToString();
+                newNodeName = categoryNode.Parent.Name + "_" + categoryNode.Text.TrimEnd('s') + "_" + nodeCount.ToString();
                 while (categoryNode.Nodes[newNodeName] != null)
                 {
                     nodeCount++;
                     newNodeName = categoryNode.Parent.Name + "_" + categoryNode.Text.TrimEnd('s') + "_" + nodeCount.ToString();
                 }
+            }
+            else
+            {
+                newNodeName = "Client_" + (configXmlDocument.Clients.Count + 1).ToString();
+            }
+            if (!String.IsNullOrWhiteSpace(newNodeName))
+            {
                 TreeNode tNode = tvClients.SelectedNode.Nodes.Add(newNodeName, newNodeName);
                 SaveXmlFile(tNode, tNode.Text);
                 LoadConfiguration(tNode.FullPath);

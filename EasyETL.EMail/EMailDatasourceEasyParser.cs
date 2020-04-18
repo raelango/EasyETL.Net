@@ -33,7 +33,7 @@ namespace EasyETL.Xml.EMail
         public string MailboxName = "Inbox";
         public string Query;
         public bool IncludeSubfolders = false;
-        public bool UnreadMailsOnly = true;
+        public bool UnreadMailsOnly = false;
         public SecureSocketOptions Encryption = SecureSocketOptions.SslOnConnect;
         public MailStore mailStore = null;
 
@@ -103,13 +103,13 @@ namespace EasyETL.Xml.EMail
             return LoadStr(filename);
         }
 
-        public MimeMessage GetMessage(int messageID)
+        public MimeMessage GetMessage(uint messageID)
         {
             try
             {
-                return mailStore.GetFolder(MailboxName).GetMessage(messageID);
+                return mailStore.GetFolder(MailboxName).GetMessage(new UniqueId(messageID));
             }
-            catch
+            catch (Exception ex)
             {
                 return null;
             }

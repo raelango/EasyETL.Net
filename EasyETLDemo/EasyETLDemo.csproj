@@ -167,6 +167,10 @@
       <Project>{54babc0b-08b0-45e8-9de6-2fbc14b4dc3c}</Project>
       <Name>EasyETL.Xml.Configuration</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EasyETL.Xml.Parsers.IIS\EasyETL.Xml.Parsers.IIS.csproj">
+      <Project>{2f1d2293-1708-4ad3-8d79-18ff8572efbf}</Project>
+      <Name>EasyETL.Xml.Parsers.IIS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EasyETL\EasyETL.csproj">
       <Project>{2647e6ce-2d5f-4524-9ab0-372cfb456841}</Project>
       <Name>EasyETL</Name>

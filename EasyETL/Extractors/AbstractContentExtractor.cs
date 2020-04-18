@@ -17,19 +17,27 @@ namespace EasyETL.Extractors
 
         public virtual TextReader GetTextReader(TextReader txtReader)
         {
-            return new StreamReader(GetStream(new MemoryStream((Encoding.Default.GetBytes(txtReader.ReadToEnd())))));
+
+            MemoryStream ms = new MemoryStream((Encoding.Default.GetBytes(txtReader.ReadToEnd())));
+            return new StreamReader(ms);
         }
 
         public virtual Stream GetStream(string filename)
         {
             FileName = filename;
-            return GetStream(new FileStream(filename, FileMode.Open));
+            using (FileStream fs = new FileStream(filename,FileMode.Open))
+            {
+                return GetStream(fs);
+            }
         }
 
         public virtual TextReader GetTextReader(string filename)
         {
             FileName = filename;
-            return GetTextReader(File.OpenText(filename));
+            using (StreamReader sr = File.OpenText(filename))
+            {
+                return GetTextReader(sr);
+            }
         }
     }
 }

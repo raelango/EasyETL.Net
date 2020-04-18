@@ -13,7 +13,7 @@ namespace EasyETL.Xml.Configuration
         public bool UseTextExtractor;
         public string TextExtractor;
         public bool HasMaxRows;
-        public int MaxRows;
+        public int MaxRows =0;
         public string FileName;
         public string DataSource;
         public string Endpoint;

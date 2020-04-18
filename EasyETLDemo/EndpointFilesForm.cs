@@ -45,11 +45,13 @@ namespace EasyXmlSample
         private void txtSearchFilter_Enter(object sender, EventArgs e)
         {
             btnLoadList.NotifyDefault(true);
+            this.AcceptButton = btnLoadList;
         }
 
         private void lbFiles_Enter(object sender, EventArgs e)
         {
             btnSelect.NotifyDefault(true);
+            this.AcceptButton = btnSelect;
         }
 
         private void lbFiles_MouseDoubleClick(object sender, MouseEventArgs e)

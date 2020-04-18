@@ -31,7 +31,7 @@ namespace EasyETL.Xml.Configuration
             base.ReadSettings(xNode);
 
             Datasource = new EasyETLJobDatasource();
-            if (xNode.SelectSingleNode("datasource") !=null) Datasource.ReadSettings(xNode.SelectSingleNode("datasource"));
+            if (xNode.SelectSingleNode("datasource") != null) Datasource.ReadSettings(xNode.SelectSingleNode("datasource"));
 
             Actions = new List<EasyETLJobAction>();
             foreach (XmlNode actionNode in xNode.SelectNodes("actions/action"))
@@ -62,11 +62,12 @@ namespace EasyETL.Xml.Configuration
             Permissions = new List<EasyETLPermission>();
             foreach (XmlNode permissionNode in xNode.SelectNodes("permissions/permission"))
             {
-                EasyETLPermission permission = new EasyETLPermission();
+                EasyETLPermission permission = new EasyETLPermission() { CanViewSettings = true, CanEditSettings = true, CanExportData = true };
                 permission.ReadSettings(permissionNode);
                 Permissions.Add(permission);
             }
 
+            if (Permissions.Count == 0) Permissions.Add(new EasyETLPermission() { CanViewSettings = true, CanEditSettings = true, CanExportData = true });
         }
 
         public override void ReadSettingsFromDictionary()
@@ -74,7 +75,6 @@ namespace EasyETL.Xml.Configuration
             ETLName = GetSetting("name");
             ETLID = GetSetting("id");
             AutoRefresh = Convert.ToBoolean(GetSetting("AutoRefresh", "False"));
-
         }
 
         public override void WriteSettingsToDictionary()
