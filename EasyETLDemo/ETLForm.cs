@@ -178,8 +178,8 @@ namespace EasyXmlSample
             txtFileName.Text = JobConfiguration.Datasource.FileName;
             chkUseTextExtractor.Checked = JobConfiguration.Datasource.UseTextExtractor;
             cbTextExtractor.Text = JobConfiguration.Datasource.TextExtractor;
-            chkHasMaxRows.Checked = JobConfiguration.Datasource.HasMaxRows;
             nudMaxRows.Value = JobConfiguration.Datasource.MaxRows > 0 ? JobConfiguration.Datasource.MaxRows : 0;
+            chkHasMaxRows.Checked = JobConfiguration.Datasource.HasMaxRows;
             cmbDatasource.Text = JobConfiguration.Datasource.DataSource;
             txtTextContents.Text = JobConfiguration.Datasource.TextContents;
             txtDatabaseQuery.Text = JobConfiguration.Datasource.Query;
